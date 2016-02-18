@@ -1,0 +1,13 @@
+/*
+ * UMBRA CONFIGURATION FILE
+ */
+
+config {
+  rootWidth = 80
+  rootHeight = 50
+  fontID = 2
+  fullScreen = false
+  debug = false
+  fontDir = "data/img"
+  moduleChain = "TreeBurner"
+}

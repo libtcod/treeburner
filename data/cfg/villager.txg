@@ -1,0 +1,11 @@
+textgen "villager" {
+	rule "SPOTTED" { values=[
+		" Hey! It's him ! "
+		," He's there ! "
+		," Kill him ! "
+		," DIE ! "
+		," He's over there ! "
+		," You will pay ! "
+	]}
+
+}

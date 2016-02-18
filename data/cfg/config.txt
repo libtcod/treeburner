@@ -1,0 +1,188 @@
+/*
+ * Pyromancer ! configuration file
+ */
+struct config {
+	bool debug=false 				// enable some debug/cheat stuff
+	bool multithread=false			// enable background threads
+	// set to a value > 0 to force the number of background threads
+	int threadPoolSize = 0
+
+	struct display {
+		color wallColor=#ABABAB
+		color groundColor=#E4E4E4
+		color memoryWallColor=#331100
+		int playerLightRange=15
+		color playerLightColor=#FF7722		// player light at level 1
+		color playerLightColorEnd=#990000		// player light at last level
+
+		// messages config
+		float messageLife=5.0 			// how many time a message is displayed
+		color debugColor=#AAAAAA
+		color infoColor=#FFFF72
+		color warnColor=#FF9F00
+		color criticalColor=#FF0000
+
+		float fadeTime=0.8
+		float fireSpeed=5.0				// for intro/end screen
+		color corpseColor=#888888
+		// flash when the player is hit
+		float hitFlashDelay=0.2
+		color flashColor=#FF0000
+		// amulet light properties
+		float treasureLightRange=15
+		color treasureLightColor=#888844
+		float treasureIntensityDelay=0.6
+		string treasureIntensityPattern="979897989798"
+		float finalExplosionTime=5.0
+
+		color sunColor="220,200,64"
+		color dawnColor="196,0,0"
+		int treeRadius=4
+	}
+
+	struct spells {
+		struct fireball {
+			float[] lightColor=[512,256,50]
+			float lightRange=1.0
+			bool lightRandomRad=true
+			int trailLength=5
+			float speed=1.7 				// cells per second
+			float sparkLife=0.4				// in seconds
+			float sparkleLife=1.4				// in seconds
+			float sparkleSpeed=0.5			// cells/seconds
+			float standardLife=1.2			// in seconds
+			float baseRange=1.0
+			float baseDamage=5
+			float stunDelay=1.0				// in seconds
+		}
+		struct fireball2 {
+			float[] lightColor=[512,256,50]
+			bool lightRandomRad=true
+			float lightRange=1.5
+			int trailLength=0
+			float speed=0.7 				// cells per second
+			float sparkLife=1.4				// in seconds
+			float sparkleLife=0.5				// in seconds
+			float sparkleSpeed=0.5			// cells/seconds
+			float standardLife=0.5			// in seconds
+			float baseRange=1.5
+			float baseDamage=2
+			float stunDelay=3.0				// in seconds
+		}
+	}
+	struct fog {
+		float maxLevel=1.0
+		float scale=5.0
+		float octaves=3.0
+		float speed=1.0
+		color col=#000000
+	}
+	struct creatures {
+		float burnDamage=1.0			// hp per second
+		float pathDelay=1.0			// seconds between path computation for a creature
+		struct player {
+			char ch='@'
+			color col=#FFFFFF
+			float speed=8.0		// cells per second. x2 when sprinting
+			float sprintLength=5.0 // in seconds
+			float sprintRecovery=10.0 // in seconds
+			float rangeAccomodation=5.0 // in seconds
+			int maxPathFinding=20	// cancel pathfinding if path too long
+			float healRate=2.0		// health points per second
+			float healIntensityDelay=15.0
+			string healIntensityPattern="noise"
+			float longButtonDelay=0.3
+			float longSpellDelay=1.0
+			// keyboard movement config. Only letter/number keys allowed. 
+			// Arrows, numpad, vi-keys, WASD always work 
+			char moveUpKey='Z'
+			char moveDownKey='S'
+			char moveLeftKey='Q'
+			char moveRightKey='D'
+			// quickslot shortcuts
+			// (should correspond to main keyboard 1-0 keys)
+			// qwerty layout
+			/*
+			char quickslot1='1'
+			char quickslot2='2'
+			char quickslot3='3'
+			char quickslot4='4'
+			char quickslot5='5'
+			char quickslot6='6'
+			char quickslot7='7'
+			char quickslot8='8'
+			char quickslot9='9'
+			char quickslot10='0'
+			*/
+			// azerty layout
+			char quickslot1='&'
+			char quickslot2='é'
+			char quickslot3='\"'
+			char quickslot4='\''
+			char quickslot5='('
+			char quickslot6='-'
+			char quickslot7='è'
+			char quickslot8='_'
+			char quickslot9='ç'
+			char quickslot10='à'
+		}
+		struct minion {
+			char ch='m'
+			color col=#BBFF55
+			int life=10
+			float speed=6.0		// cells per second
+			float damage=2.0		// hp per second when at melee range
+		}
+		struct villageHead {
+			char ch='V'
+			color col=#55FF88
+			int life=2000
+		}
+		struct villager {
+			char ch='v'
+			color col=#33FF22
+			int life=40
+		}
+		struct archer {
+			char ch='a'
+			color col=#33FF22
+			int life=500
+		}
+		struct boss {
+			char ch='Z'
+			color col=#FF8800
+			int life=2500
+			float speed=4.0		// cells per second
+			int secureDist=16		// try to keep squared distance to player above this value
+			float secureCoef=3.0
+			float summonTime=10.0		// time to summon minions
+			int minionCount=10		// how many minions are summoned
+		}
+	}
+
+	struct gameplay {
+		float timeScale=1.0			// time scale. Increase to increase game speed
+		int nbLevels=8			// number of levels
+		int dungeonMinSize=80		// size of dungeon at level 1
+		int dungeonMaxSize=200		// size of dungeon at last level
+		int darknessLevel=50		// if light r+g+b < darknessLevel, creatures not seen
+		int penumbraLevel=100		// if light r+g+b < penumbraLevel, creatures seen as ?
+		float arrowSpeed=15.0
+	}
+	struct aidirector {
+		float waveLength=30.0			// in seconds
+		float lowLevel=0.2			// no creatures below this level
+		float medLevel=0.8
+		float medRate=20			// creatures per minute
+		float highRate=50			// creatures per minute
+		int hordeDelay=120			// horde attack every 2 minutes
+		int maxCreatures=100
+		int spawnSourceRange=10		// spawn source covers an area of 10x10
+		int distReplace=40			// if creature is too far from player, move it closer
+		int itemKillCount=30		// item dropped every 30 creatures
+	}
+	struct fireManager {
+		float zoneDecay=2.0 // length of the decay phase in seconds
+	}
+}
+  

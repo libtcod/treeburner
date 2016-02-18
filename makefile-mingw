@@ -1,0 +1,175 @@
+# the cave mingw makefile
+# run "make -f makefile-linux debug" for debug version
+# run "make -f makefile-linux release" for release version
+SRCDIR=src
+LIBTCODDIR=.
+LUAINC=-Iinclude/lua5.1
+LUALIB=-llua
+PDF1=work/chapter1.pdf
+CPP=mingw32-g++
+UPX=../mak/upx.exe
+
+CFLAGS=$(FLAGS) -I$(LIBTCODDIR)/include $(LUAINC) -Wall
+
+$(TEMP)/thecave/debug/%.o : $(SRCDIR)/%.cpp
+	$(CPP) $(CFLAGS) -g -o $@ -c $< 
+$(TEMP)/thecave/release/%.o : $(SRCDIR)/%.cpp
+	$(CPP) $(CFLAGS) -DNDEBUG -O2 -s -o $@ -c $< 
+
+OBJS_DEBUG= \
+	$(TEMP)/thecave/debug/bas_aidirector.o \
+	$(TEMP)/thecave/debug/bas_entity.o \
+	$(TEMP)/thecave/debug/bas_gameengine.o \
+	$(TEMP)/thecave/debug/bas_savegame.o \
+	$(TEMP)/thecave/debug/bas_userpref.o \
+	$(TEMP)/thecave/debug/item.o \
+	$(TEMP)/thecave/debug/item_modifier.o \
+	$(TEMP)/thecave/debug/item_weapon.o \
+	$(TEMP)/thecave/debug/main.o \
+	$(TEMP)/thecave/debug/map_cell.o \
+	$(TEMP)/thecave/debug/map_building.o \
+	$(TEMP)/thecave/debug/map_dungeon.o \
+	$(TEMP)/thecave/debug/map_light.o \
+	$(TEMP)/thecave/debug/map_lightmap.o \
+	$(TEMP)/thecave/debug/mob_behavior.o \
+	$(TEMP)/thecave/debug/mob_boss.o \
+	$(TEMP)/thecave/debug/mob_creature.o \
+	$(TEMP)/thecave/debug/mob_minion.o \
+	$(TEMP)/thecave/debug/mob_fish.o \
+	$(TEMP)/thecave/debug/mob_friend.o \
+	$(TEMP)/thecave/debug/mob_player.o \
+	$(TEMP)/thecave/debug/screen.o \
+	$(TEMP)/thecave/debug/screen_end.o \
+	$(TEMP)/thecave/debug/screen_forest.o \
+	$(TEMP)/thecave/debug/screen_game.o \
+	$(TEMP)/thecave/debug/screen_mainmenu.o \
+	$(TEMP)/thecave/debug/screen_school.o \
+	$(TEMP)/thecave/debug/screen_treeBurner.o \
+	$(TEMP)/thecave/debug/spell_fireball.o \
+	$(TEMP)/thecave/debug/ui_craft.o \
+	$(TEMP)/thecave/debug/ui_descriptor.o \
+	$(TEMP)/thecave/debug/ui_dialog.o \
+	$(TEMP)/thecave/debug/ui_gui.o \
+	$(TEMP)/thecave/debug/ui_input.o \
+	$(TEMP)/thecave/debug/ui_inventory.o \
+	$(TEMP)/thecave/debug/ui_objectives.o \
+	$(TEMP)/thecave/debug/ui_messages.o \
+	$(TEMP)/thecave/debug/ui_status.o \
+	$(TEMP)/thecave/debug/ui_tuto.o \
+	$(TEMP)/thecave/debug/util_carver.o \
+	$(TEMP)/thecave/debug/util_cavegen.o \
+	$(TEMP)/thecave/debug/util_cellular.o \
+	$(TEMP)/thecave/debug/util_clouds.o \
+	$(TEMP)/thecave/debug/util_fire.o \
+	$(TEMP)/thecave/debug/util_namegen.o \
+	$(TEMP)/thecave/debug/util_packer.o \
+	$(TEMP)/thecave/debug/util_powerup.o \
+	$(TEMP)/thecave/debug/util_ripples.o \
+	$(TEMP)/thecave/debug/util_script.o \
+	$(TEMP)/thecave/debug/util_sound.o \
+	$(TEMP)/thecave/debug/util_subcell.o \
+	$(TEMP)/thecave/debug/util_textgen.o \
+	$(TEMP)/thecave/debug/util_threadpool.o \
+	$(TEMP)/thecave/debug/util_worldgen.o \
+	$(TEMP)/thecave/debug/umbra/callback.o \
+	$(TEMP)/thecave/debug/umbra/config.o \
+	$(TEMP)/thecave/debug/umbra/engine.o \
+	$(TEMP)/thecave/debug/umbra/error.o \
+	$(TEMP)/thecave/debug/umbra/font.o \
+	$(TEMP)/thecave/debug/umbra/imod_bsod.o \
+	$(TEMP)/thecave/debug/umbra/imod_speed.o \
+	$(TEMP)/thecave/debug/umbra/module.o \
+	$(TEMP)/thecave/debug/umbra/widget.o
+
+OBJS_RELEASE= \
+	$(TEMP)/thecave/release/bas_aidirector.o \
+	$(TEMP)/thecave/release/bas_entity.o \
+	$(TEMP)/thecave/release/bas_gameengine.o \
+	$(TEMP)/thecave/release/bas_savegame.o \
+	$(TEMP)/thecave/release/bas_userpref.o \
+	$(TEMP)/thecave/release/item.o \
+	$(TEMP)/thecave/release/item_modifier.o \
+	$(TEMP)/thecave/release/item_weapon.o \
+	$(TEMP)/thecave/release/main.o \
+	$(TEMP)/thecave/release/map_cell.o \
+	$(TEMP)/thecave/release/map_building.o \
+	$(TEMP)/thecave/release/map_dungeon.o \
+	$(TEMP)/thecave/release/map_light.o \
+	$(TEMP)/thecave/release/map_lightmap.o \
+	$(TEMP)/thecave/release/mob_behavior.o \
+	$(TEMP)/thecave/release/mob_boss.o \
+	$(TEMP)/thecave/release/mob_creature.o \
+	$(TEMP)/thecave/release/mob_fish.o \
+	$(TEMP)/thecave/release/mob_friend.o \
+	$(TEMP)/thecave/release/mob_minion.o \
+	$(TEMP)/thecave/release/mob_player.o \
+	$(TEMP)/thecave/release/screen.o \
+	$(TEMP)/thecave/release/screen_end.o \
+	$(TEMP)/thecave/release/screen_forest.o \
+	$(TEMP)/thecave/release/screen_game.o \
+	$(TEMP)/thecave/release/screen_mainmenu.o \
+	$(TEMP)/thecave/release/screen_school.o \
+	$(TEMP)/thecave/release/screen_treeBurner.o \
+	$(TEMP)/thecave/release/spell_fireball.o \
+	$(TEMP)/thecave/release/ui_craft.o \
+	$(TEMP)/thecave/release/ui_descriptor.o \
+	$(TEMP)/thecave/release/ui_dialog.o \
+	$(TEMP)/thecave/release/ui_gui.o \
+	$(TEMP)/thecave/release/ui_input.o \
+	$(TEMP)/thecave/release/ui_inventory.o \
+	$(TEMP)/thecave/release/ui_messages.o \
+	$(TEMP)/thecave/release/ui_objectives.o \
+	$(TEMP)/thecave/release/ui_status.o \
+	$(TEMP)/thecave/release/ui_tuto.o \
+	$(TEMP)/thecave/release/util_carver.o \
+	$(TEMP)/thecave/release/util_cavegen.o \
+	$(TEMP)/thecave/release/util_cellular.o \
+	$(TEMP)/thecave/release/util_clouds.o \
+	$(TEMP)/thecave/release/util_fire.o \
+	$(TEMP)/thecave/release/util_namegen.o \
+	$(TEMP)/thecave/release/util_packer.o \
+	$(TEMP)/thecave/release/util_powerup.o \
+	$(TEMP)/thecave/release/util_ripples.o \
+	$(TEMP)/thecave/release/util_script.o \
+	$(TEMP)/thecave/release/util_sound.o \
+	$(TEMP)/thecave/release/util_subcell.o \
+	$(TEMP)/thecave/release/util_textgen.o \
+	$(TEMP)/thecave/release/util_threadpool.o \
+	$(TEMP)/thecave/release/util_worldgen.o \
+	$(TEMP)/thecave/release/umbra/callback.o \
+	$(TEMP)/thecave/release/umbra/config.o \
+	$(TEMP)/thecave/release/umbra/engine.o \
+	$(TEMP)/thecave/release/umbra/error.o \
+	$(TEMP)/thecave/release/umbra/font.o \
+	$(TEMP)/thecave/release/umbra/imod_bsod.o \
+	$(TEMP)/thecave/release/umbra/imod_speed.o \
+	$(TEMP)/thecave/release/umbra/module.o \
+	$(TEMP)/thecave/release/umbra/widget.o
+
+all : debug release
+
+debug : thecave_debug.exe
+
+release : thecave.exe
+
+$(TEMP)/thecave/debug/umbra :
+	\mkdir -p $@
+	
+$(TEMP)/thecave/release/umbra :
+	\mkdir -p $@
+	
+icon.o : icon48.ico thecave.rc
+	windres thecave.rc -O coff -o icon.o	
+
+chapter1.o : $(PDF1)
+	objcopy -I binary -O pe-i386 -B i386 $(PDF1) $@
+	
+thecave.exe : $(TEMP)/thecave/release/umbra $(OBJS_RELEASE) icon.o chapter1.o
+	$(CPP) $(OBJS_RELEASE) icon.o chapter1.o -o $@ -L$(LIBTCODDIR)/lib -ltcod-mingw -lfmodex $(LUALIB) -mwindows -lSDL.dll
+	$(UPX) thecave.exe 
+
+thecave_debug.exe : $(TEMP)/thecave/debug/umbra $(OBJS_DEBUG) icon.o chapter1.o
+	$(CPP) $(OBJS_DEBUG) icon.o chapter1.o -o $@ -L$(LIBTCODDIR)/lib -ltcod-mingw-debug -lfmodex $(LUALIB) -lSDL.dll -mwindows
+
+clean :
+	\rm -f $(OBJS_RELEASE) thecave.exe $(OBJS_DEBUG) thecave_debug.exe 
