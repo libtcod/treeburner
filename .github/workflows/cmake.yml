@@ -1,0 +1,119 @@
+name: CMake
+
+on:
+  push:
+  pull_request:
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  project-name: treeburner
+  # Build mode for CMake, such as "Release" or "Debug".
+  BUILD_TYPE: Release
+  # Indicates the location of the vcpkg as a Git submodule of the project repository.
+  VCPKG_ROOT: ${{ github.workspace }}/vcpkg
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: true
+      matrix:
+        include:
+          - os: windows-2019
+            triplet: x64-windows
+            platform-name: windows.x64
+          - os: macos-12
+            triplet: x64-osx
+            platform-name: macos.x64
+          - os: ubuntu-20.04
+            triplet: x64-linux
+            platform-name: linux.x64
+
+    env:
+      # Indicates the CMake build directory where project files and binaries are being produced.
+      CMAKE_BUILD_DIR: ${{ github.workspace }}/build
+
+    steps:
+      # fetch-depth=0 and v1 are needed for 'git describe' to work correctly.
+      - uses: actions/checkout@v1
+        with:
+          fetch-depth: 0
+          submodules: true
+      # Setup the build machine with the most recent versions of CMake and Ninja. Both are cached if not already: on subsequent runs both will be quickly restored from GitHub cache service.
+      - uses: lukka/get-cmake@latest
+      - name: Restore vcpkg and its artifacts
+        uses: actions/cache@v2
+        with:
+          # The first path is where vcpkg generates artifacts while consuming the vcpkg.json manifest file.
+          # The second path is the location of vcpkg (it contains the vcpkg executable and data files).
+          # The other paths starting with '!' are exclusions: they contain temporary files generated during the build of the installed packages.
+          path: |
+            ${{ env.CMAKE_BUILD_DIR }}/vcpkg_installed/
+            ${{ env.VCPKG_ROOT }}
+            !${{ env.VCPKG_ROOT }}/buildtrees
+            !${{ env.VCPKG_ROOT }}/packages
+            !${{ env.VCPKG_ROOT }}/downloads
+          # The key is composed in a way that it gets properly invalidated: this must happen whenever vcpkg's Git commit id changes, or the list of packages changes. In this case a cache miss must happen and a new entry with a new key with be pushed to GitHub the cache service.
+          # The key includes: hash of the vcpkg.json file, the hash of the vcpkg Git commit id, and the used vcpkg's triplet. The vcpkg's commit id would suffice, but computing an hash out it does not harm.
+          # Note: given a key, the cache content is immutable. If a cache entry has been created improperly, in order the recreate the right content the key must be changed as well, and it must be brand new (i.e. not existing already).
+          key: ${{ matrix.triplet }}-${{ hashFiles('vcpkg.json', '.git/modules/vcpkg/HEAD') }}
+      # On Windows runners, let's ensure to have the Developer Command Prompt environment setup correctly. As used here the Developer Command Prompt created is targeting x64 and using the default the Windows SDK.
+      - uses: ilammy/msvc-dev-cmd@v1
+      # Run CMake to generate Ninja project files, using the vcpkg's toolchain file to resolve and install the dependencies as specified in vcpkg.json.
+      - name: Install dependencies and generate project files
+        run: |
+          cmake -S "${{ github.workspace }}" -B "${{ env.CMAKE_BUILD_DIR }}" -GNinja \
+              -DVCPKG_TARGET_TRIPLET="${{ matrix.triplet }}" \
+              -DCMAKE_BUILD_TYPE="${{ env.BUILD_TYPE }}"
+      # Build the whole project with Ninja (which is spawn by CMake).
+      - name: Build
+        run: |
+          cmake --build "${{ env.CMAKE_BUILD_DIR }}"
+      - name: Show contents of the build directory
+        run: find "${{ env.CMAKE_BUILD_DIR }}"
+      # Sets env.archive-name, which is used to name the distribution folder and archive.
+      - name: Set archive name
+        run: |
+          ARCHIVE_NAME=${{ env.project-name }}-`git describe --always`-${{ matrix.platform-name }}
+          echo "Archive name set to: $ARCHIVE_NAME"
+          echo "archive-name=$ARCHIVE_NAME" >> $GITHUB_ENV
+      # Copy files from the CMake build and data directory into a new distribution folder.
+      - name: Package distribution
+        run: |
+          mkdir -p dist/${{ env.archive-name }}
+          cp "${{ env.CMAKE_BUILD_DIR }}/bin"/* dist/${{ env.archive-name }}
+          cp -R data dist/${{ env.archive-name }}
+      - name: Show contents of the dist directory
+        run: find dist/${{ env.archive-name }}
+      # Zip the distribution folder, using the platform appropriate tools.
+      - name: Tar files
+        if: runner.os != 'Windows'
+        working-directory: ./dist
+        run: |
+          tar --format=ustar -czvf "../${{ env.archive-name }}.tar.gz" */
+      - name: Archive files
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          Compress-Archive dist/*/ ${{ env.archive-name }}.zip
+      # Upload archives as artifacts, these can be downloaded from the GitHub Actions page.
+      - name: "Upload Artifact"
+        uses: actions/upload-artifact@v2
+        with:
+          name: automated-builds
+          path: ${{ env.archive-name }}.*
+          retention-days: 7
+          if-no-files-found: error
+      # If a tag is pushed then a new archives are uploaded to GitHub Releases automatically.
+      - name: Upload release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: ${{ env.archive-name }}.*
+          file_glob: true
+          tag: ${{ github.ref }}
+          overwrite: true
