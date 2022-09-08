@@ -26,6 +26,7 @@
 
 #include <stdio.h>
 #include "main.hpp"
+#include <filesystem>
 
 bool SaveGame::isBigEndian() {
     union {
@@ -179,6 +180,7 @@ void SaveGame::save() {
 	}
 	sizes.push(zip->getCurrentBytes()-startPos.pop());
 	//DBG(("size : %d\n",sizes.peek()));
+	std::filesystem::create_directories("data/sav");
 	zip->saveToFile("data/sav/savegame.dat");
 	idx=new TCODZip();
 	idx->putInt(sizes.size());

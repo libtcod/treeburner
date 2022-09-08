@@ -25,6 +25,7 @@
 */
 
 #include "main.hpp"
+#include <filesystem>
 
 #define USERPREF_VERSION 5
 
@@ -51,5 +52,6 @@ void UserPref::save() {
 	TCODZip zip;
 	zip.putInt(USERPREF_VERSION);
 	zip.putData(sizeof(UserPref),this);
+	std::filesystem::create_directories("data/sav");
 	zip.saveToFile("data/sav/userpref.dat");
 }
