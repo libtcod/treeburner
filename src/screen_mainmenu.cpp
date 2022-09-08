@@ -179,7 +179,11 @@ void MainMenu::render() {
 				}
 				TCODColor rockN = rockNormal->getPixel(x,y);
 				TCODColor rockColor=rock->getPixel(x,y);
-				float lightDir[3]={x-lightx,y-lighty,20.0f+8.0f*(torchposx+torchposy)};
+				float lightDir[3] = {
+					static_cast<float>(x - lightx),
+					static_cast<float>(y - lighty),
+					20.0f + 8.0f * (torchposx + torchposy)
+				};
 				float l= lightDir[0]*lightDir[0]+lightDir[1]*lightDir[1]+lightDir[2]*lightDir[2];
 				l = Entity::fastInvSqrt(l);
 				lightDir[0]*=l;

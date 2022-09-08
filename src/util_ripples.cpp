@@ -319,7 +319,7 @@ void RippleManager::renderRipples(TCODImage *ground) {
 						) {
 						float xOffset=(getData(**it,zx2-1,zy2)-getData(**it,zx2+1,zy2));
 						float yOffset=(getData(**it,zx2,zy2-1)-getData(**it,zx2,zy2+1));
-						float f[3]={zx2,zy2,elCoef};
+						float f[3] = {static_cast<float>(zx2), static_cast<float>(zy2), elCoef};
 						xOffset+=noise3d.get(f)*0.3f;
 						if ( ABS(xOffset) < 250 && ABS(yOffset) < 250 ) {
 							TCODColor col=ground->getPixel(groundx+(int)(xOffset*2),groundy+(int)(yOffset*2));
