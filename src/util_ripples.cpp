@@ -28,6 +28,8 @@
 #include <math.h>
 #include "main.hpp"
 
+#include <libtcod/matrix.hpp>
+
 // range below which fishes try to get away from each other
 #define SHOAL_CLOSE_RANGE 2.0f
 // range below which fishes try to get closer from each other
@@ -52,12 +54,11 @@ RippleManager::RippleManager(Dungeon *dungeon) : dungeon(dungeon) {
 }
 
 void RippleManager::init() {
-	bool visited[dungeon->width][dungeon->height];
-	memset(visited,0,sizeof(bool)*dungeon->width*dungeon->height);
+	auto visited = tcod::Matrix<int8_t, 2>({dungeon->width, dungeon->height});
 	// first time : compute water zones
 	for (int dy=0; dy < dungeon->height; dy++) {
 		for (int dx=0; dx < dungeon->width; dx++) {
-			if (!visited[dx][dy]) {
+			if (!visited.at({dx, dy})) {
 				if ( dungeon->hasRipples(dx,dy) ) {
 					// new water zone. floodfill it
 					TCODList<int> cells;
@@ -70,20 +71,20 @@ void RippleManager::init() {
 						int off=cells.pop();
 						int x=off%dungeon->width;
 						int y=off/dungeon->width;
-						visited[x][y]=true;
-						if ( x > 0 && ! visited[x-1][y] && dungeon->hasRipples(x-1,y)) {
+						visited.at({x, y}) = true;
+						if (x > 0 && ! visited.at({x - 1, y}) && dungeon->hasRipples(x - 1, y)) {
 							cells.push(off-1);
 							if ( minx > x-1 ) minx=x-1;
 						}
-						if ( x < dungeon->width-1 && ! visited[x+1][y] && dungeon->hasRipples(x+1,y)) {
+						if (x < dungeon->width - 1 && ! visited.at({x + 1, y}) && dungeon->hasRipples(x + 1, y)) {
 							cells.push(off+1);
 							if ( maxx < x+1 ) maxx=x+1;
 						}
-						if ( y > 0 && ! visited[x][y-1] && dungeon->hasRipples(x,y-1)) {
+						if (y > 0 && ! visited.at({x, y - 1}) && dungeon->hasRipples(x, y - 1)) {
 							cells.push(off-dungeon->width);
 							if ( miny > y-1 ) miny=y-1;
 						}
-						if ( y < dungeon->height-1 && ! visited[x][y+1] && dungeon->hasRipples(x,y+1)) {
+						if (y < dungeon->height - 1 && ! visited.at({x, y + 1}) && dungeon->hasRipples(x, y + 1)) {
 							cells.push(off+dungeon->width);
 							if ( maxy < y+1 ) maxy=y+1;
 						}
@@ -138,7 +139,7 @@ void RippleManager::init() {
 					}
 				}
 			} else {
-				visited[dx][dy]=true;
+				visited.at({dx, dy}) = true;
 			}
 		}
 	}
