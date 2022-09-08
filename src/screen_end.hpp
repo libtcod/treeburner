@@ -23,6 +23,7 @@
 * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+#include <SDL_surface.h>
 
 class EndScreen : public Screen{
 public :
@@ -60,7 +61,7 @@ protected :
 	TCODImage *tcodpix;
 	static TCODImage *paper;
 	static int paperHeight;
-	void *pix;
+	SDL_Surface *pix = nullptr;
 	float scrolltimer;
 	int chapter;
 	int pixx,pixy; // picture position (pixels)

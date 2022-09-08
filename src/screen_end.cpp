@@ -197,50 +197,15 @@ void EndScreen::renderText(int x,int y, int w, const char *txt) {
 // ok. things are getting nasty here.
 // I'm using the SDL callback to display a picture with a higher resolution than subcell
 // this is cheating but even subcell was too big
-void *TCOD_sys_get_surface(int width, int height, bool alpha) {
-	uint32_t rmask,gmask,bmask,amask;
-	SDL_Surface *bitmap;
-	int flags=SDL_SWSURFACE;
-
-	if ( alpha ) {
-		if ( SDL_BYTEORDER == SDL_LIL_ENDIAN ) {
-			rmask=0x000000FF;
-			gmask=0x0000FF00;
-			bmask=0x00FF0000;
-			amask=0xFF000000;
-		} else {
-			rmask=0xFF000000;
-			gmask=0x00FF0000;
-			bmask=0x0000FF00;
-			amask=0x000000FF;
-		}
-		flags|=SDL_SRCALPHA;
-	} else {
-		if ( SDL_BYTEORDER == SDL_LIL_ENDIAN ) {
-			rmask=0x0000FF;
-			gmask=0x00FF00;
-			bmask=0xFF0000;
-		} else {
-			rmask=0xFF0000;
-			gmask=0x00FF00;
-			bmask=0x0000FF;
-		}
-		amask=0;
-	}
-	bitmap=SDL_AllocSurface(flags,width,height,
-		alpha ? 32:24,
-		rmask,gmask,bmask,amask);
-	if ( alpha ) {
-		SDL_SetAlpha(bitmap, SDL_SRCALPHA, 255);
-	}
-	return (void *)bitmap;
+SDL_Surface *TCOD_sys_get_surface(int width, int height, bool alpha) {
+	if (alpha) return SDL_CreateRGBSurfaceWithFormat(0, width, height, 32, SDL_PIXELFORMAT_RGBA32);
+	return SDL_CreateRGBSurfaceWithFormat(0, width, height, 24, SDL_PIXELFORMAT_RGB24);
 }
 
 
 PaperScreen::PaperScreen(const char *txgfile, const char  *titlegen, const char *textgen, int chapter)
 	: EndScreen("",0.0f,false),txgfile(txgfile),titlegen(titlegen),textgen(textgen),chapter(chapter) {
 	title=NULL;
-	pix=NULL;
 	pixx=pixy=0;
 	scrolltimer=0.0f;
 }
@@ -266,7 +231,7 @@ void PaperScreen::initialise() {
 void PaperScreen::onFontChange() {
 	EndScreen::onFontChange();
 	tcodpix->getSize(&pixw,&pixh);
-	SDL_Surface *surf = (SDL_Surface *)TCOD_sys_get_surface(pixw, pixh, false);
+	SDL_Surface *surf = TCOD_sys_get_surface(pixw, pixh, false);
 
 	int charw,charh;
 	float ratio=(float)(pixh)/pixw;
@@ -285,11 +250,11 @@ void PaperScreen::onFontChange() {
 	}
 	pixw = CON_W*charw/2;
 	pixh = (int)(CON_W*charw/2*ratio);
-	SDL_Surface *surf2 = (SDL_Surface *)TCOD_sys_get_surface(pixw, pixh, false);
+	SDL_Surface *surf2 = TCOD_sys_get_surface(pixw, pixh, false);
 	SDL_SoftStretch(surf, NULL,surf2, NULL);
 	SDL_FreeSurface(surf);
-	if ( pix ) SDL_FreeSurface((SDL_Surface *)pix);
-	pix=(void *)surf2;
+	if (pix) SDL_FreeSurface(pix);
+	pix = surf2;
 	int offx=0,offy=0;
 
 	if ( TCODConsole::isFullscreen()) TCODSystem::getFullscreenOffsets(&offx,&offy);
@@ -332,10 +297,9 @@ void PaperScreen::render(void *sdlSurface) {
 	int charw,charh;
 	TCODSystem::getCharSize(&charw, &charh);
 	SDL_Rect dst = {pixx, pixy+charh/2 - offseth * charh, 0, 0};
-	if ( TCODConsole::getFade() != 255 ) {
-		SDL_SetAlpha((SDL_Surface *)pix,SDL_SRCALPHA,TCODConsole::getFade());
-	}
-	SDL_BlitSurface((SDL_Surface *)pix, NULL, (SDL_Surface *)sdlSurface, &dst);
+	SDL_SetSurfaceBlendMode(pix, SDL_BLENDMODE_BLEND);
+	SDL_SetSurfaceAlphaMod(pix, TCODConsole::getFade());
+	SDL_BlitSurface(pix, NULL, static_cast<SDL_Surface*>(sdlSurface), &dst);
 }
 
 
