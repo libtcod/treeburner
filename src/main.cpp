@@ -198,7 +198,7 @@ int main (int argc, char *argv[]) {
 	engine.loadModuleConfiguration("data/cfg/modules.cfg", new ModuleFactory());
 
 	sound.initialize();
-    if (engine.initialise(TCOD_RENDERER_SDL)) {
+    if (engine.initialise(TCOD_RENDERER_SDL2)) {
 		engine.run();
 		//saveGame.save();
 		userPref.save();
