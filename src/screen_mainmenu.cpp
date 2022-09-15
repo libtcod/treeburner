@@ -306,7 +306,7 @@ void MainMenu::render() {
 	}
 
 	TCODConsole::root->setDefaultForeground(TEXT_COLOR);
-	TCODConsole::root->printEx(CON_W-2,CON_H-2,TCOD_BKGND_NONE,TCOD_RIGHT,"v"VERSION);
+	TCODConsole::root->printEx(CON_W-2,CON_H-2,TCOD_BKGND_NONE,TCOD_RIGHT,"v" VERSION);
 
 	if (userPref.nbLaunches == 1) {
 		TCODConsole::root->printEx(CON_W/2,CON_H-2,TCOD_BKGND_NONE,TCOD_CENTER,

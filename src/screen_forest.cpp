@@ -689,7 +689,7 @@ void ForestScreen::activate() {
 	fadeLvl=0.0f;
 	player.maxFovRange=player.fovRange=8;
 	timefix=1.0f;
-	if ( newGame ) gui.log.critical ("Welcome to the Cave v"VERSION" ! %c?%c for help.",TCOD_COLCTRL_2,TCOD_COLCTRL_STOP);
+	if ( newGame ) gui.log.critical ("Welcome to the Cave v" VERSION " ! %c?%c for help.",TCOD_COLCTRL_2,TCOD_COLCTRL_STOP);
 	lookOn=false;
 	rippleManager=new RippleManager(dungeon);
 	if ( player.name[0] == 0 ) {
