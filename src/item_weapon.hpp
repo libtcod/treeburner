@@ -59,8 +59,8 @@ public :
 	void use();
 	void use(int dx, int dy);
 
-	bool loadData(uint32 chunkId, uint32 chunkVersion, TCODZip *zip);
-	void saveData(uint32 chunkId, TCODZip *zip);
+	bool loadData(uint32_t chunkId, uint32_t chunkVersion, TCODZip *zip);
+	void saveData(uint32_t chunkId, TCODZip *zip);
 
 	char *name;
 	float castDelay;
@@ -76,4 +76,3 @@ protected :
 	void fire(float speed);
 };
 */
-

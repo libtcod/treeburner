@@ -218,7 +218,7 @@ void Objectives::addObjective(Objective *obj) {
 
 #define OBJE_CHUNK_VERSION 1
 
-bool Objectives::loadData(uint32 chunkId, uint32 chunkVersion, TCODZip *zip) {
+bool Objectives::loadData(uint32_t chunkId, uint32_t chunkVersion, TCODZip *zip) {
 	if ( chunkVersion != OBJE_CHUNK_VERSION ) return false;
 	showWindow = (zip->getChar()==1);
 	firstObj = (zip->getChar()==1);
@@ -265,7 +265,7 @@ bool Objectives::loadData(uint32 chunkId, uint32 chunkVersion, TCODZip *zip) {
 	return true;
 }
 
-void Objectives::saveData(uint32 chunkId, TCODZip *zip) {
+void Objectives::saveData(uint32_t chunkId, TCODZip *zip) {
 	saveGame.saveChunk(OBJE_CHUNK_ID,OBJE_CHUNK_VERSION);
 	zip->putChar(showWindow ? 1:0);
 	zip->putChar(firstObj ? 1:0);

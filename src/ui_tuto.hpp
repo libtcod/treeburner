@@ -61,8 +61,8 @@ public :
 	void init();
 
 	// SaveListener
-	bool loadData(uint32 chunkId, uint32 chunkVersion, TCODZip *zip);
-	void saveData(uint32 chunkId, TCODZip *zip);
+	bool loadData(uint32_t chunkId, uint32_t chunkVersion, TCODZip *zip);
+	void saveData(uint32_t chunkId, TCODZip *zip);
 protected :
 	void initialise();
 	void startTuto(TutorialPageId id);

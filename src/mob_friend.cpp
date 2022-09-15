@@ -270,7 +270,7 @@ float Friend::getWalkCost(int xFrom, int yFrom, int xTo, int yTo, void *userData
 }
 
 #define FRIE_CHUNK_VERSION 3
-void Friend::saveData(uint32 chunkId, TCODZip *zip) {
+void Friend::saveData(uint32_t chunkId, TCODZip *zip) {
 	Creature::saveData(chunkId,zip);
 	// friend specific data
 	saveGame.saveChunk(FRIE_CHUNK_ID,FRIE_CHUNK_VERSION);
@@ -280,7 +280,7 @@ void Friend::saveData(uint32 chunkId, TCODZip *zip) {
 	//zip->putInt(aiMode);
 }
 
-bool Friend::loadData(uint32 chunkId, uint32 chunkVersion, TCODZip *zip) {
+bool Friend::loadData(uint32_t chunkId, uint32_t chunkVersion, TCODZip *zip) {
 	if (!Creature::loadData(chunkId,chunkVersion,zip)) return false;
 
 	saveGame.loadChunk(&chunkId,&chunkVersion);

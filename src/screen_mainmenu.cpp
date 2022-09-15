@@ -54,11 +54,11 @@ MainMenu::MainMenu() : Screen(0), selectedItem(0),elapsed(0.0f),noiseZ(0.0f) {
 
 struct WorldGenThreadData {
 	TCOD_semaphore_t worldDone;
-	uint32 seed;
+	uint32_t seed;
 };
 
 int generateWorld(void *dat) {
-	uint32 seed = (uint32)(uintptr)dat;
+	uint32_t seed = (uint32_t)(uintptr_t)dat;
 	if ( config.getBoolProperty("config.debug") ) {
 		printf ("World seed : %d\n",seed);
 	}
@@ -69,7 +69,7 @@ int generateWorld(void *dat) {
 }
 
 int generateForest(void *dat) {
-	uint32 seed = (uint32)(uintptr)dat;
+	uint32_t seed = (uint32_t)(uintptr_t)dat;
 	if ( config.getBoolProperty("config.debug") ) {
 		printf ("Forest seed : %d\n",seed);
 	}
@@ -79,7 +79,7 @@ int generateForest(void *dat) {
 }
 
 int loadForest(void *dat) {
-	uint32 seed = (uint32)(uintptr)dat;
+	uint32_t seed = (uint32_t)(uintptr_t)dat;
 	if ( config.getBoolProperty("config.debug") ) {
 		printf ("Forest seed : %d\n",seed);
 	}
@@ -238,7 +238,7 @@ void MainMenu::render() {
 	}
 	if ( elapsed > 18.0f && userPref.nbLaunches > 5) {
 		/*
-		static uint8 cdata[] = {
+		static uint8_t cdata[] = {
 			0xba, 0x79, 0xa9, 0xfd, 0xcb, 0x79,
 			0xd8, 0x09, 0x19, 0x69, 0xc9, 0x39,
 			0xa9, 0xc8, 0xfd, 0x09, 0x99, 0xfd,
@@ -247,7 +247,7 @@ void MainMenu::render() {
 			0x49, 0xfd, 0x6b, 0x00
 		};
 		*/
-		static uint8 cdata[] = {
+		static uint8_t cdata[] = {
 			0xfd, 0x79, 0xfd, 0xfd, 0xfd, 0x79,
 			0xd8, 0xfd, 0xfd, 0xfd, 0xfd, 0x39,
 			0xfd, 0xfd, 0xfd, 0xfd, 0xfd, 0xfd,

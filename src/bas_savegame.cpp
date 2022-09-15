@@ -29,16 +29,16 @@
 
 bool SaveGame::isBigEndian() {
     union {
-        uint32 i;
+        uint32_t i;
         char c[4];
     } test = {0x01020304};
 
     return test.c[0] == 1;
 }
 
-const char *SaveGame::getChunkId(uint32 chunkId) {
+const char *SaveGame::getChunkId(uint32_t chunkId) {
 	static char s[5];
-	union { char c[4];uint32 i; } un;
+	union { char c[4];uint32_t i; } un;
 	un.i=chunkId;
 	if ( isBigEndian() ) {
 		s[0]=un.c[0];
@@ -62,14 +62,14 @@ SaveGame::SaveGame() {
 }
 
 void SaveGame::init() {
-	seed=(uint32)time(NULL);
+	seed=(uint32_t)time(NULL);
 	// swap high/low bits
 	seed = ((seed & 0xFFFF0000)>>16) | ((seed&0xFFFF)<<16);
 	chapter=0;
 	zip = idx = NULL;
 }
 
-void SaveGame::registerListener(uint32 chunkId, SavePhase phase, SaveListener *listener) {
+void SaveGame::registerListener(uint32_t chunkId, SavePhase phase, SaveListener *listener) {
 	listeners.push(new SaveListenerRecord(chunkId,phase,listener));
 }
 
@@ -105,16 +105,16 @@ bool SaveGame::load(SavePhase phase) {
 		return false;
 	}
 	nbChunks=idx->getInt();
-	uint32 magic = zip->getInt();
+	uint32_t magic = zip->getInt();
 	if ( magic != SAVEGAME_MAGIC_NUMBER ) {
 		clear();
 		return false;
 	}
 	bool skipToEnd=false;
-	while (!skipToEnd && zip->getRemainingBytes() > sizeof(uint32)*2) {
-		uint32 chunkId=(uint32)zip->getInt();
-		uint32 chunkVersion = (uint32) zip->getInt();
-		uint32 chunkSize = (uint32)idx->getInt();
+	while (!skipToEnd && zip->getRemainingBytes() > sizeof(uint32_t)*2) {
+		uint32_t chunkId=(uint32_t)zip->getInt();
+		uint32_t chunkVersion = (uint32_t) zip->getInt();
+		uint32_t chunkSize = (uint32_t)idx->getInt();
 		bool listener=false;
 		for (SaveListenerRecord **it=listeners.begin(); it != listeners.end(); it++) {
 			if ( (*it)->chunkId == chunkId && (*it)->phase == phase ) {
@@ -146,7 +146,7 @@ bool SaveGame::load(SavePhase phase) {
 	return true;
 }
 
-void SaveGame::loadChunk(uint32 *chunkId, uint32 *chunkVersion) {
+void SaveGame::loadChunk(uint32_t *chunkId, uint32_t *chunkVersion) {
 	if ( nbChunks == 0 ) {
 		clear();
 		fprintf(stderr,"error : unexpected end of file...");
@@ -157,7 +157,7 @@ void SaveGame::loadChunk(uint32 *chunkId, uint32 *chunkVersion) {
 	idx->getInt(); // pop chunk size
 }
 
-void SaveGame::saveChunk(uint32 chunkId, uint32 chunkVersion) {
+void SaveGame::saveChunk(uint32_t chunkId, uint32_t chunkVersion) {
 	if ( startPos.size() > 0 ) {
 		sizes.push(zip->getCurrentBytes()-startPos.pop());
 	//	DBG(("size : %d\n",sizes.peek()));
@@ -182,20 +182,20 @@ void SaveGame::save() {
 	zip->saveToFile("data/sav/savegame.dat");
 	idx=new TCODZip();
 	idx->putInt(sizes.size());
-	for (uint32 *offset=sizes.begin(); offset!=sizes.end(); offset++) {
+	for (uint32_t *offset=sizes.begin(); offset!=sizes.end(); offset++) {
 		idx->putInt(*offset);
 	}
 	idx->saveToFile("data/sav/savegame.idx");
 }
 
 #define GAME_CHUNK_VERSION 1
-void SaveGame::saveData(uint32 chunkId, TCODZip *zip) {
+void SaveGame::saveData(uint32_t chunkId, TCODZip *zip) {
 	saveChunk(chunkId,GAME_CHUNK_VERSION);
 	zip->putInt(seed);
 	zip->putInt(chapter);
 }
 
-bool SaveGame::loadData(uint32 chunkId, uint32 chunkVersion, TCODZip *zip) {
+bool SaveGame::loadData(uint32_t chunkId, uint32_t chunkVersion, TCODZip *zip) {
 	if ( chunkVersion == GAME_CHUNK_VERSION ) {
 		seed=zip->getInt();
 		chapter=zip->getInt();
@@ -203,6 +203,3 @@ bool SaveGame::loadData(uint32 chunkId, uint32 chunkVersion, TCODZip *zip) {
 	}
 	return false;
 }
-
-
-

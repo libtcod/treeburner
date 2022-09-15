@@ -417,7 +417,7 @@ void TreeBurner::placeTree(Dungeon *dungeon,int x, int y, const ItemType * treeT
 	setCanopy(x,y,treeType);
 }
 
-void TreeBurner::generateMap(uint32 seed) {
+void TreeBurner::generateMap(uint32_t seed) {
 	DBG(("Forest generation start\n"));
 	forestRng = new TCODRandom(seed);
 	dungeon = new Dungeon(FOREST_W,FOREST_H);

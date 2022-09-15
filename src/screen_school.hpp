@@ -44,7 +44,7 @@ public :
 	SchoolScreen();
 	void render();
 	bool update(float elapsed, TCOD_key_t k,TCOD_mouse_t mouse);
-	void generateWorld(uint32 seed);
+	void generateWorld(uint32_t seed);
 	virtual ~SchoolScreen() {}
 protected :
 	School school[NB_SCHOOLS];
@@ -76,4 +76,3 @@ protected :
 	// apply sun light & cloud shadow to interpolated color
 	TCODColor getMapShadedColor(float worldX,float worldY,bool clouds);
 };
-

@@ -55,10 +55,10 @@ Fire::Fire(int w, int h) :w(w),h(h),el(0.0f) {
 		col_init=true;
 	}
 	img = new TCODImage(w,h);
-	buf = new uint8[(w+2)*h];
-	smoothedBuf = new uint8[(w+2)*h];
-	memset(buf,0,sizeof(uint8)*(w+2)*h);
-	memset(smoothedBuf,0,sizeof(uint8)*(w+2)*h);
+	buf = new uint8_t[(w+2)*h];
+	smoothedBuf = new uint8_t[(w+2)*h];
+	memset(buf,0,sizeof(uint8_t)*(w+2)*h);
+	memset(smoothedBuf,0,sizeof(uint8_t)*(w+2)*h);
 }
 
 void Fire::generateImage() {
@@ -80,7 +80,7 @@ void Fire::antispark(int x, int y) {
 void Fire::softspark(int x, int y, int delta) {
 	int v = (int)(FIRE_GET(x,y))+delta;
 	v = CLAMP(0,255,v);
-	FIRE_SET(x,y,(uint8)v);
+	FIRE_SET(x,y,(uint8_t)v);
 }
 
 void Fire::update(float elapsed) {
@@ -92,7 +92,7 @@ void Fire::update(float elapsed) {
 	int off1 = (h-1)*(w+2);
 	int off2 = (h-2)*(w+2);
 	for (x=0; x < w+2; x++) {
-		uint8 v = TCODRandom::getInstance()->getInt(0,255);
+		uint8_t v = TCODRandom::getInstance()->getInt(0,255);
 		buf[ off1 + x ] = v;
 		buf[ off2 + x ] = MAX(v-4,0);
 	}
@@ -108,7 +108,7 @@ void Fire::update(float elapsed) {
 			v -= 4;
 			if ( y < 10 ) v -= 4;
 			if ( v < 0) v=0;
-			FIRE_SET(x2,y-1,(uint8)v);
+			FIRE_SET(x2,y-1,(uint8_t)v);
 		}
 	}
 
@@ -119,7 +119,7 @@ void Fire::update(float elapsed) {
 				+ (int)(FIRE_GET(x+1,y+1))
 				+ (int)(FIRE_GET(x+1,y));
 			v /= 4 ;
-			FIRE_SET2(x,y,(uint8)v);
+			FIRE_SET2(x,y,(uint8_t)v);
 		}
 	}
 
@@ -132,8 +132,8 @@ Fire::~Fire() {
 }
 
 FireManager::FireManager(Dungeon *dungeon)  : dungeon(dungeon),el(0.0f) {
-	buf = new uint8[dungeon->width*dungeon->height*4];
-	memset(buf,0,sizeof(uint8)*dungeon->width*dungeon->height*4);
+	buf = new uint8_t[dungeon->width*dungeon->height*4];
+	memset(buf,0,sizeof(uint8_t)*dungeon->width*dungeon->height*4);
 	if (! col_init) {
 		int i;
 		for (i=0; i < 128; i++) {
@@ -163,7 +163,7 @@ void FireManager::antispark(int x, int y) {
 void FireManager::softspark(int x, int y, int delta) {
 	int v = (int)(get(x,y))+delta;
 	v = CLAMP(0,255,v);
-	set(x,y,(uint8)v);
+	set(x,y,(uint8_t)v);
 }
 
 void FireManager::addZone(int x,int y, int w, int h) {
@@ -260,7 +260,7 @@ void FireManager::update(float elapsed) {
 				v /= 10 ;
 				v -= 4;
 				if ( v < 0) v=0;
-				set(x2,y-1,(uint8)v);
+				set(x2,y-1,(uint8_t)v);
 				if ( v > 24 && TCODRandom::getInstance()->getInt(0,100) < 5 ) {
 					// burn ground
 					TCODColor col=dungeon->getGroundColor(x2,y-1);
@@ -275,7 +275,7 @@ void FireManager::update(float elapsed) {
 	int off1 = (h-1)*(w+2);
 	int off2 = (h-2)*(w+2);
 	for (x=0; x < w+2; x++) {
-		uint8 v = TCODRandom::getInstance()->getInt(0,255);
+		uint8_t v = TCODRandom::getInstance()->getInt(0,255);
 		buf[ off1 + x ] = v;
 		buf[ off2 + x ] = MAX(v-4,0);
 	}
@@ -291,7 +291,7 @@ void FireManager::renderFire(TCODImage *ground) {
 	screenFireZone.h = MIN(dungeon->height*2+dy,screenFireZone.h);
 	for ( int x = (int)screenFireZone.x; x < screenFireZone.w; x++ ) {
 		for ( int y = (int)screenFireZone.y; y < screenFireZone.h; y++ ) {
-			uint8 v=get(x,y);
+			uint8_t v=get(x,y);
 			if ( v > 0 ) {
 				HDRColor col=fireColor[v];
 				col = col * 1.5f+ground->getPixel(x-dx,y-dy);

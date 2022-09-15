@@ -284,7 +284,7 @@ void Logger::critical(const char *fmt, ...) {
 }
 
 #define HIST_CHUNK_VERSION 2
-void Logger::saveData(uint32 chunkId, TCODZip *zip) {
+void Logger::saveData(uint32_t chunkId, TCODZip *zip) {
 	saveGame.saveChunk(HIST_CHUNK_ID,HIST_CHUNK_VERSION);
 	zip->putChar(isMinimized ? 1 : 0);
 	scroller->save(zip);
@@ -297,7 +297,7 @@ void Logger::saveData(uint32 chunkId, TCODZip *zip) {
 	}
 }
 
-bool Logger::loadData(uint32 chunkId, uint32 chunkVersion, TCODZip *zip) {
+bool Logger::loadData(uint32_t chunkId, uint32_t chunkVersion, TCODZip *zip) {
 	if ( chunkVersion != HIST_CHUNK_VERSION ) return false;
 	isMinimized=zip->getChar() == 1;
 	scroller->load(zip);

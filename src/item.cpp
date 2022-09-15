@@ -1706,7 +1706,7 @@ const char *Item::theName() const {
 
 #define ITEM_CHUNK_VERSION 6
 
-bool Item::loadData(uint32 chunkId, uint32 chunkVersion, TCODZip *zip) {
+bool Item::loadData(uint32_t chunkId, uint32_t chunkVersion, TCODZip *zip) {
 	if ( chunkVersion != ITEM_CHUNK_VERSION ) return false;
 	x=zip->getFloat();
 	y=zip->getFloat();
@@ -1727,7 +1727,7 @@ bool Item::loadData(uint32 chunkId, uint32 chunkVersion, TCODZip *zip) {
 		const char * itemTypeName=zip->getString();
 		ItemType *itemType=Item::getType(itemTypeName);
 		if (!itemType) return false;
-		uint32 itemChunkId ,itemChunkVersion;
+		uint32_t itemChunkId ,itemChunkVersion;
 		saveGame.loadChunk(&itemChunkId, &itemChunkVersion);
 		Item *it=Item::getItem(itemType, 0,0);
 		if (!it->loadData(itemChunkId, itemChunkVersion, zip)) return false;
@@ -1755,7 +1755,7 @@ bool Item::loadData(uint32 chunkId, uint32 chunkVersion, TCODZip *zip) {
 	return true;
 }
 
-void Item::saveData(uint32 chunkId, TCODZip *zip) {
+void Item::saveData(uint32_t chunkId, TCODZip *zip) {
 	saveGame.saveChunk(ITEM_CHUNK_ID,ITEM_CHUNK_VERSION);
 	zip->putFloat(x);
 	zip->putFloat(y);
@@ -1786,5 +1786,3 @@ void Item::saveData(uint32 chunkId, TCODZip *zip) {
 		zip->putFloat((*it)->value);
 	}
 }
-
-

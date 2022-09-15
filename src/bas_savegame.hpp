@@ -52,8 +52,8 @@ public :
 // a listener handles saving/loading of an independant chunk of the savegame file
 class SaveListener {
 public :
-	virtual bool loadData(uint32 chunkId, uint32 chunkVersion, TCODZip *zip) = 0;
-	virtual void saveData(uint32 chunkId, TCODZip *zip) = 0;
+	virtual bool loadData(uint32_t chunkId, uint32_t chunkVersion, TCODZip *zip) = 0;
+	virtual void saveData(uint32_t chunkId, TCODZip *zip) = 0;
 };
 
 enum SavePhase {
@@ -67,32 +67,32 @@ class SaveGame : public SaveListener {
 public :
 	SaveGame();
 	virtual ~SaveGame() {}
-	uint32 seed; // seed to initialise the random number generator
+	uint32_t seed; // seed to initialise the random number generator
 	int chapter;
 
 	void init(); // reset data when starting a new game
 	void clear(); // delete current zip
-	void registerListener(uint32 chunkId, SavePhase phase, SaveListener *listener);
+	void registerListener(uint32_t chunkId, SavePhase phase, SaveListener *listener);
 	void unregisterListener(SaveListener *listener);
 	bool load(SavePhase phase);
 	void save();
 
 	// load/save the GAME chunk
-	bool loadData(uint32 chunkId, uint32 chunkVersion, TCODZip *zip);
-	void saveData(uint32 chunkId, TCODZip *zip);
+	bool loadData(uint32_t chunkId, uint32_t chunkVersion, TCODZip *zip);
+	void saveData(uint32_t chunkId, TCODZip *zip);
 
 	static bool isBigEndian();
-	static const char *getChunkId(uint32 chunkId);
+	static const char *getChunkId(uint32_t chunkId);
 	// called when a listener starts to load a new chunk
-	void loadChunk(uint32 *chunkId, uint32 *chunkVersion);
+	void loadChunk(uint32_t *chunkId, uint32_t *chunkVersion);
 	// called when a listener starts to save a new chunk
-	void saveChunk(uint32 chunkId, uint32 chunkVersion);
+	void saveChunk(uint32_t chunkId, uint32_t chunkVersion);
 
 protected :
 	struct SaveListenerRecord {
-		SaveListenerRecord(uint32 chunkId,SavePhase phase, SaveListener *listener) :
+		SaveListenerRecord(uint32_t chunkId,SavePhase phase, SaveListener *listener) :
 			chunkId(chunkId),phase(phase),listener(listener) {}
-		uint32 chunkId;
+		uint32_t chunkId;
 		SavePhase phase;
 		SaveListener *listener;
 	};
@@ -101,10 +101,9 @@ protected :
 	TCODZip *zip, *idx;
 	TCODList <SaveListenerRecord *> listeners;
 	// used to compute chunk lengths
-	TCODList <uint32> startPos;
+	TCODList <uint32_t> startPos;
 	// size of the chunks currently saved
-	TCODList <uint32> sizes;
-	uint32 nbChunks;
+	TCODList <uint32_t> sizes;
+	uint32_t nbChunks;
 
 };
-

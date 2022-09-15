@@ -702,7 +702,7 @@ void Player::updateHealing(float elapsed) {
 }
 
 #define PLAY_CHUNK_VERSION 2
-void Player::saveData(uint32 chunkId, TCODZip *zip) {
+void Player::saveData(uint32_t chunkId, TCODZip *zip) {
 	saveGame.saveChunk(PLAY_CHUNK_ID,PLAY_CHUNK_VERSION);
 
 	// save player specific data
@@ -711,7 +711,7 @@ void Player::saveData(uint32 chunkId, TCODZip *zip) {
 	Creature::saveData(CREA_CHUNK_ID,zip);
 }
 
-bool Player::loadData(uint32 chunkId, uint32 chunkVersion, TCODZip *zip) {
+bool Player::loadData(uint32_t chunkId, uint32_t chunkVersion, TCODZip *zip) {
 	if ( chunkVersion != PLAY_CHUNK_VERSION ) return false;
 
 	// load player specific data

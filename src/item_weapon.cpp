@@ -239,7 +239,7 @@ Weapon *Weapon::getRandom(ItemTypeId2 id,ItemClass itemClass) {
 
 #define WEAP_CHUNK_VERSION 1
 
-bool Weapon::loadData(uint32 chunkId, uint32 chunkVersion, TCODZip *zip) {
+bool Weapon::loadData(uint32_t chunkId, uint32_t chunkVersion, TCODZip *zip) {
 	if ( chunkVersion != WEAP_CHUNK_VERSION ) return false;
 
 	// load weapon specific data here
@@ -254,7 +254,7 @@ bool Weapon::loadData(uint32 chunkId, uint32 chunkVersion, TCODZip *zip) {
 		ItemTypeId type=(ItemTypeId)zip->getInt();
 		int subType=zip->getInt();
 		if (type < 0 || type >= NB_ITEM_TYPES) return false;
-		uint32 itemChunkId ,itemChunkVersion;
+		uint32_t itemChunkId ,itemChunkVersion;
 		saveGame.loadChunk(&itemChunkId, &itemChunkVersion);
 		Item *it=Item::getItem(type,subType, 0,0);
 		if (!it->loadData(itemChunkId, itemChunkVersion, zip)) return false;
@@ -265,7 +265,7 @@ bool Weapon::loadData(uint32 chunkId, uint32 chunkVersion, TCODZip *zip) {
 	return Item::loadData(chunkId,chunkVersion,zip);
 }
 
-void Weapon::saveData(uint32 chunkId, TCODZip *zip) {
+void Weapon::saveData(uint32_t chunkId, TCODZip *zip) {
 	saveGame.saveChunk(WEAP_CHUNK_ID,WEAP_CHUNK_VERSION);
 
 	// save weapon specific data here

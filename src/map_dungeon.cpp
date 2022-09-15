@@ -863,7 +863,7 @@ void Dungeon::computeOutdoorLight(float lightDir[3], TCODColor lightColor) {
 }
 
 #define DUNG_CHUNK_VERSION 3
-void Dungeon::saveData(uint32 chunkId, TCODZip *zip) {
+void Dungeon::saveData(uint32_t chunkId, TCODZip *zip) {
 	saveGame.saveChunk(DUNG_CHUNK_ID,DUNG_CHUNK_VERSION);
 	// save the map
 	zip->putInt(width);
@@ -911,7 +911,7 @@ void Dungeon::saveData(uint32 chunkId, TCODZip *zip) {
 	}
 }
 
-bool Dungeon::loadData(uint32 chunkId, uint32 chunkVersion, TCODZip *zip) {
+bool Dungeon::loadData(uint32_t chunkId, uint32_t chunkVersion, TCODZip *zip) {
 	if ( chunkVersion != DUNG_CHUNK_VERSION ) return false;
 	// load the map
 	width = zip->getInt();
@@ -938,7 +938,7 @@ bool Dungeon::loadData(uint32 chunkId, uint32 chunkVersion, TCODZip *zip) {
 		if ( creatureId < 0 || creatureId >= NB_CREATURE_TYPES ) {
 			return false;
 		}
-		uint32 creaChunkId ,creaChunkVersion;
+		uint32_t creaChunkId ,creaChunkVersion;
 		saveGame.loadChunk(&creaChunkId,&creaChunkVersion);
 		Creature *crea=Creature::getCreature(creatureId);
 		if (!crea->loadData(creaChunkId, creaChunkVersion, zip)) return false;
@@ -953,7 +953,7 @@ bool Dungeon::loadData(uint32 chunkId, uint32 chunkVersion, TCODZip *zip) {
 		if ( creatureId < 0 || creatureId >= NB_CREATURE_TYPES ) {
 			return false;
 		}
-		uint32 creaChunkId ,creaChunkVersion;
+		uint32_t creaChunkId ,creaChunkVersion;
 		saveGame.loadChunk(&creaChunkId,&creaChunkVersion);
 		Creature *crea=Creature::getCreature(creatureId);
 		if (!crea->loadData(creaChunkId, creaChunkVersion, zip)) return false;
@@ -968,7 +968,7 @@ bool Dungeon::loadData(uint32 chunkId, uint32 chunkVersion, TCODZip *zip) {
 		const char *itemTypeName=zip->getString();
 		ItemType *itemType=Item::getType(itemTypeName);
 		if (!itemType) return false;
-		uint32 itemChunkId ,itemChunkVersion;
+		uint32_t itemChunkId ,itemChunkVersion;
 		saveGame.loadChunk(&itemChunkId, &itemChunkVersion);
 		Item *it=Item::getItem(itemType, 0,0);
 		if (!it->loadData(itemChunkId, itemChunkVersion, zip)) return false;
@@ -979,4 +979,3 @@ bool Dungeon::loadData(uint32 chunkId, uint32 chunkVersion, TCODZip *zip) {
 
 	return true;
 }
-

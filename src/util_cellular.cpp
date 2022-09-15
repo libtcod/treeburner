@@ -31,12 +31,12 @@
 // 0 : ground
 
 CellularAutomata::CellularAutomata(int w, int h,int per) : w(w),h(h),minx(0),miny(0),maxx(w-1),maxy(h-1) {
-	data = new uint8[w*h];
+	data = new uint8_t[w*h];
 	randomize(per);
 }
 
 CellularAutomata::CellularAutomata(CellularAutomata *c1) : w(c1->w),h(c1->h),minx(0),miny(0),maxx(w-1),maxy(h-1) {
-	data = new uint8[w*h];
+	data = new uint8_t[w*h];
 	int px,py;
 	for (px = 0; px < w; px++) {
 		for (py = 0; py < h; py++) {
@@ -47,7 +47,7 @@ CellularAutomata::CellularAutomata(CellularAutomata *c1) : w(c1->w),h(c1->h),min
 }
 
 CellularAutomata::CellularAutomata(TCODMap *map) : w(map->getWidth()),h(map->getHeight()),minx(0),miny(0),maxx(w-1),maxy(h-1) {
-	data = new uint8[w*h];
+	data = new uint8_t[w*h];
 	int px,py;
 	for (px = 0; px < w; px++) {
 		for (py = 0; py < h; py++) {
@@ -101,8 +101,8 @@ void CellularAutomata::randomize(int per) {
 }
 
 void CellularAutomata::generate(CAFunc func, int nbLoops, void *userData) {
-	uint8 *data2=new uint8[w*h];
-	memcpy(data2,data,sizeof(uint8)*w*h);
+	uint8_t *data2=new uint8_t[w*h];
+	memcpy(data2,data,sizeof(uint8_t)*w*h);
 	for (int l=0; l < nbLoops; l++) {
 		for (int px = minx+1; px < maxx; px++) {
 			for (int py = miny+1; py < maxy; py++) {
@@ -110,7 +110,7 @@ void CellularAutomata::generate(CAFunc func, int nbLoops, void *userData) {
 				else data2[px+py*w]=0;
 			}
 		}
-		memcpy(data,data2,sizeof(uint8)*w*h);
+		memcpy(data,data2,sizeof(uint8_t)*w*h);
 	}
 	delete [] data2;
 }
@@ -245,15 +245,15 @@ CellularAutomata::CellularAutomata(CellularAutomata *c1, CellularAutomata *c2, f
 	h=c1->h;
 	minx=miny=0;
 	maxx=w-1;maxy=h-1;
-	data = new uint8[w*h];
+	data = new uint8_t[w*h];
 	memset(data,0,w*h);
 	for (int x=0; x < w; x ++) {
 		for (int y=0; y < h; y++) {
-			data[x+y*w] = (uint8)(morphCoef * (c1->data[x+y*w]*8)
+			data[x+y*w] = (uint8_t)(morphCoef * (c1->data[x+y*w]*8)
 						+ (1.0-morphCoef)*(c2->data[x+y*w]*8));
 		}
 	}
-	uint8 *data2=new uint8[w*h];
+	uint8_t *data2=new uint8_t[w*h];
 	memset(data2,0,w*h);
 	for (int x=0; x < w; x ++) {
 		for (int y=0; y < h; y++) {

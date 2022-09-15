@@ -39,8 +39,8 @@ class UmbraModBSOD: public UmbraWidget {
 		void render ();
 	private:
 		TCODConsole * bsod;
-		uint32 startTime;
-		uint32 duration;
+		uint32_t startTime;
+		uint32_t duration;
 		std::string msgString;
 
 		/**

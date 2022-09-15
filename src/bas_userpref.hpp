@@ -27,7 +27,7 @@
 // user preferences (independant from the current game)
 class UserPref {
 public :
-	uint32 nbLaunches;
+	uint32_t nbLaunches;
 	bool mouseOnly;
 	int statusx,statusy;
 	int logx,logy;

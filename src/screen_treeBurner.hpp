@@ -31,8 +31,8 @@ public :
 
 	void render();
 	bool update(float elapsed, TCOD_key_t k,TCOD_mouse_t mouse);
-    void generateMap(uint32 seed); // generate a new random map
-    void loadMap(uint32 seed); // load map from savegame
+    void generateMap(uint32_t seed); // generate a new random map
+    void loadMap(uint32_t seed); // load map from savegame
 
     void onFontChange();
 
@@ -49,4 +49,3 @@ protected :
 	int cityWallX;
 	float endTimer;
 };
-

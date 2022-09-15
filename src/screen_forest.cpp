@@ -421,7 +421,7 @@ void ForestScreen::placeTree(Dungeon *dungeon,int x, int y, const ItemType * tre
 }
 
 int housex,housey;
-void ForestScreen::generateMap(uint32 seed) {
+void ForestScreen::generateMap(uint32_t seed) {
 	static TCODColor sunColor=TCODColor(250,250,255);
 	DBG(("Forest generation start\n"));
 	forestRng = new TCODRandom(seed);
@@ -602,16 +602,16 @@ void ForestScreen::generateMap(uint32 seed) {
 
 // SaveListener
 #define CHA1_CHUNK_VERSION 1
-bool ForestScreen::loadData(uint32 chunkId, uint32 chunkVersion, TCODZip *zip) {
+bool ForestScreen::loadData(uint32_t chunkId, uint32_t chunkVersion, TCODZip *zip) {
 	if ( chunkVersion != CHA1_CHUNK_VERSION ) return false;
 	return true;
 }
 
-void ForestScreen::saveData(uint32 chunkId, TCODZip *zip) {
+void ForestScreen::saveData(uint32_t chunkId, TCODZip *zip) {
 	saveGame.saveChunk(CHA1_CHUNK_ID,CHA1_CHUNK_VERSION);
 }
 
-void ForestScreen::loadMap(uint32 seed) {
+void ForestScreen::loadMap(uint32_t seed) {
 	DBG(("Forest loading start\n"));
 	static TCODColor sunColor=TCODColor(250,250,255);
 	lightMap->clear(sunColor);

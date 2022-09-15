@@ -186,7 +186,7 @@ int main (int argc, char *argv[]) {
 		saveGame.init();
 		if ( config.getBoolProperty("config.debug") && argc ==2 ) {
 			// use a user-defined seed for RNG
-			saveGame.seed=(uint32)atoi(argv[1]);
+			saveGame.seed=(uint32_t)atoi(argv[1]);
 		}
 	}
 	if ( config.getBoolProperty("config.debug") ) {

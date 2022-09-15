@@ -58,13 +58,13 @@ TCODImage *Screen::loadChapterPicture(bool big) {
 }
 
 void Screen::prepareImage(TCODImage *img) const {
-	static uint8 key[1024];
+	static uint8_t key[1024];
 	static bool init=false;
     #define KEYLEN 1024
     #define KEYMASK 1023
 
 	if (! init) {
-	    uint8 seed = (uint8)(666&0xFF);
+	    uint8_t seed = (uint8_t)(666&0xFF);
 	    for (int i = 0; i < KEYLEN; i++) {
 	        key[i] = seed;
 			seed = seed * 1103515245 + 12345;
@@ -139,4 +139,3 @@ void Screen::setFadeOut (int lengthInMilli, TCODColor col) {
     fadeOutLength = lengthInMilli;
     fadeOutColor = col;
 }
-

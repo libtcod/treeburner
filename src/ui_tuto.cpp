@@ -447,19 +447,17 @@ void Tutorial::initialise() {
 }
 
 #define TUTO_CHUNK_VERSION 4
-void Tutorial::saveData(uint32 chunkId, TCODZip *zip) {
+void Tutorial::saveData(uint32_t chunkId, TCODZip *zip) {
 	saveGame.saveChunk(TUTO_CHUNK_ID,TUTO_CHUNK_VERSION);
 	zip->putData(sizeof(bool)*sizeof(alreadyStarted),alreadyStarted);
 	zip->putInt(lastPage);
 	zip->putInt(selectedItem);
 }
 
-bool Tutorial::loadData(uint32 chunkId, uint32 chunkVersion, TCODZip *zip) {
+bool Tutorial::loadData(uint32_t chunkId, uint32_t chunkVersion, TCODZip *zip) {
 	if ( chunkVersion != TUTO_CHUNK_VERSION ) return false;
 	zip->getData(sizeof(bool)*sizeof(alreadyStarted),alreadyStarted);
 	lastPage=(TutorialPageId)zip->getInt();
 	selectedItem=zip->getInt();
 	return true;
 }
-
-

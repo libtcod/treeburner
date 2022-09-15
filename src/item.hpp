@@ -146,7 +146,7 @@ struct ItemAgeEffect {
 
 // cannot use TCODColor in a union because it has a constructor...
 struct ItemColor {
-	uint8 r,g,b;
+	uint8_t r,g,b;
 	ItemColor& operator=(const TCODColor&);
 };
 
@@ -315,8 +315,8 @@ public :
 
     const char *getRateName(float rate) const;
 
-	virtual bool loadData(uint32 chunkId, uint32 chunkVersion, TCODZip *zip);
-	virtual void saveData(uint32 chunkId, TCODZip *zip);
+	virtual bool loadData(uint32_t chunkId, uint32_t chunkVersion, TCODZip *zip);
+	virtual void saveData(uint32_t chunkId, TCODZip *zip);
 
 	static TCODColor classColor[NB_ITEM_CLASSES];
 
@@ -374,6 +374,3 @@ protected :
 	void renderDescriptionFrame(int x, int y, bool below=true, bool frame=true);
 	void generateComponents();
 };
-
-
-

@@ -33,14 +33,14 @@ public :
 
 	void render();
 	bool update(float elapsed, TCOD_key_t k,TCOD_mouse_t mouse);
-    void generateMap(uint32 seed); // generate a new random map
-    void loadMap(uint32 seed); // load map from savegame
+    void generateMap(uint32_t seed); // generate a new random map
+    void loadMap(uint32_t seed); // load map from savegame
 
     void onFontChange();
 
     // SaveListener
-	bool loadData(uint32 chunkId, uint32 chunkVersion, TCODZip *zip);
-	void saveData(uint32 chunkId, TCODZip *zip);
+	bool loadData(uint32_t chunkId, uint32_t chunkVersion, TCODZip *zip);
+	void saveData(uint32_t chunkId, TCODZip *zip);
 protected :
 	TCODRandom *forestRng;
 
@@ -51,4 +51,3 @@ protected :
     int debugMap;
 	TextInput textInput;
 };
-

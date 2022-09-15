@@ -24,11 +24,7 @@
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #include "main.hpp"
-#ifdef TCOD_HAIKU
 #include <SDL.h>
-#else
-#include "SDL/SDL.h"
-#endif
 
 EndScreen::EndScreen(const char *txt,float fadeLvl, bool stats)
 	: Screen(fadeLvl),txt(strdup(txt)),noiseZ(0.0f),stats(stats) {
@@ -202,7 +198,7 @@ void EndScreen::renderText(int x,int y, int w, const char *txt) {
 // I'm using the SDL callback to display a picture with a higher resolution than subcell
 // this is cheating but even subcell was too big
 void *TCOD_sys_get_surface(int width, int height, bool alpha) {
-	Uint32 rmask,gmask,bmask,amask;
+	uint32_t rmask,gmask,bmask,amask;
 	SDL_Surface *bitmap;
 	int flags=SDL_SWSURFACE;
 
@@ -281,7 +277,7 @@ void PaperScreen::onFontChange() {
 	for (int y=0; y < pixh; y++) {
 		for (int x=0; x <pixw;x++) {
 			TCODColor col=tcodpix->getPixel(x,y);
-			Uint8 *p = (Uint8 *)surf->pixels + x * surf->format->BytesPerPixel + y * surf->pitch;
+			uint8_t *p = (uint8_t *)surf->pixels + x * surf->format->BytesPerPixel + y * surf->pitch;
 			p[ridx]=col.r;
 			p[gidx]=col.g;
 			p[bidx]=col.b;
@@ -374,4 +370,3 @@ void PaperScreen::deactivate() {
 	TCODSystem::registerSDLRenderer(NULL);
 	TCODConsole::root->setDirty(0,0,CON_W,CON_H);
 }
-

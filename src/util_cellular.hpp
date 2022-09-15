@@ -54,6 +54,5 @@ public :
 private :
 	int w,h;
 	int minx,miny,maxx,maxy;
-	uint8 *data;
+	uint8_t *data;
 };
-

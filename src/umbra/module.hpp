@@ -82,7 +82,7 @@ class UmbraModule {
 		 * Sets the module's timeout.
 		 * @param val the number of milliseconds that the module will be allowed to run before timing out. Set to 0 if the timeout is to be removed.
 		 */
-		inline void setTimeout (uint32 val) { timeout = val; }
+		inline void setTimeout (uint32_t val) { timeout = val; }
 		/**
 		 * Activates or deactivates the module.
 		 * @param active <code>true</code> if the module is to be activated, <code>false</code> otherwise
@@ -213,8 +213,8 @@ class UmbraModule {
 	private:
 		UmbraModuleStatus status;
 		int fallback; //fallback module's index
-		uint32 timeout;
-		uint32 timeoutEnd;
+		uint32_t timeout;
+		uint32_t timeoutEnd;
 		std::string name;
 
 		struct UmbraModuleParameter {
@@ -234,5 +234,5 @@ class UmbraModule {
 		/**
 		 * Checks whether the module has timed out and is eligible for deactivation.
 		 */
-		inline bool isTimedOut(uint32 currentTime) { return (timeoutEnd > currentTime) ? false : true; }
+		inline bool isTimedOut(uint32_t currentTime) { return (timeoutEnd > currentTime) ? false : true; }
 };

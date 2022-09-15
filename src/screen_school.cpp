@@ -56,7 +56,7 @@ SchoolScreen::SchoolScreen() : Screen(0),offx(0),offy(0),dx(0),dy(0),world(NULL)
 	instance=this;
 }
 
-void SchoolScreen::generateWorld(uint32 seed) {
+void SchoolScreen::generateWorld(uint32_t seed) {
     static float lightDir[3] = {
         1.0f,1.0f,0.0f
     };
@@ -363,4 +363,3 @@ const char *SchoolScreen::genSchoolDescription(School *sch) {
 		default : return NULL; break;
 	}
 }
-

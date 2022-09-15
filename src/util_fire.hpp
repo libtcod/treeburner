@@ -38,8 +38,8 @@ public :
 	TCODImage *img;
 protected :
 	int w, h;
-	uint8 *buf;
-	uint8 *smoothedBuf;
+	uint8_t *buf;
+	uint8_t *smoothedBuf;
 	float el;
 };
 
@@ -55,15 +55,15 @@ public :
 	void addZone(int x,int y, int w, int h);
 	void removeZone(int x,int y, int w, int h);
 protected :
-	inline uint8 get(int x, int y) { return buf[x+dungeon->width*2*y]; }
-	inline void set(int x, int y, uint8 v) { buf[x+dungeon->width*2*y]=v; }
+	inline uint8_t get(int x, int y) { return buf[x+dungeon->width*2*y]; }
+	inline void set(int x, int y, uint8_t v) { buf[x+dungeon->width*2*y]=v; }
 	struct FireZone {
 		Rect r;
 		float life;
 	};
 	TCODList<FireZone> zones;
 	Dungeon *dungeon;
-	uint8 *buf;
+	uint8_t *buf;
 	float el;
 	Rect screenFireZone;
 };
