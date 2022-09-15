@@ -72,7 +72,7 @@ protected :
 	const char *genSchoolDescription(School *sch);
 	char * goatSoup(const char *source,School * sch, char *buf);
 	void setContextSchool(School *sch);
-	void activate();
+	void onActivate() override;
 	// apply sun light & cloud shadow to interpolated color
 	TCODColor getMapShadedColor(float worldX,float worldY,bool clouds);
 };

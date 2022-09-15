@@ -37,6 +37,8 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE _USE_MATH_DEFINES)  # For M_P
 target_compile_definitions(${PROJECT_NAME} PRIVATE NO_SOUND)
 target_compile_definitions(${PROJECT_NAME} PRIVATE NO_LUA)
 
+add_subdirectory(umbra)
+
 find_package(SDL2 CONFIG REQUIRED)
 find_package(libtcod CONFIG REQUIRED)
 target_link_libraries(
@@ -45,4 +47,5 @@ target_link_libraries(
         SDL2::SDL2
         SDL2::SDL2main
         libtcod::libtcod
+        umbra::umbra
 )

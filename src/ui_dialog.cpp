@@ -225,13 +225,13 @@ bool Dialog::update() {
     return update(elapsed, key,ms);
 }
 
-void Dialog::activate() {
-	UmbraWidget::activate();
+void Dialog::onActivate() {
+	UmbraWidget::onActivate();
 	if ( isModal() ) gameEngine->pauseGame();
 }
 
-void Dialog::deactivate() {
-	UmbraWidget::deactivate();
+void Dialog::onDeactivate() {
+	UmbraWidget::onDeactivate();
 	if ( isModal() ) gameEngine->resumeGame();
 }
 

@@ -100,10 +100,9 @@ protected :
 	FireManager *fireManager;
 	float hitFlashAmount;
 
-	void initialise();
-	void activate();
-	void deactivate();
+	void onInitialise() override;
+	void onActivate() override;
+	void onDeactivate() override;
 	void computeAspectRatio();
 
 };
-

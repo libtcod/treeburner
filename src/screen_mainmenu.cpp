@@ -89,8 +89,8 @@ int loadForest(void *dat) {
 }
 
 
-void MainMenu::initialise() {
-	Screen::initialise();
+void MainMenu::onInitialise() {
+	Screen::onInitialise();
 	img=new TCODImage(CON_W*2,CON_H*2);
 	title=new TCODImage("data/img/title.png");
 	title->getSize(&titlew,&titleh);
@@ -102,10 +102,10 @@ void MainMenu::initialise() {
 	rockNormal=new TCODImage("data/img/rock_n.png");
 }
 
-void MainMenu::activate() {
+void MainMenu::onActivate() {
     // revert keyboard mode to RELEASED only
     engine.setKeyboardMode( UMBRA_KEYBOARD_RELEASED );
-    Screen::activate();
+    Screen::onActivate();
     sound.load("data/snd/menu.ogg");
     sound.playLoop();
     sound.setVolume(1.0f);

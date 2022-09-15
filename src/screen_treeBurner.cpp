@@ -614,14 +614,14 @@ void TreeBurner::generateMap(uint32_t seed) {
 }
 
 
-void TreeBurner::activate() {
+void TreeBurner::onActivate() {
 	TCODConsole::root->setDefaultBackground(TCODColor::black);
 	TCODConsole::root->clear();
 	// disable fading (to see the progress bar)
 	TCODConsole::setFade(255,TCODColor::black);
     TCODConsole::setColorControl(TCOD_COLCTRL_1,TCODColor(255,255,240),TCODColor::black);
     TCODConsole::setColorControl(TCOD_COLCTRL_2,guiHighlightedText,TCODColor::black);
-	GameEngine::activate();
+	GameEngine::onActivate();
 	init();
 
 	generateMap(TCODRandom::getInstance()->getInt(0,0xFFFFFFFF));
@@ -696,8 +696,8 @@ void TreeBurner::activate() {
 	gui.tutorial.startLiveTuto(TUTO_FOOD);
 }
 
-void TreeBurner::deactivate() {
-	GameEngine::deactivate();
+void TreeBurner::onDeactivate() {
+	GameEngine::onDeactivate();
 }
 
 void TreeBurner::onFontChange() {

@@ -49,10 +49,10 @@ protected :
 	enum { FADE_UP, FADE_DOWN, FADE_OFF, FADE_NONE } fade;
 	TCOD_key_t key;
 	TCOD_mouse_t ms;
-	void initialise() { UmbraModule::initialise(); }
+	void onInitialise() override { UmbraModule::onInitialise(); }
 	void prepareImage(TCODImage *img)const;
 	TCODImage *loadChapterPicture(bool big=false);
-	void activate() {
+	void onActivate() override {
             fadeLvl=0;
             fade=FADE_UP;
 	}

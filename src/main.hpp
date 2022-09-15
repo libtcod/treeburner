@@ -23,7 +23,7 @@
 * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-#include "umbra/umbra.hpp"
+#include <umbra/umbra.hpp>
 #ifndef NO_SOUND
 #include "fmod/fmod.h"
 #include "fmod/fmod_errors.h"

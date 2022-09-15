@@ -443,7 +443,7 @@ void Tutorial::closeLiveTuto() {
 	}
 }
 
-void Tutorial::initialise() {
+void Tutorial::onInitialise() {
 }
 
 #define TUTO_CHUNK_VERSION 4

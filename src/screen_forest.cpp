@@ -646,14 +646,14 @@ void ForestScreen::loadMap(uint32_t seed) {
 
 }
 
-void ForestScreen::activate() {
+void ForestScreen::onActivate() {
 	TCODConsole::root->setDefaultBackground(TCODColor::black);
 	TCODConsole::root->clear();
 	// disable fading (to see the progress bar)
 	TCODConsole::setFade(255,TCODColor::black);
     TCODConsole::setColorControl(TCOD_COLCTRL_1,TCODColor(255,255,240),TCODColor::black);
     TCODConsole::setColorControl(TCOD_COLCTRL_2,guiHighlightedText,TCODColor::black);
-	GameEngine::activate();
+	GameEngine::onActivate();
 	init();
 	MainMenu::instance->waitForForestGen();
 
@@ -703,8 +703,8 @@ void ForestScreen::activate() {
 	}
 }
 
-void ForestScreen::deactivate() {
-	GameEngine::deactivate();
+void ForestScreen::onDeactivate() {
+	GameEngine::onDeactivate();
 }
 
 void ForestScreen::onFontChange() {

@@ -53,4 +53,3 @@ public :
 	void setMode(EGuiMode mode);
 	void closeDialogs();
 };
-

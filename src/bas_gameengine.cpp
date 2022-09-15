@@ -48,8 +48,8 @@ GameEngine::GameEngine() : Screen(0), nbPause(0), lookOn(false) {
 GameEngine::~GameEngine() {
 }
 
-void GameEngine::activate() {
-    Screen::activate();
+void GameEngine::onActivate() {
+    Screen::onActivate();
 	hitFlashAmount=0.0f;
 	firstFrame=true;
 	computeAspectRatio();
@@ -59,8 +59,8 @@ void GameEngine::activate() {
 	isUpdatingFireballs=false;
 }
 
-void GameEngine::deactivate() {
-	Screen::deactivate();
+void GameEngine::onDeactivate() {
+	Screen::onDeactivate();
 	gui.deactivate();
 }
 
@@ -227,7 +227,7 @@ void GameEngine::removeFireZone(int x, int y, int w, int h) {
 }
 
 
-void GameEngine::initialise() {
+void GameEngine::onInitialise() {
 	gui.initialize();
 }
 

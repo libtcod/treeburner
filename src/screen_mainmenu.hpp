@@ -41,8 +41,8 @@ public :
 	void waitForWorldGen();
 	void waitForForestGen();
 protected :
-	void initialise();
-	void activate();
+	void onInitialise() override;
+	void onActivate() override;
 	void computeSmoke(float z, TCODImage *img, int miny, int maxy);
 	TCODList<MenuItemId> menu;
 	int selectedItem;
@@ -59,4 +59,3 @@ protected :
 	int titlex,titley,titlew,titleh;
 	Fire *fire;
 };
-

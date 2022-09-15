@@ -43,7 +43,6 @@ protected :
 
 	void initLevel();
 	void termLevel();
-	void initialise();
-    void activate();
+	void onInitialise() override;
+    void onActivate() override;
 };
-

@@ -31,17 +31,17 @@
 Game::Game() : level(0),helpOn(false) {
 }
 
-void Game::initialise() {
+void Game::onInitialise() {
     PowerupGraph::instance->setFontSize(8+engine.getFontID()*2);
 	lightMap->fogRange=15.0f;
 }
 
-void Game::activate() {
+void Game::onActivate() {
 	static int playerLightRange=2*config.getIntProperty("config.display.playerLightRange");
 	static TCODColor playerLightColor=config.getColorProperty("config.display.playerLightColor");
     // set keyboard mode to RELEASED + PRESSED
 	init(); // init game engine
-	GameEngine::activate();
+	GameEngine::onActivate();
 	initLevel();
 	boss=NULL;
 	finalExplosion=2.0f;
@@ -270,12 +270,12 @@ bool Game::update(float elapsed, TCOD_key_t k,TCOD_mouse_t mouse) {
 
 	if ( helpOn && (k.c == '?' || k.c == ' ') && ! k.pressed ) {
 		helpOn=false;
-		resume();
+		resumeGame();
 		return true;
 	}
 	if ( k.c ==' ' && ! k.pressed && gui.mode == GUI_NONE ) {
-		if (isGamePaused()) resume();
-		else pause();
+		if (isGamePaused()) resumeGame();
+		else pauseGame();
 	}
 
 	// update player
@@ -445,7 +445,7 @@ bool Game::update(float elapsed, TCOD_key_t k,TCOD_mouse_t mouse) {
 		}
 		helpOn=true;
 		//pauseScreen=&help;
-		pause();
+		pauseGame();
 	}
 
 	// update lightmap (fog)
@@ -490,5 +490,3 @@ void Game::termLevel() {
 	fireballs.clearAndDelete();
 	AiDirector::instance->termLevel();
 }
-
-

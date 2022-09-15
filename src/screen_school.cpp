@@ -147,7 +147,7 @@ void SchoolScreen::generateWorld(uint32_t seed) {
 	worldGenerated=true;
 }
 
-void SchoolScreen::activate() {
+void SchoolScreen::onActivate() {
     engine.setKeyboardMode( UMBRA_KEYBOARD_RELEASED );
 	if (! worldGenerated) MainMenu::instance->waitForWorldGen();
 	selectSchool(0);
@@ -155,7 +155,7 @@ void SchoolScreen::activate() {
 	offy = rng->getFloat(MAP_WIDTH,HM_HEIGHT-MAP_HEIGHT-1);
 	offx = rng->getFloat(MAP_WIDTH,HM_WIDTH-MAP_WIDTH-1);
 	offy = rng->getFloat(MAP_WIDTH,HM_HEIGHT-MAP_HEIGHT-1);
-	Screen::activate();
+	Screen::onActivate();
 }
 
 // check if the position of the school is ok

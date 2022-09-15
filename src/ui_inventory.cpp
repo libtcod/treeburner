@@ -355,16 +355,16 @@ void Inventory::activateItem() {
 	}
 }
 
-void Inventory::activate() {
-	Dialog::activate();
+void Inventory::onActivate() {
+	Dialog::onActivate();
 	if ( firstOpen && gameEngine->gui.mode == GUI_INVENTORY ) {
 		firstOpen=false;
 		gameEngine->gui.tutorial.startLiveTuto(TUTO_INVENTORY);
 	}
 }
 
-void Inventory::deactivate() {
-	Dialog::deactivate();
+void Inventory::onDeactivate() {
+	Dialog::onDeactivate();
 	if ( combinationResult ) delete combinationResult;
 	combinationResult=NULL;
 	if ( owner ) {
@@ -612,5 +612,3 @@ bool Inventory::update(float elapsed, TCOD_key_t &k, TCOD_mouse_t &mouse) {
 	}
 	return true;
 }
-
-

@@ -44,8 +44,8 @@ public :
 protected :
 	TCODRandom *forestRng;
 
-    void activate();
-    void deactivate();
+    void onActivate() override;
+    void onDeactivate() override;
     void placeTree(Dungeon *dungeon,int x, int y, const ItemType * treeType);
 	void placeHouse(Dungeon *dungeon,int doorx, int doory,Entity::Direction dir);
     int debugMap;

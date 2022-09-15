@@ -1,5 +1,24 @@
 /*
  * UMBRA CONFIGURATION FILE
+ *
+ * rootWidth (integer): width of the root console in cells
+ * rootHeight (integer): height of the root console in cells
+ * fontID (integer): the ID of the font that is to be used
+ * fullScreen (boolean): whether the application should run in full screen.
+ *                       * true = run in full screen mode
+ *                       * false = run in windowed mode (default)
+ * logLevel (string): which messages are supposed to be logged.
+ *                    * "info" = all messages down to the info level
+ *                                 (full debug mode)
+ *                    * "notice" = all debug messages down to notices
+ *                    * "warning" = all debug messages down to warnings
+ *                    * "error" = log only errors and fatal errors
+ *                                  (standard debug mode, default)
+ *                    * "fatal error" = log only fatal errors
+ *                    * "none" = don't create a logfile at all
+ *                                 (debug mode off)
+ * fontDir (string): the directory containing font files
+ * moduleChain (string): the module chain to load (optional)
  */
 
 config {
@@ -7,7 +26,7 @@ config {
   rootHeight = 50
   fontID = 2
   fullScreen = false
-  debug = false
+  logLevel = "info"
   fontDir = "data/img"
   moduleChain = "TreeBurner"
 }

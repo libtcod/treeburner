@@ -45,8 +45,8 @@ public :
 	void initialize(Creature *owner);
 	void initialize(Item *container);
 	void render();
-	void activate();
-	void deactivate();
+	void onActivate() override;
+	void onDeactivate() override;
 	bool update(float elapsed, TCOD_key_t &k, TCOD_mouse_t &mouse);
 
 	// UIListener
@@ -79,4 +79,3 @@ protected :
 	int cmenux,cmenuy, cmenuitem, cmenuwidth, cmenuheight;
 	bool cmenuon;
 };
-
