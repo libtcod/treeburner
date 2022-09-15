@@ -39,28 +39,9 @@ UmbraEngine engine("./data/cfg/umbra.txt",UMBRA_REGISTER_ALL);
 TCODImage background("./data/img/background.png");
 TCODParser config;
 
-#ifdef TCOD_MINGW32
-#define PDF1_START binary_work_chapter1_pdf_start
-#define PDF1_END binary_work_chapter1_pdf_end
-#else
-#define PDF1_START _binary_work_chapter1_pdf_start
-#define PDF1_END _binary_work_chapter1_pdf_end
-#endif
-
-extern char PDF1_START;
-extern char PDF1_END;
-
 HDRColor getHDRColorProperty(const TCODParser &parser,const char *name) {
 	TCODList<float> l(parser.getListProperty(name,TCOD_TYPE_FLOAT));
 	return HDRColor(l.get(0),l.get(1),l.get(2));
-}
-
-// generate pdf from work/chapter1.pdf as ./chapter1.pdf
-void dump() {
-	FILE *f=fopen("chapter1.pdf","wb");
-	char *ptr=&PDF1_START;
-	while (ptr != &PDF1_END) fputc(*ptr++,f);
-	fclose(f);
 }
 
 class ModuleFactory : public UmbraModuleFactory {
