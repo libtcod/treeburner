@@ -196,9 +196,9 @@ bool UmbraEngine::registerFonts () {
 					int fontFlag = TCOD_FONT_TYPE_GREYSCALE;
 					if (layout[0] == '_') {
 						// parse font layout
-						if (strncasecmp(layout,"_TCOD.",6) == 0) fontFlag|=TCOD_FONT_LAYOUT_TCOD;
-						else if (strncasecmp(layout,"_INCOL.",7) == 0) fontFlag|=TCOD_FONT_LAYOUT_ASCII_INCOL;
-						else if (strncasecmp(layout,"_INROW.",7) == 0) fontFlag|=TCOD_FONT_LAYOUT_ASCII_INROW;
+						if (TCOD_strncasecmp(layout,"_TCOD.",6) == 0) fontFlag|=TCOD_FONT_LAYOUT_TCOD;
+						else if (TCOD_strncasecmp(layout,"_INCOL.",7) == 0) fontFlag|=TCOD_FONT_LAYOUT_ASCII_INCOL;
+						else if (TCOD_strncasecmp(layout,"_INROW.",7) == 0) fontFlag|=TCOD_FONT_LAYOUT_ASCII_INROW;
 					} else {
 						// default is TCOD |GREYSCALE
 						fontFlag|=TCOD_FONT_LAYOUT_TCOD;
