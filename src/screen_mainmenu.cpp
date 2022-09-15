@@ -126,7 +126,7 @@ void MainMenu::activate() {
 	/*
 	SchoolScreen sc;
 	sc.generateWorld(0xdeadbeee);
-	exit(0);
+	std::abort();
 	*/
 }
 

@@ -428,7 +428,7 @@ public :
 	}
 	void error(const char *msg) {
 		fprintf(stderr,"Fatal error while loading items.cfg : %s",msg);
-		exit(1);
+		std::abort();
 	}
 
 protected :
@@ -549,7 +549,7 @@ public :
 	}
 	void error(const char *msg) {
 		fprintf(stderr,"Fatal error while loading recipes.cfg : %s",msg);
-		exit(1);
+		std::abort();
 	}
 
 protected :
@@ -683,7 +683,7 @@ void ItemType::computeActions() {
 ItemType *Item::getType(const char *name) {
 	if ( name == NULL ) return NULL;
 	if ( types.size() == 0 ) {
-		if (! init()) exit(0); // fatal error. cannot load items configuration
+		if (! init()) std::abort(); // fatal error. cannot load items configuration
 	}
 	for (ItemType **it=types.begin(); it!=types.end(); it++) {
 		if ( strcmp((*it)->name,name) == 0 ) return *it;

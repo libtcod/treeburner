@@ -490,7 +490,7 @@ int UmbraEngine::run () {
 
 	if (modules.size() == 0) {
 		UmbraError::add(UMBRA_ERRORLEVEL_FATAL_ERROR,"No modules registered!");
-		exit(1);
+		std::abort();
 	}
 
 	while(!TCODConsole::isWindowClosed()) {
