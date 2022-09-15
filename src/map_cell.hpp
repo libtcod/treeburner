@@ -77,7 +77,7 @@ struct Cell : public Persistant {
 	// cells already seen by the player
 	bool memory;
 	TerrainId terrain;
-	Building *building; // if cell is inside a building
+	Building *building = nullptr; // if cell is inside a building
 
 	// SaveListener
 	bool loadData(TCODZip *zip);
@@ -97,4 +97,3 @@ struct SubCell : public Persistant {
 	bool loadData(TCODZip *zip);
 	void saveData(TCODZip *zip);
 };
-
