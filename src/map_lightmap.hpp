@@ -36,7 +36,7 @@ struct HDRColor {
 	}
 	bool operator != (const HDRColor & c) const {
 		return (c.r != r || c.g != g || c.b != b);
-	}	
+	}
 	HDRColor operator * (const HDRColor & a) const {
 		static const float c=1.0f/255.0f;
 		return HDRColor(r*a.r*c,g*a.g*c,b*a.b*c);

@@ -12,9 +12,9 @@ UPX=../mak/upx.exe
 CFLAGS=$(FLAGS) -I$(LIBTCODDIR)/include $(LUAINC) -Wall
 
 $(TEMP)/thecave/debug/%.o : $(SRCDIR)/%.cpp
-	$(CPP) $(CFLAGS) -g -o $@ -c $< 
+	$(CPP) $(CFLAGS) -g -o $@ -c $<
 $(TEMP)/thecave/release/%.o : $(SRCDIR)/%.cpp
-	$(CPP) $(CFLAGS) -DNDEBUG -O2 -s -o $@ -c $< 
+	$(CPP) $(CFLAGS) -DNDEBUG -O2 -s -o $@ -c $<
 
 OBJS_DEBUG= \
 	$(TEMP)/thecave/debug/bas_aidirector.o \
@@ -154,22 +154,22 @@ release : thecave.exe
 
 $(TEMP)/thecave/debug/umbra :
 	\mkdir -p $@
-	
+
 $(TEMP)/thecave/release/umbra :
 	\mkdir -p $@
-	
+
 icon.o : icon48.ico thecave.rc
-	windres thecave.rc -O coff -o icon.o	
+	windres thecave.rc -O coff -o icon.o
 
 chapter1.o : $(PDF1)
 	objcopy -I binary -O pe-i386 -B i386 $(PDF1) $@
-	
+
 thecave.exe : $(TEMP)/thecave/release/umbra $(OBJS_RELEASE) icon.o chapter1.o
 	$(CPP) $(OBJS_RELEASE) icon.o chapter1.o -o $@ -L$(LIBTCODDIR)/lib -ltcod-mingw -lfmodex $(LUALIB) -mwindows -lSDL.dll
-	$(UPX) thecave.exe 
+	$(UPX) thecave.exe
 
 thecave_debug.exe : $(TEMP)/thecave/debug/umbra $(OBJS_DEBUG) icon.o chapter1.o
 	$(CPP) $(OBJS_DEBUG) icon.o chapter1.o -o $@ -L$(LIBTCODDIR)/lib -ltcod-mingw-debug -lfmodex $(LUALIB) -lSDL.dll -mwindows
 
 clean :
-	\rm -f $(OBJS_RELEASE) thecave.exe $(OBJS_DEBUG) thecave_debug.exe 
+	\rm -f $(OBJS_RELEASE) thecave.exe $(OBJS_DEBUG) thecave_debug.exe

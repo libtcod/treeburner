@@ -65,7 +65,7 @@ bool ConditionType::check(Creature *cr) {
 	}
 }
 
-Condition::Condition(ConditionTypeId type, float duration, float amount, const char *alias) 
+Condition::Condition(ConditionTypeId type, float duration, float amount, const char *alias)
 		: initialDuration(duration), duration(duration), amount(amount),curAmount(0.0f), alias(alias) {
 	this->type = ConditionType::get(type);
 }
@@ -109,7 +109,7 @@ bool Condition::update(float elapsed) {
 				//GameScreen::getInstance()->addBloodStain(target->x,target->y,lostHp);
 			}
 			curAmount = 0;
-			
+
 		}
 		break;
 		case HEAL : {
@@ -239,8 +239,8 @@ Creature *Creature::getCreature(CreatureTypeId id) {
 			 ret->flags=CREATURE_SAVE;
 			 ret->currentBehavior = new HerdBehavior(new AvoidWaterWalkPattern());
 		break;
-		case CREATURE_FRIEND : 
-			ret = new Friend(); 
+		case CREATURE_FRIEND :
+			ret = new Friend();
 		break;
 		case CREATURE_MINION :
 			ret = new Minion();

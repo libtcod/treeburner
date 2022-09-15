@@ -26,7 +26,7 @@
 #include "main.hpp"
 
 void BinaryHeap::siftDown() {
-	// sift-down : move the first element of the heap down to its right place 
+	// sift-down : move the first element of the heap down to its right place
 	int cur=0;
 	int end = size()-1;
 	int child=1;
@@ -43,7 +43,7 @@ void BinaryHeap::siftDown() {
 			curValue=childValue;
 		}
 		if ( child < end ) {
-			// swap with second son ? 
+			// swap with second son ?
 			HeapObject *childObj2=array[child+1];
 			float child2Value=childObj2->getHeapValue();
 			if ( child2Value < curValue ) {
@@ -62,7 +62,7 @@ void BinaryHeap::siftDown() {
 }
 
 void BinaryHeap::siftUp() {
-	// sift-up : move the last element of the heap up to its right place 
+	// sift-up : move the last element of the heap up to its right place
 	int end = size()-1;
 	int child=end;
 	HeapObject **array=begin();
@@ -73,7 +73,7 @@ void BinaryHeap::siftUp() {
 		HeapObject *parentObj=array[parent];
 		float parentValue=parentObj->getHeapValue();
 		if ( parentValue > childValue ) {
-			// get up one level 
+			// get up one level
 			HeapObject *tmp = array[child];
 			array[child]=array[parent];
 			array[parent]=tmp;
@@ -111,11 +111,11 @@ void BinaryHeap::reorder(HeapObject *obj) {
 				}
 			}
 			return;
-		} 
+		}
 	}
 	// compare to its sons
 	while ( cur*2+1 < size() ) {
-		int child=cur*2+1;	
+		int child=cur*2+1;
 		HeapObject *childObj=array[child];
 		int toSwap=cur;
 		float swapValue=value;
@@ -137,29 +137,29 @@ void BinaryHeap::reorder(HeapObject *obj) {
 			HeapObject *tmp = array[toSwap];
 			array[toSwap] = obj;
 			array[cur] = tmp;
-			cur=toSwap;			
+			cur=toSwap;
 		} else return;
-	}	
+	}
 }
 
 // add an object in the heap so that the heap root always contains the minimum value
 void BinaryHeap::add(HeapObject *obj) {
 	// append the new value to the end of the heap
-	push(obj); 
-	// bubble the value up to its real position 
+	push(obj);
+	// bubble the value up to its real position
 	siftUp();
 }
 
 // pop the object with minimum value from the heap
 HeapObject *BinaryHeap::popMin() {
-	// return the first value of the heap (minimum score) 
+	// return the first value of the heap (minimum score)
 	HeapObject **array=begin();
 	int end=size()-1;
 	HeapObject *obj=array[0];
-	// move the last element at first position (heap root) 
+	// move the last element at first position (heap root)
 	array[0] = array[end];
 	pop();
-	// and bubble it down to its real position 
+	// and bubble it down to its real position
 	siftDown();
 	return obj;
 }

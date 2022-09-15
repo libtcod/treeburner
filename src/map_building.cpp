@@ -93,7 +93,7 @@ void Building::placeRandomDoor(TCODRandom *rng) {
 			if ( doory==h ) doory=0;
 		}
 	}
-	map[doorx+doory*w]=BUILDING_DOOR;	
+	map[doorx+doory*w]=BUILDING_DOOR;
 }
 
 #define IS_FLAT_WALL(x) ((x) >= BUILDING_WALL_N && (x) <= BUILDING_WALL_W)
@@ -137,7 +137,7 @@ void Building::placeRandomWindow(TCODRandom *rng) {
 		}
 	}
 	if ( !ok ) return; // no place found
-	map[winx+winy*w]=horiz ? BUILDING_WINDOW_H : BUILDING_WINDOW_V;	
+	map[winx+winy*w]=horiz ? BUILDING_WINDOW_H : BUILDING_WINDOW_V;
 }
 
 // scan the map. put walls at floor/none borders
@@ -178,21 +178,21 @@ void Building::buildExternalWalls() {
 					#define IS_E(f) HAS_FLAG(f,BD_E)
 					#define IS_S(f) HAS_FLAG(f,BD_S)
 					#define IS_W(f) HAS_FLAG(f,BD_W)
-					if (IS_NW(bd)) wall=BUILDING_WALL_NW;  
-					else if (IS_NE(bd)) wall=BUILDING_WALL_NE;  
-					else if (IS_SE(bd)) wall=BUILDING_WALL_SE;  
-					else if (IS_SW(bd)) wall=BUILDING_WALL_SW;  
+					if (IS_NW(bd)) wall=BUILDING_WALL_NW;
+					else if (IS_NE(bd)) wall=BUILDING_WALL_NE;
+					else if (IS_SE(bd)) wall=BUILDING_WALL_SE;
+					else if (IS_SW(bd)) wall=BUILDING_WALL_SW;
 					else if ( bd == BD_NW ) wall = BUILDING_WALL_SE;
 					else if ( bd == BD_NE ) wall = BUILDING_WALL_SW;
 					else if ( bd == BD_SE ) wall = BUILDING_WALL_NW;
 					else if ( bd == BD_SW ) wall = BUILDING_WALL_NE;
-					else if (IS_N(bd)) wall=BUILDING_WALL_N;  
-					else if (IS_E(bd)) wall=BUILDING_WALL_E;  
-					else if (IS_S(bd)) wall=BUILDING_WALL_S;  
-					else if (IS_W(bd)) wall=BUILDING_WALL_W;  
+					else if (IS_N(bd)) wall=BUILDING_WALL_N;
+					else if (IS_E(bd)) wall=BUILDING_WALL_E;
+					else if (IS_S(bd)) wall=BUILDING_WALL_S;
+					else if (IS_W(bd)) wall=BUILDING_WALL_W;
 					map[x+y*w]=wall;
 				}
-			}			
+			}
 		}
 	}
 }
@@ -405,19 +405,19 @@ void Building::buildCityWalls(int x, Dungeon *dungeon) {
 			setBuildingWallCell(x,y,ysym,dir==1 ? TCOD_CHAR_NE : TCOD_CHAR_NW,dungeon);
 		} else if (rnd < 30 ) {
 			Building *tower=Building::generateWallsOnly(3,3,1,NULL);
-			tower->map[2+1*3]=BUILDING_DOOR;	
+			tower->map[2+1*3]=BUILDING_DOOR;
 			tower->doorx=2;
 			tower->doory=1;
-			tower->map[1*3]=BUILDING_WINDOW_V;	
+			tower->map[1*3]=BUILDING_WINDOW_V;
 			tower->applyTo(dungeon,x+1,y,true);
-			
+
 			Creature *archer=Creature::getCreature(CREATURE_ARCHER);
 			archer->setPos(x,y);
 			dungeon->addCreature(archer);
-			
+
 			tower=Building::generateWallsOnly(3,3,1,NULL);
-			tower->map[2+1*3]=BUILDING_DOOR;	
-			tower->map[1*3]=BUILDING_WINDOW_V;	
+			tower->map[2+1*3]=BUILDING_DOOR;
+			tower->map[1*3]=BUILDING_WINDOW_V;
 			tower->doorx=2;
 			tower->doory=1;
 			tower->applyTo(dungeon,x+1,2*ysym-y,true);

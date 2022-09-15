@@ -34,7 +34,7 @@ Archer::Archer() {
 	static int archerLife=config.getIntProperty("config.creatures.archer.life");
 	ch=archerChar;
 	col=archerColor;
-	life=archerLife;	
+	life=archerLife;
 	strcpy(name,"archer");
 	pathTimer=0.0f;
 }
@@ -57,7 +57,7 @@ bool Archer::update(float elapsed) {
 			arrow->duration = l / arrow->speed;
 			gameEngine->dungeon->addItem(arrow);
 		}
-	} 
+	}
 	return true;
 }
 
@@ -67,7 +67,7 @@ Villager::Villager() {
 	static int villagerLife=config.getIntProperty("config.creatures.villager.life");
 	ch=villagerChar;
 	col=villagerColor;
-	life=villagerLife;	
+	life=villagerLife;
 	strcpy(name,"villager");
 }
 
@@ -128,7 +128,7 @@ bool Minion::update(float elapsed) {
 		// track player
 		if (! path) {
 			path=new TCODPath(game->dungeon->width,game->dungeon->height,this,game);
-		} 
+		}
 		if ( pathTimer > pathDelay ) {
 			int dx,dy;
 			path->getDestination(&dx,&dy);

@@ -50,7 +50,7 @@ void Craft::initialize(Creature *owner, bool soft) {
 	this->owner=owner;
 	if (! soft ) {
 		tool=result=NULL;
-		ingredients.clear();	
+		ingredients.clear();
 	}
 	computeRecipes();
 	for (Item **it=owner->inventoryBegin(); it !=owner->inventoryEnd(); it++) {
@@ -70,7 +70,7 @@ int Craft::getScrollTotalSize() {
 const char *Craft::getScrollText(int idx) {
 	return items.get(idx)->aName();
 }
-    
+
 void Craft::getScrollColor(int idx, TCODColor *fore, TCODColor *back) {
 	Item *item=items.get(idx);
 	// check if the item can be used in the current recipes list
@@ -87,7 +87,7 @@ void Craft::getScrollColor(int idx, TCODColor *fore, TCODColor *back) {
 		}
 	}
 	*fore = enabled ? Item::classColor[item->itemClass] : guiDisabledText;
-	*back = ( enabled && idx == selectedItem ? guiHighlightedBackground : guiBackground );	
+	*back = ( enabled && idx == selectedItem ? guiHighlightedBackground : guiBackground );
 }
 
 void Craft::render() {
@@ -108,11 +108,11 @@ void Craft::render() {
 	con->setChar(rect.w-1,4,TCOD_CHAR_TEEW);
 	con->setChar(rect.w-rect.w/2,rect.h/2+4,TCOD_CHAR_TEEE);
 	con->setChar(rect.w-1,rect.h/2+4,TCOD_CHAR_TEEW);
-	
+
 	// inventory
 	scroller->render(con,1,2);
 	scroller->renderScrollbar(con,1,2);
-	
+
 	// ingredient list
 	int y=5;
 	for (Item **it=ingredients.begin(); it!=ingredients.end(); it++) {
@@ -120,19 +120,19 @@ void Craft::render() {
 		con->setDefaultBackground(y-5 == selectedIngredient ? guiHighlightedBackground : guiBackground );
 		con->printEx(rect.w/2+1,y++,TCOD_BKGND_SET, TCOD_LEFT,(*it)->aName());
 	}
-	
+
 	// tool
-	if (tool) { 
+	if (tool) {
 		con->setDefaultForeground(Item::classColor[tool->itemClass]);
 		con->setDefaultBackground(selectedTool ? guiHighlightedBackground : guiBackground );
 		con->printEx(rect.w/2+1,2,TCOD_BKGND_SET, TCOD_LEFT,tool->aName());
 	}
-	
+
 	// buttons
 	if ( result ) create.render(con);
 	if ( tool || !ingredients.isEmpty()) clear.render(con);
-	
-	blitSemiTransparent(con,0,0,rect.w,rect.h,TCODConsole::root,rect.x,rect.y,0.8f,1.0f);	
+
+	blitSemiTransparent(con,0,0,rect.w,rect.h,TCODConsole::root,rect.x,rect.y,0.8f,1.0f);
 
    	// result
 	if (result) {
@@ -141,21 +141,21 @@ void Craft::render() {
 
 	// item under cursor
 	if ( selectedItem >= 0 || selectedIngredient >= 0 || selectedTool || isDragging ) {
-		int itemx=isDragging ? dragx : 
+		int itemx=isDragging ? dragx :
 			selectedItem >= 0 ? rect.x+CRAFT_WIDTH/4 : rect.x+3*CRAFT_WIDTH/4;
-		int itemy=isDragging ? dragy+2 : 
+		int itemy=isDragging ? dragy+2 :
 			selectedItem >= 0 ? rect.y+selectedItem+4-scroller->getOffset() :
 			selectedIngredient >= 0 ? rect.y+7+selectedIngredient : rect.y+5;
-		Item *item=isDragging ? dragItem : 
+		Item *item=isDragging ? dragItem :
 			selectedItem >= 0 ? items.get(selectedItem) :
-			selectedIngredient >= 0 ? ingredients.get(selectedIngredient) : 
+			selectedIngredient >= 0 ? ingredients.get(selectedIngredient) :
 			tool;
 		item->renderDescription(itemx,itemy);
 	}
 }
 
 void Craft::detectItem(TCOD_mouse_t &mouse) {
-	// detect item under cursor	
+	// detect item under cursor
 	selectedItem=-1;
 	selectedIngredient=-1;
 	selectedTool=false;
@@ -177,9 +177,9 @@ bool Craft::update(float elapsed, TCOD_key_t &k, TCOD_mouse_t &mouse) {
 	scroller->update(elapsed,k,mouse,rect.x+1,rect.y+1);
 	if ( result ) create.update(elapsed,k,mouse,rect.x,rect.y);
 	if ( tool || !ingredients.isEmpty()) clear.update(elapsed,k,mouse,rect.x,rect.y);
-	
+
 	detectItem(mouse);
-	
+
 	// item dragging
 	if (! isDraggingStart && mouse.lbutton && (selectedItem >= 0 || selectedIngredient >= 0 || selectedTool) ) {
 		// start dragging. to be confirmed
@@ -203,7 +203,7 @@ bool Craft::update(float elapsed, TCOD_key_t &k, TCOD_mouse_t &mouse) {
 		&& ((! mouse.lbutton) || (mouse.lbutton_pressed)) ) {
 		// drop
 		isDragging=isDraggingStart=false;
-		if ( mouse.cx >= rect.x+rect.w/2 && mouse.cx < rect.x+rect.w 
+		if ( mouse.cx >= rect.x+rect.w/2 && mouse.cx < rect.x+rect.w
 			&& mouse.cy >= rect.y+1 && mouse.cy < rect.y+4 ) {
 			// change tool
 			if ( dragItem->isTool() && tool != dragItem ) {
@@ -221,7 +221,7 @@ bool Craft::update(float elapsed, TCOD_key_t &k, TCOD_mouse_t &mouse) {
 				}
 				computeResult();
 			}
-		} else if ( mouse.cx >= rect.x+rect.w/2 && mouse.cx < rect.x+rect.w 
+		} else if ( mouse.cx >= rect.x+rect.w/2 && mouse.cx < rect.x+rect.w
 			&& mouse.cy >= rect.y+4 && mouse.cy < rect.y+rect.h/2+4 ) {
 			// add ingredient
 			if ( dragItem->isIngredient()) {
@@ -231,7 +231,7 @@ bool Craft::update(float elapsed, TCOD_key_t &k, TCOD_mouse_t &mouse) {
 				ingredients.push(dragItem);
 				computeResult();
 			}
-		} else if ( mouse.cx >= rect.x+1 && mouse.cx < rect.x+rect.w/2 
+		} else if ( mouse.cx >= rect.x+1 && mouse.cx < rect.x+rect.w/2
 			&& mouse.cy >= rect.y+4 && mouse.cy < rect.y+rect.h-1 ) {
 			// put back something in inventory
 			if ( ! dragItem->container || !dragItem->container->isA("liquid container") ) {
@@ -258,12 +258,12 @@ bool Craft::update(float elapsed, TCOD_key_t &k, TCOD_mouse_t &mouse) {
 			dragy=mouse.cy;
 		}
 	}
-	
+
 	detectItem(mouse);
 	if ( (k.vk == TCODK_ESCAPE && ! k.pressed) ) {
 		return false;
 	}
-		
+
 	return true;
 }
 
@@ -281,10 +281,10 @@ bool Craft::onWidgetEvent(Widget *widget, EWidgetEvent event) {
 /*					} else {
 						(*it)->removeFromContainer();
 					}
-*/					
+*/
 					it = ingredients.remove(it);
 				}
-			} 
+			}
 		}
 		// put result in player's inventory
 		gameEngine->gui.log.info("You created %s",result->aName());
@@ -354,7 +354,7 @@ void Craft::computeResult() {
 					return;
 				}
 			}
-		}  
+		}
 	}
 	if ( result ) {
 		if ( result->isA("liquid container") ) delete result->stack.get(0);

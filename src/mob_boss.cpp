@@ -32,7 +32,7 @@ VillageHead::VillageHead() {
 	static int villageHeadLife=config.getIntProperty("config.creatures.villageHead.life");
 	ch=villageHeadChar;
 	col=villageHeadColor;
-	life=villageHeadLife;	
+	life=villageHeadLife;
 	strcpy(name,"village head");
 	summonMinions=true;
 	stayInLair=false;

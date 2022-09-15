@@ -35,15 +35,15 @@ public :
 	bool update(float elapsed, TCOD_key_t k,TCOD_mouse_t mouse);
     void generateMap(uint32 seed); // generate a new random map
     void loadMap(uint32 seed); // load map from savegame
-    
+
     void onFontChange();
-    
+
     // SaveListener
 	bool loadData(uint32 chunkId, uint32 chunkVersion, TCODZip *zip);
 	void saveData(uint32 chunkId, TCODZip *zip);
 protected :
 	TCODRandom *forestRng;
-	
+
     void activate();
     void deactivate();
     void placeTree(Dungeon *dungeon,int x, int y, const ItemType * treeType);

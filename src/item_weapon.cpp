@@ -26,7 +26,7 @@
 /*
 #include "main.hpp"
 
-Weapon::Weapon(int x,int y,WeaponTypeId2 id) : 
+Weapon::Weapon(int x,int y,WeaponTypeId2 id) :
 	Item(x,y,Weapon::types[id].type), nbSockets(0), phase(IDLE) {
 	name=NULL;
 	TCODColor wcol=Item::classColor[itemClass];
@@ -243,7 +243,7 @@ bool Weapon::loadData(uint32 chunkId, uint32 chunkVersion, TCODZip *zip) {
 	if ( chunkVersion != WEAP_CHUNK_VERSION ) return false;
 
 	// load weapon specific data here
-	
+
 	const char *zipname=zip->getString();
 	if ( zipname ) name = strdup(zipname);
 	castDelay=zip->getFloat();
@@ -280,7 +280,7 @@ void Weapon::saveData(uint32 chunkId, TCODZip *zip) {
 		zip->putInt(socketed->subType);
 		socketed->saveData(MISC_CHUNK_ID,zip);
 	}
-	
+
 	Item::saveData(ITEM_CHUNK_ID,zip);
 }
 

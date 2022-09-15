@@ -41,7 +41,7 @@ public :
 	TCODHeightMap *smap; // double resolution. shadow map
 	TCODHeightMap *smapBeforeTree; // double resolution. shadow map before trees shadow
 	TCODImage *canopy; // double resolution. black = transparent
-	
+
 	// dungeon generation parameters
 	//int size;
 	//int size2x; // well.. size*2
@@ -119,7 +119,7 @@ public :
 	void restoreShadowBeforeTree();
 	inline void updateClouds(float elapsed) { clouds->update(elapsed); }
 	inline float getInterpolatedCloudCoef(int x2,int y2) const { return clouds ? clouds->getInterpolatedThickness(x2,y2) : 1.0f;}
-	inline float getCloudCoef(float x2,float y2) const { return getCloudCoef((int)x2,(int)y2); } 
+	inline float getCloudCoef(float x2,float y2) const { return getCloudCoef((int)x2,(int)y2); }
 	inline float getCloudCoef(int x2,int y2) const { return clouds ? clouds->getThickness(x2,y2) : 1.0f;}
 
 	// ground
@@ -150,7 +150,7 @@ public :
 	// apply blur to ground bitmap
 	void finalizeMap(bool roundCorners=true, bool blurGround=true);
 
-	// SaveListener	
+	// SaveListener
 	bool loadData(uint32 chunkId, uint32 chunkVersion, TCODZip *zip);
 	void saveData(uint32 chunkId, TCODZip *zip);
 protected :

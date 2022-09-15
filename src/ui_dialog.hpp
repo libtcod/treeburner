@@ -47,10 +47,10 @@ public :
 	Widget(int x, int y, int w, int h) : x(x),y(y),w(w),h(h) {}
 	void setPos(int x, int y) { this->x=x;this->y=y;}
 	void setSize(int w, int h) { this->w=w;this->h=h;}
-	void addListener(UIListener *listener) { listeners.push(listener); }	
-	void removeListener(UIListener *listener) { listeners.removeFast(listener); }	
+	void addListener(UIListener *listener) { listeners.push(listener); }
+	void removeListener(UIListener *listener) { listeners.removeFast(listener); }
 	int x,y,w,h;
-protected :	
+protected :
 	TCODList<UIListener *> listeners;
 	void sendEvent(EWidgetEvent event);
 };
@@ -58,7 +58,7 @@ protected :
 class UIListener {
 public :
 	// return true to stop the event propagation
-	virtual bool onWidgetEvent(Widget *widget, EWidgetEvent event) = 0; 
+	virtual bool onWidgetEvent(Widget *widget, EWidgetEvent event) = 0;
 };
 
 class Button : public Widget {
@@ -66,7 +66,7 @@ public :
 	Button();
 	Button(const char *label, int x, int y);
 	~Button();
-	
+
 	void setLabel(const char *label);
 	void render(TCODConsole *con);
 	void update(float elapsed, TCOD_key_t &k, TCOD_mouse_t &mouse, int rectx, int recty);
@@ -87,7 +87,7 @@ public :
 	const char *getLabel(int id) {return labels.get(id);}
 	void update(float elapsed, TCOD_key_t &k, TCOD_mouse_t &mouse, int rectx, int recty);
 	int curTab; // tab currently selected
-	int mouseTab; // tab under mouse cursor	
+	int mouseTab; // tab under mouse cursor
 protected :
 	TCODList<const char *>labels;
 	TCODList<int> tabpos;
@@ -138,7 +138,7 @@ public :
 	bool isModal() { return (flags & DIALOG_MODAL) != 0 ; }
 	void activate();
 	virtual void setPos(int x, int y) { rect.setPos(x,y); }
-	void deactivate();	
+	void deactivate();
 protected :
 	int flags;
 	TCOD_key_t key;

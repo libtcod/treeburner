@@ -26,7 +26,7 @@
 #include <math.h>
 #include "main.hpp"
 
-// returns a value between 0.5 and 1.2 
+// returns a value between 0.5 and 1.2
 // 50% chances between 0.5 and 1.0 (clouds), 50% chances between 1.0 and 1.2 (clear sky)
 static inline float noiseFunc(float *f) {
 	/*
@@ -81,7 +81,7 @@ CloudBox::~CloudBox() {
 
 float CloudBox::getData(float *pdata,int x, int y) {
 	int realX = (x + x0)%width;
-	return pdata[realX+y*width]; 
+	return pdata[realX+y*width];
 }
 
 float CloudBox::getInterpolatedData(float *pdata,int x, int y) {
@@ -98,7 +98,7 @@ float CloudBox::getInterpolatedData(float *pdata,int x, int y) {
     return vx1;
 }
 
-float CloudBox::getThickness(int x, int y) { 
+float CloudBox::getThickness(int x, int y) {
 	return getData(data,x,y);
 }
 

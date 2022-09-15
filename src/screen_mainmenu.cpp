@@ -37,11 +37,11 @@ static TCODImage *rock=NULL;
 static TCODImage *rockNormal=NULL;
 static const int MENUX=6;
 static const int MENUW=10;
-static const int MENUY=CON_H/2+17; 
+static const int MENUY=CON_H/2+17;
 
 static const char *menuNames[MENU_NB_ITEMS] = {
 	"New game",
-	"Continue",	
+	"Continue",
 	"Exit"
 };
 
@@ -62,7 +62,7 @@ int generateWorld(void *dat) {
 	if ( config.getBoolProperty("config.debug") ) {
 		printf ("World seed : %d\n",seed);
 	}
-	// DISABLED 
+	// DISABLED
 //	SchoolScreen::instance->generateWorld(seed);
 //	TCODSystem::unlockSemaphore(data->worldDone);
 	return 0;
@@ -139,11 +139,11 @@ void MainMenu::render() {
 		}
 		if ( elapsed >= 0.0f && elapsed < 12.0f ) {
 			fireCoef=(elapsed-0.0f)/12.0f;
-		} else if ( elapsed >= 12.0f ) fireCoef=1.0f;		
+		} else if ( elapsed >= 12.0f ) fireCoef=1.0f;
 		if ( elapsed >= 12.0f && elapsed < 20.0f ) {
 			titleCoef=(elapsed-12.0f)/8.0f;
-		} else if ( elapsed >= 20.0f ) titleCoef=1.0f;		
-		if ( userPref.nbLaunches > 1 && ! newGame ) {	
+		} else if ( elapsed >= 20.0f ) titleCoef=1.0f;
+		if ( userPref.nbLaunches > 1 && ! newGame ) {
 			if ( elapsed >= 18.0f && elapsed < 28.0f ) {
 				chapterPixCoef=0.7f*(elapsed-18.0f)/10.0f;
 			} else if ( elapsed >= 28.0f ) chapterPixCoef=0.7f;
@@ -161,10 +161,10 @@ void MainMenu::render() {
 		float lightCoef=noise1d.getFbm(&f,3.0f);
 		f = elapsed*1.5f;
 		float torchposx=noise1d.getFbm(&f,3.0f);
-		f += 50.0f;		
+		f += 50.0f;
 		float torchposy=noise1d.getFbm(&f,3.0f);
 		int lightx = (int)(titlex + torchposx*30 +titleCoef * 20);
-		int lighty = (int)(titley + titleh/2 + torchposy*30); 
+		int lighty = (int)(titley + titleh/2 + torchposy*30);
 		lightCoef = (titleCoef+fireCoef)*0.25f + 0.15f*lightCoef;
 		for (int x=0; x < CON_W*2; x++) {
 			for (int y=0; y < CON_H*2; y++) {
@@ -185,7 +185,7 @@ void MainMenu::render() {
 				lightDir[0]*=l;
 				lightDir[1]*=l;
 				lightDir[2]*=l;
-				
+
 				rockColor = rockColor * (TCODColor(10,10,50) * fireCoef)
 					+ rockColor * TCODColor(184,148,86) * ((lightDir[0]*rockN.r+lightDir[1]*rockN.g+lightDir[2]*rockN.b)*lightCoef/255);
 				smokeCol = smokeCol + rockColor;
@@ -197,13 +197,13 @@ void MainMenu::render() {
 		TCODConsole::root->setDefaultBackground(TCODColor::black);
 		TCODConsole::root->clear();
 	}
-	
+
 
 	// menu
 	if ( elapsed > 2.0f) {
 		float elcoef=1.0f;
 		if ( elapsed < 10.0f) elcoef=(elapsed-2.0f)/ 8.0f;
-		
+
 		darken(MENUX-5,MENUY+selectedItem*2,MENUW*2,1,1.0f-elcoef*0.5f);
 		TCODConsole::root->setDefaultForeground(TEXT_COLOR*elcoef);
 		int itemNum=0;
@@ -216,7 +216,7 @@ void MainMenu::render() {
 			TCODConsole::root->print(MENUX,MENUY+2*itemNum, menuNames[*it] );
 		}
 	}
-	
+
 	// credits
 	static struct Credit {
 		const char *title;
@@ -238,21 +238,21 @@ void MainMenu::render() {
 	}
 	if ( elapsed > 18.0f && userPref.nbLaunches > 5) {
 		/*
-		static uint8 cdata[] = { 
-			0xba, 0x79, 0xa9, 0xfd, 0xcb, 0x79, 
-			0xd8, 0x09, 0x19, 0x69, 0xc9, 0x39, 
-			0xa9, 0xc8, 0xfd, 0x09, 0x99, 0xfd, 
-			0xbb, 0x09, 0xd8, 0x68, 0xa9, 0x19, 
-			0xfd, 0x2d, 0xfd, 0xdb, 0x09, 0x09, 
+		static uint8 cdata[] = {
+			0xba, 0x79, 0xa9, 0xfd, 0xcb, 0x79,
+			0xd8, 0x09, 0x19, 0x69, 0xc9, 0x39,
+			0xa9, 0xc8, 0xfd, 0x09, 0x99, 0xfd,
+			0xbb, 0x09, 0xd8, 0x68, 0xa9, 0x19,
+			0xfd, 0x2d, 0xfd, 0xdb, 0x09, 0x09,
 			0x49, 0xfd, 0x6b, 0x00
 		};
 		*/
-		static uint8 cdata[] = { 
-			0xfd, 0x79, 0xfd, 0xfd, 0xfd, 0x79, 
-			0xd8, 0xfd, 0xfd, 0xfd, 0xfd, 0x39, 
-			0xfd, 0xfd, 0xfd, 0xfd, 0xfd, 0xfd, 
-			0xfd, 0xfd, 0xd8, 0xfd, 0xa9, 0xfd, 
-			0xfd, 0x2d, 0xfd, 0xdb, 0xfd, 0x09, 
+		static uint8 cdata[] = {
+			0xfd, 0x79, 0xfd, 0xfd, 0xfd, 0x79,
+			0xd8, 0xfd, 0xfd, 0xfd, 0xfd, 0x39,
+			0xfd, 0xfd, 0xfd, 0xfd, 0xfd, 0xfd,
+			0xfd, 0xfd, 0xd8, 0xfd, 0xa9, 0xfd,
+			0xfd, 0x2d, 0xfd, 0xdb, 0xfd, 0x09,
 			0x49, 0xfd, 0x6b, 0x00
 		};
 		static float coefs[sizeof(cdata)];
@@ -287,7 +287,7 @@ void MainMenu::render() {
 			first=false;
 		}
 		float *ccoef=coefs;
-		TCODColor chapcol=TEXT_COLOR*chapcoef;		
+		TCODColor chapcol=TEXT_COLOR*chapcoef;
 		while (*curc) {
 			if ( *curc != 223 && *ccoef > 0.0f ) {
 				unsigned char c=*curc;
@@ -296,7 +296,7 @@ void MainMenu::render() {
 				TCODConsole::root->setCharForeground(x,9,col);
 			}
 			curc++;
-			ccoef++; 
+			ccoef++;
 			x++;
 		}
 	}
@@ -308,7 +308,7 @@ void MainMenu::render() {
 		TCODConsole::root->printEx(CON_W/2,CON_H-2,TCOD_BKGND_NONE,TCOD_CENTER,
 			"PageUp/PageDown to change font size");
 	}
-		
+
 	sound.endFrame();
 }
 
@@ -317,7 +317,7 @@ bool MainMenu::update(float el, TCOD_key_t k,TCOD_mouse_t mouse) {
 	// update fmod
 	elapsed+=el;
 	fire->update(el);
-	sound.update(); 
+	sound.update();
 	if( fade == FADE_DOWN ) {
 		MenuItemId id=menu.get(selectedItem);
 		if (fadeLvl <= 0.0f) {
@@ -374,12 +374,12 @@ bool MainMenu::update(float el, TCOD_key_t k,TCOD_mouse_t mouse) {
 		bool up=false,down=false,left=false,right=false;
 		k.pressed=true;
 		Player::getMoveKey(k,&up,&down,&left,&right);
-		if ( down || right ) 
+		if ( down || right )
 			selectedItem = (selectedItem+1)%menu.size();
-		else if ( up || left ) 
+		else if ( up || left )
 			selectedItem= (menu.size()+selectedItem-1)%menu.size();
 	}
-	if ( ((mouse.lbutton_pressed && (mouse.cy == MENUY || mouse.cy == MENUY+2 || mouse.cy == MENUY+4) && mouse.cx >= MENUX-5 && mouse.cx <= MENUX-5+MENUW) 
+	if ( ((mouse.lbutton_pressed && (mouse.cy == MENUY || mouse.cy == MENUY+2 || mouse.cy == MENUY+4) && mouse.cx >= MENUX-5 && mouse.cx <= MENUX-5+MENUW)
 		|| k.vk == TCODK_ENTER || k.vk == TCODK_KPENTER ) && selectedItem != -1 ) {
         fade=FADE_DOWN;
 	}
@@ -387,10 +387,10 @@ bool MainMenu::update(float el, TCOD_key_t k,TCOD_mouse_t mouse) {
 }
 
 void MainMenu::waitForWorldGen() {
-	//TCODSystem::lockSemaphore(worldDone);            
+	//TCODSystem::lockSemaphore(worldDone);
 	//threadPool->waitUntilFinished(worldGenJobId);
 }
 void MainMenu::waitForForestGen() {
-	//TCODSystem::lockSemaphore(worldDone);            
+	//TCODSystem::lockSemaphore(worldDone);
 	//threadPool->waitUntilFinished(forestGenJobId);
 }

@@ -103,7 +103,7 @@ static const int precIndexes[MAX_PREC_KEY] = {
 	4,8,12,16,20,24,28,32,36,40,50,60,70,80,100,120,140,160,255
 	};
 static const float precipitations[MAX_PREC_KEY] = {
-	0,1,2,3,4,5,6,7,8,9,10,13,15,18,20,25,30,35,40  // cm / m² / year
+	0,1,2,3,4,5,6,7,8,9,10,13,15,18,20,25,30,35,40  // cm / mï¿½ / year
 };
 static const TCODColor precColors[MAX_PREC_KEY]= {
 	TCODColor(128,0,0), // < 4
@@ -132,13 +132,13 @@ static const int MAX_TEMP_KEY=7;
 static const int tempIndexes[MAX_TEMP_KEY] = {0,42,84,126,168,210,255};
 static const int temperatures[MAX_TEMP_KEY] = {-30,-20,-10,0,10,20,30};
 static const TCODColor tempKeyColor[MAX_TEMP_KEY]= {
-	TCODColor(180,8,130), // -30 °C
-	TCODColor(32,1,139), // -20 °C
-	TCODColor(0,65,252),// -10 °C
-	TCODColor(37,255,236),// 0 °C
-	TCODColor(255,255,1), // 10 °C
-	TCODColor(255,29,4), // 20 °C
-	TCODColor(80,3,0), // 30 °C
+	TCODColor(180,8,130), // -30 ï¿½C
+	TCODColor(32,1,139), // -20 ï¿½C
+	TCODColor(0,65,252),// -10 ï¿½C
+	TCODColor(37,255,236),// 0 ï¿½C
+	TCODColor(255,255,1), // 10 ï¿½C
+	TCODColor(255,29,4), // 20 ï¿½C
+	TCODColor(80,3,0), // 30 ï¿½C
 };
 
 
@@ -213,9 +213,9 @@ void WorldGenerator::addHill(int nbHill, float baseRadius, float radiusVar, floa
 
 void WorldGenerator::setLandMass(float landMass, float waterLevel) {
 	// fix land mass. We want a proportion of landMass above sea level
-#ifndef NDEBUG	
+#ifndef NDEBUG
 	float t0=TCODSystem::getElapsedSeconds();
-#endif	
+#endif
 	int heightcount[256];
 	memset(heightcount,0,sizeof(heightcount));
 	for ( int x=0; x < HM_WIDTH; x++) {
@@ -246,7 +246,7 @@ void WorldGenerator::setLandMass(float landMass, float waterLevel) {
 			hm->setValue(x,y,h);
 		}
 	}
-#ifndef NDEBUG	
+#ifndef NDEBUG
 	float t1=TCODSystem::getElapsedSeconds();
 	DBG(("  Landmass... %g\n", t1-t0 ));
 #endif
@@ -313,13 +313,13 @@ void WorldGenerator::smoothMap() {
 	static const int smoothKernelDy[9]={-1,-1,-1,0,0,0,1,1,1};
 	static const float smoothKernelWeight[9]={2,8,2,8,20,8,2,8,2};
 
-#ifndef NDEBUG	
+#ifndef NDEBUG
 	float t0=TCODSystem::getElapsedSeconds();
 #endif
 	hm->kernelTransform(smoothKernelSize,smoothKernelDx,smoothKernelDy,smoothKernelWeight,-1000,1000);
 	hm2->kernelTransform(smoothKernelSize,smoothKernelDx,smoothKernelDy,smoothKernelWeight,-1000,1000);
 	hm->normalize();
-#ifndef NDEBUG	
+#ifndef NDEBUG
 	float t1=TCODSystem::getElapsedSeconds();
 	DBG(("  Blur... %g\n", t1-t0 ));
 #endif
@@ -972,8 +972,8 @@ void WorldGenerator::smoothPrecipitations() {
 }
 
 void WorldGenerator::computeTemperaturesAndBiomes() {
-	// temperature shift with altitude : -25°C at 6000 m
-	// mean temp at sea level : 25°C at lat 0  5°C at lat 45 -25°C at lat 90 (sinusoide)
+	// temperature shift with altitude : -25ï¿½C at 6000 m
+	// mean temp at sea level : 25ï¿½C at lat 0  5ï¿½C at lat 45 -25ï¿½C at lat 90 (sinusoide)
 	float sandCoef=1.0f/(1.0f-sandHeight);
 	float waterCoef=1.0f/sandHeight;
 	for (int y=0; y < HM_HEIGHT; y++) {

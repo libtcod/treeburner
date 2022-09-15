@@ -125,12 +125,12 @@ void Packer::merge(TCODList<Rect> &list) {
 			if ( r1->x == r2->x && r1->y == r2->y && r1->w == r2->w && r1->h == r2->h ) {
 				// r1 and r2 identical
 				r2=list.removeFast(r2);
-				continue; 
+				continue;
 			} else if ( r2->x >= r1->x && r2->y >= r1->y && r2->x+r2->w <= r1->x+r1->w && r2->y+r2->h <= r1->y+r1->h ) {
 				// r2 inside r1
 				r2=list.removeFast(r2);
 				continue;
-			} else if ( r2->x == r1->x && r2->x+r2->w == r1->x+r1->w 
+			} else if ( r2->x == r1->x && r2->x+r2->w == r1->x+r1->w
 				&& (r2->y == r1->y + r1->h || r2->y+r2->h == r1->y )) {
 				// vertical merge
 				r1->h += r2->h;
@@ -139,7 +139,7 @@ void Packer::merge(TCODList<Rect> &list) {
 				}
 				r2 = list.removeFast(r2);
 				continue;
-			} else if ( r2->y == r1->y && r2->y+r2->h == r1->y+r1->h 
+			} else if ( r2->y == r1->y && r2->y+r2->h == r1->y+r1->h
 				&& (r2->x == r1->x + r1->w || r2->x+r2->w == r1->x ) ){
 				// horizontal merge
 				r1->w += r2->w;

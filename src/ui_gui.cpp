@@ -30,7 +30,7 @@ void Gui::initialize() {
 	engine.registerModule(&log);
     engine.registerModule(&statusPanel);
     engine.registerModule(&inventory);
-    engine.registerModule(&loot);	
+    engine.registerModule(&loot);
 	engine.registerModule(&tutorial);
 	engine.registerModule(&objectives);
 	engine.registerModule(&craft);
@@ -46,40 +46,40 @@ void Gui::activate() {
 	engine.activateModule(&statusPanel);
 	tutorial.init();
 	engine.activateModule(&tutorial);
-	engine.activateModule(&objectives);	
+	engine.activateModule(&objectives);
 }
 
 void Gui::deactivate() {
 	setMode(GUI_NONE);
 	engine.deactivateModule(&log);
-	engine.deactivateModule(&statusPanel);	
+	engine.deactivateModule(&statusPanel);
 	engine.deactivateModule(&tutorial);
 	engine.deactivateModule(&objectives);
 }
 
-void Gui::setMode(EGuiMode newMode) {   
+void Gui::setMode(EGuiMode newMode) {
 	if (newMode != GUI_INVLOOT || (mode != GUI_INVENTORY && mode != GUI_LOOT )) closeDialogs();
 	mode=newMode;
 	switch(mode) {
-		case GUI_INVENTORY : 
+		case GUI_INVENTORY :
 			inventory.initialize(&gameEngine->player);
 			engine.activateModule(&inventory);
 			break;
-		case GUI_LOOT : 
+		case GUI_LOOT :
 			engine.activateModule(&loot);
 			break;
-		case GUI_INVLOOT : 
+		case GUI_INVLOOT :
 			inventory.initialize(&gameEngine->player);
 			engine.activateModule(&inventory);
 			engine.activateModule(&loot);
 			break;
-		case GUI_OBJECTIVES : 
+		case GUI_OBJECTIVES :
 			objectives.setOnOff(true);
 			break;
 		case GUI_MAXIMIZED : break;
 		case GUI_CRAFT :
 			craft.initialize(&gameEngine->player);
-			engine.activateModule(&craft); 
+			engine.activateModule(&craft);
 			break;
 		case GUI_TUTORIAL :
 			tutorial.openMenu();
@@ -90,22 +90,22 @@ void Gui::setMode(EGuiMode newMode) {
 
 void Gui::closeDialogs() {
 	switch(mode) {
-		case GUI_INVENTORY : 
+		case GUI_INVENTORY :
 			engine.deactivateModule(&inventory);
 			break;
-		case GUI_LOOT : 
+		case GUI_LOOT :
 			engine.deactivateModule(&loot);
 			break;
-		case GUI_INVLOOT : 
+		case GUI_INVLOOT :
 			engine.deactivateModule(&inventory);
 			engine.deactivateModule(&loot);
 			break;
-		case GUI_OBJECTIVES : 
+		case GUI_OBJECTIVES :
 			objectives.setOnOff(false);
 			break;
 		case GUI_MAXIMIZED :
 			log.setMinimized();
-			break; 
+			break;
 		case GUI_CRAFT :
 			engine.deactivateModule(&craft);
 			break;

@@ -108,7 +108,7 @@ void Tabs::render(TCODConsole *con, int rectx, int recty) {
 			con->setDefaultForeground(guiText);
 			con->print(tx++,recty+1,"\xB3");
 		}
-		tabpos.set(tx,i);                               
+		tabpos.set(tx,i);
 		con->setDefaultBackground(mouseTab==i && curTab != i ? guiHighlightedBackground : guiBackground );
 		con->setDefaultForeground(TCODColor::white);
 		const char *label=labels.get(i);
@@ -133,7 +133,7 @@ void Tabs::update(float elapsed, TCOD_key_t &k, TCOD_mouse_t &mouse, int rectx, 
 	}
 }
 
-Scroller::Scroller(Scrollable * scrollable, int width, int height, bool inverted) 
+Scroller::Scroller(Scrollable * scrollable, int width, int height, bool inverted)
 	: inverted(inverted), width(width), height(height), scrollable(scrollable) {
 	scrollFocus=scrollDrag=false;
 	scrollOffset=0;
@@ -332,7 +332,7 @@ void MultiPosDialog::onDragEnd() {
 	int posnum=0;
 	int bestdist=100000;
 	int bestpos=0;
-	// find the best set position 
+	// find the best set position
    	for (posnum=0; posnum < possiblePos.size(); posnum++ ) {
    		UmbraRect curRect=*possiblePos.get(posnum);
    		if ( rect.x == curRect.x && rect.y == curRect.y ) {
@@ -340,15 +340,15 @@ void MultiPosDialog::onDragEnd() {
    			for ( MultiPosDialog **it=set.begin();it!=set.end(); it++) {
    				if ( *it != this ) {
    					UmbraRect *prect = (*it)->possiblePos.get(posnum);
-   					int dx = prect->x - (*it)->rect.x; 
-   					int dy = prect->y - (*it)->rect.y; 
-   					dist += dx*dx+dy*dy; 
+   					int dx = prect->x - (*it)->rect.x;
+   					int dy = prect->y - (*it)->rect.y;
+   					dist += dx*dx+dy*dy;
 				}
-			}   	
+			}
 			if ( dist < bestdist ) {
 				bestdist=dist;
 				bestpos=posnum;
-			}		
+			}
 		}
    	}
 	for ( MultiPosDialog **it=set.begin();it!=set.end(); it++) {

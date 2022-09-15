@@ -203,7 +203,7 @@ void Player::render(LightMap *lightMap) {
 			stealthBar.putPixel(1,y,col);
 			transpBlit2x(&stealthBar, 0, 0, 2, 10, TCODConsole::root, CON_W/2-3, CON_H/2-3, 0.4f);
 		}
-		
+
 	}
 }
 
@@ -211,14 +211,14 @@ void Player::render(LightMap *lightMap) {
 // supported layouts:
 // hjklyubn (vi keys)
 // arrows
-// numpad 12346789 
+// numpad 12346789
 // WSAD / ZSQD (fps keys)
 void Player::getMoveKey(TCOD_key_t key,bool *up, bool *down, bool *left, bool *right) {
 	static int moveUpKey=toupper(config.getCharProperty("config.creatures.player.moveUpKey"));
 	static int moveDownKey=toupper(config.getCharProperty("config.creatures.player.moveDownKey"));
 	static int moveLeftKey=toupper(config.getCharProperty("config.creatures.player.moveLeftKey"));
 	static int moveRightKey=toupper(config.getCharProperty("config.creatures.player.moveRightKey"));
-	
+
 	int kc=toupper(key.c);
 	if ( kc == moveUpKey || key.vk == TCODK_UP || kc == 'Z' || kc =='W' || kc == 'K' || key.vk == TCODK_KP8) {
 		*up = key.pressed;
@@ -230,19 +230,19 @@ void Player::getMoveKey(TCOD_key_t key,bool *up, bool *down, bool *left, bool *r
 		*right = key.pressed;
 	} else if ( kc == 'Y' || key.vk == TCODK_KP7 ) {
 		*up = key.pressed;
-		*left = key.pressed;		
+		*left = key.pressed;
 	} else if ( kc == 'U' || key.vk == TCODK_KP9 ) {
 		*up = key.pressed;
-		*right = key.pressed;		
+		*right = key.pressed;
 	} else if ( kc == 'B' || key.vk == TCODK_KP1 ) {
 		*down = key.pressed;
-		*left = key.pressed;		
+		*left = key.pressed;
 	} else if ( kc == 'N' || key.vk == TCODK_KP3 ) {
 		*down = key.pressed;
-		*right = key.pressed;		
+		*right = key.pressed;
 	}
-	
-	
+
+
 }
 
 void Player::computeStealth(float elapsed) {
@@ -381,9 +381,9 @@ bool Player::update(float elapsed, TCOD_key_t key,TCOD_mouse_t *mouse) {
 	if (mouse->lbutton) {
 		lbuttonDelay+=elapsed;
 		lWalkDelay+=elapsed;
-	} 
+	}
 	if (mouse->rbutton) rbuttonDelay+=elapsed;
-	
+
 
 
 	// right mouse button
@@ -427,7 +427,7 @@ bool Player::update(float elapsed, TCOD_key_t key,TCOD_mouse_t *mouse) {
 			subtype="fireball2";
 			cast=true;
 		}
-			
+
 		lWalkDelay=0.0f;
 		lbuttonDelay=0.0f;
 		if ( cast ) {
@@ -537,7 +537,7 @@ bool Player::update(float elapsed, TCOD_key_t key,TCOD_mouse_t *mouse) {
 					static int dy=1;
 					if ( IN_RECTANGLE(x+dx,y+dy,dungeon->width,dungeon->height )
 						&& dungeon->map->isWalkable((int)x+dx,(int)y+dy)
-						&& (! dungeon->hasCreature((int)x+dx,(int)y+dy) 
+						&& (! dungeon->hasCreature((int)x+dx,(int)y+dy)
 							|| ! dungeon->getCreature((int)x+dx,(int)y+dy)->isBlockingPath())
 						) {
 						newx = (int)x + dx;
@@ -550,7 +550,7 @@ bool Player::update(float elapsed, TCOD_key_t key,TCOD_mouse_t *mouse) {
 						hasWalked=true;
 					} else if ( IN_RECTANGLE(x+dx,y-dy,dungeon->width,dungeon->height )
 						&& dungeon->map->isWalkable((int)x+dx,(int)y-dy)
-						&& (! dungeon->hasCreature((int)x+dx,(int)y-dy) 
+						&& (! dungeon->hasCreature((int)x+dx,(int)y-dy)
 							|| ! dungeon->getCreature((int)x+dx,(int)y-dy)->isBlockingPath())
 						) {
 						newx = (int)x + dx;
@@ -566,7 +566,7 @@ bool Player::update(float elapsed, TCOD_key_t key,TCOD_mouse_t *mouse) {
 					static int dx=1;
 					if ( IN_RECTANGLE(x+dx,y+dy,dungeon->width,dungeon->height )
 						&& dungeon->map->isWalkable((int)x+dx,(int)y+dy)
-						&& (! dungeon->hasCreature((int)x+dx,(int)y+dy) 
+						&& (! dungeon->hasCreature((int)x+dx,(int)y+dy)
 							|| ! dungeon->getCreature((int)x+dx,(int)y+dy)->isBlockingPath())
 						) {
 						newx = (int)x + dx;
@@ -579,7 +579,7 @@ bool Player::update(float elapsed, TCOD_key_t key,TCOD_mouse_t *mouse) {
 						hasWalked=true;
 					} else if ( IN_RECTANGLE(x-dx,y+dy,dungeon->width,dungeon->height )
 						&& dungeon->map->isWalkable((int)x-dx,(int)y+dy)
-						&& (! dungeon->hasCreature((int)x-dx,(int)y+dy) 
+						&& (! dungeon->hasCreature((int)x-dx,(int)y+dy)
 							|| ! dungeon->getCreature((int)x-dx,(int)y+dy)->isBlockingPath())
 						) {
 						newx = (int)x - dx;
@@ -648,7 +648,7 @@ void Player::computeFovRange(float elapsed) {
 		float fovRefSpeed=playerSpeed/2;
 		fovRangeTarget = maxFovRange - (fovSpeed*0.5/fovRefSpeed)*0.8*maxFovRange ;
 	}
-	if ( crouch ) fovRangeTarget *= 1.15f;	
+	if ( crouch ) fovRangeTarget *= 1.15f;
 	if ( fovRange > fovRangeTarget ) fovRange += (fovRangeTarget-fovRange) * elapsed ;
 	else fovRange += (fovRangeTarget-fovRange) * elapsed / rangeAccomodation;
 }

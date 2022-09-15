@@ -59,8 +59,8 @@ public :
 	void enableMenuPage(TutorialPageId id);
 	void disableMenuPage(TutorialPageId id);
 	void init();
-	
-	// SaveListener	
+
+	// SaveListener
 	bool loadData(uint32 chunkId, uint32 chunkVersion, TCODZip *zip);
 	void saveData(uint32 chunkId, TCODZip *zip);
 protected :

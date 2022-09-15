@@ -41,7 +41,7 @@ GameEngine::GameEngine() : Screen(0), nbPause(0), lookOn(false) {
 	rippleManager=NULL;
 	fireManager=NULL;
 	firstFrame=true;
-	bossSeen=false;	
+	bossSeen=false;
 	bossIsDead=false;
 }
 
@@ -55,13 +55,13 @@ void GameEngine::activate() {
 	computeAspectRatio();
 	gui.activate();
 	memset(&stats,0,sizeof(stats));
-	TCODConsole::mapAsciiCodeToFont(TCOD_CHAR_PROGRESSBAR,26,3);	
+	TCODConsole::mapAsciiCodeToFont(TCOD_CHAR_PROGRESSBAR,26,3);
 	isUpdatingFireballs=false;
 }
 
 void GameEngine::deactivate() {
 	Screen::deactivate();
-	gui.deactivate();	
+	gui.deactivate();
 }
 
 void GameEngine::onFontChange() {
@@ -188,7 +188,7 @@ bool GameEngine::update(float elapsed, TCOD_key_t k,TCOD_mouse_t mouse) {
 				TCODConsole::setFade(255,flashColor);
 			}
 		}
-	}	
+	}
 	if ( isGamePaused() && pauseCoef != 1.0f ) {
 		pauseCoef += elapsed;
 		if ( pauseCoef > 1.0f ) pauseCoef=1.0f;
@@ -205,12 +205,12 @@ void GameEngine::init() {
 	player.init();
 }
 
-void GameEngine::pauseGame() { 
+void GameEngine::pauseGame() {
 	nbPause++;
 }
 
-void GameEngine::resumeGame() { 
-	nbPause--; 
+void GameEngine::resumeGame() {
+	nbPause--;
 }
 
 
@@ -255,9 +255,9 @@ void GameEngine::openCloseLoot(Item *toLoot) {
 	}
 }
 
-void GameEngine::addFireball(FireBall *fb) { 
+void GameEngine::addFireball(FireBall *fb) {
 	if ( isUpdatingFireballs ) fireballsToAdd.push(fb);
-	else fireballs.push(fb); 
+	else fireballs.push(fb);
 }
 
 void GameEngine::updateFireballs(float elapsed) {
@@ -274,8 +274,8 @@ void GameEngine::updateFireballs(float elapsed) {
 		}
 	}
 	isUpdatingFireballs=false;
-	fireballsToRemove.clearAndDelete();	
-}	
+	fireballsToRemove.clearAndDelete();
+}
 
 void GameEngine::displayProgress(float prog) {
 //printf ("==> %g \n",prog);

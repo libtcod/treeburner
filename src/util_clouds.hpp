@@ -34,7 +34,7 @@ public :
 	void update(float elapsed);
 protected :
 	int width,height, x0;
-	float *data, xOffset,xTotalOffset;	
+	float *data, xOffset,xTotalOffset;
 	float *highOctaveNoise;
 	TCODColor cloudColorMap[256];
 	float getNoisierThickness(int x, int y);

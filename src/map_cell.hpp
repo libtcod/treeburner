@@ -78,8 +78,8 @@ struct Cell : public Persistant {
 	bool memory;
 	TerrainId terrain;
 	Building *building; // if cell is inside a building
-	
-	// SaveListener	
+
+	// SaveListener
 	bool loadData(TCODZip *zip);
 	void saveData(TCODZip *zip);
 };
@@ -93,7 +93,7 @@ struct SubCell : public Persistant {
 	float shadow;
 	float waterCoef;
 
-	// SaveListener	
+	// SaveListener
 	bool loadData(TCODZip *zip);
 	void saveData(TCODZip *zip);
 };

@@ -37,15 +37,15 @@ StatusPanel::StatusPanel() {
 	possiblePos.push(new UmbraRect(CON_W-12,0,12,PANEL_HEIGHT));
 	possiblePos.push(new UmbraRect(CON_W-12,0,12,PANEL_HEIGHT));
 	possiblePos.push(new UmbraRect(CON_W-12,0,12,PANEL_HEIGHT));
-	
+
 	possiblePos.push(new UmbraRect(CON_W-12,CON_H-PANEL_HEIGHT,12,PANEL_HEIGHT));
 	possiblePos.push(new UmbraRect(CON_W-12,CON_H-PANEL_HEIGHT,12,PANEL_HEIGHT));
 	possiblePos.push(new UmbraRect(CON_W-12,CON_H-PANEL_HEIGHT,12,PANEL_HEIGHT));
-	
+
 	possiblePos.push(new UmbraRect(0,0,12,PANEL_HEIGHT));
 	possiblePos.push(new UmbraRect(0,0,12,PANEL_HEIGHT));
 	possiblePos.push(new UmbraRect(0,0,12,PANEL_HEIGHT));
-	
+
 	possiblePos.push(new UmbraRect(0,CON_H-PANEL_HEIGHT,12,PANEL_HEIGHT));
 	possiblePos.push(new UmbraRect(0,CON_H-PANEL_HEIGHT,12,PANEL_HEIGHT));
 	possiblePos.push(new UmbraRect(0,CON_H-PANEL_HEIGHT,12,PANEL_HEIGHT));
@@ -93,7 +93,7 @@ void StatusPanel::render() {
 		img.putPixel(x,1,TCODColor::black);
 	}
 	img.blit2x(TCODConsole::root, rect.x+1, rect.y+y+dy, 0, 0, 20, 2);
-	
+
 	y += 3*dy;
 	TCODList<Condition *> conds;
 	// extract conditions from the player.
@@ -135,7 +135,7 @@ bool StatusPanel::update(float elapsed, TCOD_key_t &k, TCOD_mouse_t &mouse) {
 	} else if ( !isDragging ) {
 		titleBarAlpha-=elapsed;
 		titleBarAlpha=MAX(0.0f,titleBarAlpha);
-	}	
+	}
 	return true;
 }
 

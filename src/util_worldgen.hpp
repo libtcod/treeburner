@@ -82,7 +82,7 @@ public :
 	// update
 	void updateClouds(float elapsedTime);
 	void computeSunLight(float lightDir[3]);
-	
+
 	// data
 	float getRealAltitude(float x, float y) const; // altitude in meters
 	float getPrecipitations(float x, float y) const; // in centimeter/m²/year

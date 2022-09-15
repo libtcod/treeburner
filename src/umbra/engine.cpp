@@ -244,7 +244,7 @@ private:
 	const char * chainName;
 	// current module being parsed
 	UmbraModule * module;
-	// shall we skip the current moduleChain ? 
+	// shall we skip the current moduleChain ?
 	bool skip;
 	// whether the active chain has already been parsed (skip other chains)
 	bool chainDone;
@@ -280,7 +280,7 @@ public :
 				}
 			}
 		}
-		return true;    	
+		return true;
 	}
     bool parserFlag(TCODParser * parser, const char * name) {
     	if (skip) return true;
@@ -311,8 +311,8 @@ public :
 					sprintf(tmp,"Unknown module '%s'",value.s);
 					error(tmp);
 					return false;
-				}    			
-			} 
+				}
+			}
 			module->setFallback(value.s);
     	} else {
     		// dynamically declared property.
@@ -337,7 +337,7 @@ public :
     void error(const char * msg) {
     	UmbraError::add(UMBRA_ERRORLEVEL_ERROR,msg);
 	}
-}; 
+};
 
 // load external module configuration
 bool UmbraEngine::loadModuleConfiguration(const char *filename, UmbraModuleFactory *factory, const char *chainName) {
@@ -362,7 +362,7 @@ bool UmbraEngine::loadModuleConfiguration(const char *filename, UmbraModuleFacto
 		parser.run(filename,new UmbraModuleConfigParser(factory,UmbraConfig::moduleChain));
 		if (windowTitle == "" ) {
 			windowTitle = UmbraConfig::moduleChain;
-		}	
+		}
 	}
 	else {
 		parser.run(filename,new UmbraModuleConfigParser(factory,chainName));

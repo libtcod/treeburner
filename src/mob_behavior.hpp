@@ -43,14 +43,14 @@ public :
 	Behavior(WalkPattern *walkPattern) : walkPattern(walkPattern) {}
 	virtual bool update(Creature *crea, float elapsed) = 0;
 protected :
-	WalkPattern *walkPattern;	
+	WalkPattern *walkPattern;
 };
 
 class FollowBehavior : public Behavior {
 public :
 	FollowBehavior(WalkPattern *walkPattern) : Behavior(walkPattern),leader(NULL),standDelay(0.0f) {}
 	void setLeader(Creature *leader) { this->leader=leader;}
-	bool update(Creature *crea, float elapsed);	
+	bool update(Creature *crea, float elapsed);
 protected :
 	Creature *leader;
 	float standDelay;
@@ -71,7 +71,7 @@ public :
 	HerdBehavior(WalkPattern *walkPattern) : Behavior(walkPattern) {}
 	virtual ~HerdBehavior() {}
 	bool update(Creature *crea, float elapsed);
-	static void addScarePoint(int x, int y, float life=SCARE_LIFE);	
+	static void addScarePoint(int x, int y, float life=SCARE_LIFE);
 	static void updateScarePoints(float elapsed);
 	static void recomputeHerds();
 protected :

@@ -47,10 +47,10 @@ public :
 	// SaveListener
 	bool loadData(uint32 chunkId, uint32 chunkVersion, TCODZip *zip);
 	void saveData(uint32 chunkId, TCODZip *zip);
-    
+
     // scrollable
 	int getScrollTotalSize();
-	const char *getScrollText(int idx);    
+	const char *getScrollText(int idx);
 	void getScrollColor(int idx, TCODColor *fore, TCODColor *back);
 protected :
 	struct Message {

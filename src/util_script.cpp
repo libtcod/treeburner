@@ -153,7 +153,7 @@ int scCreatureTalk(lua_State *L) {
 		return 0;
 	}
 	cr->talk(msg);
-	return 0;		
+	return 0;
 }
 
 int scCreaturePos(lua_State *L) {
@@ -164,7 +164,7 @@ int scCreaturePos(lua_State *L) {
 	}
 	lua_pushnumber(L,cr->x);
 	lua_pushnumber(L,cr->y);
-	return 2;		
+	return 2;
 }
 
 int scCreatureLife(lua_State *L) {
@@ -174,29 +174,29 @@ int scCreatureLife(lua_State *L) {
 		return 0;
 	}
 	lua_pushnumber(L,cr->life);
-	return 1;		
+	return 1;
 }
 #endif
 
 Script::Script() {
-#ifndef NO_LUA	
+#ifndef NO_LUA
 	lua_State *L = lua_open();
 	luaL_openlibs( L );
 	data = (void *)L;
-#endif	
+#endif
 	ref=-1;
 	init();
 }
 Script::~Script() {
-#ifndef NO_LUA	
+#ifndef NO_LUA
 	lua_close((lua_State *)data);
 #endif
 }
 
-bool Script::execute() {  
-#ifndef NO_LUA	
+bool Script::execute() {
+#ifndef NO_LUA
 	lua_State *L=(lua_State *)data;
-	lua_rawgeti( L, LUA_REGISTRYINDEX, ref );         
+	lua_rawgeti( L, LUA_REGISTRYINDEX, ref );
 	if (lua_pcall(L, 0, LUA_MULTRET, 0)) {
 		const char* err= lua_tostring(L, lua_gettop((lua_State *)data));
 		lua_pop(L, 1);
@@ -204,12 +204,12 @@ bool Script::execute() {
 		gameEngine->gui.log.critical("SCRIPT ERROR : %s",err);
 		return false;
 	}
-#endif	
+#endif
 	return true;
 }
 
 bool Script::parse(const char* txt, ...) {
-#ifndef NO_LUA	
+#ifndef NO_LUA
 	static char buf[1024];
 	va_list ap;
 	va_start (ap,txt);
@@ -224,12 +224,12 @@ bool Script::parse(const char* txt, ...) {
 		return false;
 	}
 	ref = luaL_ref( L, LUA_REGISTRYINDEX );
-#endif	
+#endif
 	return true;
 }
 
 void Script::init() {
-#ifndef NO_LUA	
+#ifndef NO_LUA
 	lua_State *L=(lua_State*)data;
 	lua_register(L, "debug", scDebug);
 	lua_register(L, "info", scInfo);
@@ -250,7 +250,7 @@ void Script::init() {
 
 float Script::getFloatVariable(const char *name) {
 	float ret=0.0f;
-#ifndef NO_LUA	
+#ifndef NO_LUA
 	lua_State *L=(lua_State*)data;
 	lua_getglobal(L, name);
 	if (!lua_isnumber(L, -1)) {
@@ -260,12 +260,12 @@ float Script::getFloatVariable(const char *name) {
 	}
 	ret =(float)lua_tonumber(L,-1);
 	lua_pop(L,1);
-#endif	
+#endif
 	return ret;
 }
 
 void Script::setFloatVariable(const char *name,float val) {
-#ifndef NO_LUA	
+#ifndef NO_LUA
 	lua_State *L=(lua_State*)data;
 	lua_pushnumber(L,val);
 	lua_setglobal(L,name);

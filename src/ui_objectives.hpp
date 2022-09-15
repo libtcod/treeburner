@@ -30,7 +30,7 @@ public :
 	const char *enableScript;
 	const char *successScript;
 	TCODList<const char *> steps;
-	
+
 	Objective(	const char *title,
 		const char *description,
 		const char *enableScript = NULL,
@@ -55,24 +55,24 @@ public :
 	void render();
 	// check conditions to enable new objectives or finish existing ones
 	bool update(float elapsed, TCOD_key_t &k, TCOD_mouse_t &mouse);
-	
+
 	void addObjective(Objective *obj);
 	void activateCurrent();
 	void activateObjective(const char *title);
 	// add a new message in the current objective log
-	void addStep(const char *msg, Objective *obj=NULL); 
+	void addStep(const char *msg, Objective *obj=NULL);
 	void closeCurrent(bool success);
 	// objective whose script is executed
 	Objective *currentObjective;
 
-	// SaveListener	
+	// SaveListener
 	bool loadData(uint32 chunkId, uint32 chunkVersion, TCODZip *zip);
 	void saveData(uint32 chunkId, TCODZip *zip);
-	
+
     // scrollable
 	int getScrollTotalSize();
-	const char *getScrollText(int idx);    
-	void getScrollColor(int idx, TCODColor *fore, TCODColor *back);		
+	const char *getScrollText(int idx);
+	void getScrollColor(int idx, TCODColor *fore, TCODColor *back);
 protected :
 	float timer;
 	bool showWindow, firstObj, wasShowingWindow;

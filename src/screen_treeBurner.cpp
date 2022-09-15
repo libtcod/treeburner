@@ -35,7 +35,7 @@
 
 // probability for an entity (item or creature) to be on some terrain type
 struct EntityProb {
-	// item or creature type. NULL/-1 = end of list 
+	// item or creature type. NULL/-1 = end of list
 	const char *itemTypeName;
 	int creatureType;
 	// how many entities (1.0 = on every cell, 0.0= never)
@@ -163,17 +163,17 @@ void TreeBurner::render() {
 	dungeon->renderSubcellCreatures(lightMap);
 	// draw ripples
 	rippleManager->renderRipples(ground);
-	
-	// render the lights 
+
+	// render the lights
 	dungeon->renderLightsToLightMap(lightMap);
-	
+
 	// render the fireballs
 	for (FireBall **it=fireballs.begin();it!=fireballs.end(); it++) {
 		(*it)->render(lightMap);
 	}
 	// apply light map
 	lightMap->applyToImageOutdoor(ground);
-	
+
 	// render canopy
 	Building *playerBuilding = dungeon->getCell(player.x,player.y)->building;
 	for (int x=minx; x < maxx; x++) {
@@ -223,7 +223,7 @@ void TreeBurner::render() {
 
 			int dx=(int)(dungeon2x-player.x*2);
 			int dy=(int)(dungeon2y-player.y*2);
-			if ( !showDebugMap 
+			if ( !showDebugMap
 				&& (( (!playerBuilding || dungeon->getCell(dungeon2x/2,dungeon2y/2)->building != playerBuilding)
 					&& dx*dx+dy*dy*fovRatio > squaredFov )
 					|| ! dungeon->map2x->isInFov(dungeon2x,dungeon2y)) ) {
@@ -254,7 +254,7 @@ void TreeBurner::render() {
 	// blit it on console
 	ground->blit2x(TCODConsole::root,0,0);
 	// render the corpses
-	dungeon->renderCorpses(lightMap);	
+	dungeon->renderCorpses(lightMap);
 	// render the items
 	dungeon->renderItems(lightMap, ground);
 	// render the creatures
@@ -359,8 +359,8 @@ bool TreeBurner::update(float elapsed, TCOD_key_t k,TCOD_mouse_t mouse) {
 		endTimer+=elapsed;
 		if ( endTimer < 30.0f ) dungeon->setAmbient(TCODColor::lerp(sunColor,dawnColor,endTimer/30.0f));
 	}
-	if ( fade != FADE_DOWN  
-		&& gui.objectives.sleeping.size() == 0 && gui.objectives.active.size() == 0 
+	if ( fade != FADE_DOWN
+		&& gui.objectives.sleeping.size() == 0 && gui.objectives.active.size() == 0
 		&& endTimer > 30.0f ) {
 		setFadeOut(fadeOutLength, TCODColor::darkRed);
 		fade=FADE_DOWN;
@@ -391,7 +391,7 @@ bool TreeBurner::update(float elapsed, TCOD_key_t k,TCOD_mouse_t mouse) {
 		if ( !bossIsDead ) aiDirector.update(elapsed);
 	}
 	dungeon->updateClouds(elapsed);
-	
+
 	HerdBehavior::updateScarePoints(elapsed);
 
 	// update fireballs
@@ -421,7 +421,7 @@ void TreeBurner::generateMap(uint32 seed) {
 	DBG(("Forest generation start\n"));
 	forestRng = new TCODRandom(seed);
 	dungeon = new Dungeon(FOREST_W,FOREST_H);
-	
+
 	for (int x=1; x < FOREST_W-1; x++ ) {
 		if ( x % 40 == 0 ) displayProgress(0.4f+(float)(x) / FOREST_W*0.1f);
 		for (int y=1; y < FOREST_H-1; y++ ) {
@@ -475,7 +475,7 @@ void TreeBurner::generateMap(uint32 seed) {
 	}
 	cityWallX = FOREST_W-130;
 	Building::buildCityWalls(cityWallX,dungeon);
-	
+
 	dungeon->saveShadowBeforeTree();
 
 	for (int x=2*FOREST_W-1; x >=0 ; x--) {
@@ -515,10 +515,10 @@ void TreeBurner::generateMap(uint32 seed) {
 			float layer1Height = (height - info1->threshold) / (maxThreshold1 - info1->threshold);
 			float layer2Height = (height - info2->threshold) / (maxThreshold2 - info2->threshold);
 			float waterCoef=0.0f;
-			if ( terrainTypes[info1->terrain].swimmable || swimmable1   
+			if ( terrainTypes[info1->terrain].swimmable || swimmable1
 				|| terrainTypes[info2->terrain].swimmable || swimmable2 ) {
 				waterCoef = (WATER_START-height) / (WATER_START +1);
-			} 
+			}
 			TerrainGenData *info=NULL;
 			if ( (terrainTypeCoef < 0.25f && !swimmable2 && !terrainTypes[info2->terrain].swimmable)  || swimmable1 || terrainTypes[info1->terrain].swimmable) {
 		      	TCODColor groundCol1=TCODColor::lerp(terrainTypes[info1->terrain].color,
@@ -556,7 +556,7 @@ void TreeBurner::generateMap(uint32 seed) {
 		      	TCODColor groundCol2=TCODColor::lerp(terrainTypes[info2->terrain].color,
 					nextColor2,
 					layer2Height);
-					/*	
+					/*
 				if ( terrainTypes[info2->terrain].swimmable && swimmable2 ) waterCoef2=1.0f;
 				else if ( terrainTypes[info2->terrain].swimmable ) waterCoef2=1.0f-layer2Height;
 				else if ( swimmable2 ) waterCoef2=layer2Height;
@@ -564,7 +564,7 @@ void TreeBurner::generateMap(uint32 seed) {
 
 				float coef=(terrainTypeCoef-0.25f)*2;
 				if ( terrainTypes[info1->terrain].swimmable && swimmable1 ) coef = 1.0f-waterCoef;
-				else if ( terrainTypes[info2->terrain].swimmable && swimmable2 ) coef=waterCoef; 
+				else if ( terrainTypes[info2->terrain].swimmable && swimmable2 ) coef=waterCoef;
 		      	dungeon->setGroundColor(x,y,TCODColor::lerp(groundCol1,groundCol2,coef));
 				//waterCoef=waterCoef2*coef + waterCoef1*(1.0f-coef);
 				info = ( terrainTypeCoef <= 0.5f ? info1 : info2 );
@@ -582,7 +582,7 @@ void TreeBurner::generateMap(uint32 seed) {
 							ItemType *type=Item::getType(itemData->itemTypeName);
 							if (! type ) {
 								printf ("FATAL : unknown item type '%s'\n",itemData->itemTypeName);
-								
+
 							} else {
 								if ( type->isA("tree") ) placeTree(dungeon,x,y,type);
 								else dungeon->addItem(Item::getItem(type, x/2, y/2));
@@ -625,7 +625,7 @@ void TreeBurner::activate() {
 	init();
 
 	generateMap(TCODRandom::getInstance()->getInt(0,0xFFFFFFFF));
-	
+
 	/*
 	Item *staff=Item::getRandomWeapon("staff",ITEM_CLASS_STANDARD);
 	staff->name=strdup("pyromancer staff");
@@ -655,8 +655,8 @@ void TreeBurner::activate() {
 			again=true;
 		}
 	} while (again);
-	
-	// re-enable fading 
+
+	// re-enable fading
 	TCODConsole::setFade(0,TCODColor::black);
 	fade=FADE_UP;
 	fadeLvl=0.0f;
@@ -667,7 +667,7 @@ void TreeBurner::activate() {
 	rippleManager = new RippleManager(dungeon);
 	fireManager = new FireManager(dungeon);
 	aiDirector.setBaseCreature(CREATURE_VILLAGER);
-	
+
 	Objective *obj=new Objective("Find the village",
 			"They must be hiding in this forest. Find the village. It must be destroyed!",
 			NULL,
@@ -679,7 +679,7 @@ void TreeBurner::activate() {
 		"end ");
 	obj->onSuccess->setFloatVariable("cityWallX",cityWallX);
 	gui.objectives.addObjective(obj);
-	
+
 	obj=new Objective("Kill the village head",
 			"The old man is probably in the village! Find him and turn him into ashes.",
 			"",
@@ -689,7 +689,7 @@ void TreeBurner::activate() {
 		"   closeObjective(true)"
 		"end ");
 	gui.objectives.addObjective(obj);
-	
+
 	gui.tutorial.disableMenuPage(TUTO_ITEMS);
 	gui.tutorial.disableMenuPage(TUTO_INVENTORY2);
 	gui.tutorial.enableMenuPage(TUTO_FIREBALL);

@@ -35,7 +35,7 @@
 
 // probability for an entity (item or creature) to be on some terrain type
 struct EntityProb {
-	// item or creature type. NULL/-1 = end of list 
+	// item or creature type. NULL/-1 = end of list
 	const char *itemTypeName;
 	int creatureType;
 	// how many entities (1.0 = on every cell, 0.0= never)
@@ -366,7 +366,7 @@ bool ForestScreen::update(float elapsed, TCOD_key_t k,TCOD_mouse_t mouse) {
 		rippleManager->updateRipples(elapsed);
 	}
 	dungeon->updateClouds(elapsed);
-	
+
 	HerdBehavior::updateScarePoints(elapsed);
 
 	// update fireballs
@@ -426,11 +426,11 @@ void ForestScreen::generateMap(uint32 seed) {
 	DBG(("Forest generation start\n"));
 	forestRng = new TCODRandom(seed);
 	dungeon = new Dungeon(FOREST_W,FOREST_H);
-	
+
 	saveGame.registerListener(CHA1_CHUNK_ID,PHASE_START,this);
     saveGame.registerListener(DUNG_CHUNK_ID,PHASE_START,dungeon);
 	saveGame.registerListener(PLAY_CHUNK_ID,PHASE_START,&player);
-	
+
 	lightMap->clear(sunColor);
 	for (int x=1; x < FOREST_W-1; x++ ) {
 		if ( x % 40 == 0 ) displayProgress(0.4f+(float)(x) / FOREST_W*0.1f);
@@ -502,10 +502,10 @@ void ForestScreen::generateMap(uint32 seed) {
 			float layer1Height = (height - info1->threshold) / (maxThreshold1 - info1->threshold);
 			float layer2Height = (height - info2->threshold) / (maxThreshold2 - info2->threshold);
 			float waterCoef=0.0f;
-			if ( terrainTypes[info1->terrain].swimmable || swimmable1   
+			if ( terrainTypes[info1->terrain].swimmable || swimmable1
 				|| terrainTypes[info2->terrain].swimmable || swimmable2 ) {
 				waterCoef = (WATER_START-height) / (WATER_START +1);
-			} 
+			}
 			TerrainGenData *info=NULL;
 			if ( (terrainTypeCoef < 0.25f && !swimmable2 && !terrainTypes[info2->terrain].swimmable)  || swimmable1 || terrainTypes[info1->terrain].swimmable) {
 		      	TCODColor groundCol1=TCODColor::lerp(terrainTypes[info1->terrain].color,
@@ -543,7 +543,7 @@ void ForestScreen::generateMap(uint32 seed) {
 		      	TCODColor groundCol2=TCODColor::lerp(terrainTypes[info2->terrain].color,
 					nextColor2,
 					layer2Height);
-					/*	
+					/*
 				if ( terrainTypes[info2->terrain].swimmable && swimmable2 ) waterCoef2=1.0f;
 				else if ( terrainTypes[info2->terrain].swimmable ) waterCoef2=1.0f-layer2Height;
 				else if ( swimmable2 ) waterCoef2=layer2Height;
@@ -551,7 +551,7 @@ void ForestScreen::generateMap(uint32 seed) {
 
 				float coef=(terrainTypeCoef-0.25f)*2;
 				if ( terrainTypes[info1->terrain].swimmable && swimmable1 ) coef = 1.0f-waterCoef;
-				else if ( terrainTypes[info2->terrain].swimmable && swimmable2 ) coef=waterCoef; 
+				else if ( terrainTypes[info2->terrain].swimmable && swimmable2 ) coef=waterCoef;
 		      	dungeon->setGroundColor(x,y,TCODColor::lerp(groundCol1,groundCol2,coef));
 				//waterCoef=waterCoef2*coef + waterCoef1*(1.0f-coef);
 				info = ( terrainTypeCoef <= 0.5f ? info1 : info2 );
@@ -569,7 +569,7 @@ void ForestScreen::generateMap(uint32 seed) {
 							ItemType *type=Item::getType(itemData->itemTypeName);
 							if (! type ) {
 								printf ("FATAL : unknown item type '%s'\n",itemData->itemTypeName);
-								
+
 							} else {
 								if ( type->isA("tree") ) placeTree(dungeon,x,y,type);
 								else dungeon->addItem(Item::getItem(type, x/2, y/2));
@@ -683,7 +683,7 @@ void ForestScreen::activate() {
 		displayProgress(0.02f);
 		loadMap(saveGame.seed);
 	}
-	// re-enable fading 
+	// re-enable fading
 	TCODConsole::setFade(0,TCODColor::black);
 	fade=FADE_UP;
 	fadeLvl=0.0f;

@@ -111,8 +111,8 @@ ItemFeature *ItemFeature::getLight(float range, const TCODColor &color, float pa
 	return ret;
 }
 
-ItemFeature *ItemFeature::getAttack(AttackWieldType wield, float minCastDelay, float maxCastDelay, 
-		float minReloadDelay, float maxReloadDelay, float minDamagesCoef, float maxDamagesCoef, 
+ItemFeature *ItemFeature::getAttack(AttackWieldType wield, float minCastDelay, float maxCastDelay,
+		float minReloadDelay, float maxReloadDelay, float minDamagesCoef, float maxDamagesCoef,
 		int flags, const char *spellCasted ) {
 	ItemFeature *ret=new ItemFeature();
 	ret->id = ITEM_FEAT_ATTACK;
@@ -165,11 +165,11 @@ Item *ItemType::produce(float rng) const {
 	return NULL;
 }
 
-bool ItemType::isA(const char *typeName) const { 
-	return isA(Item::getType(typeName)); 
+bool ItemType::isA(const char *typeName) const {
+	return isA(Item::getType(typeName));
 }
-bool ItemType::hasAction(ItemActionId id) const { 
-	return actions.contains(id); 
+bool ItemType::hasAction(ItemActionId id) const {
+	return actions.contains(id);
 }
 
 bool ItemType::isA(const ItemType *type) const {
@@ -228,14 +228,14 @@ public :
 						ItemFeature *feat=type->getFeature((*it)->id);
 						if (! feat) {
 							feat=new ItemFeature();
-							type->features.push(feat);							
+							type->features.push(feat);
 						}
 						*feat = **it;
 					}
 				}
 			}
 			type->name=strdup(name);
-			
+
 			types.push(type);
 		} else  if ( strcmp(str->getName(),"fireEffect") == 0 ) {
 			feat.id=ITEM_FEAT_FIRE_EFFECT;
@@ -430,10 +430,10 @@ public :
 		fprintf(stderr,"Fatal error while loading items.cfg : %s",msg);
 		exit(1);
 	}
-		
+
 protected :
 	TCODList<ItemType *> types;
-	ItemType *type;	
+	ItemType *type;
 	ItemFeature feat;
 	float getDelay(const char *s) {
 		float ret;
@@ -453,15 +453,15 @@ protected :
 		}
 		return ret;
 	}
-	
+
 	AttackWieldType getWieldType(const char *s) {
-		if ( strcmp(s,"mainHand") == 0 ) return WIELD_MAIN_HAND; 
-		else if ( strcmp(s,"oneHand") == 0 ) return WIELD_ONE_HAND; 
-		else if ( strcmp(s,"offHand") == 0 ) return WIELD_OFF_HAND; 
+		if ( strcmp(s,"mainHand") == 0 ) return WIELD_MAIN_HAND;
+		else if ( strcmp(s,"oneHand") == 0 ) return WIELD_ONE_HAND;
+		else if ( strcmp(s,"offHand") == 0 ) return WIELD_OFF_HAND;
 		else if ( strcmp(s,"twoHands") == 0 ) return WIELD_TWO_HANDS;
-		return WIELD_NONE; 
+		return WIELD_NONE;
 	}
-	
+
 	void getAttackCoef(const char *s, float *fmin, float *fmax) {
 		if ( strchr(s,'-') ) {
 			if (sscanf(s,"%f-%f",fmin,fmax) != 2 ) {
@@ -490,7 +490,7 @@ public :
 			mode = RECIPE_TOOL;
 		} else if( strcmp(str->getName(),"result") == 0 ) {
 			mode = RECIPE_RESULT;
-		} else if( strcmp(str->getName(),"ingredient") == 0 
+		} else if( strcmp(str->getName(),"ingredient") == 0
 			|| strcmp(str->getName(),"optionalIngredient") == 0 ) {
 			if ( recipe->nbIngredients == MAX_INGREDIENTS-1 ) {
 				char buf[256];
@@ -505,7 +505,7 @@ public :
 			ingredient->revert=false;
 			ingredient->type=NULL;
 			recipe->nbIngredients++;
-		} else if( strcmp(str->getName(),"component") == 0 
+		} else if( strcmp(str->getName(),"component") == 0
 			|| strcmp(str->getName(),"optionalComponent") == 0 ) {
 			if ( recipe->nbIngredients == MAX_INGREDIENTS-1 ) {
 				char buf[256];
@@ -551,7 +551,7 @@ public :
 		fprintf(stderr,"Fatal error while loading recipes.cfg : %s",msg);
 		exit(1);
 	}
-		
+
 protected :
 	enum { RECIPE_TOOL,RECIPE_INGREDIENT,RECIPE_RESULT } mode;
 	ItemCombination *recipe;
@@ -613,9 +613,9 @@ bool Item::init() {
 	attack->addProperty("damageCoef",TCOD_TYPE_STRING,true);
 	attack->addProperty("spellCasted",TCOD_TYPE_STRING,false);
 	itemType->addStructure(attack);
-		
+
 	itemParser.run("data/cfg/items.cfg", new ItemFileListener());
-		
+
 	// check for unresolved forward references
 	if ( toDefine.size() > 0 ) {
 		for ( const char **it=toDefine.begin(); it!=toDefine.end(); it++) {
@@ -623,19 +623,19 @@ bool Item::init() {
 		}
 		return false;
 	}
-			
+
 //addFeature("health potion",ItemFeature::getFood(15));
 //addFeature("health potion",ItemFeature::getLight(4.0f,TCODColor(38,38,76),1.0f,"56789876"));
 //addFeature("wand",ItemFeature::getAttack(WIELD_ONE_HAND, 0.2f,0.3f, 0.6f,0.8f, 0.8f,1.2f, 0));
 //addFeature("wand",ItemFeature::getLight(4.0f,TCODColor::white,1.0f,"56789876"));
 //addFeature("staff",ItemFeature::getAttack(WIELD_TWO_HANDS, 0.25f,1.0f, 0.5f,2.0f, 0.8f,1.2f, 0));
 //addFeature("staff",ItemFeature::getLight(4.0f,TCODColor::white,1.0f,"56789876"));
-	
+
 	// define available action on each item type
 	for (ItemType **it=types.begin(); it!=types.end(); it++ ) {
 		(*it)->computeActions();
 	}
-	
+
 	// parse recipes
 	TCODParser recipeParser;
 	TCODParserStruct *recipe=recipeParser.newStructure("recipe");
@@ -667,7 +667,7 @@ bool Item::init() {
 	result->addProperty("count",TCOD_TYPE_INT,false);
 
 	recipeParser.run("data/cfg/recipes.cfg", new RecipeFileListener());
-	
+
 	return true;
 }
 
@@ -886,7 +886,7 @@ void Item::generateComponents() {
 	int maxOptionals=itemClass-ITEM_CLASS_STANDARD;
 	int i=rng->getInt(0,combination->nbIngredients-1);
 	for (int count=combination->nbIngredients; count > 0 ; count--) {
-		if (combination->ingredients[i].revert && 
+		if (combination->ingredients[i].revert &&
 			(!combination->ingredients[i].optional || maxOptionals > 0 )) {
 			if ( combination->ingredients[i].optional ) maxOptionals--;
 			ItemType *componentType=combination->ingredients[i].type;
@@ -910,7 +910,7 @@ Item::~Item() {
 	if ( light ) delete light;
 	free(typeName);
 	if ( adjective ) free(adjective);
-	
+
 }
 
 // look for a 2 items recipe
@@ -948,14 +948,14 @@ Item *Item::putInContainer(Item *it) {
 	item->y=it->y;
 	return item;
 }
- 
+
 // remove it from this container (false if not inside)
 Item *Item::removeFromContainer(int count) {
 	if ( ! container || ! container->stack.contains(this) ) return NULL;
 	Item *item=removeFromList(&container->stack,count);
 	item->container=NULL;
 	return item;
-} 
+}
 
 
 // add to the list, posibly stacking
@@ -998,7 +998,7 @@ Item * Item::removeFromList(TCODList<Item *> *list, int removeCount, bool fast) 
 				while ( stack.size() > removeCount ) {
 					newStackOwner->stack.push(stack.pop());
 				}
-			} 
+			}
 			// remove before adding to avoid list reallocation
 			if (fast) list->removeFast(this);
 			else list->remove(this);
@@ -1015,7 +1015,7 @@ Item * Item::removeFromList(TCODList<Item *> *list, int removeCount, bool fast) 
 		}
 	} else if ( container && list->contains(container)) {
 		// item is inside a container
-		removeFromContainer(removeCount);		
+		removeFromContainer(removeCount);
 	}
 	if (fast) list->removeFast(this);
 	else list->remove(this);
@@ -1029,19 +1029,19 @@ void Item::computeBottleName() {
 	if ( stack.isEmpty() ) {
 		an=true;
 		name=strdup("empty bottle");
-		return; 
+		return;
 	}
 	Item *liquid = stack.get(0);
 	if ( strcmp(liquid->typeData->name,"water") == 0 ) {
-		an=false; name=strdup("bottle of water"); 
+		an=false; name=strdup("bottle of water");
 	} else if ( strcmp(liquid->typeData->name,"poison") == 0 ) {
-		an=false; name=strdup("bottle of poison"); 
+		an=false; name=strdup("bottle of poison");
 	} else if ( strcmp(liquid->typeData->name,"sleep") == 0 ) {
-		an=false; name=strdup("bottle of soporific"); 
+		an=false; name=strdup("bottle of soporific");
 	} else if ( strcmp(liquid->typeData->name,"antidote") == 0 ) {
 		an=true; name=strdup("antidote");
 	} else if ( strcmp(liquid->typeData->name,"health") == 0 ) {
-		an=false; name=strdup("health potion"); 
+		an=false; name=strdup("health potion");
 	} else {
 		an = liquid->an;
 		name=strdup(liquid->typeData->name);
@@ -1056,8 +1056,8 @@ void Item::render(LightMap *lightMap, TCODImage *ground) {
 	TCODColor lightColor=lightMap->getColor(conx,cony);
 	float shadow = dungeon->getShadow(x*2,y*2);
 	float clouds = dungeon->getCloudCoef(x*2,y*2);
-	shadow = MIN(shadow,clouds); 
-	lightColor = lightColor * shadow; 
+	shadow = MIN(shadow,clouds);
+	lightColor = lightColor * shadow;
 	TCODConsole::root->setChar(conx,cony,ch);
 	TCODConsole::root->setCharForeground(conx,cony,col*lightColor);
 	if ( ground ) {
@@ -1122,7 +1122,7 @@ const char *Item::getRateName(float rate) const {
 	else if ( rate <= 3.0f ) rateIdx = 2;
 	else if ( rate <= 5.0f ) rateIdx = 3;
 	else rateIdx = 4;
-	return ratename[rateIdx];	
+	return ratename[rateIdx];
 }
 
 void Item::renderGenericDescription(int x, int y, bool below, bool frame) {
@@ -1158,7 +1158,7 @@ void Item::renderGenericDescription(int x, int y, bool below, bool frame) {
     	minDamages=(int)MIN(1.0f,minDamages);
     	maxDamages=(int)MIN(1.0f,maxDamages);
 
-		if ( minDamages != maxDamages ) {		
+		if ( minDamages != maxDamages ) {
 			descCon->print(CON_W/4,cy++,"%d-%d damages/hit", (int)minDamages,(int)maxDamages);
 		} else {
 			descCon->print(CON_W/4,cy++,"%d damages/hit", (int)minDamages);
@@ -1199,7 +1199,7 @@ void Item::convertTo(ItemType *newType) {
 			}
 		}
 		owner->addToInventory(newItem);
-	} else gameEngine->dungeon->addItem(newItem);	
+	} else gameEngine->dungeon->addItem(newItem);
 }
 
 bool Item::age(float elapsed, ItemFeature *feat) {
@@ -1280,9 +1280,9 @@ bool Item::update(float elapsed, TCOD_key_t key, TCOD_mouse_t *mouse) {
 					// horizontal wall bounce
 					dy=-dy;
 				}
-			}			
+			}
 		} else {
-			if ((int)x == (int)gameEngine->player.x 
+			if ((int)x == (int)gameEngine->player.x
 				&& (int)y == (int)gameEngine->player.y ) {
 				ItemFeature *feat=getFeature(ITEM_FEAT_ATTACK);
 				if ( feat ) {
@@ -1316,7 +1316,7 @@ bool Item::update(float elapsed, TCOD_key_t key, TCOD_mouse_t *mouse) {
 			switch (phase) {
 			case CAST :
 				phaseTimer -= elapsed;
-				if ( phaseTimer <= 0.0f && (feat->attack.flags & WEAPON_PROJECTILE) == 0 
+				if ( phaseTimer <= 0.0f && (feat->attack.flags & WEAPON_PROJECTILE) == 0
 					&& feat->attack.spellCasted) {
 					phaseTimer=reloadDelay;
 					if ( phaseTimer > 0.0f ) phase=RELOAD;
@@ -1371,9 +1371,9 @@ bool Item::update(float elapsed, TCOD_key_t key, TCOD_mouse_t *mouse) {
 					targetx=dx;
 					targety=dy;
 				}
-			break;	
+			break;
 			}
-		} else if (feat->id == ITEM_FEAT_HEAT) {	
+		} else if (feat->id == ITEM_FEAT_HEAT) {
 			heatTimer += elapsed;
 			if ( heatTimer > 1.0f) {
 				// warm up adjacent items
@@ -1470,7 +1470,7 @@ void Item::use() {
 				it->putInInventory(&gameEngine->player);
 			} else {
 				if ( TCODRandom::getInstance()->getInt(0,2) == 0 ) {
-					gameEngine->gui.log.info("You kick %s.",theName());				
+					gameEngine->gui.log.info("You kick %s.",theName());
 					gameEngine->gui.log.warn("You feel a sharp pain in the foot.");
 					Condition *cond=new Condition(CRIPPLED,10.0f,0.5f);
 					gameEngine->hitFlash();
@@ -1504,7 +1504,7 @@ void Item::use() {
 		ch = onoff ? '/':'+';
 		gameEngine->dungeon->setProperties((int)x,(int)y,onoff,onoff);
 	}
-	if ( isDeletedOnUse() ) {             
+	if ( isDeletedOnUse() ) {
 		if ( count > 1 ) count --;
 		else {
 			if (! owner ) {
@@ -1529,10 +1529,10 @@ Item * Item::putInInventory(Creature *owner, int putCount, const char *verb) {
 	ItemFeature *feat=it->getFeature(ITEM_FEAT_ATTACK);
 	if ( feat ) {
 		// auto equip weapon if hand is empty
-		if (owner->mainHand == NULL && 
+		if (owner->mainHand == NULL &&
 			(feat->attack.wield == WIELD_ONE_HAND || feat->attack.wield == WIELD_MAIN_HAND ) ) {
 			owner->mainHand=it;
-		} else if ( owner->offHand == NULL && 
+		} else if ( owner->offHand == NULL &&
 			(feat->attack.wield == WIELD_ONE_HAND || feat->attack.wield == WIELD_OFF_HAND ) ) {
 			owner->offHand=it;
 		} else if ( owner->mainHand == NULL && owner->offHand == NULL && feat->attack.wield == WIELD_TWO_HANDS ) {
@@ -1634,10 +1634,10 @@ const char *Item::AName() const {
 	static char buf[64];
 	if ( count == 1 && (!isSoftStackable() || stack.size() == 0) ) {
 		if ( name ) {
-			sprintf(buf,"%s %s%s%s", an ? "An" : "A", adjective ? adjective : "", 
+			sprintf(buf,"%s %s%s%s", an ? "An" : "A", adjective ? adjective : "",
 				adjective ? " ": "", name);
 		} else {
-			sprintf(buf,"%s %s%s%s", (typeData->flags & ITEM_AN)  ? "An" : "A", 
+			sprintf(buf,"%s %s%s%s", (typeData->flags & ITEM_AN)  ? "An" : "A",
 				adjective ? adjective : "", adjective ? " ": "", typeName);
 		}
 	} else {
@@ -1645,20 +1645,20 @@ const char *Item::AName() const {
 		const char *nameToUse = name ? name : typeName;
 		bool es = (nameToUse[strlen(nameToUse)-1] == 's');
 		sprintf(buf,"%d %s%s%s%s",cnt,
-			adjective ? adjective : "", adjective ? " ": "", 
+			adjective ? adjective : "", adjective ? " ": "",
 			nameToUse, es ? "es":"s");
 	}
-	return buf;                                   
+	return buf;
 }
 
 const char *Item::aName() const {
 	static char buf[64];
 	if ( count == 1 && (!isSoftStackable() || stack.size() == 0) ) {
 		if ( name ) {
-			sprintf(buf,"%s %s%s%s", an ? "an" : "a", adjective ? adjective : "", 
+			sprintf(buf,"%s %s%s%s", an ? "an" : "a", adjective ? adjective : "",
 				adjective ? " ": "", name);
 		} else {
-			sprintf(buf,"%s %s%s%s", (typeData->flags & ITEM_AN)  ? "an" : "a", 
+			sprintf(buf,"%s %s%s%s", (typeData->flags & ITEM_AN)  ? "an" : "a",
 				adjective ? adjective : "", adjective ? " ": "", typeName);
 		}
 	} else {
@@ -1666,10 +1666,10 @@ const char *Item::aName() const {
 		const char *nameToUse = name ? name : typeName;
 		bool es = (nameToUse[strlen(nameToUse)-1] == 's');
 		sprintf(buf,"%d %s%s%s%s",cnt,
-			adjective ? adjective : "", adjective ? " ": "", 
+			adjective ? adjective : "", adjective ? " ": "",
 			nameToUse, es ? "es":"s");
 	}
-	return buf;                                   
+	return buf;
 }
 
 const char *Item::TheName() const {
@@ -1685,7 +1685,7 @@ const char *Item::TheName() const {
 			adjective ? adjective : "", adjective ? " ": "",
 			nameToUse, es ? "es":"s");
 	}
-	return buf;                                   
+	return buf;
 }
 
 const char *Item::theName() const {
@@ -1701,7 +1701,7 @@ const char *Item::theName() const {
 			adjective ? adjective : "", adjective ? " ": "",
 			nameToUse, es ? "es":"s");
 	}
-	return buf;                                   
+	return buf;
 }
 
 #define ITEM_CHUNK_VERSION 6
@@ -1720,7 +1720,7 @@ bool Item::loadData(uint32 chunkId, uint32 chunkVersion, TCODZip *zip) {
 	ch = zip->getInt();
 	an = zip->getChar()==1;
 	life=zip->getFloat();
-	
+
 	int nbItems=zip->getInt();
 	bool soft=isSoftStackable();
 	while ( nbItems > 0 ) {
@@ -1736,7 +1736,7 @@ bool Item::loadData(uint32 chunkId, uint32 chunkVersion, TCODZip *zip) {
 		nbItems--;
 	}
 
-	
+
 	ItemFeature *feat=getFeature(ITEM_FEAT_ATTACK);
 	if (feat ) {
 		castDelay=zip->getFloat();
@@ -1770,7 +1770,7 @@ void Item::saveData(uint32 chunkId, TCODZip *zip) {
 	// save items inside this item or soft stacks
 	zip->putInt(stack.size());
 	for (Item **it=stack.begin(); it != stack.end(); it++) {
-		zip->putString((*it)->typeData->name);	
+		zip->putString((*it)->typeData->name);
 		(*it)->saveData(ITEM_CHUNK_ID,zip);
 	}
 	ItemFeature *feat=getFeature(ITEM_FEAT_ATTACK);

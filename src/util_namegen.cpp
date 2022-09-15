@@ -29,9 +29,9 @@
 
 
 static const char *region_pre[]={
-	"Act",	"Afr",	"Ag", "Agr", "Alb",	"Am", "An", "Angl",	"Ant", "As", "Asys", "Asis",	
+	"Act",	"Afr",	"Ag", "Agr", "Alb",	"Am", "An", "Angl",	"Ant", "As", "Asys", "Asis",
 	"At", "Atl", "Brund", "Cath",	"Cor", "Dan", "Eb","Eg", "Er",
-	"Esc", "Esp", "Est", "Eth",	"Eur", "Flor", "It", "Lyr", "Mal", "Mir", "Myr", "Nor", 
+	"Esc", "Esp", "Est", "Eth",	"Eur", "Flor", "It", "Lyr", "Mal", "Mir", "Myr", "Nor",
 	"Pel", "Rom", "Seg", "Sib", "Sylv", "Terr", "Tir", "Tr", "Tyr", "Xan",
 	NULL
 };
@@ -87,7 +87,7 @@ static const char *region_post[]={
 	"us",
 	"ya",
 	NULL
-};	
+};
 
 static const char *city_pre[]= {
 	"Ael",
@@ -221,16 +221,16 @@ static const char *char_meso_post_m[] = {
 
 // fantasy names
 static const char *char_fantasy_pre[] = {
-	"Aer", "An", "Ar", 
-	"Ban", "Bar", "Ber", "Beth", "Bett", 
-	"Cut", 
+	"Aer", "An", "Ar",
+	"Ban", "Bar", "Ber", "Beth", "Bett",
+	"Cut",
 	"Dan", "Dar", "Dell", "Der",
 	"Edr", "Er", "Eth", "Ett",
-	"Fin", 
-	"Ian", "Iarr", "Ill", 
-	"Jed", 
+	"Fin",
+	"Ian", "Iarr", "Ill",
+	"Jed",
 	"Kan", "Kar", "Ker", "Kurr", "Kyr",
-	"Man", "Mar", "Mer", "Mir", 
+	"Man", "Mar", "Mer", "Mir",
 	"Tsal", "Tser", "Tsir",
 	"Van", "Var", "Yur", "Yyr",
 	NULL
@@ -240,7 +240,7 @@ static const char *char_fantasy_mid[] = {
 	"al","an","ar","el","en","ess","ian","onn","or",
 	NULL
 };
-	
+
 static const char *char_fantasy_post_f[] = {
 	"a", "ae", "aelle", "ai", "ea", "i", "ia", "u", "wen", "wyn",
 	NULL
@@ -256,11 +256,11 @@ void NameGenerator::concatSyllable(char *dest, const char *syl1, const char *syl
 	int len1=strlen(syl1);
 	int len2=strlen(syl2);
 	strcpy(tmp1,syl1);
-	if ( len1 > 2 && len2 > 2 && toupper(syl1[len1-1]) == toupper(syl2[2]) 
+	if ( len1 > 2 && len2 > 2 && toupper(syl1[len1-1]) == toupper(syl2[2])
 		&& toupper(syl1[len1-2])==toupper(syl2[1]) && toupper(syl1[len1-3])==toupper(syl2[0])) {
 		// redundant 3 letters syllable as in "Gameshesh" => "Gamesh"
 		tmp1[len1-3]=0;
-	} else if ( len1 > 1 && len2 > 1 && toupper(syl1[len1-1]) == toupper(syl2[1]) 
+	} else if ( len1 > 1 && len2 > 1 && toupper(syl1[len1-1]) == toupper(syl2[1])
 		&& toupper(syl1[len1-2])==toupper(syl2[0])) {
 		// redundant 2 letters syllable as in "Babaeth" => "Baeth"
 		tmp1[len1-2]=0;

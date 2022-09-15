@@ -111,18 +111,18 @@ void Fire::update(float elapsed) {
 			FIRE_SET(x2,y-1,(uint8)v);
 		}
 	}
-	
+
 	for (int y=0; y < h-1; y++) {
 		for (int x=1; x <= w; x++) {
-			int v = (int)(FIRE_GET(x,y)) 
-				+ (int)(FIRE_GET(x,y+1)) 
+			int v = (int)(FIRE_GET(x,y))
+				+ (int)(FIRE_GET(x,y+1))
 				+ (int)(FIRE_GET(x+1,y+1))
 				+ (int)(FIRE_GET(x+1,y));
 			v /= 4 ;
 			FIRE_SET2(x,y,(uint8)v);
 		}
 	}
-	
+
 }
 
 Fire::~Fire() {
@@ -175,7 +175,7 @@ void FireManager::addZone(int x,int y, int w, int h) {
 	z.r=Rect(x,y,w,h);
 	z.life=-1.0f;
 	zones.push(z);
-#ifdef FIRE_DEBUG	
+#ifdef FIRE_DEBUG
 	gameEngine->gui.log.debug("FireManager(%d)::addZone %d %d %d %d",zones.size(),x,y,w,h);
 #endif
 }
@@ -188,7 +188,7 @@ void FireManager::removeZone(int x,int y, int w, int h) {
 			break;
 		}
 	}
-#ifdef FIRE_DEBUG	
+#ifdef FIRE_DEBUG
 	gameEngine->gui.log.debug("FireManager(%d)::removeZone %d %d %d %d",zones.size(),x,y,w,h);
 #endif
 }

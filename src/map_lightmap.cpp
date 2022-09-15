@@ -147,7 +147,7 @@ void LightMap::applyToImageOutdoor(TCODImage *image) {
 				image->putPixel(x,y,TCODColor::black); // out of the map
 			} else {
 				// visible cell. shade it
-				HDRColor col=image->getPixel(x,y); 
+				HDRColor col=image->getPixel(x,y);
 				HDRColor lmcol=data2x[x+y*width] ;
 				lmcol = lmcol*col;
 				int lightIntensity=(int)(lmcol.r+lmcol.g+lmcol.b);

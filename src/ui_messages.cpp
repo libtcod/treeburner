@@ -32,8 +32,8 @@
 
 static TCODColor sevColor[NB_SEVERITIES];
 
-Logger::Message::~Message() { 
-	if (txt) free((void *)txt); 
+Logger::Message::~Message() {
+	if (txt) free((void *)txt);
 }
 
 Logger::Logger() {
@@ -87,8 +87,8 @@ const char *Logger::getScrollText(int idx) {
 
 void Logger::getScrollColor(int idx, TCODColor *fore, TCODColor *back) {
 	*fore = sevColor[messages.get(idx)->severity];
-	*back = guiBackground;	
-}    
+	*back = guiBackground;
+}
 
 void Logger::render() {
 	// render messages
@@ -162,7 +162,7 @@ bool Logger::update(float elapsed, TCOD_key_t &k, TCOD_mouse_t &mouse) {
 		}
 	}
 	messagesToRemove.clearAndDelete();
-	if ( !k.pressed && (toupper(k.c)=='M' || (!isMinimized && k.c==' ') 
+	if ( !k.pressed && (toupper(k.c)=='M' || (!isMinimized && k.c==' ')
 		|| (!isMinimized && k.vk == TCODK_ESCAPE) ) && messages.size() > 0 ) {
 		if (isMinimized) setMaximized();
 		else setMinimized();
@@ -170,7 +170,7 @@ bool Logger::update(float elapsed, TCOD_key_t &k, TCOD_mouse_t &mouse) {
 	if ( ! isMinimized ) {
 		if ( !gameEngine->isGamePaused() ) {
 			gameEngine->pauseGame();
-			scroller->initDrag();		
+			scroller->initDrag();
 		}
 	}
 	if ( k.vk == TCODK_ALT || k.lalt ) lookOn=k.pressed;
@@ -180,7 +180,7 @@ bool Logger::update(float elapsed, TCOD_key_t &k, TCOD_mouse_t &mouse) {
 	}
 	con->clear();
 
-	if ( !isMinimized || (rect.mouseHover && ! lookOn 
+	if ( !isMinimized || (rect.mouseHover && ! lookOn
 		&& !gameEngine->isGamePaused() ) ) {
 		titleBarAlpha+=elapsed;
 		titleBarAlpha=MIN(1.0f,titleBarAlpha);
@@ -243,8 +243,8 @@ void Logger::addMessage(MessageSeverity severity, const char *fmt, va_list ap) {
 		message->severity=severity;
 		messages.push(message);
 		*ptr=backup;
-		msg=ptr;			
-		while ( isspace(*msg) ) msg++;			
+		msg=ptr;
+		while ( isspace(*msg) ) msg++;
 		nbActive++;
 	}
 	Message *message=new Message();

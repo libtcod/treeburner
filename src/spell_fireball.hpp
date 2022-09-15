@@ -59,7 +59,7 @@ protected :
 		bool lightRandomRad;
 	} *typeData;
 	Type *getType(const char *name);
-	
+
 	float dx,dy;
 	float fx,fy;
 	FireBallType type;

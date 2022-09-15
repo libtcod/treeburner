@@ -30,13 +30,13 @@ public :
 	void initialize(Creature *owner, bool soft=false);
 	void render();
 	bool update(float elapsed, TCOD_key_t &k, TCOD_mouse_t &mouse);
-	
+
 	// UIListener
 	bool onWidgetEvent(Widget *widget, EWidgetEvent event);
-	
+
 	// scrollable
 	int getScrollTotalSize();
-	const char *getScrollText(int idx);    
+	const char *getScrollText(int idx);
 	void getScrollColor(int idx, TCODColor *fore, TCODColor *back);
 protected :
 	TCODList<Item *> items;
@@ -49,13 +49,13 @@ protected :
 	Creature *owner;
 	bool isDragging, isDraggingStart;
 	int dragx,dragy, dragStartX, dragStartY;
-	Item *dragItem;	
+	Item *dragItem;
 	Item *tool;
 	TCODList<Item *> ingredients;
 	TCODList<ItemCombination *> recipes;
 	Item *result;
 	ItemCombination *recipe;
-	
+
 	void detectItem(TCOD_mouse_t &mouse);
 	void computeResult();
 	void computeRecipes();

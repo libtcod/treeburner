@@ -67,7 +67,7 @@ void SchoolScreen::generateWorld(uint32 seed) {
 		con = new TCODConsole(MAP_WIDTH/2,MAP_HEIGHT/2);
 		mapmask = new TCODImage("data/img/mapmask.png");
 		mapreflection = new TCODImage("data/img/mapreflection.png");
-	
+
 		// precompute fisheye distorsion
 		for (int px=0; px <MAP_WIDTH; px++) {
 			for (int py=0; py <MAP_HEIGHT; py++) {
@@ -361,6 +361,6 @@ const char *SchoolScreen::genSchoolDescription(School *sch) {
 		case School::MOUNTAIN : return textGen->generate("school","${MOUNTAIN}");break;
 		case School::SNOW : return textGen->generate("school","${SNOW}");break;
 		default : return NULL; break;
-	}	
+	}
 }
 

@@ -114,13 +114,13 @@ public :
 	Item *mainHand, *offHand;
 	Item *asItem; // an item corresponding to this creature
 	TCODList<Condition *> conditions;
-	
+
 	// ai
 	Behavior *currentBehavior;
 
 	Creature();
 	virtual ~Creature();
-	
+
 	virtual void onReplace() {}
 
 	// conditions
@@ -146,14 +146,14 @@ public :
 	bool isTalking() { return talkText.delay > 0.0f; }
 	bool isInRange(int x, int y);
 	bool isPlayer();
-	
+
 	// flags
 	bool isReplacable() const { return ( flags & CREATURE_REPLACABLE ) != 0; }
 	bool isUpdatedOffscreen() const { return ( flags & CREATURE_OFFSCREEN ) != 0; }
 	bool mustSave() const { return ( flags & CREATURE_SAVE) != 0; }
 	bool isBlockingPath() const { return (flags & CREATURE_NOTBLOCK) == 0; }
 	bool isCatchable() const { return (flags & CREATURE_CATCHABLE) != 0; }
-	
+
 	// items
 	Item * addToInventory(Item *it); // in case of stackable items, returned item might be != it
 	Item * removeFromInventory(Item *it, int count=1); // same as addToInventory

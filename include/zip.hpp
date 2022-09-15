@@ -34,7 +34,7 @@
  @PageTitle Compression toolkit
  @PageDesc This toolkit provides functions to save or read compressed data from a file. While the module is named Zip, it has nothing to do with the .zip format as it uses zlib compression (.gz format).
 	Note that this modules has no python wrapper. Use python built-in zip module instead.
-	
+
 	You can use the compression buffer in two modes:
 	* put data in the buffer, then save it to a file,
 	* load a file into the buffer, then get data from it.
@@ -48,17 +48,17 @@ public :
 	@PageTitle Creating a compression buffer
 	@FuncDesc This function initializes a compression buffer.
 	@Cpp TCODZip::TCODZip()
-	@C TCOD_zip_t TCOD_zip_new()	
-	*/	
+	@C TCOD_zip_t TCOD_zip_new()
+	*/
 	TCODZip();
-	
+
 	/**
 	@PageName zip_init
 	@FuncDesc Once you don't need the buffer anymore, you can release resources. Note that the adresses returned by the getString function are no longer valid once the buffer has been destroyed.
 	@Cpp TCODZip::~TCODZip()
 	@C void TCOD_zip_delete(TCOD_zip_t zip)
 	@Param zip	In the C version, the buffer handler, returned by the constructor.
-	@CppEx 
+	@CppEx
 		TCODZip *zip = new TCODZip();
 		zip->loadFromFile("myCompressedFile.gz");
 		char c=zip->getChar();
@@ -67,7 +67,7 @@ public :
 		const char *s=strdup(zip->getString()); // we duplicate the string to be able to use it after the buffer deletion
 		zip->getData(nbBytes, dataPtr);
 		delete zip;
-	@CEx 
+	@CEx
 		TCOD_zip_t zip=TCOD_zip_new();
 		TCOD_zip_load_from_file(zip,"myCompressedFile.gz");
 		char c=TCOD_zip_get_char(zip);
@@ -75,8 +75,8 @@ public :
 		float f=TCOD_zip_get_float(zip);
 		const char *s=strdup(TCOD_zip_get_string(zip));
 		TCOD_zip_get_data(zip,nbBytes, dataPtr);
-		TCOD_zip_delete(zip);	
-	*/	
+		TCOD_zip_delete(zip);
+	*/
 	~TCODZip();
 
 	/**
@@ -88,9 +88,9 @@ public :
 	@C void TCOD_zip_put_char(TCOD_zip_t zip, char val)
 	@Param zip	In the C version, the buffer handler, returned by the constructor.
 	@Param val	A 8 bits value to store in the buffer
-	*/	
+	*/
 	void putChar(char val);
-	
+
 	/**
 	@PageName zip_put
 	@FuncTitle Putting an integer in the buffer
@@ -98,7 +98,7 @@ public :
 	@C void TCOD_zip_put_int(TCOD_zip_t zip, int val)
 	@Param zip	In the C version, the buffer handler, returned by the constructor.
 	@Param val	An integer value to store in the buffer
-	*/	
+	*/
 	void putInt(int val);
 
 	/**
@@ -168,9 +168,9 @@ public :
 	@Cpp uint32 TCODZip::getCurrentBytes()
 	@C uint32 TCOD_zip_get_current_bytes(TCOD_zip_t zip)
 	@Param zip	In the C version, the buffer handler, returned by the constructor.
-	*/	
+	*/
 	uint32 getCurrentBytes() const;
-	
+
 	/**
 	@PageName zip_put
 	@FuncTitle Saving the buffer on disk
@@ -180,7 +180,7 @@ public :
 	@C int TCOD_zip_save_to_file(TCOD_zip_t zip, const char *filename)
 	@Param zip	In the C version, the buffer handler, returned by the constructor.
 	@Param filename	Name of the file
-	@CppEx 
+	@CppEx
 		TCODZip zip;
 		zip.putChar('A');
 		zip.putInt(1764);
@@ -188,7 +188,7 @@ public :
 		zip.putString("A string");
 		zip.putData(nbBytes, dataPtr);
 		zip.saveToFile("myCompressedFile.gz");
-	@CEx 
+	@CEx
 		TCOD_zip_t zip=TCOD_zip_new();
 		TCOD_zip_put_char(zip,'A');
 		TCOD_zip_put_int(zip,1764);
@@ -196,7 +196,7 @@ public :
 		TCOD_zip_put_string(zip,"A string");
 		TCOD_zip_put_data(zip,nbBytes, dataPtr);
 		TCOD_zip_save_to_file(zip,"myCompressedFile.gz");
-	*/	
+	*/
 	int saveToFile(const char *filename);
 
 	/**
@@ -205,41 +205,41 @@ public :
 	@PageFather zip
 	@FuncTitle Reading from a compressed file
 	@FuncDesc You can read data from a file (compressed or not) into the buffer.
-		The function returns the number of (uncompressed) bytes read or 0 if an error occured. 
+		The function returns the number of (uncompressed) bytes read or 0 if an error occured.
 	@Cpp int TCODZip::loadFromFile(const char *filename)
 	@C int TCOD_zip_load_from_file(TCOD_zip_t zip, const char *filename)
 	@Param zip	In the C version, the buffer handler, returned by the constructor.
 	@Param filename	Name of the file
-	*/	
+	*/
 	int loadFromFile(const char *filename);
-	
+
 	/**
 	@PageName zip_load
 	@FuncTitle Reading a char from the buffer
 	@Cpp char TCODZip::getChar()
 	@C char TCOD_zip_get_char(TCOD_zip_t zip)
 	@Param zip	In the C version, the buffer handler, returned by the constructor
-	*/	
+	*/
 	char getChar();
-	
+
 	/**
 	@PageName zip_load
 	@FuncTitle Reading an integer from the buffer
 	@Cpp int TCODZip::getInt()
 	@C int TCOD_zip_get_int(TCOD_zip_t zip)
 	@Param zip	In the C version, the buffer handler, returned by the constructor.
-	*/	
+	*/
 	int getInt();
-	
+
 	/**
 	@PageName zip_load
 	@FuncTitle Reading a floating point value from the buffer
 	@Cpp float TCODZip::getFloat()
 	@C float TCOD_zip_get_float(TCOD_zip_t zip)
 	@Param zip	In the C version, the buffer handler, returned by the constructor.
-	*/	
+	*/
 	float getFloat();
-	
+
 	/**
 	@PageName zip_load
 	@FuncTitle Reading a string from the buffer
@@ -247,36 +247,36 @@ public :
 	@Cpp const char *TCODZip::getString()
 	@C const char *TCOD_zip_get_string(TCOD_zip_t zip)
 	@Param zip	In the C version, the buffer handler, returned by the constructor.
-	*/	
+	*/
 	const char *getString();
-	
+
 	/**
 	@PageName zip_load
 	@FuncTitle Reading a color from the buffer
 	@Cpp TCODColor TCODZip::getColor()
 	@C TCOD_color_t TCOD_zip_get_color(TCOD_zip_t zip)
 	@Param zip	In the C version, the buffer handler, returned by the constructor.
-	*/	
+	*/
 	TCODColor getColor();
-	
+
 	/**
 	@PageName zip_load
 	@FuncTitle Reading a color from the buffer
 	@Cpp TCODImage *TCODZip::getImage()
 	@C TCOD_image_t TCOD_zip_get_image(TCOD_zip_t zip)
 	@Param zip	In the C version, the buffer handler, returned by the constructor.
-	*/	
+	*/
 	TCODImage *getImage();
-	
+
 	/**
 	@PageName zip_load
 	@FuncTitle Reading a console from the buffer
 	@Cpp TCODConsole *TCODZip::getConsole()
 	@C TCOD_console_t TCOD_zip_get_console(TCOD_zip_t zip)
 	@Param zip	In the C version, the buffer handler, returned by the constructor.
-	*/	
+	*/
 	TCODConsole *getConsole();
-	
+
 	/**
 	@PageName zip_load
 	@FuncTitle Reading some custom data from the buffer
@@ -287,7 +287,7 @@ public :
 	@Param zip	In the C version, the buffer handler, returned by the constructor.
 	@Param nbBytes	Number of bytes to read
 	@Param data	Address of a pre-allocated buffer (at least nbBytes bytes)
-	@CppEx 
+	@CppEx
 		TCODZip zip;
 		zip.loadFromFile("myCompressedFile.gz");
 		char c=zip.getChar();
@@ -295,7 +295,7 @@ public :
 		float f= zip.getFloat();
 		const char *s=zip.getString();
 		zip.getData(nbBytes, dataPtr);
-	@CEx 
+	@CEx
 		TCOD_zip_t zip=TCOD_zip_new();
 		TCOD_zip_load_from_file(zip,"myCompressedFile.gz");
 		char c=TCOD_zip_get_char(zip);
@@ -303,16 +303,16 @@ public :
 		float f=TCOD_zip_get_float(zip);
 		const char *s=TCOD_zip_get_string(zip);
 		TCOD_zip_get_data(zip,nbBytes, dataPtr);
-	*/	
+	*/
 	int getData(int nbBytes, void *data);
-	
+
 	/**
 	@PageName zip_load
 	@FuncTitle Getting the number of remaining bytes in the buffer
 	@Cpp uint32 TCODZip::getRemainingBytes() const
 	@C uint32 TCOD_zip_get_remaining_bytes(TCOD_zip_t zip)
 	@Param zip	In the C version, the buffer handler, returned by the constructor.
-	*/	
+	*/
 	uint32 getRemainingBytes() const;
 
 	/**
@@ -322,7 +322,7 @@ public :
 	@C void TCOD_zip_skip_bytes(TCOD_zip_t zip, uint32 nbBytes)
 	@Param zip	In the C version, the buffer handler, returned by the constructor.
 	@Param nbBytes number of uncompressed bytes to skip
-	*/	
+	*/
 	void skipBytes(uint32 nbBytes);
 protected :
 	TCOD_zip_t data;

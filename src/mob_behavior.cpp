@@ -66,7 +66,7 @@ bool FollowBehavior::update(Creature *crea, float elapsed) {
 		if (crea->walk(elapsed)) {
 			standDelay=0.0f;
 		}
-	}		
+	}
 	return true;
 }
 
@@ -114,7 +114,7 @@ bool HerdBehavior::update(Creature *crea1, float elapsed) {
 			}
 		}
 	}
-	
+
 	crea1->dx=CLAMP(-crea1->speed,crea1->speed,crea1->dx);
 	crea1->dy=CLAMP(-crea1->speed,crea1->speed,crea1->dy);
 	// interaction with scare points
@@ -150,7 +150,7 @@ bool HerdBehavior::update(Creature *crea1, float elapsed) {
 			}
 		}
 	}
-	return true;	
+	return true;
 }
 
 void HerdBehavior::addScarePoint(int x, int y, float life) {

@@ -76,11 +76,11 @@ class UmbraModule {
 		inline void setFallback (int fback) { fallback = fback; } //set default fallback module's index
 		/**
 		 * Sets the fallback from its name
-		 */		  		
+		 */
 		void setFallback(const char *name);
 		/**
 		 * Sets the module's timeout.
-		 * @param val the number of milliseconds that the module will be allowed to run before timing out. Set to 0 if the timeout is to be removed.		 
+		 * @param val the number of milliseconds that the module will be allowed to run before timing out. Set to 0 if the timeout is to be removed.
 		 */
 		inline void setTimeout (uint32 val) { timeout = val; }
 		/**
@@ -130,56 +130,56 @@ class UmbraModule {
 		 * @return module's status (one of the values from the UmbraModuleStatus enum)
 		 */
 		inline UmbraModuleStatus getStatus () { return status; }
-		
+
 		/**
 		 * Gets the name of the module
 		 * @return the name of the module
-		 */		 		 		
+		 */
 		inline const char *getName() { return name.c_str(); }
-		
+
 		/**
 		 * Get a boolean parameter from the module configuration file
 		 * @param name the parameter name
 		 * @return the boolean value (default false)
-		 */		 		 		 		
+		 */
 		inline bool getBoolParam(const char *name) { return getParameter(name).value.b; }
 		/**
 		 * Get a char parameter from the module configuration file
 		 * @param name the parameter name
 		 * @return the char value (default '\0')
-		 */		 		 		 		
+		 */
 		inline int getCharParam(const char *name) { return getParameter(name).value.c; }
 		/**
 		 * Get an integer parameter from the module configuration file
 		 * @param name the parameter name
 		 * @return the integer value (default 0)
-		 */		 		 		 		
+		 */
 		inline int getIntParam(const char *name) { return getParameter(name).value.i; }
 		/**
 		 * Get a float parameter from the module configuration file
 		 * @param name the parameter name
 		 * @return the float value (default 0.0f)
-		 */		 		 		 		
+		 */
 		inline float getFloatParam(const char *name) { return getParameter(name).value.f; }
 		/**
 		 * Get a string parameter from the module configuration file
 		 * @param name the parameter name
 		 * @return the string value (default NULL)
-		 */		 		 		 		
+		 */
 		inline const char *getStringParam(const char *name) { return getParameter(name).value.s; }
 		/**
 		 * Get a color parameter from the module configuration file
 		 * @param name the parameter name
 		 * @return the color value (default TCODColor::black)
-		 */		 		 		 		
+		 */
 		inline TCODColor getColorParam(const char *name) { return getParameter(name).value.col; }
 		/**
 		 * Get a dice parameter from the module configuration file
 		 * @param name the parameter name
 		 * @return the dice value (default filled with 0)
-		 */		 		 		 		
+		 */
 		inline TCOD_dice_t getDiceParam(const char *name) { return getParameter(name).value.dice; }
-		
+
 
 	protected:
 	    int priority; // update order (inverse of render order)
@@ -199,16 +199,16 @@ class UmbraModule {
 		 * Custom code that is executed each time the module is resumed
 		 */
 		virtual void resume() {}
-		
+
 		/**
 		 * Set the module's name
-		 */		 		
+		 */
 		inline void setName(const char *name) {this->name.assign(name);}
-		
+
 		friend class UmbraModuleConfigParser;
 		/**
 		 * set a parameter (only used by module.cfg file parser)
-		 */		 		
+		 */
 		void setParameter(const char *name,TCOD_value_t value);
 	private:
 		UmbraModuleStatus status;
@@ -221,12 +221,12 @@ class UmbraModule {
 			const char *name;
 			TCOD_value_t value;
 		};
-		TCODList<UmbraModuleParameter> params;	
+		TCODList<UmbraModuleParameter> params;
 		/**
-		 * get a parameter (internal helper function)	
-		 */		 	
+		 * get a parameter (internal helper function)
+		 */
 		UmbraModuleParameter &getParameter(const char *name);
-			
+
 		/**
 		 * Initialises the timeout by calculating the exact time when the module will time out.
 		 */

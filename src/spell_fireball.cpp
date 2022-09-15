@@ -60,7 +60,7 @@ FireBall::FireBall(float xFrom,float yFrom, int xTo, int yTo, FireBallType type,
 	effect=FIREBALL_MOVE;
 	gameEngine->dungeon->addLight(&light);
 	fxLife=1.0f;
-	
+
 	typeData = getType(subtype);
 	light.color=typeData->lightColor;
 	light.range=typeData->lightRange*range;
@@ -214,7 +214,7 @@ bool FireBall::updateMove(float elapsed) {
 			static int deltay[]={0,0,0,1,-1};
 			if ( type == FB_STANDARD ) {
 				for (FireBall **fb=gameEngine->fireballs.begin(); fb != gameEngine->fireballs.end(); fb++) {
-					if ( (*fb)->effect == FIREBALL_MOVE 
+					if ( (*fb)->effect == FIREBALL_MOVE
 						&& (*fb)->type == FB_INCANDESCENCE
 						&& ABS((*fb)->x-x)<(*fb)->light.range/2 && ABS((*fb)->y-y)< (*fb)->light.range/2 ) {
 						float newdx = (*fb)->dx;
@@ -370,7 +370,7 @@ bool FireBall::updateTorch(float elapsed) {
 	heatTimer += elapsed;
 	if ( heatTimer > 1.0f) {
 		// warm up adjacent items
-		heatTimer = 0.0f;	
+		heatTimer = 0.0f;
 		float radius=curRange;
 		for (int tx=-(int)floor(radius); tx <= (int)ceil(radius); tx++) {
 			if ( (int)(x)+tx >= 0 && (int)(x)+tx < dungeon->width) {
@@ -394,7 +394,7 @@ bool FireBall::updateTorch(float elapsed) {
 					}
 				}
 			}
-		}	
+		}
 	}
 	if ( fxLife < 0.25f ) {
 		light.color=typeData->lightColor*fxLife*4;

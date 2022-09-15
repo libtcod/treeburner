@@ -58,7 +58,7 @@ TerrainType terrainTypes[NB_TERRAINS] = {
 bool Cell::loadData(TCODZip *zip) {
 	memory = zip->getChar()==1;
 	terrain = (TerrainId) zip->getInt();
-	return true;	
+	return true;
 }
 
 void Cell::saveData(TCODZip *zip) {
@@ -69,13 +69,13 @@ void Cell::saveData(TCODZip *zip) {
 bool SubCell::loadData(TCODZip *zip) {
 	groundColor = zip->getColor();
 	shadow = zip->getFloat();
-	waterCoef = zip->getFloat();	
-	return true;	
+	waterCoef = zip->getFloat();
+	return true;
 }
 
 void SubCell::saveData(TCODZip *zip) {
 	zip->putColor(&groundColor);
 	zip->putFloat(shadow);
-	zip->putFloat(waterCoef);	
+	zip->putFloat(waterCoef);
 }
 

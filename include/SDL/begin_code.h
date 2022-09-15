@@ -42,7 +42,7 @@
 # elif defined(__WIN32__)
 #  ifdef __BORLANDC__
 #   ifdef BUILD_SDL
-#    define DECLSPEC 
+#    define DECLSPEC
 #   else
 #    define DECLSPEC	__declspec(dllimport)
 #   endif
@@ -83,8 +83,8 @@
 #endif
 #endif /* SDLCALL */
 
-#ifdef __SYMBIAN32__ 
-#ifndef EKA2 
+#ifdef __SYMBIAN32__
+#ifndef EKA2
 #undef DECLSPEC
 #define DECLSPEC
 #elif !defined(__WINS__)

@@ -93,8 +93,8 @@ struct config {
 			string healIntensityPattern="noise"
 			float longButtonDelay=0.3
 			float longSpellDelay=1.0
-			// keyboard movement config. Only letter/number keys allowed. 
-			// Arrows, numpad, vi-keys, WASD always work 
+			// keyboard movement config. Only letter/number keys allowed.
+			// Arrows, numpad, vi-keys, WASD always work
 			char moveUpKey='Z'
 			char moveDownKey='S'
 			char moveLeftKey='Q'
@@ -116,15 +116,15 @@ struct config {
 			*/
 			// azerty layout
 			char quickslot1='&'
-			char quickslot2='é'
+			char quickslot2='ï¿½'
 			char quickslot3='\"'
 			char quickslot4='\''
 			char quickslot5='('
 			char quickslot6='-'
-			char quickslot7='è'
+			char quickslot7='ï¿½'
 			char quickslot8='_'
-			char quickslot9='ç'
-			char quickslot10='à'
+			char quickslot9='ï¿½'
+			char quickslot10='ï¿½'
 		}
 		struct minion {
 			char ch='m'
@@ -185,4 +185,4 @@ struct config {
 		float zoneDecay=2.0 // length of the decay phase in seconds
 	}
 }
-  
+

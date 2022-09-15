@@ -52,7 +52,7 @@ CellularAutomata::CellularAutomata(TCODMap *map) : w(map->getWidth()),h(map->get
 	for (px = 0; px < w; px++) {
 		for (py = 0; py < h; py++) {
 			if ( map->isWalkable(px,py) ) data[px+py*w] = 0 ;
-			else data[px+py*w] = 1; 
+			else data[px+py*w] = 1;
 		}
 	}
 }
@@ -75,7 +75,7 @@ void CellularAutomata::apply(TCODMap *map) {
 			if ( data[px+py*w] ) map->setProperties(px,py,false,false);
 			else map->setProperties(px,py,true,true);
 		}
-	}	
+	}
 }
 
 CellularAutomata::~CellularAutomata(){
@@ -97,7 +97,7 @@ void CellularAutomata::randomize(int per) {
 	for (py = miny; py <= maxx; py++) {
 		data[py*w]=1;
 		data[w-1+w*py]=1;
-	}	
+	}
 }
 
 void CellularAutomata::generate(CAFunc func, int nbLoops, void *userData) {
@@ -109,7 +109,7 @@ void CellularAutomata::generate(CAFunc func, int nbLoops, void *userData) {
 				if ( (this->*func)(px,py,userData) ) data2[px+py*w]=1;
 				else data2[px+py*w]=0;
 			}
-		}	
+		}
 		memcpy(data,data2,sizeof(uint8)*w*h);
 	}
 	delete [] data2;
@@ -132,7 +132,7 @@ int CellularAutomata::count(int x, int y, int range) {
 			} else c++;
 		}
 	}
-	return c;	
+	return c;
 }
 
 void CellularAutomata::connect() {
@@ -148,21 +148,21 @@ void CellularAutomata::connect() {
 			int j=cells.pop();
 			data[j]=2;
 			// west cell
-			if ( (j % w) > 0 && data[j-1]==0 ) cells.push(j-1); 
+			if ( (j % w) > 0 && data[j-1]==0 ) cells.push(j-1);
 			// east cell
-			if ( (j % w) < w-1 && data[j+1]==0 ) cells.push(j+1); 
+			if ( (j % w) < w-1 && data[j+1]==0 ) cells.push(j+1);
 			// north cell
-			if ( j >= w && data[j-w]==0 ) cells.push(j-w); 
+			if ( j >= w && data[j-w]==0 ) cells.push(j-w);
 			// south cell
-			if ( j < w*(h-1) && data[j+w]==0 ) cells.push(j+w); 
+			if ( j < w*(h-1) && data[j+w]==0 ) cells.push(j+w);
 			// north-west cell
-			if ( (j % w) > 0 && j >= w && data[j-w-1]==0 ) cells.push(j-w-1); 
+			if ( (j % w) > 0 && j >= w && data[j-w-1]==0 ) cells.push(j-w-1);
 			// south-west cell
-			if ( j < w*(h-1) && (j % w) > 0 && data[j+w-1]==0 ) cells.push(j+w-1); 
+			if ( j < w*(h-1) && (j % w) > 0 && data[j+w-1]==0 ) cells.push(j+w-1);
 			// north-east cell
-			if ( (j % w) < w-1 && j >= w && data[j-w+1]==0 ) cells.push(j-w+1); 
+			if ( (j % w) < w-1 && j >= w && data[j-w+1]==0 ) cells.push(j-w+1);
 			// south-east cell
-			if ( j < w*(h-1) && (j % w) < w-1 && data[j+w+1]==0 ) cells.push(j+w+1); 
+			if ( j < w*(h-1) && (j % w) < w-1 && data[j+w+1]==0 ) cells.push(j+w+1);
 		}
 		while (i < w*h && data[i]) i++;
 		if ( i==w*h ) break; // no empty cell
@@ -179,24 +179,24 @@ void CellularAutomata::connect() {
 						mindist=dist;
 						bx=x;
 						by=y;
-					} 
+					}
 				}
 			}
 		}
 		// link cx,cy to bx,by
 		while ( data[cx+cy*w] != 2 && cx > bx ) {
 			data[cx+cy*w]=2; cx--;
-		} 
+		}
 		while ( data[cx+cy*w] != 2 && cx < bx ) {
 			data[cx+cy*w]=2; cx++;
-		} 
+		}
 		while ( data[cx+cy*w] != 2 && cy < by ) {
 			data[cx+cy*w]=2; cy++;
-		} 
+		}
 		while ( data[cx+cy*w] != 2 && cy > by ) {
 			data[cx+cy*w]=2; cy--;
-		} 
-	}	
+		}
+	}
 	// replace all 2 by 0
 	i=0;
 	while (i < w*h) {
@@ -249,7 +249,7 @@ CellularAutomata::CellularAutomata(CellularAutomata *c1, CellularAutomata *c2, f
 	memset(data,0,w*h);
 	for (int x=0; x < w; x ++) {
 		for (int y=0; y < h; y++) {
-			data[x+y*w] = (uint8)(morphCoef * (c1->data[x+y*w]*8) 
+			data[x+y*w] = (uint8)(morphCoef * (c1->data[x+y*w]*8)
 						+ (1.0-morphCoef)*(c2->data[x+y*w]*8));
 		}
 	}
@@ -259,7 +259,7 @@ CellularAutomata::CellularAutomata(CellularAutomata *c1, CellularAutomata *c2, f
 		for (int y=0; y < h; y++) {
 			if ( ((int)data[x+y*w] )* 5 + count(x,y,1)/2 >= 40 ) data2[x+y*w]=1;
 		}
-	}	
+	}
 	memcpy(data,data2,w*h);
 	delete[] data2;
 }

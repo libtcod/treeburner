@@ -42,7 +42,7 @@ class UmbraModBSOD: public UmbraWidget {
 		uint32 startTime;
 		uint32 duration;
 		std::string msgString;
-		
+
 		/**
 		 * Initialises the time count for a new timeout.
 		 */

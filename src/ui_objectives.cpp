@@ -45,7 +45,7 @@ Objective::Objective(const char *title,
 	if (successScript) {
 		onSuccess = new Script();
 		onSuccess->parse(successScript);
-	}	
+	}
 }
 
 #define UPDATE_DELAY 3.0f
@@ -98,7 +98,7 @@ void Objectives::closeCurrent(bool success) {
 
 void Objectives::addStep(const char *msg, Objective *obj) {
 	if (! obj ) obj = currentObjective;
-	if (! toSuccess.contains( obj ) ) 
+	if (! toSuccess.contains( obj ) )
 		gameEngine->gui.log.warn("Objective updated : %s",obj->title);
 	obj->steps.push(strdup(msg));
 }
@@ -121,7 +121,7 @@ void Objectives::render() {
 			y+=con->printRect(OBJ_WIDTH/2+2,y,OBJ_WIDTH/2-3,0,*step);
 		}
 	}
-	blitSemiTransparent(con,0,0,OBJ_WIDTH,OBJ_HEIGHT,TCODConsole::root,rect.x,rect.y,0.8f,1.0f);		
+	blitSemiTransparent(con,0,0,OBJ_WIDTH,OBJ_HEIGHT,TCODConsole::root,rect.x,rect.y,0.8f,1.0f);
 	renderFrame(1.0f,"Objectives");
 }
 
@@ -133,13 +133,13 @@ int Objectives::getScrollTotalSize() {
 const char *Objectives::getScrollText(int idx) {
 	return currentList->get(idx)->title;
 }
-    
-    
+
+
 void Objectives::getScrollColor(int idx, TCODColor *fore, TCODColor *back) {
 	*fore = idx == selected ? guiHighlightedText : guiText;
-	*back = guiBackground;	
-}   
-	
+	*back = guiBackground;
+}
+
 bool Objectives::update(float elapsed, TCOD_key_t &k, TCOD_mouse_t &mouse) {
 	if ( showWindow ) {
 		flags |= DIALOG_MODAL;
@@ -159,13 +159,13 @@ bool Objectives::update(float elapsed, TCOD_key_t &k, TCOD_mouse_t &mouse) {
 		}
 		if ( (k.vk == TCODK_ESCAPE && ! k.pressed) ) {
 			gameEngine->gui.setMode(GUI_NONE);
-		}		
+		}
 	} else if ( wasShowingWindow) {
 		flags &= ~DIALOG_MODAL;
    		if ( gameEngine->gui.mode == GUI_NONE && gameEngine->isGamePaused() ) {
 			gameEngine->resumeGame();
-    	}		
-	} 
+    	}
+	}
 	timer += elapsed;
 	if ( timer < UPDATE_DELAY ) return true;
 	timer = 0.0f;

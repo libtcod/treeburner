@@ -28,14 +28,14 @@ class Creature;
 class ItemType;
 
 // item class, mainly for weapons. higher classes have more modifiers
-enum ItemClass { 
-	ITEM_CLASS_STANDARD, 
-	ITEM_CLASS_GREEN, 
-	ITEM_CLASS_ORANGE, 
-	ITEM_CLASS_RED, 
-	ITEM_CLASS_SILVER, 
-	ITEM_CLASS_GOLD, 
-	NB_ITEM_CLASSES 
+enum ItemClass {
+	ITEM_CLASS_STANDARD,
+	ITEM_CLASS_GREEN,
+	ITEM_CLASS_ORANGE,
+	ITEM_CLASS_RED,
+	ITEM_CLASS_SILVER,
+	ITEM_CLASS_GOLD,
+	NB_ITEM_CLASSES
 };
 
 enum ItemFlags {
@@ -83,7 +83,7 @@ struct ItemCombination {
 	const ItemIngredient * getIngredient(Item *item) const;
 };
 
-enum ItemFeatureId { 
+enum ItemFeatureId {
 	ITEM_FEAT_FIRE_EFFECT,  // fire has an effect on item (either transform or destroy)
 	ITEM_FEAT_PRODUCES,  // item produces other items when clicked
 	ITEM_FEAT_FOOD, // item can be eaten and restore health
@@ -97,14 +97,14 @@ enum ItemFeatureId {
 
 // context-menu actions in the inventory screen
 enum ItemActionId {
-	ITEM_ACTION_TAKE, 
-	ITEM_ACTION_TAKE_ALL, 
-	ITEM_ACTION_USE, 
-	ITEM_ACTION_DROP, 
-	ITEM_ACTION_DROP_ALL, 
-	ITEM_ACTION_THROW, 
-	ITEM_ACTION_DISASSEMBLE, 
-	ITEM_ACTION_FILL, // bottle when in water 
+	ITEM_ACTION_TAKE,
+	ITEM_ACTION_TAKE_ALL,
+	ITEM_ACTION_USE,
+	ITEM_ACTION_DROP,
+	ITEM_ACTION_DROP_ALL,
+	ITEM_ACTION_THROW,
+	ITEM_ACTION_DISASSEMBLE,
+	ITEM_ACTION_FILL, // bottle when in water
 	NB_ITEM_ACTIONS};
 
 enum ItemActionFlag {
@@ -157,11 +157,11 @@ struct ItemLight {
 	const char *pattern;
 };
 
-enum AttackWieldType { 
-	WIELD_NONE, 
-	WIELD_ONE_HAND, 
-	WIELD_MAIN_HAND, 
-	WIELD_OFF_HAND, 
+enum AttackWieldType {
+	WIELD_NONE,
+	WIELD_ONE_HAND,
+	WIELD_MAIN_HAND,
+	WIELD_OFF_HAND,
 	WIELD_TWO_HANDS };
 
 enum AttackFlags {
@@ -185,7 +185,7 @@ struct ItemHeat {
 };
 
 struct ItemContainer {
-	int size; 
+	int size;
 };
 
 struct ItemFeature {
@@ -205,8 +205,8 @@ struct ItemFeature {
 	static ItemFeature *getAgeEffect(float delay, ItemType *type);
 	static ItemFeature *getFood(int health);
 	static ItemFeature *getLight(float range, const TCODColor &color, float patternDelay, const char *pattern);
-	static ItemFeature *getAttack(AttackWieldType wield, float minCastDelay, float maxCastDelay, 
-		float minReloadDelay, float maxReloadDelay, float minDamagesCoef, float maxDamagesCoef, 
+	static ItemFeature *getAttack(AttackWieldType wield, float minCastDelay, float maxCastDelay,
+		float minReloadDelay, float maxReloadDelay, float minDamagesCoef, float maxDamagesCoef,
 		int flags, const char *spellCasted=NULL );
 	static ItemFeature *getHeat(float intensity, float radius);
 	static ItemFeature *getContainer(int size);
@@ -215,11 +215,11 @@ struct ItemFeature {
 
 
 enum InventoryTabId {
-	INV_ALL, 
-	INV_ARMOR, 
-	INV_WEAPON, 
-	INV_FOOD, 
-	INV_MISC, 
+	INV_ALL,
+	INV_ARMOR,
+	INV_WEAPON,
+	INV_FOOD,
+	INV_MISC,
 	NB_INV_TABS };
 
 // data shared by all item types
@@ -241,8 +241,8 @@ struct ItemType {
 	bool hasComponents() const;
 	ItemCombination *getCombination() const;
 	void computeActions();
-	Item *produce(float rng) const; // for items with Produce feature(s) 
-	
+	Item *produce(float rng) const; // for items with Produce feature(s)
+
 	bool isIngredient() const; // in any recipe
 	bool isTool() const; // in any recipe
 };
@@ -253,12 +253,12 @@ public :
 	static Item *getItem(const char *type, float x, float y, bool createComponents=true);
 	static Item *getItem(const ItemType *type, float x, float y, bool createComponents=true);
 	static Item *getRandomWeapon(const char *type,ItemClass itemClass);
-	
-	
+
+
 	static bool init();
 	static ItemType *getType(const char *name);
 	void destroy(int count=1);
-	
+
 	virtual ~Item();
 	virtual void render(LightMap *lightMap, TCODImage *ground=NULL);
 	virtual void renderDescription(int x, int y, bool below=true);
@@ -273,7 +273,7 @@ public :
 	virtual void use(int dx, int dy) {} // use the item in place (static items)
 	virtual Item *drop(int count=0); // move the item from it's owner inventory to the ground
 	bool isEquiped();
-	
+
 	// add to the list, posibly stacking
 	Item * addToList(TCODList<Item *> *list);
 	// remove one item, possibly unstacking
@@ -283,7 +283,7 @@ public :
 
 	bool isA(const ItemType *type) const { return typeData->isA(type); }
 	bool isA(const char *typeName) const { return isA(getType(typeName)); }
-    
+
 	// flags checks
 	bool isWalkable() const { return (typeData->flags & ITEM_NOT_WALKABLE) == 0; }
 	bool isTransparent() const { return (typeData->flags & ITEM_NOT_TRANSPARENT) ==0; }
@@ -293,17 +293,17 @@ public :
 	bool isDeletedOnUse() const { return typeData->flags & ITEM_DELETE_ON_USE; }
 	bool isUsedWhenPicked() const { return typeData->flags & ITEM_USE_WHEN_PICKED; }
 	bool isActivatedOnBump() const { return typeData->flags & ITEM_ACTIVATE_ON_BUMP; }
-	
+
 	// craft
 	bool isIngredient() const { return typeData->isIngredient(); } // in any recipe
 	bool isTool() const { return typeData->isTool(); }  // in any recipe
-	Item *produce(float rng) { return typeData->produce(rng); } // for items with Produce feature(s) 
-	
+	Item *produce(float rng) { return typeData->produce(rng); } // for items with Produce feature(s)
+
 	// containers
 	Item * putInContainer(Item *it); // put this in 'it' container (NULL if no more room)
 	Item * removeFromContainer(int count=1); // remove this from its container (NULL if not inside a container)
 	void computeBottleName();
-	
+
     // returns "A/An <item name>"
     const char *AName() const;
     // returns "a/an <item name>"
@@ -312,14 +312,14 @@ public :
     const char *TheName() const;
     // returns "the <item name>"
     const char *theName() const;
-    
+
     const char *getRateName(float rate) const;
-    
+
 	virtual bool loadData(uint32 chunkId, uint32 chunkVersion, TCODZip *zip);
 	virtual void saveData(uint32 chunkId, TCODZip *zip);
-	
+
 	static TCODColor classColor[NB_ITEM_CLASSES];
-	
+
 	//crafting
 	static TCODList<ItemCombination*> combinations;
 	static ItemCombination *getCombination(const Item *it1, const Item *it2);
@@ -327,7 +327,7 @@ public :
 	void addComponent(Item *component);
 	ItemCombination *getCombination() const;
 
-	
+
 	const ItemType *typeData;
 	ItemClass itemClass;
 	TCODColor col;
@@ -335,7 +335,7 @@ public :
 	char *name;
 	// something that can affect the name of an item created with this component
 	// example : an azuran blade => an azuran knife
-	char *adjective; 
+	char *adjective;
 	bool an;
 	int count;
 	TCODList<ItemModifier *> modifiers;
@@ -346,7 +346,7 @@ public :
 	int toDelete;
 	int ch;
 	TCODList<Item *> stack; // for soft stackable items or containers
-	TCODList<Item *> components; // for items that can be disassembled 
+	TCODList<Item *> components; // for items that can be disassembled
 protected :
 	friend class ItemFileListener;
 	static void addFeature(const char *typeName, ItemFeature *feat);

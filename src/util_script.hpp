@@ -37,5 +37,5 @@ public :
 protected :
 	void init();
 	int ref; // reference to precompiled chunk
-	void *data;	
+	void *data;
 };

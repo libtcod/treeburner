@@ -58,7 +58,7 @@ void Fish::render(LightMap *lightMap) {
 	apparentHeight-=MIN_VISIBLE_HEIGHT;
 	float coef=0.5f*apparentHeight/VISIBLE_HEIGHT;
 	coef=MIN(0.5f,coef);
-	
+
 	int conx2=getSubX()-gameEngine->xOffset*2;
 	int cony2=getSubY()-gameEngine->yOffset*2;
 	TCODColor rcol=col;

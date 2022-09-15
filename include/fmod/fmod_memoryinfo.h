@@ -16,7 +16,7 @@
     Description of "memoryused_array" fields returned by the getMemoryInfo function of every public FMOD class.
 
     [REMARKS]
-    Every public FMOD class has a getMemoryInfo function which can be used to get detailed information on what memory resources are associated with the object in question. 
+    Every public FMOD class has a getMemoryInfo function which can be used to get detailed information on what memory resources are associated with the object in question.
     The FMOD_MEMTYPE enumeration values can be used to address the "memoryused_array" returned by getMemoryInfo. See System::getMemoryInfo for an example.
 
     [PLATFORMS]
@@ -84,7 +84,7 @@ typedef enum
 
     FMOD_MEMTYPE_MAX,                            /* Number of "memoryused_array" fields. */
     FMOD_MEMTYPE_FORCEINT = 65536                /* Makes sure this enum is signed 32bit */
-    
+
 } FMOD_MEMTYPE;
 
 
@@ -99,7 +99,7 @@ typedef enum
     Use with the "memorybits" parameter of getMemoryInfo to get information on FMOD Ex memory usage.
 
     [REMARKS]
-    Every public FMOD class has a getMemoryInfo function which can be used to get detailed information on what memory resources are associated with the object in question. 
+    Every public FMOD class has a getMemoryInfo function which can be used to get detailed information on what memory resources are associated with the object in question.
     The FMOD_MEMBITS defines can be OR'd together to specify precisely what memory usage you'd like to get information on. See System::getMemoryInfo for an example.
 
     [PLATFORMS]
@@ -112,7 +112,7 @@ typedef enum
 */
 #define FMOD_MEMBITS_OTHER                       (1 << FMOD_MEMTYPE_OTHER)               /* Memory not accounted for by other types */
 #define FMOD_MEMBITS_STRING                      (1 << FMOD_MEMTYPE_STRING)              /* String data */
-                                                                                    
+
 #define FMOD_MEMBITS_SYSTEM                      (1 << FMOD_MEMTYPE_SYSTEM)              /* System object and various internals */
 #define FMOD_MEMBITS_PLUGINS                     (1 << FMOD_MEMTYPE_PLUGINS)             /* Plugin objects and internals */
 #define FMOD_MEMBITS_OUTPUT                      (1 << FMOD_MEMTYPE_OUTPUT)              /* Output module object and internals */
@@ -134,7 +134,7 @@ typedef enum
 #define FMOD_MEMBITS_GEOMETRY                    (1 << FMOD_MEMTYPE_GEOMETRY)            /* Geometry objects and internals */
 #define FMOD_MEMBITS_SYNCPOINT                   (1 << FMOD_MEMTYPE_SYNCPOINT)           /* Sync point memory. */
 #define FMOD_MEMBITS_ALL                         0xffffffff                              /* All memory used by FMOD Ex */
-/* [DEFINE_END] */                                                                  
+/* [DEFINE_END] */
 
 
 /*
@@ -148,7 +148,7 @@ typedef enum
     Use with the "event_memorybits" parameter of getMemoryInfo to get information on FMOD Event System memory usage.
 
     [REMARKS]
-    Every public FMOD Event System class has a getMemoryInfo function which can be used to get detailed information on what memory resources are associated with the object in question. 
+    Every public FMOD Event System class has a getMemoryInfo function which can be used to get detailed information on what memory resources are associated with the object in question.
     The FMOD_EVENT_MEMBITS defines can be OR'd together to specify precisely what memory usage you'd like to get information on. See EventSystem::getMemoryInfo for an example.
 
     [PLATFORMS]

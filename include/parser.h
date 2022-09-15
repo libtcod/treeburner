@@ -29,7 +29,7 @@
 #define _TCOD_PARSER_H
 
 /* generic type */
-typedef enum { 
+typedef enum {
 	TCOD_TYPE_NONE,
 	TCOD_TYPE_BOOL,
 	TCOD_TYPE_CHAR,

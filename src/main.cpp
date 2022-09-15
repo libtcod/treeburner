@@ -68,7 +68,7 @@ public :
     UmbraModule *createModule(const char *name) {
     	// the cave modules
     	if ( strcmp(name,"mainMenu") == 0 ) return new MainMenu();
-		else if ( strcmp(name,"chapter1") == 0 ) return new ForestScreen(); 
+		else if ( strcmp(name,"chapter1") == 0 ) return new ForestScreen();
 		else if ( strcmp(name,"chapter1Story") == 0 ) return new PaperScreen("data/cfg/chapter1.txg","title","text",1);
 		// pyromancer modules
 		else if ( strcmp(name,"pyroTitle") == 0 ) return new EndScreen(
@@ -89,7 +89,7 @@ public :
     	else if ( strcmp(name,"pyroGameOver") == 0 ) return new EndScreen("You're dead...\n\nEven worse, Zeepoh will probably go with Alena now that you turned into a pile of ashes...");
 		// treeBurner modules
 		else if ( strcmp(name,"treeBurnerTitle") == 0 ) return new EndScreen(
-			TCODRandom::getInstance()->getInt(0,1) ? 
+			TCODRandom::getInstance()->getInt(0,1) ?
 			"Hate. Unending, undying hate. That's all you can feel. "
 			"The deepest loathing imaginable, nothing more than an intense desire to kill them all. "
 			"You will find them, and they will die. Their homes will burn, and their flesh will "
@@ -100,7 +100,7 @@ public :
 			"Kill them all."
 			,1.0f,false);
 		else if ( strcmp(name,"treeBurnerVictory") == 0 ) return new EndScreen(
-			TCODRandom::getInstance()->getInt(0,1) ? 
+			TCODRandom::getInstance()->getInt(0,1) ?
 			"You wake up, drenched in a cold sweat. The cave is dark, and the still underground lake "
 			"lays at your feet. Ilia is laying next to you, still fast asleep. She doesn't even stir. "
 			"Good. The last thing you wanted to do was awaken her.\n\n"
@@ -127,7 +127,7 @@ public :
 			,1.0f,false);
 		else if ( strcmp(name,"treeBurnerGame" ) == 0 ) return new TreeBurner();
 		else if ( strcmp(name,"treeBurnerGameOver") == 0 ) return new EndScreen(
-			TCODRandom::getInstance()->getInt(0,1) ? 
+			TCODRandom::getInstance()->getInt(0,1) ?
 			"You bolt upright, screaming. The sound of your voice echoes in the darkness of the cave. "
 			"You can see nothing, but you hear Ilia stirring. Her hand instinctively reaches for her "
 			"Azuran dagger, and she turns to you.\n\n"
@@ -157,14 +157,14 @@ public :
 			"\"You're right. Sorry for waking you, it's just... I don't know.\" You lay back down, and close "
 			"your eyes, but your heart is still pounding rapidly in your chest. You know that sleep won't come "
 			"easily. Not after the dream..."
-			,1.0f,false);			
+			,1.0f,false);
 		else if ( strcmp(name,"treeBurnerCredits") == 0 ) return new EndScreen(
 			"Code - Jice\n\n\n"
 			"Words - Tim Pruett\n\n\n\n\n"
 			"libtcod 1.5.1wip\n\n\n"
 			"umbra 10.11wip"
 			,1.0f,true);
-		else return NULL;    
+		else return NULL;
 	}
 };
 

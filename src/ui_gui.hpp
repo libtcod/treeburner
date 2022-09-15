@@ -29,8 +29,8 @@ enum EGuiMode {
 	GUI_INVENTORY, // inventory alone
 	GUI_LOOT, // loot alone
 	GUI_INVLOOT, // inventory + loot
-	GUI_OBJECTIVES, 
-	GUI_MAXIMIZED, // any maximized dialog (currently only messages) 
+	GUI_OBJECTIVES,
+	GUI_MAXIMIZED, // any maximized dialog (currently only messages)
 	GUI_CRAFT, // crafting screen
 	GUI_TUTORIAL, // tutorial with menu
 };
