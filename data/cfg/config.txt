@@ -102,7 +102,6 @@ struct config {
 			// quickslot shortcuts
 			// (should correspond to main keyboard 1-0 keys)
 			// qwerty layout
-			/*
 			char quickslot1='1'
 			char quickslot2='2'
 			char quickslot3='3'
@@ -113,18 +112,6 @@ struct config {
 			char quickslot8='8'
 			char quickslot9='9'
 			char quickslot10='0'
-			*/
-			// azerty layout
-			char quickslot1='&'
-			char quickslot2='�'
-			char quickslot3='\"'
-			char quickslot4='\''
-			char quickslot5='('
-			char quickslot6='-'
-			char quickslot7='�'
-			char quickslot8='_'
-			char quickslot9='�'
-			char quickslot10='�'
 		}
 		struct minion {
 			char ch='m'
@@ -185,4 +172,3 @@ struct config {
 		float zoneDecay=2.0 // length of the decay phase in seconds
 	}
 }
-
