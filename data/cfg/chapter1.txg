@@ -1,0 +1,53 @@
+textgen "title" {
+	rule "OUTPUT" { value ="Chapter I - Aera" }
+}
+
+textgen "text" {
+	rule "OUTPUT" { values= [
+		"Hello."
+		"It has been sometime."
+		"Funny to see you here again."
+	]}
+}
+
+textgen "wef" {
+
+	rule "LIFE" { values=[
+	 "\n\nThat day, I had to put my life in the hands of a girl I had just met. And so did she..."
+	 "\n\nHow could she have known that one of us would betray ? That I would betray..."
+	 ," Down there in the darkness, deafened by the screams of the horde, friendship doesn't count anymore..."
+	]}
+	rule "MEMORY" { values = [
+		"I can still remember the first time I saw her?{ as if it was yesterday}."
+		,"The day when I met her is engraved on my memory."
+	]}
+	rule "BENEFIT" { values = [
+		"Of course, I benefited from the teachings of a prestigious school of pyromancy, but"
+		,"I had high quality clothes and equipment, but"
+	]}
+	rule "DANGER" {values = [
+		"I had to escape my bodyguards' notice to be able to go and play in the nearby forest."
+		,"Especially since Egesia's troops had just been pushed back beyond the city borders. Fortunately, I was able to leave the city unnoticed to go and play in the nearby forest."
+	]}
+	rule "PARAGRAPH2-1" { values = [
+		"${PARAGRAPH2}"
+		,"The city was a prison for her. She wanted to be some kind of mercenary, not a waitress everybody despises. She was in great distress, but we wouldn't see it. We were only kids..."
+		,"Without her, we would probably be dead. Both of us. She was training hard to quit her job as a waitress and become a mercenary. Her skills were of great help in the cave..."
+	]}
+	rule "PARAGRAPH2" { values = [
+		"In these times, we often escaped in the forest near the village. That was very dangerous, and totally forbidden, of course. But we were ten years old then, we thought we were immortal."
+		,"At that time, ${WAR} and I had to display a wealth of cleverness to escape my father's notice. Those rare moments were often spent in the nearby woods, despite the risk of encountering ${ENCOUNTER}..."
+	]}
+	rule "WAR" { values=["the infamous attack of ${CITYNAME}, our city, by Egesian troops was still in everybody's memory"
+		,"Egesia was frequently attacking frontier cities like ${CITYNAME}"]}
+	rule "ENCOUNTER"{ values=["disbanded soldiers groups","creatures lurking near the village"]}
+	rule "CITYNAME" { value="Anshar" }
+
+	rule "OUTPUT" { values= [
+		"${MEMORY}\n\n${PARAGRAPH2-1}"
+		,"${PARAGRAPH2}\n\nWhen you're a kid, an older girl can be more intimidating than all the deadly creatures of the woods..."
+		,"${PARAGRAPH2}\n\nUntil the day when we met her..."
+		,"Being the son of the captain of the guard has not only advantages. ${BENEFIT} I wasn't allowed to go outside the city. ${DANGER}"
+		,"Trust. In the end, it's all about trust. How much can you put in the hands of the other. You may have known him for years. What if your life is at stake ?${LIFE}"
+	]}
+}

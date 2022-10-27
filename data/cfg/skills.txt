@@ -1,0 +1,158 @@
+skill "light" {
+	castTime=2.0
+	reloadTime=0.0
+	resourceType="mana"
+	resourceCost=1.2
+	onoff executeWhenCasted noInterrupt
+	targetType = "caster"
+	description="Use pyromancy magic to light your surroundings"
+	targetEffects {
+		light {
+			col="255,119,34"
+			range=15
+			patternDelay=1.0
+			pattern="98989787897897897"
+		}
+	}
+}
+
+skill "blast" {
+	castTime=0.5
+	reloadTime=1.0
+	resourceType="mana"
+	resourceCost=10
+	noInterrupt
+	targetType="caster"
+	targetEffects {
+		cast { item="blast" }
+	}
+}
+
+skill "incan" {
+	castTime=0.5
+	reloadTime=1.0
+	resourceType="mana"
+	resourceCost=5
+	noInterrupt
+	targetType="caster"
+	description="Casts a fire cloud that sets fire to any creature close enough"
+	targetEffects {
+		cast { item="firecloud" }
+	}
+}
+
+skill "firefly" {
+	castTime=0.3
+	reloadTime=2.0
+	resourceType="mana"
+	resourceCost=3
+	noInterrupt
+	targetType="caster"
+	description="Casts an small light that temporarily illuminates a zone"
+	targetEffects {
+		cast { item="firefly" }
+	}
+}
+
+skill "beacon" {
+	castTime=0.5
+	reloadTime=10.0
+	resourceType="mana"
+	resourceCost=6
+	noInterrupt
+	targetType="caster"
+	description="Casts an intense light that temporarily illuminates a zone"
+	targetEffects {
+		cast { item="beacon" }
+	}
+}
+
+skill "embers" {
+	castTime=0.5
+	reloadTime=1.0
+	resourceType="mana"
+	resourceCost=5
+	noInterrupt
+	targetType="caster"
+	description="Casts a special fireball that projects deadly embers when it explodes"
+	targetEffects {
+		cast { item="embers" }
+	}
+}
+
+skill "summon minions" {
+	castTime=10.0
+	reloadTime=20.0
+	targetType="caster"
+	resourceType="mana"
+	resourceCost=0
+	noInterrupt
+	targetEffects {
+		summon { creature ="minion" minCount=7 maxCount=13 }
+	}
+}
+
+skill "summon ice shriekers" {
+	castTime=20.0
+	reloadTime=10.0
+	targetType="caster"
+	resourceType="mana"
+	resourceCost=0
+	noInterrupt
+	targetEffects {
+		summon { creature ="ice shrieker" minCount=2 maxCount=2 }
+	}
+}
+
+
+skill "shockfrost" {
+	castTime=0.5
+	reloadTime=15.0
+	targetType="caster"
+	resourceType="mana"
+	resourceCost=0
+	noInterrupt
+	targetEffects {
+		cast { item="shockfrost" }
+	}
+}
+
+skill "minifrost" {
+	castTime=0.5
+	reloadTime=10.0
+	targetType="caster"
+	resourceType="mana"
+	resourceCost=0
+	noInterrupt
+	targetEffects {
+		cast { item="minifrost" }
+	}
+}
+
+skill "iceball" {
+	castTime=0.5
+	reloadTime=0.5
+	targetType="caster"
+	resourceType="mana"
+	resourceCost=0
+	noInterrupt
+	targetEffects {
+		cast { item="iceball" }
+	}
+}
+
+skill "darkness" {
+	castTime=0.5
+	reloadTime=12.0
+	resourceType="mana"
+	resourceCost=1
+	onoff executeWhenCasted noInterrupt
+	targetType = "caster"
+	targetEffects {
+		light {
+			col="0,0,0"
+			range=5
+			mode="mul"
+		}
+	}
+}

@@ -1,0 +1,12 @@
+textgen "weapon" {
+// ======= pyromancer =========
+rule "Standard staffs" { value="${PYRO_ADJ} ${STAFF_NAME}"}
+rule "Standard wands" { value="${PYRO_ADJ} ${WAND_NAME}"}
+rule "ORANGE" {}
+rule "RED" {}
+rule "SILVER" {}
+rule "GOLD" {}
+rule "PYRO_ADJ" { values=["fire","burning","amber","pyromancer's"]}
+rule "STAFF_NAME" { values=["staff","rod"]}
+rule "WAND_NAME" { values=["wand","stick","stylus","shard","zapper"]}
+}
