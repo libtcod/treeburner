@@ -29,10 +29,10 @@ class Shoal;
 struct WaterZone {
 	Rect rect; // water zone
 	float cumulatedElapsed;
-	float *data; // water height data after update
-	float *oldData; // water height data before update
+	float *data = nullptr; // water height data after update
+	float *oldData = nullptr; // water height data before update
 	bool isActive;
-	Shoal *shoal;
+	Shoal *shoal = nullptr;
 };
 
 class RippleManager {
@@ -42,7 +42,7 @@ public :
 	bool updateRipples(float elapsed);
 	void renderRipples(TCODImage *ground);
 protected :
-	Dungeon *dungeon;
+	Dungeon *dungeon = nullptr;
 	TCODList<WaterZone *> zones;
 	void init();
 	float getData(const WaterZone &wz, int x2, int y2) const { return wz.data[x2+y2*wz.rect.w*2]; }

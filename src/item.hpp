@@ -328,20 +328,20 @@ public :
 	ItemCombination *getCombination() const;
 
 
-	const ItemType *typeData;
+	const ItemType *typeData = nullptr;
 	ItemClass itemClass;
 	TCODColor col;
-	char *typeName;
-	char *name;
+	char *typeName = nullptr;
+	char *name = nullptr;
 	// something that can affect the name of an item created with this component
 	// example : an azuran blade => an azuran knife
-	char *adjective;
+	char *adjective = nullptr;
 	bool an;
 	int count;
 	TCODList<ItemModifier *> modifiers;
-	Creature *owner; // this is in owner's inventory
-	Item *container; // this is inside container
-	Creature *asCreature; // a creature corresponding to this item
+	Creature *owner = nullptr; // this is in owner's inventory
+	Item *container = nullptr; // this is inside container
+	Creature *asCreature = nullptr; // a creature corresponding to this item
 	float fireResistance;
 	int toDelete;
 	int ch;
@@ -366,7 +366,7 @@ protected :
 	float heatTimer; // time before next heat update (1 per second)
 	bool onoff; // for doors, torchs, ... on = open/turned on, off = closed/turned off
 
-	ExtendedLight *light;
+	ExtendedLight *light = nullptr;
 	static TCODConsole *descCon; // offscreen console for item description
 
 	void initLight();

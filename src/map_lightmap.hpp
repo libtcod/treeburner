@@ -86,9 +86,9 @@ public :
 	float fogRange;
 
 protected :
-	HDRColor *data2x;
-	HDRColor *data;
+	HDRColor *data2x = nullptr;
+	HDRColor *data = nullptr;
 
 	float fogZ;
-	TCODNoise *fogNoise;
+	TCODNoise *fogNoise = nullptr;
 };

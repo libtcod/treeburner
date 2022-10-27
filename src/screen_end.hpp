@@ -34,13 +34,13 @@ public :
 	void renderText(int x,int y, int w, const char *txt);
 	void onFontChange();
 protected :
-	const char *txt;
-	const char *version;
+	const char *txt = nullptr;
+	const char *version = nullptr;
 	TCOD_alignment_t alignment;
 
 	float noiseZ;
 	bool stats;
-	TCODImage *img;
+	TCODImage *img = nullptr;
 	void onInitialise() override;
 	void onActivate() override;
 };
@@ -54,11 +54,11 @@ public :
 	virtual ~PaperScreen() {}
 	void onFontChange();
 protected :
-	const char *title;
-	const char *txgfile;
-	const char *titlegen;
-	const char *textgen;
-	TCODImage *tcodpix;
+	const char *title = nullptr;
+	const char *txgfile = nullptr;
+	const char *titlegen = nullptr;
+	const char *textgen = nullptr;
+	TCODImage *tcodpix = nullptr;
 	static TCODImage *paper;
 	static int paperHeight;
 	SDL_Surface *pix = nullptr;

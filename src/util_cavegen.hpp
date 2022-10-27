@@ -29,12 +29,12 @@ public :
 	CaveGenerator(int level); // bsp / cellular automate dungeon
 
 	// the final dungeon map
-	TCODMap *map; // normal resolution for pathfinding
-	TCODMap *map2x; // double resolution for fovs
+	TCODMap *map = nullptr; // normal resolution for pathfinding
+	TCODMap *map2x = nullptr; // double resolution for fovs
 	// dungeon generation parameters
 	int size;
 	int size2x; // well.. size*2
-	TCODImage *ground; // ground color (subcell rez)
+	TCODImage *ground = nullptr; // ground color (subcell rez)
 
 	// dungeon generator stuff
 	bool visitNode(TCODBsp *node, void *userData);

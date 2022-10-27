@@ -43,10 +43,10 @@ public :
 	Dungeon *dungeon; // current dungeon map
 	int xOffset,yOffset; // coordinate of console cell 0,0 in dungeon
 	int mousex,mousey; // cell under mouse cursor
-	TCODImage *ground; // visible part of the ground
+	TCODImage *ground = nullptr; // visible part of the ground
 
-	LightMap *lightMap; // store light reaching each cell
-	Packer *packer;
+	LightMap *lightMap = nullptr; // store light reaching each cell
+	Packer *packer = nullptr;
 
 	inline float getFog(int x,int y) { return lightMap->getFog(x,y); }
 	void hitFlash(); // when player is hit
@@ -96,8 +96,8 @@ protected :
 	int nbPause;
 	bool lookOn; // shit pressed
 	bool firstFrame;
-	RippleManager *rippleManager;
-	FireManager *fireManager;
+	RippleManager *rippleManager = nullptr;
+	FireManager *fireManager = nullptr;
 	float hitFlashAmount;
 
 	void onInitialise() override;
