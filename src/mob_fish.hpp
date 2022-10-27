@@ -44,6 +44,5 @@ public :
 	bool wasOnScreen() const;
 	bool updated;
 protected :
-	WaterZone *zone;
+	WaterZone *zone = nullptr;
 };
-

@@ -51,8 +51,8 @@ public :
 
 protected :
 	HDRColor outColor;
-	const char *intensityPattern;
-	const char *colorPattern;
+	const char *intensityPattern = nullptr;
+	const char *colorPattern = nullptr;
 	float intensityPatternDelay;
 	int intensityPatternLen;
 	int colorPatternLen;
@@ -62,4 +62,3 @@ protected :
 	float getIntensity();
 	HDRColor getColor(float rad);
 };
-

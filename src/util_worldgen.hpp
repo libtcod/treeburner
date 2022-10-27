@@ -53,15 +53,15 @@ public :
 	// altitude->color map
 	TCODColor mapGradient[256];
 	// world height map (0.0 - 1.0)
-	TCODHeightMap *hm;
+	TCODHeightMap *hm = nullptr;
 	// height map without erosion
-	TCODHeightMap *hm2;
+	TCODHeightMap *hm2 = nullptr;
 	// complete world map (not shaded)
-	TCODImage *worldmap;
+	TCODImage *worldmap = nullptr;
 	// temperature map (in °C)
-	TCODHeightMap *temperature;
+	TCODHeightMap *temperature = nullptr;
 	// precipitation map (0.0 - 1.0)
-	TCODHeightMap *precipitation;
+	TCODHeightMap *precipitation = nullptr;
 	// biome map
 	EBiome *biomeMap;
 
@@ -102,7 +102,7 @@ protected :
 	float cloudDx; // horizontal offset for smooth scrolling
 	float cloudTotalDx;
 	// world light intensity map (shadow map)
-	float *worldint;
+	float *worldint = nullptr;
 	typedef struct {
 		float slope;
 		// number of cells flowing into this cell
@@ -115,13 +115,13 @@ protected :
 		uint8_t riverId;
 		int riverLength;
 	} map_data_t;
-	map_data_t * mapData;
+	map_data_t * mapData = nullptr;
 	typedef struct {
 	    TCODList<int> coords;
 	    TCODList<int> strength;
 	} river_t;
 	TCODList<river_t *> rivers;
-	TCODRandom *wgRng;
+	TCODRandom *wgRng = nullptr;
 
 	void addHill(int nbHill, float baseRadius, float radiusVar, float height);
 	void buildBaseMap();

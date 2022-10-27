@@ -94,7 +94,7 @@ protected :
 			chunkId(chunkId),phase(phase),listener(listener) {}
 		uint32_t chunkId;
 		SavePhase phase;
-		SaveListener *listener;
+		SaveListener *listener = nullptr;
 	};
 
 	// currently loading/saving savegame data and index

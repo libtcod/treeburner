@@ -32,7 +32,7 @@ static TCOD_mutex_t finishedMutex=NULL;
 static TCODList<ThreadData *> todoList;
 static TCODList<ThreadData *> finished;
 static int jobId=0;
-ThreadPool *threadPool=NULL;
+ThreadPool *threadPool = nullptr;
 
 int thread_pool_func(void *dat) {
 	// wait for something to do
@@ -147,5 +147,3 @@ void ThreadPool::waitUntilFinished(int jobId) {
 	}
 	TCODSystem::mutexOut(todoMutex);
 }
-
-

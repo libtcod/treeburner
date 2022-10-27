@@ -33,14 +33,14 @@ public :
 	virtual ~Dungeon();
 
 	// the final dungeon map
-	Cell *cells; // normal resolution data
-	SubCell *subcells; // subcell resolution data
-	TCODMap *map; // normal resolution for pathfinding
-	TCODMap *map2x; // double resolution for fovs
-	TCODHeightMap *hmap; // double resolution. ground altitude
-	TCODHeightMap *smap; // double resolution. shadow map
-	TCODHeightMap *smapBeforeTree; // double resolution. shadow map before trees shadow
-	TCODImage *canopy; // double resolution. black = transparent
+	Cell *cells = nullptr; // normal resolution data
+	SubCell *subcells = nullptr; // subcell resolution data
+	TCODMap *map = nullptr; // normal resolution for pathfinding
+	TCODMap *map2x = nullptr; // double resolution for fovs
+	TCODHeightMap *hmap = nullptr; // double resolution. ground altitude
+	TCODHeightMap *smap = nullptr; // double resolution. shadow map
+	TCODHeightMap *smapBeforeTree = nullptr; // double resolution. shadow map before trees shadow
+	TCODImage *canopy = nullptr; // double resolution. black = transparent
 
 	// dungeon generation parameters
 	//int size;
@@ -161,7 +161,7 @@ protected :
 	TCODList<Creature *> creaturesToAdd;
 	bool isUpdatingCreatures;
 	TCODColor ambient; // ambient light
-	CloudBox *clouds; // for outdoors
+	CloudBox *clouds = nullptr; // for outdoors
 
     void initData(CaveGenerator *caveGen);
     void cleanData();

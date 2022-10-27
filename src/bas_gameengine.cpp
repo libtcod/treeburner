@@ -29,7 +29,7 @@
 #include <ctype.h>
 #include "main.hpp"
 
-GameEngine *gameEngine = NULL;
+GameEngine *gameEngine = nullptr;
 
 GameEngine::GameEngine() : Screen(0), nbPause(0), lookOn(false) {
 	gameEngine=this;

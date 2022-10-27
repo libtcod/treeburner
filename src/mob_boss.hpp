@@ -38,7 +38,7 @@ protected :
 	bool seen;
 	bool summonMinions;
 	bool stayInLair;
-	ExtendedLight *treasureLight;
+	ExtendedLight *treasureLight = nullptr;
 };
 
 class VillageHead : public Boss {

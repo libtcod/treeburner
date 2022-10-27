@@ -43,7 +43,7 @@ public :
 	Behavior(WalkPattern *walkPattern) : walkPattern(walkPattern) {}
 	virtual bool update(Creature *crea, float elapsed) = 0;
 protected :
-	WalkPattern *walkPattern;
+	WalkPattern *walkPattern = nullptr;
 };
 
 class FollowBehavior : public Behavior {
@@ -52,7 +52,7 @@ public :
 	void setLeader(Creature *leader) { this->leader=leader;}
 	bool update(Creature *crea, float elapsed);
 protected :
-	Creature *leader;
+	Creature *leader = nullptr;
 	float standDelay;
 };
 

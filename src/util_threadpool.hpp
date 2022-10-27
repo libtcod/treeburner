@@ -28,7 +28,7 @@ typedef int (*thread_job_t)(void *dat);
 
 struct ThreadData {
 	int id;
-	void *jobData;
+	void *jobData = nullptr;
 	TCOD_semaphore_t sem;
 	thread_job_t job;
 	int jobResult;
@@ -45,4 +45,3 @@ protected :
 	TCODList<TCOD_thread_t> threads;
 	int nbCores;
 };
-

@@ -68,7 +68,7 @@ enum ConditionTypeId {
 class ConditionType {
 public :
 	ConditionTypeId type;
-	const char *name;
+	const char *name = nullptr;
 	static TCODList<ConditionType *> list;
 	static ConditionType *find(const char *name);
 	static ConditionType *get(ConditionTypeId type);
@@ -81,11 +81,11 @@ private :
 
 class Condition {
 public :
-	ConditionType *type;
-	Creature *target;
+	ConditionType *type = nullptr;
+	Creature *target = nullptr;
 	float initialDuration,duration,amount; // remaining duration
 	float curAmount;
-	const char *alias;
+	const char *alias = nullptr;
 	Condition() {}
 	Condition(ConditionTypeId type, float duration, float amount, const char *alias = NULL);
 	// return true if condition finished
@@ -111,12 +111,12 @@ public :
 	bool burn;
 	int flags;
 	char name[CREATURE_NAME_SIZE];
-	Item *mainHand, *offHand;
+	Item *mainHand, *offHand = nullptr;
 	Item *asItem; // an item corresponding to this creature
 	TCODList<Condition *> conditions;
 
 	// ai
-	Behavior *currentBehavior;
+	Behavior *currentBehavior = nullptr;
 
 	Creature();
 	virtual ~Creature();

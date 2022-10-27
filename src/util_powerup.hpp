@@ -38,11 +38,11 @@ class Powerup {
 public :
 	PowerupId id;
 
-	const char *name;
+	const char *name = nullptr;
 	int level;
-	const char *type;
-	const char *description;
-	Powerup *requires;
+	const char *type = nullptr;
+	const char *description = nullptr;
+	Powerup *requires = nullptr;
 	bool enabled;
 
 	static TCODList<Powerup *> list;
@@ -66,11 +66,8 @@ protected :
 	bool needRefresh;
 	int iconWidth,iconHeight; // in console cells
 	int mousecx,mousecy;
-	Powerup *selected;
+	Powerup *selected = nullptr;
 
 	friend class Powerup;
 	PowerupGraph();
 };
-
-
-

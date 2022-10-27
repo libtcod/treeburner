@@ -30,7 +30,7 @@
 TCODNoise noise1d(1);
 TCODNoise noise2d(2);
 TCODNoise noise3d(3);
-TCODRandom *rng=NULL;
+TCODRandom *rng=nullptr;
 bool mouseControl=false;
 bool newGame=false;
 SaveGame saveGame;

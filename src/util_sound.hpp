@@ -5,10 +5,10 @@ private:
     char * currentSound; //currently played sound
 	bool updateCalled; // update called this frame
 #ifndef NO_SOUND
-	FMOD_RESULT result;
-	FMOD_SYSTEM *fmodsystem;
-	FMOD_SOUND *snd;
-	FMOD_CHANNEL *channel;
+	FMOD_RESULT result = nullptr;
+	FMOD_SYSTEM *fmodsystem; = nullptr
+	FMOD_SOUND *snd = nullptr;
+	FMOD_CHANNEL *channel = nullptr;
 #endif
 public:
     Sound ();
@@ -29,5 +29,3 @@ public:
     //toggles
     void togglePause(void);
 };
-
-

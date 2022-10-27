@@ -35,11 +35,11 @@ public :
 	void antispark(int x,int y);
 	void softspark(int x, int y, int delta);
 	void update(float elapsed);
-	TCODImage *img;
+	TCODImage *img = nullptr;
 protected :
 	int w, h;
-	uint8_t *buf;
-	uint8_t *smoothedBuf;
+	uint8_t *buf = nullptr;
+	uint8_t *smoothedBuf = nullptr;
 	float el;
 };
 
@@ -62,8 +62,8 @@ protected :
 		float life;
 	};
 	TCODList<FireZone> zones;
-	Dungeon *dungeon;
-	uint8_t *buf;
+	Dungeon *dungeon = nullptr;
+	uint8_t *buf = nullptr;
 	float el;
 	Rect screenFireZone;
 };

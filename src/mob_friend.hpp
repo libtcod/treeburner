@@ -40,7 +40,7 @@ public :
 	void saveData(uint32_t chunkId, TCODZip *zip);
 
 private :
-	TextGenerator *talkGenerator;
+	TextGenerator *talkGenerator = nullptr;
 	float timer;
 	bool startPhrase, foodTuto, foodObj;
 

@@ -25,11 +25,11 @@
 */
 
 struct Rule {
-	const char *name;
+	const char *name = nullptr;
 	TCODList<const char *> values;
 };
 struct TextGen {
-	const char *name;
+	const char *name = nullptr;
 	TCODList<Rule *>rules;
 };
 
@@ -39,8 +39,8 @@ public :
 };
 
 struct TextGenFunc {
-	const char *name;
-	ITextGeneratorFunc *func;
+	const char *name = nullptr;
+	ITextGeneratorFunc *func = nullptr;
 };
 
 class TextGenerator : public ITCODParserListener {
@@ -77,10 +77,10 @@ private :
 	// capitalize first char of the generated text ?
 	bool goatfirst;
 	// config filename
-	const char *filename;
+	const char *filename = nullptr;
 	// filename has been parsed ?
 	bool init;
-	TCODRandom *textGenRng;
+	TCODRandom *textGenRng = nullptr;
 
 };
 
@@ -91,7 +91,7 @@ public :
 	RandomIntFunc(TCODRandom *riRng) : riRng(riRng) {}
 	const char * execute(const char *params);
 protected :
-	TCODRandom *riRng;
+	TCODRandom *riRng = nullptr;
 };
 
 // RANDOM_NAME()
@@ -102,7 +102,7 @@ public :
 		return NameGenerator::generateRandomName(rnRng);
 	}
 protected :
-	TCODRandom *rnRng;
+	TCODRandom *rnRng = nullptr;
 };
 
 // NUMBER_TO_LETTER(num)
@@ -110,4 +110,3 @@ class NumberToLetterFunc : public ITextGeneratorFunc {
 public :
 	const char * execute(const char *params);
 };
-

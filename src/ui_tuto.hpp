@@ -39,8 +39,8 @@ typedef enum {
 } TutorialPageId;
 
 struct TutorialPage {
-	const char *name;
-	TCODConsole *con;
+	const char *name = nullptr;
+	TCODConsole *con = nullptr;
 	bool inMenu;
 	int x,y;
 	float delay;

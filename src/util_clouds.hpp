@@ -35,10 +35,9 @@ public :
 protected :
 	int width,height, x0;
 	float *data, xOffset,xTotalOffset;
-	float *highOctaveNoise;
+	float *highOctaveNoise = nullptr;
 	TCODColor cloudColorMap[256];
 	float getNoisierThickness(int x, int y);
 	float getData(float *data,int x, int y);
 	float getInterpolatedData(float *data,int x, int y);
 };
-

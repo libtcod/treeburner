@@ -26,15 +26,15 @@
 class Objective {
 public :
 	const char *title;
-	const char *description;
-	const char *enableScript;
-	const char *successScript;
+	const char *description = nullptr;
+	const char *enableScript = nullptr;
+	const char *successScript = nullptr;
 	TCODList<const char *> steps;
 
 	Objective(	const char *title,
 		const char *description,
-		const char *enableScript = NULL,
-		const char *successScript = NULL);
+		const char *enableScript = nullptr,
+		const char *successScript = nullptr);
 	Script *onEnable;
 	Script *onSuccess;
 };
@@ -79,6 +79,6 @@ protected :
 	int selected;
 	Tabs guiTabs;
 	TCODList<Objective *> *currentList;
-	Scroller *scroller;
+	Scroller *scroller = nullptr;
 	bool executeObjScript(Objective *obj, Script *script);
 };
