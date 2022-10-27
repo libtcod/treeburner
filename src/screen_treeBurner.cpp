@@ -315,6 +315,10 @@ bool TreeBurner::update(float elapsed, TCOD_key_t k,TCOD_mouse_t mouse) {
 		else pauseGame();
 	} else if ( ! k.pressed && (k.c == 'o' || k.c =='O' ) ) {
 		openCloseObjectives();
+	} else if ( ! k.pressed && (k.c == 'i') || k.c == 'O') {
+		openCloseInventory();
+	} else if ( ! k.pressed && (k.c == 'c') || k.c == 'C') {
+		openCloseCraft();
 	}
 	// non player related keyboard handling
 	if ( debug ) {
