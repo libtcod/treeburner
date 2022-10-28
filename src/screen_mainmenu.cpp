@@ -23,10 +23,14 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+#include "screen_mainmenu.hpp"
+
 #include <math.h>
 #include <stdio.h>
 
+#include "constants.hpp"
 #include "main.hpp"
+#include "util_subcell.hpp"
 
 MainMenu* MainMenu::instance = NULL;
 static const TCODColor PAPER_COLOR(46, 28, 18);

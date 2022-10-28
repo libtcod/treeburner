@@ -27,11 +27,15 @@
 // TODO :
 // compute 4 regions and use a name type (norse, mesopotamian, fantasy, celtic) for each region.
 // add 'on the border of x region' in the goat soup
+#include "screen_school.hpp"
 
 #include <math.h>
 #include <stdio.h>
 
 #include "main.hpp"
+#include "screen_mainmenu.hpp"
+#include "util_subcell.hpp"
+
 #define SQR(x) ((x) * (x))
 #define MENUY 5
 

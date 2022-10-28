@@ -23,10 +23,16 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+#include "screen_forest.hpp"
+
 #include <math.h>
 #include <stdio.h>
 
+#include "bas_entity.hpp"
 #include "main.hpp"
+#include "map_building.hpp"
+#include "map_cell.hpp"
+#include "screen_mainmenu.hpp"
 
 #define FOREST_W 400
 #define FOREST_H 400

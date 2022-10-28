@@ -23,11 +23,15 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+#include "screen_game.hpp"
+
 #include <ctype.h>
 #include <stdarg.h>
 #include <stdio.h>
 
+#include "bas_aidirector.hpp"
 #include "main.hpp"
+#include "util_powerup.hpp"
 
 Game::Game() : level(0), helpOn(false) {}
 

@@ -23,7 +23,10 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+#include "map_lightmap.hpp"
+
 #include "main.hpp"
+#include "map_dungeon.hpp"
 
 HDRColor operator*(float value, const HDRColor& c) { return c * value; }
 

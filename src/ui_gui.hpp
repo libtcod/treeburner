@@ -23,6 +23,14 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+#pragma once
+#include "ui_craft.hpp"
+#include "ui_descriptor.hpp"
+#include "ui_inventory.hpp"
+#include "ui_messages.hpp"
+#include "ui_objectives.hpp"
+#include "ui_status.hpp"
+#include "ui_tuto.hpp"
 
 enum EGuiMode {
   GUI_NONE,  // no dialog displayed

@@ -23,10 +23,13 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+#include "mob_player.hpp"
+
 #include <assert.h>
 #include <ctype.h>
 
 #include "main.hpp"
+#include "util_subcell.hpp"
 
 // maximum sprint : 2 times faster
 #define MIN_SPRINT_COEF 0.5f

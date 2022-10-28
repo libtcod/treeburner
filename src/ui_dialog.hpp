@@ -23,6 +23,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+#pragma once
+#include <libtcod.hpp>
+#include <umbra/umbra.hpp>
 
 enum EDialogFlag {
   DIALOG_MAXIMIZABLE = 1,  // can be minimized/maximized

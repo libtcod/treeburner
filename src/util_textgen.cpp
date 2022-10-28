@@ -23,11 +23,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+#include "util_textgen.hpp"
+
 #include <ctype.h>
 #include <stdarg.h>
 #include <stdio.h>
-
-#include "main.hpp"
 
 TCODList<Rule*> TextGenerator::globalRules;
 TCODList<TextGenFunc*> TextGenerator::globalFuncs;

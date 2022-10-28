@@ -23,6 +23,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+#pragma once
+#include <libtcod.hpp>
+
+#include "screen.hpp"
+#include "util_fire.hpp"
 
 enum MenuItemId { MENU_NEW_GAME, MENU_CONTINUE, MENU_EXIT, MENU_NB_ITEMS };
 

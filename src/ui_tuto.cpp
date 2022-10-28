@@ -23,9 +23,13 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+#include "ui_tuto.hpp"
+
 #include <stdio.h>
 
+#include "constants.hpp"
 #include "main.hpp"
+#include "util_subcell.hpp"
 
 #define FADE_TIME 0.5f
 #define BLINK_TIME 3.0f

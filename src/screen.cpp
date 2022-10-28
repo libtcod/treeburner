@@ -23,7 +23,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+#include "screen.hpp"
 
+#include "constants.hpp"
 #include "main.hpp"
 
 int SCREEN_MAIN_MENU;

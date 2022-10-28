@@ -23,8 +23,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+#include "screen_end.hpp"
+
 #include <SDL.h>
 
+#include "constants.hpp"
 #include "main.hpp"
 
 EndScreen::EndScreen(const char* txt, float fadeLvl, bool stats)

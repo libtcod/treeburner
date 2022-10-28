@@ -23,9 +23,13 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+#include "ui_messages.hpp"
+
 #include <stdio.h>
 
+#include "constants.hpp"
 #include "main.hpp"
+#include "util_subcell.hpp"
 
 #define NB_LINES 10
 #define HISTORY_SIZE 256

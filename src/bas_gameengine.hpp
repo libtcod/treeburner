@@ -23,8 +23,23 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+#pragma once
 
-class Dialog;
+#include <libtcod.hpp>
+#include <umbra/umbra.hpp>
+
+#include "bas_entity.hpp"
+#include "map_dungeon.hpp"
+#include "map_lightmap.hpp"
+#include "mob_creature.hpp"
+#include "mob_player.hpp"
+#include "screen.hpp"
+#include "spell_fireball.hpp"
+#include "ui_dialog.hpp"
+#include "ui_gui.hpp"
+#include "util_fire.hpp"
+#include "util_packer.hpp"
+#include "util_ripples.hpp"
 
 class GameEngine : public Screen {
  public:

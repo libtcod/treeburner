@@ -1,6 +1,6 @@
-#include <stdio.h>
+#include "util_sound.hpp"
 
-#include "main.hpp"
+#include <stdio.h>
 
 Sound sound;
 

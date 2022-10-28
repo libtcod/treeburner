@@ -23,6 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+#include "util_ripples.hpp"
 
 #include <assert.h>
 #include <math.h>
@@ -30,6 +31,8 @@
 #include <libtcod/matrix.hpp>
 
 #include "main.hpp"
+#include "map_dungeon.hpp"
+#include "mob_fish.hpp"
 
 // range below which fishes try to get away from each other
 #define SHOAL_CLOSE_RANGE 2.0f

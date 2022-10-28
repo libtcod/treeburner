@@ -23,8 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-#include "main.hpp"
+#include "item_modifier.hpp"
 
 const char* modifierName[ITEM_MOD_NUMBER] = {
     "blast power",

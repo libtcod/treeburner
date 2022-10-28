@@ -23,6 +23,13 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+#pragma once
+#include <libtcod.hpp>
+
+#include "constants.hpp"
+#include "screen.hpp"
+#include "util_textgen.hpp"
+#include "util_worldgen.hpp"
 
 enum ESchool { SCHOOL_FIRE, SCHOOL_WATER, NB_SCHOOLS };
 extern const char* schoolTypeName[NB_SCHOOLS];

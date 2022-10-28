@@ -23,8 +23,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+#include "ui_status.hpp"
 
+#include "constants.hpp"
 #include "main.hpp"
+#include "ui_inventory.hpp"
+#include "util_subcell.hpp"
 
 #define PANEL_HEIGHT 11
 

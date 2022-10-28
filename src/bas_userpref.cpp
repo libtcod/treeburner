@@ -23,8 +23,10 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+#include "bas_userpref.hpp"
 
 #include <filesystem>
+#include <libtcod.hpp>
 
 #include "main.hpp"
 

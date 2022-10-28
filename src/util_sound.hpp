@@ -1,3 +1,4 @@
+#pragma once
 class Sound {
  private:
   bool on;

@@ -23,8 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-#include "main.hpp"
+#include "util_script.hpp"
 #ifndef NO_LUA
 #include <lua.hpp>
 

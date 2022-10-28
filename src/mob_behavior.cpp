@@ -23,10 +23,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+#include "mob_behavior.hpp"
 
 #include <math.h>
 
 #include "main.hpp"
+#include "map_dungeon.hpp"
 
 TCODList<ScarePoint*> HerdBehavior::scare;
 

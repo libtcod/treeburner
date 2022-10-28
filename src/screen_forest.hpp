@@ -23,6 +23,13 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+#pragma once
+#include <libtcod.hpp>
+
+#include "bas_gameengine.hpp"
+#include "bas_savegame.hpp"
+#include "mob_friend.hpp"
+#include "ui_input.hpp"
 
 class ForestScreen : public GameEngine, public SaveListener {
  public:

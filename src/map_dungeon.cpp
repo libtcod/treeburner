@@ -23,11 +23,14 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+#include "map_dungeon.hpp"
+
 #include <assert.h>
 #include <math.h>
 #include <stdio.h>
 
 #include "main.hpp"
+#include "mob_player.hpp"
 
 Dungeon::Dungeon(int width, int height) : level(0), ambient(TCODColor::black) {
   this->width = width;

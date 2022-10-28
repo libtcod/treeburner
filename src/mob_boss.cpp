@@ -23,8 +23,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+#include "mob_boss.hpp"
 
+#include "bas_aidirector.hpp"
+#include "bas_gameengine.hpp"
 #include "main.hpp"
+#include "screen_game.hpp"
 
 VillageHead::VillageHead() {
   static TCODColor villageHeadColor = config.getColorProperty("config.creatures.villageHead.col");

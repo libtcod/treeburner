@@ -23,10 +23,13 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+#include "spell_fireball.hpp"
+
 #include <math.h>
 #include <stdio.h>
 
 #include "main.hpp"
+
 float FireBall::incanRange = 0.0f;
 float FireBall::incanLife = 0.0f;
 float FireBall::sparkleSpeed = 0.0f;

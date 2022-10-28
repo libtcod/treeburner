@@ -23,11 +23,20 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+#include "item.hpp"
 
 #include <math.h>
 #include <stdio.h>
 
+#include <libtcod.hpp>
+
+#include "item.hpp"
 #include "main.hpp"
+#include "map_building.hpp"
+#include "screen_game.hpp"
+#include "ui_inventory.hpp"
+#include "util_cellular.hpp"
+#include "util_textgen.hpp"
 
 TCODConsole* Item::descCon = NULL;
 

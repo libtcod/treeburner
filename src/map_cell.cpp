@@ -23,8 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-#include "main.hpp"
+#include "map_cell.hpp"
 
 TerrainType terrainTypes[NB_TERRAINS] = {
     {"deep swamp water", TCODColor(44, 74, 62), false, true, true, 5.0f},
