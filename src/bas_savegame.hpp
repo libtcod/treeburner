@@ -1,28 +1,28 @@
 /*
-* Copyright (c) 2009 Jice
-* All rights reserved.
-*
-* Redistribution and use in source and binary forms, with or without
-* modification, are permitted provided that the following conditions are met:
-*     * Redistributions of source code must retain the above copyright
-*       notice, this list of conditions and the following disclaimer.
-*     * Redistributions in binary form must reproduce the above copyright
-*       notice, this list of conditions and the following disclaimer in the
-*       documentation and/or other materials provided with the distribution.
-*     * The name of Jice may not be used to endorse or promote products
-*       derived from this software without specific prior written permission.
-*
-* THIS SOFTWARE IS PROVIDED BY Jice ``AS IS'' AND ANY
-* EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-* WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-* DISCLAIMED. IN NO EVENT SHALL Jice BE LIABLE FOR ANY
-* DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-* (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-* LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-* ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-* (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright (c) 2009 Jice
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *     * Redistributions of source code must retain the above copyright
+ *       notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above copyright
+ *       notice, this list of conditions and the following disclaimer in the
+ *       documentation and/or other materials provided with the distribution.
+ *     * The name of Jice may not be used to endorse or promote products
+ *       derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY Jice ``AS IS'' AND ANY
+ * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL Jice BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
 
 #define SAVEGAME_MAGIC_NUMBER 0xFD051E4F
 
@@ -43,67 +43,65 @@
 
 // an object saved inside a chunk managed by another object
 class Persistant {
-public :
-	virtual bool loadData(TCODZip *zip) = 0;
-	virtual void saveData(TCODZip *zip) = 0;
+ public:
+  virtual bool loadData(TCODZip* zip) = 0;
+  virtual void saveData(TCODZip* zip) = 0;
 };
-
 
 // a listener handles saving/loading of an independant chunk of the savegame file
 class SaveListener {
-public :
-	virtual bool loadData(uint32_t chunkId, uint32_t chunkVersion, TCODZip *zip) = 0;
-	virtual void saveData(uint32_t chunkId, TCODZip *zip) = 0;
+ public:
+  virtual bool loadData(uint32_t chunkId, uint32_t chunkVersion, TCODZip* zip) = 0;
+  virtual void saveData(uint32_t chunkId, TCODZip* zip) = 0;
 };
 
 enum SavePhase {
-	// only loads what is required for background map generation
-	PHASE_INIT,
-	// loads the rest
-	PHASE_START,
+  // only loads what is required for background map generation
+  PHASE_INIT,
+  // loads the rest
+  PHASE_START,
 };
 
 class SaveGame : public SaveListener {
-public :
-	SaveGame();
-	virtual ~SaveGame() {}
-	uint32_t seed; // seed to initialise the random number generator
-	int chapter;
+ public:
+  SaveGame();
+  virtual ~SaveGame() {}
+  uint32_t seed;  // seed to initialise the random number generator
+  int chapter;
 
-	void init(); // reset data when starting a new game
-	void clear(); // delete current zip
-	void registerListener(uint32_t chunkId, SavePhase phase, SaveListener *listener);
-	void unregisterListener(SaveListener *listener);
-	bool load(SavePhase phase);
-	void save();
+  void init();  // reset data when starting a new game
+  void clear();  // delete current zip
+  void registerListener(uint32_t chunkId, SavePhase phase, SaveListener* listener);
+  void unregisterListener(SaveListener* listener);
+  bool load(SavePhase phase);
+  void save();
 
-	// load/save the GAME chunk
-	bool loadData(uint32_t chunkId, uint32_t chunkVersion, TCODZip *zip);
-	void saveData(uint32_t chunkId, TCODZip *zip);
+  // load/save the GAME chunk
+  bool loadData(uint32_t chunkId, uint32_t chunkVersion, TCODZip* zip);
+  void saveData(uint32_t chunkId, TCODZip* zip);
 
-	static bool isBigEndian();
-	static const char *getChunkId(uint32_t chunkId);
-	// called when a listener starts to load a new chunk
-	void loadChunk(uint32_t *chunkId, uint32_t *chunkVersion);
-	// called when a listener starts to save a new chunk
-	void saveChunk(uint32_t chunkId, uint32_t chunkVersion);
+  static bool isBigEndian();
+  static const char* getChunkId(uint32_t chunkId);
+  // called when a listener starts to load a new chunk
+  void loadChunk(uint32_t* chunkId, uint32_t* chunkVersion);
+  // called when a listener starts to save a new chunk
+  void saveChunk(uint32_t chunkId, uint32_t chunkVersion);
 
-protected :
-	struct SaveListenerRecord {
-		SaveListenerRecord(uint32_t chunkId,SavePhase phase, SaveListener *listener) :
-			chunkId(chunkId),phase(phase),listener(listener) {}
-		uint32_t chunkId;
-		SavePhase phase;
-		SaveListener *listener = nullptr;
-	};
+ protected:
+  struct SaveListenerRecord {
+    SaveListenerRecord(uint32_t chunkId, SavePhase phase, SaveListener* listener)
+        : chunkId(chunkId), phase(phase), listener(listener) {}
+    uint32_t chunkId;
+    SavePhase phase;
+    SaveListener* listener = nullptr;
+  };
 
-	// currently loading/saving savegame data and index
-	TCODZip *zip, *idx;
-	TCODList <SaveListenerRecord *> listeners;
-	// used to compute chunk lengths
-	TCODList <uint32_t> startPos;
-	// size of the chunks currently saved
-	TCODList <uint32_t> sizes;
-	uint32_t nbChunks;
-
+  // currently loading/saving savegame data and index
+  TCODZip *zip, *idx;
+  TCODList<SaveListenerRecord*> listeners;
+  // used to compute chunk lengths
+  TCODList<uint32_t> startPos;
+  // size of the chunks currently saved
+  TCODList<uint32_t> sizes;
+  uint32_t nbChunks;
 };
