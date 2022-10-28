@@ -85,6 +85,7 @@
     "xloctime": "cpp",
     "xtree": "cpp",
     "*.rh": "cpp",
-    "set": "cpp"
+    "set": "cpp",
+    "random": "cpp"
   }
 }

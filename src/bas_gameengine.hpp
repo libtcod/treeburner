@@ -37,6 +37,7 @@ public :
 	void pauseGame();
 	void resumeGame();
 	void onFontChange();
+	void onEvent(const SDL_Event&) override{};
 	bool update(float elapsed, TCOD_key_t k,TCOD_mouse_t mouse);
 
 	Player player;

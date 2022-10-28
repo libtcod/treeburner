@@ -30,6 +30,7 @@ public :
 	EndScreen(const char *txt,float fadeLvl=0.0f, bool stats=false);
 	void render();
 	bool update(float elapsed, TCOD_key_t k,TCOD_mouse_t mouse);
+	void onEvent(const SDL_Event&) override{};
 	virtual ~EndScreen() {}
 	void renderText(int x,int y, int w, const char *txt);
 	void onFontChange();

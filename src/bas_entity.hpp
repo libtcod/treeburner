@@ -23,6 +23,7 @@
 * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+#include <algorithm>
 
 // a position in the world
 class Entity {
@@ -87,10 +88,10 @@ public :
 	}
 	// smallest rectangle containing this and r
 	void merge(const Rect &r) {
-		float minx = MIN(x,r.x);
-		float maxx = MAX(x+w,r.x+r.w);
-		float miny = MIN(y,r.y);
-		float maxy = MAX(y+h,r.y+r.h);
+		float minx = std::min(x,r.x);
+		float maxx = std::max(x+w,r.x+r.w);
+		float miny = std::min(y,r.y);
+		float maxy = std::max(y+h,r.y+r.h);
 		x = minx;
 		w = (int)(maxx-minx);
 		y = miny;
@@ -98,10 +99,10 @@ public :
 	}
 	// intersection of this and r
 	void intersect(const Rect &r) {
-		float minx = MAX(x,r.x);
-		float maxx = MIN(x+w,r.x+r.w);
-		float miny = MAX(y,r.y);
-		float maxy = MIN(y+h,r.y+r.h);
+		float minx = std::max(x,r.x);
+		float maxx = std::min(x+w,r.x+r.w);
+		float miny = std::max(y,r.y);
+		float maxy = std::min(y+h,r.y+r.h);
 		x=minx;
 		y=miny;
 		w=(int)(maxx-minx);

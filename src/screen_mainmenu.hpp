@@ -36,6 +36,7 @@ public :
 	MainMenu();
 	static MainMenu *instance;
 	void render();
+	void onEvent(const SDL_Event&) override{};
 	bool update(float elapsed, TCOD_key_t k,TCOD_mouse_t mouse);
 	virtual ~MainMenu() {}
 	void waitForWorldGen();

@@ -51,6 +51,7 @@ public :
 	Tutorial();
 	virtual ~Tutorial();
 	void render();
+	void onEvent(const SDL_Event&) override{};
 	bool update(float elapsed, TCOD_key_t k,TCOD_mouse_t mouse);
 	void startLiveTuto(TutorialPageId id);
 	void closeLiveTuto();

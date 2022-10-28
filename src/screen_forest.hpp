@@ -33,6 +33,7 @@ public :
 
 	void render();
 	bool update(float elapsed, TCOD_key_t k,TCOD_mouse_t mouse);
+	void onEvent(const SDL_Event&) override{};
     void generateMap(uint32_t seed); // generate a new random map
     void loadMap(uint32_t seed); // load map from savegame
 
