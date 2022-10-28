@@ -37,11 +37,11 @@ jobs:
       CMAKE_BUILD_DIR: ${{ github.workspace }}/build
 
     steps:
-      # fetch-depth=0 and v1 are needed for 'git describe' to work correctly.
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
           submodules: true
+          lfs: true
       # Setup the build machine with the most recent versions of CMake and Ninja. Both are cached if not already: on subsequent runs both will be quickly restored from GitHub cache service.
       - uses: lukka/get-cmake@latest
       - name: Restore vcpkg and its artifacts
@@ -76,8 +76,10 @@ jobs:
         run: find "${{ env.CMAKE_BUILD_DIR }}"
       # Sets env.archive-name, which is used to name the distribution folder and archive.
       - name: Set archive name
+        # "--tags" is required to workaround actions/checkout's broken annotated tag handing.
+        # https://github.com/actions/checkout/issues/290
         run: |
-          ARCHIVE_NAME=${{ env.project-name }}-`git describe --always`-${{ matrix.platform-name }}
+          ARCHIVE_NAME=${{ env.project-name }}-`git describe --tags --always`-${{ matrix.platform-name }}
           echo "Archive name set to: $ARCHIVE_NAME"
           echo "archive-name=$ARCHIVE_NAME" >> $GITHUB_ENV
       # Copy files from the CMake build and data directory into a new distribution folder.
