@@ -87,5 +87,8 @@
     "*.rh": "cpp",
     "set": "cpp",
     "random": "cpp"
+  },
+  "[yaml]": {
+    "editor.defaultFormatter": "redhat.vscode-yaml"
   }
 }
