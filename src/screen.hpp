@@ -29,13 +29,11 @@
 
 class Screen : public UmbraModule {
  public:
-  Screen(float fadeLvl)
-      : UmbraModule(), timefix(0), fadeLvl(fadeLvl), fadeInLength(0), fadeOutLength(0), fade(FADE_UP) {}
-  Screen(const char* name, float fadeLvl)
-      : UmbraModule(name), timefix(0), fadeLvl(fadeLvl), fadeInLength(0), fadeOutLength(0), fade(FADE_UP) {}
+  Screen(float fadeLvl) : UmbraModule{}, fadeLvl{fadeLvl} {}
+  Screen(const char* name, float fadeLvl) : UmbraModule{name}, fadeLvl{fadeLvl} {}
   virtual void render() = 0;
   virtual bool update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse) = 0;
-  virtual ~Screen() {}
+  virtual ~Screen() = default;
   void keyboard(TCOD_key_t& key) { this->key = key; }
   void mouse(TCOD_mouse_t& ms) { this->ms = ms; }
   bool update(void);
@@ -44,16 +42,16 @@ class Screen : public UmbraModule {
   void setFadeOut(int lengthInMilli, TCODColor col = TCODColor::black);  // set fade lengths in milliseconds
 
  protected:
-  float timefix;  // remove activate execution time for smooth animation
-  float fadeLvl;
-  int fadeInLength;
-  TCODColor fadeInColor;
-  int fadeOutLength;
-  TCODColor fadeOutColor;
+  float timefix{};  // remove activate execution time for smooth animation
+  float fadeLvl{};
+  int fadeInLength{};
+  TCODColor fadeInColor{};
+  int fadeOutLength{};
+  TCODColor fadeOutColor{};
 
-  enum { FADE_UP, FADE_DOWN, FADE_OFF, FADE_NONE } fade;
-  TCOD_key_t key;
-  TCOD_mouse_t ms;
+  enum { FADE_UP, FADE_DOWN, FADE_OFF, FADE_NONE } fade{FADE_UP};
+  TCOD_key_t key{};
+  TCOD_mouse_t ms{};
   void onInitialise() override { UmbraModule::onInitialise(); }
   void prepareImage(TCODImage* img) const;
   TCODImage* loadChapterPicture(bool big = false);

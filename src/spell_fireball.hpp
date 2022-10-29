@@ -35,8 +35,8 @@ typedef enum { FB_SPARK, FB_STANDARD, FB_BURST, FB_INCANDESCENCE } FireBallType;
 class FireBall : public Entity, public NoisyThing {
  public:
   FireBall(float xFrom, float yFrom, int xTo, int yTo, FireBallType type, const char* subtype = "fireball");
-  void render(LightMap* lightMap);
-  void render(TCODImage* ground);
+  void render(LightMap& lightMap);
+  void render(TCODImage& ground);
   bool update(float elapsed);
   ~FireBall();
 

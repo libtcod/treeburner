@@ -30,8 +30,8 @@
 #include "main.hpp"
 #include "map_lightmap.hpp"
 
-void Light::addToLightMap(LightMap* lightmap) { add(lightmap, NULL); }
-void Light::addToImage(TCODImage* img) { add(NULL, img); }
+void Light::addToLightMap(LightMap& lightmap) { add(&lightmap, nullptr); }
+void Light::addToImage(TCODImage& img) { add(nullptr, &img); }
 
 void Light::add(LightMap* l, TCODImage* img) {
   if (this->range == 0.0f) return;

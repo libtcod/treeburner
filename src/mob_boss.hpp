@@ -30,10 +30,10 @@
 class Boss : public Creature {
  public:
   Boss();
-  bool update(float elapsed);
+  bool update(float elapsed) override;
   void setSeen();
-  void stun(float delay);
-  void takeDamage(float amount);
+  void stun(float delay) override;
+  void takeDamage(float amount) override;
   float getWalkCost(int xFrom, int yFrom, int xTo, int yTo, void* userData) const;
 
  protected:

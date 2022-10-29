@@ -37,7 +37,7 @@ enum FriendAiMode {
 class Friend : public Creature {
  public:
   Friend();
-  bool update(float elapsed);
+  bool update(float elapsed) override;
   float getWalkCost(int xFrom, int yFrom, int xTo, int yTo, void* userData) const;
 
   // SaveListener

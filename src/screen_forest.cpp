@@ -178,7 +178,7 @@ void ForestScreen::render() {
   int squaredFov = (int)(player.fovRange * player.fovRange * 4);
   int minx, maxx, miny, maxy;
   bool showDebugMap = false;
-  ground->clear(TCODColor::black);
+  ground.clear(TCODColor::black);
   Rect r1(xOffset * 2, yOffset * 2, CON_W * 2, CON_H * 2);
   Rect r2(0, 0, dungeon->width * 2, dungeon->height * 2);
   r1.intersect(r2);
@@ -244,7 +244,7 @@ void ForestScreen::render() {
         showDebugMap = true;
       }
 
-      ground->putPixel(x, y, col);
+      ground.putPixel(x, y, col);
     }
   }
   // render the subcell creatures
@@ -257,7 +257,7 @@ void ForestScreen::render() {
   }
 
   // blit it on console
-  ground->blit2x(TCODConsole::root, 0, 0);
+  ground.blit2x(TCODConsole::root, 0, 0);
   // render the items
   dungeon->renderItems(lightMap);
   // render the creatures
@@ -438,7 +438,7 @@ void ForestScreen::generateMap(uint32_t seed) {
   saveGame.registerListener(DUNG_CHUNK_ID, PHASE_START, dungeon);
   saveGame.registerListener(PLAY_CHUNK_ID, PHASE_START, &player);
 
-  lightMap->clear(sunColor);
+  lightMap.clear(sunColor);
   for (int x = 1; x < FOREST_W - 1; x++) {
     if (x % 40 == 0) displayProgress(0.4f + (float)(x) / FOREST_W * 0.1f);
     for (int y = 1; y < FOREST_H - 1; y++) {
@@ -615,7 +615,7 @@ void ForestScreen::saveData(uint32_t chunkId, TCODZip* zip) { saveGame.saveChunk
 void ForestScreen::loadMap(uint32_t seed) {
   DBG(("Forest loading start\n"));
   static TCODColor sunColor = TCODColor(250, 250, 255);
-  lightMap->clear(sunColor);
+  lightMap.clear(sunColor);
   forestRng = new TCODRandom(seed);
   dungeon = new Dungeon(FOREST_W, FOREST_H);
 

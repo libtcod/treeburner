@@ -37,7 +37,7 @@ Game::Game() : level(0), helpOn(false) {}
 
 void Game::onInitialise() {
   PowerupGraph::instance->setFontSize(8 + engine.getFontID() * 2);
-  lightMap->fogRange = 15.0f;
+  lightMap.fogRange = 15.0f;
 }
 
 void Game::onActivate() {
@@ -68,7 +68,7 @@ void Game::render() {
   TCODConsole::root->clear();
 
   // render the memory map
-  ground->clear(TCODColor::black);
+  ground.clear(TCODColor::black);
   for (int x = 0; x < CON_W; x++) {
     for (int y = 0; y < CON_H; y++) {
       int dungeonx = x + xOffset;
@@ -77,13 +77,13 @@ void Game::render() {
         if (dungeon->getMemory(dungeonx, dungeony)) {
           int dungeonx2x = dungeonx * 2;
           int dungeony2x = dungeony * 2;
-          if (!dungeon->map2x->isTransparent(dungeonx2x, dungeony2x)) ground->putPixel(x * 2, y * 2, memoryWallColor);
+          if (!dungeon->map2x->isTransparent(dungeonx2x, dungeony2x)) ground.putPixel(x * 2, y * 2, memoryWallColor);
           if (!dungeon->map2x->isTransparent(dungeonx2x + 1, dungeony2x))
-            ground->putPixel(x * 2 + 1, y * 2, memoryWallColor);
+            ground.putPixel(x * 2 + 1, y * 2, memoryWallColor);
           if (!dungeon->map2x->isTransparent(dungeonx2x, dungeony2x + 1))
-            ground->putPixel(x * 2, y * 2 + 1, memoryWallColor);
+            ground.putPixel(x * 2, y * 2 + 1, memoryWallColor);
           if (!dungeon->map2x->isTransparent(dungeonx2x + 1, dungeony2x + 1))
-            ground->putPixel(x * 2 + 1, y * 2 + 1, memoryWallColor);
+            ground.putPixel(x * 2 + 1, y * 2 + 1, memoryWallColor);
         }
       }
     }
@@ -146,10 +146,10 @@ void Game::render() {
             float rcoef = 1.0f - ABS(midr);
             float f[2] = {(float)(3 * x) / CON_W, (float)(3 * y) / CON_H};
             float ncoef = 0.5f * (1.0f + noise2d.getFbm(f, 3.0f));
-            //						ground->putPixel(x,y,TCODColor::lerp(TCODColor::yellow,TCODColor::red,coef));
-            TCODColor col = lightMap->getColor2x(x, y);
+            //						ground.putPixel(x,y,TCODColor::lerp(TCODColor::yellow,TCODColor::red,coef));
+            TCODColor col = lightMap.getColor2x(x, y);
             col = TCODColor::lerp(col, TCODColor::lerp(TCODColor::darkRed, TCODColor::yellow, ncoef), rcoef * ncoef);
-            lightMap->setColor2x(x, y, col);
+            lightMap.setColor2x(x, y, col);
           }
         }
       }
@@ -167,20 +167,20 @@ void Game::render() {
   maxy2x = MIN(CON_H * 2 - 1, maxy2x);
 
   // shade the 2xground
-  lightMap->applyToImage(ground, minx2x, miny2x, maxx2x, maxy2x);
+  lightMap.applyToImage(ground, minx2x, miny2x, maxx2x, maxy2x);
 
   // render boss health bar
   if (bossSeen && !bossIsDead) {
     float lifeper = (float)(boss->life) / bossLife;
     for (int x = 120; x < 140; x++) {
       TCODColor col = (x - 120) < (int)(lifeper * 20) ? TCODColor::red : TCODColor::darkerRed;
-      ground->putPixel(x, 5, col);
-      ground->putPixel(x, 4, col);
+      ground.putPixel(x, 5, col);
+      ground.putPixel(x, 4, col);
     }
   }
 
   // blit it on console
-  ground->blit2x(TCODConsole::root, 0, 0);
+  ground.blit2x(TCODConsole::root, 0, 0);
 
   // render the corpses
   dungeon->renderCorpses(lightMap);
@@ -451,7 +451,7 @@ bool Game::update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse) {
   }
 
   // update lightmap (fog)
-  lightMap->update(elapsed);
+  lightMap.update(elapsed);
 
   // update messages
   // gui.log.update(k,mouse,elapsed);

@@ -39,10 +39,10 @@ class Player : public Creature {
   void init();
   bool setPath(int xDest, int yDest, bool limitPath = true);
   bool update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse);
-  void takeDamage(float amount);
+  void takeDamage(float amount) override;
   void termLevel();
   void heal(int healPoints);
-  void render(LightMap* lightMap);
+  void render(LightMap& lightMap) override;
   void setLightRange(float range) { light.range = range; }
   void setLightColor(TCODColor col) { light.color = col; }
   float getHealing();

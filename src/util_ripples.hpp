@@ -46,7 +46,7 @@ class RippleManager {
   RippleManager(Dungeon* dungeon);
   void startRipple(int dungeonx, int dungeony, float height = 0.0f);
   bool updateRipples(float elapsed);
-  void renderRipples(TCODImage* ground);
+  void renderRipples(TCODImage& ground);
 
  protected:
   Dungeon* dungeon = nullptr;

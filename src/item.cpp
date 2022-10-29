@@ -1081,12 +1081,12 @@ void Item::computeBottleName() {
   }
 }
 
-void Item::render(LightMap* lightMap, TCODImage* ground) {
+void Item::render(LightMap& lightMap, TCODImage* ground) {
   int conx = (int)(x - gameEngine->xOffset);
   int cony = (int)(y - gameEngine->yOffset);
   if (!IN_RECTANGLE(conx, cony, CON_W, CON_H)) return;
   Dungeon* dungeon = gameEngine->dungeon;
-  TCODColor lightColor = lightMap->getColor(conx, cony);
+  TCODColor lightColor = lightMap.getColor(conx, cony);
   float shadow = dungeon->getShadow(x * 2, y * 2);
   float clouds = dungeon->getCloudCoef(x * 2, y * 2);
   shadow = MIN(shadow, clouds);

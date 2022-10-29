@@ -118,7 +118,7 @@ FireBall::Type* FireBall::getType(const char* name) {
 
 FireBall::~FireBall() { gameEngine->dungeon->removeLight(&light); }
 
-void FireBall::render(LightMap* lightMap) {
+void FireBall::render(LightMap& lightMap) {
   if (effect == FIREBALL_MOVE) {
     float curx = fx * 2 - gameEngine->xOffset * 2;
     float cury = fy * 2 - gameEngine->yOffset * 2;
@@ -126,10 +126,10 @@ void FireBall::render(LightMap* lightMap) {
     for (int i = 0; i < typeData->trailLength; i++) {
       int icurx = (int)curx;
       int icury = (int)cury;
-      if (IN_RECTANGLE(icurx, icury, lightMap->width, lightMap->height)) {
-        HDRColor lcol = lightMap->getColor2x(icurx, icury);
+      if (IN_RECTANGLE(icurx, icury, lightMap.width, lightMap.height)) {
+        HDRColor lcol = lightMap.getColor2x(icurx, icury);
         lcol = lcol + col;
-        lightMap->setColor2x(icurx, icury, lcol);
+        lightMap.setColor2x(icurx, icury, lcol);
       }
       curx -= dx;
       cury -= dy;
@@ -139,18 +139,18 @@ void FireBall::render(LightMap* lightMap) {
     for (Sparkle** it = sparkles.begin(); it != sparkles.end(); it++) {
       int lmx = (int)((*it)->x) - gameEngine->xOffset * 2;
       int lmy = (int)((*it)->y) - gameEngine->yOffset * 2;
-      if (IN_RECTANGLE(lmx, lmy, lightMap->width, lightMap->height)) {
+      if (IN_RECTANGLE(lmx, lmy, lightMap.width, lightMap.height)) {
         if (gameEngine->dungeon->map2x->isInFov((int)((*it)->x), (int)((*it)->y))) {
-          HDRColor lcol = lightMap->getColor2x(lmx, lmy);
+          HDRColor lcol = lightMap.getColor2x(lmx, lmy);
           lcol = lcol + light.color;
-          lightMap->setColor2x(lmx, lmy, lcol);
+          lightMap.setColor2x(lmx, lmy, lcol);
         }
       }
     }
   }
 }
 
-void FireBall::render(TCODImage* ground) {
+void FireBall::render(TCODImage& ground) {
   if (effect == FIREBALL_MOVE) {
     float curx = fx * 2 - gameEngine->xOffset * 2;
     float cury = fy * 2 - gameEngine->yOffset * 2;
@@ -159,9 +159,9 @@ void FireBall::render(TCODImage* ground) {
       int icurx = (int)curx;
       int icury = (int)cury;
       if (IN_RECTANGLE(icurx, icury, CON_W * 2, CON_H * 2)) {
-        TCODColor lcol = ground->getPixel(icurx, icury);
+        TCODColor lcol = ground.getPixel(icurx, icury);
         lcol = lcol + col;
-        ground->putPixel(icurx, icury, lcol);
+        ground.putPixel(icurx, icury, lcol);
       }
       curx -= dx;
       cury -= dy;
@@ -173,9 +173,9 @@ void FireBall::render(TCODImage* ground) {
       int lmy = (int)((*it)->y) - gameEngine->yOffset * 2;
       if (IN_RECTANGLE(lmx, lmy, CON_W * 2, CON_H * 2)) {
         if (gameEngine->dungeon->map2x->isInFov((int)((*it)->x), (int)((*it)->y))) {
-          TCODColor lcol = ground->getPixel(lmx, lmy);
+          TCODColor lcol = ground.getPixel(lmx, lmy);
           lcol = lcol + light.color;
-          ground->putPixel(lmx, lmy, lcol);
+          ground.putPixel(lmx, lmy, lcol);
         }
       }
     }

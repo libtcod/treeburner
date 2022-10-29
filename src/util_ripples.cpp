@@ -286,7 +286,7 @@ bool RippleManager::updateRipples(float elapsed) {
   return updated;
 }
 
-void RippleManager::renderRipples(TCODImage* ground) {
+void RippleManager::renderRipples(TCODImage& ground) {
   if (zones.size() == 0) init();
   // compute visible part of the dungeon
   Rect visibleZone;
@@ -325,9 +325,9 @@ void RippleManager::renderRipples(TCODImage* ground) {
             float f[3] = {static_cast<float>(zx2), static_cast<float>(zy2), elCoef};
             xOffset += noise3d.get(f) * 0.3f;
             if (ABS(xOffset) < 250 && ABS(yOffset) < 250) {
-              TCODColor col = ground->getPixel(groundx + (int)(xOffset * 2), groundy + (int)(yOffset * 2));
+              TCODColor col = ground.getPixel(groundx + (int)(xOffset * 2), groundy + (int)(yOffset * 2));
               col = col + TCODColor::white * xOffset * 0.1f;
-              ground->putPixel(groundx, groundy, col);
+              ground.putPixel(groundx, groundy, col);
             }
           }
         }

@@ -222,12 +222,12 @@ void Dungeon::updateLights(float elapsed) {
   }
 }
 
-void Dungeon::renderLightsToLightMap(LightMap* lightMap, int* minx, int* miny, int* maxx, int* maxy, bool clearMap) {
+void Dungeon::renderLightsToLightMap(LightMap& lightMap, int* minx, int* miny, int* maxx, int* maxy, bool clearMap) {
   int minx2x = width * 2 - 1;
   int maxx2x = 0;
   int miny2x = height * 2 - 1;
   int maxy2x = 0;
-  if (clearMap) lightMap->clear(ambient);
+  if (clearMap) lightMap.clear(ambient);
   for (Light** it = lights.begin(); it != lights.end(); it++) {
     int light_minx, light_maxx, light_miny, light_maxy;
     (*it)->addToLightMap(lightMap);
@@ -243,7 +243,7 @@ void Dungeon::renderLightsToLightMap(LightMap* lightMap, int* minx, int* miny, i
   if (maxy) *maxy = maxy2x;
 }
 
-void Dungeon::renderLightsToImage(TCODImage* img, int* minx, int* miny, int* maxx, int* maxy) {
+void Dungeon::renderLightsToImage(TCODImage& img, int* minx, int* miny, int* maxx, int* maxy) {
   int minx2x = width * 2 - 1;
   int maxx2x = 0;
   int miny2x = height * 2 - 1;
@@ -541,7 +541,7 @@ void Dungeon::addCorpse(Creature* cr) {
   corpses.push(cr);
 }
 
-void Dungeon::renderCreatures(LightMap* lightMap) {
+void Dungeon::renderCreatures(LightMap& lightMap) {
   for (Creature** it = creatures.begin(); it != creatures.end(); it++) {
     if ((*it)->ch != 0) {
       if (map->isInFov((int)(*it)->x, (int)(*it)->y)) (*it)->render(lightMap);
@@ -550,7 +550,7 @@ void Dungeon::renderCreatures(LightMap* lightMap) {
   }
 }
 
-void Dungeon::renderSubcellCreatures(LightMap* lightMap) {
+void Dungeon::renderSubcellCreatures(LightMap& lightMap) {
   for (Creature** it = creatures.begin(); it != creatures.end(); it++) {
     if ((*it)->ch == 0) {
       assert(IN_RECTANGLE((*it)->x, (*it)->y, width, height));
@@ -598,7 +598,7 @@ void Dungeon::killCreaturesAtRange(int radius) {
   }
 }
 
-void Dungeon::renderCorpses(LightMap* lightMap) {
+void Dungeon::renderCorpses(LightMap& lightMap) {
   for (Creature** it = corpses.begin(); it != corpses.end(); it++) {
     if (map->isInFov((int)(*it)->x, (int)(*it)->y)) (*it)->render(lightMap);
   }
@@ -726,7 +726,7 @@ void Dungeon::restoreShadowBeforeTree() {
   smap->copy(smapBeforeTree);
 }
 
-void Dungeon::renderItems(LightMap* lightMap, TCODImage* ground) {
+void Dungeon::renderItems(LightMap& lightMap, TCODImage* ground) {
   Player* player = &gameEngine->player;
   float aspectRatio = gameEngine->aspectRatio;
   // static items in fov

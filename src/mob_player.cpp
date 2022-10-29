@@ -161,7 +161,7 @@ bool Player::setPath(int xDest, int yDest, bool limitPath) {
   return true;
 }
 
-void Player::render(LightMap* lightMap) {
+void Player::render(LightMap& lightMap) {
   static float longButtonDelay = config.getFloatProperty("config.creatures.player.longButtonDelay");
   static float longSpellDelay = config.getFloatProperty("config.creatures.player.longSpellDelay");
   static float sprintLength = config.getFloatProperty("config.creatures.player.sprintLength");

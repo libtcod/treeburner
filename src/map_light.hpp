@@ -35,8 +35,8 @@ class Light : public Entity, public NoisyThing {
   Light() : randomRad(false), range(0.0f), color(TCODColor::white) {}
   Light(float range, TCODColor color = TCODColor::white, bool randomRad = false)
       : randomRad(randomRad), range(range), color(color) {}
-  void addToLightMap(LightMap* map);
-  void addToImage(TCODImage* img);
+  void addToLightMap(LightMap& map);
+  void addToImage(TCODImage& img);
   void getDungeonPart(int* minx, int* miny, int* maxx, int* maxy);
   virtual void update(float elapsed) {}
 

@@ -43,8 +43,8 @@ class Fish : public Creature {
  public:
   Fish(WaterZone* zone);
   ~Fish();
-  bool update(float elapsed);
-  void render(LightMap* lightMap);
+  bool update(float elapsed) override;
+  void render(LightMap& lightMap) override;
   float oldx, oldy;
   void slide();
   void initItem();

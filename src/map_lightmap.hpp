@@ -54,8 +54,8 @@ class LightMap {
   LightMap(int width, int height);
   void clear(const TCODColor& col);
   void applyToImage(
-      TCODImage* img, int minx2x = 0, int miny2x = 0, int maxx2x = 0, int maxy2x = 0, bool playerFog = true);
-  void applyToImageOutdoor(TCODImage* img);
+      TCODImage& img, int minx2x = 0, int miny2x = 0, int maxx2x = 0, int maxy2x = 0, bool playerFog = true);
+  void applyToImageOutdoor(TCODImage& img);
   inline TCODColor getColor2x(int x, int y) { return data2x[x + y * width]; }
   inline TCODColor getColor(int x, int y) { return data[x + y * width / 2]; }
   inline HDRColor& getHdrColor2x(int x, int y) { return data2x[x + y * width]; }

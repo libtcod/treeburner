@@ -49,7 +49,7 @@ Fish::~Fish() {
   if (zone) zone->shoal->list.removeFast(this);
 }
 
-void Fish::render(LightMap* lightMap) {
+void Fish::render(LightMap& lightMap) {
   // position on console
   int conx = (int)(x - gameEngine->xOffset);
   int cony = (int)(y - gameEngine->yOffset);
@@ -65,9 +65,9 @@ void Fish::render(LightMap* lightMap) {
   int conx2 = getSubX() - gameEngine->xOffset * 2;
   int cony2 = getSubY() - gameEngine->yOffset * 2;
   TCODColor rcol = col;
-  TCODColor bgcol = gameEngine->ground->getPixel(conx2, cony2);
+  TCODColor bgcol = gameEngine->ground.getPixel(conx2, cony2);
   rcol = TCODColor::lerp(bgcol, rcol, coef);
-  gameEngine->ground->putPixel(conx2, cony2, rcol);
+  gameEngine->ground.putPixel(conx2, cony2, rcol);
 }
 
 void Fish::initItem() {

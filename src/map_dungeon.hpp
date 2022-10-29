@@ -79,9 +79,9 @@ class Dungeon : public SaveListener {
   void addCorpse(Creature* cr);
   void moveCreature(Creature* cr, int xFrom, int yFrom, int xTo, int yTo);
   void removeCreature(Creature* cr, bool kill = true);
-  void renderCreatures(LightMap* lightMap);
-  void renderSubcellCreatures(LightMap* lightMap);
-  void renderCorpses(LightMap* lightMap);
+  void renderCreatures(LightMap& lightMap);
+  void renderSubcellCreatures(LightMap& lightMap);
+  void renderCorpses(LightMap& lightMap);
   void computeSpawnSources();
   void getClosestSpawnSource(float x, float y, int* ssx, int* ssy) const {
     return getClosestSpawnSource((int)x, (int)y, ssx, ssy);
@@ -105,7 +105,7 @@ class Dungeon : public SaveListener {
   Item* getItem(int x, int y, const char* typeName);
   void addItem(Item* it);
   Item* removeItem(Item* it, int count = 1, bool del = true);
-  void renderItems(LightMap* lightMap, TCODImage* ground = NULL);
+  void renderItems(LightMap& lightMap, TCODImage* ground = NULL);
   void updateItems(float elapsed, TCOD_key_t k, TCOD_mouse_t* mouse);
   void computeWalkTransp(int x, int y);
 
@@ -115,13 +115,13 @@ class Dungeon : public SaveListener {
   inline void addLight(Light* light) { lights.push(light); }
   inline void removeLight(Light* light) { lights.removeFast(light); }
   void renderLightsToLightMap(
-      LightMap* lightMap,
+      LightMap& lightMap,
       int* minx = NULL,
       int* miny = NULL,
       int* maxx = NULL,
       int* maxy = NULL,
       bool clearMap = false);
-  void renderLightsToImage(TCODImage* img, int* minx = NULL, int* miny = NULL, int* maxx = NULL, int* maxy = NULL);
+  void renderLightsToImage(TCODImage& img, int* minx = NULL, int* miny = NULL, int* maxx = NULL, int* maxy = NULL);
   void updateLights(float elapsed);
   void computeOutdoorLight(float lightDir[3], TCODColor lightColor);
   inline void setShadow(int x2, int y2, float val) { subcells[x2 + y2 * width * 2].shadow = val; }

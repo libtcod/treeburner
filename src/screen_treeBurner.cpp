@@ -126,7 +126,7 @@ void TreeBurner::render() {
   int squaredFov = (int)(player.fovRange * player.fovRange * 4);
   int minx, maxx, miny, maxy;
   bool showDebugMap = false;
-  ground->clear(TCODColor::black);
+  ground.clear(TCODColor::black);
   Rect r1(xOffset * 2, yOffset * 2, CON_W * 2, CON_H * 2);
   Rect r2(0, 0, dungeon->width * 2, dungeon->height * 2);
   r1.intersect(r2);
@@ -141,7 +141,7 @@ void TreeBurner::render() {
       int dungeon2y = y + yOffset * 2;
       TCODColor col = dungeon->getGroundColor(dungeon2x, dungeon2y);
 
-      ground->putPixel(x, y, col);
+      ground.putPixel(x, y, col);
       float intensity = dungeon->getShadow(dungeon2x, dungeon2y);
       float cloudIntensity = dungeon->getInterpolatedCloudCoef(dungeon2x, dungeon2y);
       intensity = MIN(intensity, cloudIntensity);
@@ -149,7 +149,7 @@ void TreeBurner::render() {
       if (intensity < 1.0f) {
         lightCol = lightCol * intensity;
       }
-      lightMap->setColor2x(x, y, lightCol);
+      lightMap.setColor2x(x, y, lightCol);
     }
   }
   // render the subcell creatures
@@ -165,7 +165,7 @@ void TreeBurner::render() {
     (*it)->render(lightMap);
   }
   // apply light map
-  lightMap->applyToImageOutdoor(ground);
+  lightMap.applyToImageOutdoor(ground);
 
   // render canopy
   Building* playerBuilding = dungeon->getCell(player.x, player.y)->building;
@@ -178,7 +178,7 @@ void TreeBurner::render() {
       if (debug && TCODConsole::isKeyPressed(TCODK_TAB) && TCODConsole::isKeyPressed(TCODK_SHIFT)) {
         switch (debugMap) {
           case DBG_LIGHTMAP: {
-            col = lightMap->getColor2x(x, y);
+            col = lightMap.getColor2x(x, y);
           } break;
           case DBG_HEIGHTMAP: {
             float h = dungeon->hmap->getValue(dungeon2x, dungeon2y);
@@ -210,7 +210,7 @@ void TreeBurner::render() {
             col = h * TCODColor::white;
           } break;
         }
-        ground->putPixel(x, y, col);
+        ground.putPixel(x, y, col);
         showDebugMap = true;
       }
 
@@ -224,7 +224,7 @@ void TreeBurner::render() {
         if (col.r != 0) {
           col = col * dungeon->getInterpolatedCloudCoef(dungeon2x, dungeon2y);
           col = col * dungeon->getAmbient();
-          ground->putPixel(x, y, col);
+          ground.putPixel(x, y, col);
         }
       }
     }
@@ -239,17 +239,17 @@ void TreeBurner::render() {
     float lifeper = (float)(boss->life) / bossLife;
     for (int x = 70; x < 90; x++) {
       TCODColor col = (x - 70) < (int)(lifeper * 20) ? TCODColor::red : TCODColor::darkerRed;
-      ground->putPixel(x, 5, col);
-      ground->putPixel(x, 4, col);
+      ground.putPixel(x, 5, col);
+      ground.putPixel(x, 4, col);
     }
   }
 
   // blit it on console
-  ground->blit2x(TCODConsole::root, 0, 0);
+  ground.blit2x(TCODConsole::root, 0, 0);
   // render the corpses
   dungeon->renderCorpses(lightMap);
   // render the items
-  dungeon->renderItems(lightMap, ground);
+  dungeon->renderItems(lightMap, &ground);
   // render the creatures
   dungeon->renderCreatures(lightMap);
   // render the player

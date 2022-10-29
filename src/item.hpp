@@ -261,7 +261,7 @@ class Item : public DynamicEntity {
   void destroy(int count = 1);
 
   virtual ~Item();
-  virtual void render(LightMap* lightMap, TCODImage* ground = NULL);
+  virtual void render(LightMap& lightMap, TCODImage* ground = NULL);
   virtual void renderDescription(int x, int y, bool below = true);
   virtual void renderGenericDescription(int x, int y, bool below = true, bool frame = true);
   virtual bool age(float elapsed, ItemFeature* feat = NULL);  // the item gets older

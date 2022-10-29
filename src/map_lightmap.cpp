@@ -78,7 +78,7 @@ float LightMap::getPlayerFog(int x, int y) {
 }
 
 // apply a light map to an image.
-void LightMap::applyToImage(TCODImage* image, int minx2x, int miny2x, int maxx2x, int maxy2x, bool playerFog) {
+void LightMap::applyToImage(TCODImage& image, int minx2x, int miny2x, int maxx2x, int maxy2x, bool playerFog) {
   static TCODColor fogColor = config.getColorProperty("config.fog.col");
   static TCODColor memoryWallColor = config.getColorProperty("config.display.memoryWallColor");
   static int memoryWallIntensity = (int)(memoryWallColor.r) + memoryWallColor.g + memoryWallColor.b;
@@ -92,7 +92,7 @@ void LightMap::applyToImage(TCODImage* image, int minx2x, int miny2x, int maxx2x
       int dungeonx = x + gameEngine->xOffset * 2;
       int dungeony = y + gameEngine->yOffset * 2;
       if (!IN_RECTANGLE(dungeonx, dungeony, dungeon->width * 2, dungeon->height * 2)) {
-        image->putPixel(x, y, TCODColor::black);  // out of the map
+        image.putPixel(x, y, TCODColor::black);  // out of the map
       } else {
         // visible cell. shade it
         TCODColor col = dungeon->getGroundColor(dungeonx, dungeony);  // wall?wallColor:groundColor;
@@ -127,13 +127,13 @@ void LightMap::applyToImage(TCODImage* image, int minx2x, int miny2x, int maxx2x
         if (lightIntensity > 30) {
           dungeon->setMemory(dungeonx / 2, dungeony / 2);
         }
-        image->putPixel(x, y, col * lmcol * coef);
+        image.putPixel(x, y, col * lmcol * coef);
       }
     }
   }
 }
 
-void LightMap::applyToImageOutdoor(TCODImage* image) {
+void LightMap::applyToImageOutdoor(TCODImage& image) {
   Dungeon* dungeon = gameEngine->dungeon;
   int maxx2x = width - 1;
   int maxy2x = height - 1;
@@ -142,14 +142,14 @@ void LightMap::applyToImageOutdoor(TCODImage* image) {
       int dungeonx = x + gameEngine->xOffset * 2;
       int dungeony = y + gameEngine->yOffset * 2;
       if (!IN_RECTANGLE(dungeonx, dungeony, dungeon->width * 2, dungeon->height * 2)) {
-        image->putPixel(x, y, TCODColor::black);  // out of the map
+        image.putPixel(x, y, TCODColor::black);  // out of the map
       } else {
         // visible cell. shade it
-        HDRColor col = image->getPixel(x, y);
+        HDRColor col = image.getPixel(x, y);
         HDRColor lmcol = data2x[x + y * width];
         lmcol = lmcol * col;
         int lightIntensity = (int)(lmcol.r + lmcol.g + lmcol.b);
-        image->putPixel(x, y, lmcol);
+        image.putPixel(x, y, lmcol);
         if (lightIntensity > 30 && dungeon->map2x->isInFov(dungeonx, dungeony)) {
           dungeon->setMemory(dungeonx / 2, dungeony / 2);
         }

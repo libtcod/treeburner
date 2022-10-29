@@ -29,9 +29,9 @@
 class Minion : public Creature {
  public:
   Minion();
-  bool update(float elapsed);
+  bool update(float elapsed) override;
   void setSeen();
-  void onReplace();
+  void onReplace() override;
 
  protected:
   float pathTimer;
@@ -41,7 +41,7 @@ class Minion : public Creature {
 class Villager : public Minion {
  public:
   Villager();
-  bool update(float elapsed);
+  bool update(float elapsed) override;
 
  protected:
   static float talkDelay;
@@ -50,5 +50,5 @@ class Villager : public Minion {
 class Archer : public Minion {
  public:
   Archer();
-  bool update(float elapsed);
+  bool update(float elapsed) override;
 };

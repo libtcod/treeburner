@@ -44,7 +44,7 @@
 class GameEngine : public Screen {
  public:
   GameEngine();
-  virtual ~GameEngine();
+  virtual ~GameEngine() = default;
 
   void init();
 
@@ -55,16 +55,16 @@ class GameEngine : public Screen {
   void onEvent(const SDL_Event&) override{};
   bool update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse);
 
-  Player player;
-  Dungeon* dungeon;  // current dungeon map
-  int xOffset, yOffset;  // coordinate of console cell 0,0 in dungeon
-  int mousex, mousey;  // cell under mouse cursor
-  TCODImage* ground = nullptr;  // visible part of the ground
+  Player player{};
+  Dungeon* dungeon{};  // current dungeon map
+  int xOffset{}, yOffset{};  // coordinate of console cell 0,0 in dungeon
+  int mousex{}, mousey{};  // cell under mouse cursor
+  TCODImage ground{CON_W * 2, CON_H * 2};  // visible part of the ground
 
-  LightMap* lightMap = nullptr;  // store light reaching each cell
-  Packer* packer = nullptr;
+  LightMap lightMap{CON_W * 2, CON_H * 2};  // store light reaching each cell
+  Packer packer{0, 0, CON_W, CON_H};
 
-  inline float getFog(int x, int y) { return lightMap->getFog(x, y); }
+  inline float getFog(int x, int y) { return lightMap.getFog(x, y); }
   void hitFlash();  // when player is hit
 
   // fireballs
@@ -99,22 +99,22 @@ class GameEngine : public Screen {
   static TCODColor setSepia(const TCODColor& col, float coef);
   void displayProgress(float prog);  // renders a progress bar and flush
 
-  Gui gui;
-  float aspectRatio;  // font char width / font char height
-  bool bossSeen;
-  bool bossIsDead;
-  TCODList<FireBall*> fireballs;
+  Gui gui{};
+  float aspectRatio{};  // font char width / font char height
+  bool bossSeen{};
+  bool bossIsDead{};
+  TCODList<FireBall*> fireballs{};
 
  protected:
-  TCODList<FireBall*> fireballsToAdd;
-  bool isUpdatingFireballs;
-  float pauseCoef;
-  int nbPause;
-  bool lookOn;  // shit pressed
-  bool firstFrame;
-  RippleManager* rippleManager = nullptr;
-  FireManager* fireManager = nullptr;
-  float hitFlashAmount;
+  TCODList<FireBall*> fireballsToAdd{};
+  bool isUpdatingFireballs{};
+  float pauseCoef{};
+  int nbPause{};
+  bool lookOn{};  // shit pressed
+  bool firstFrame{true};
+  RippleManager* rippleManager{};
+  FireManager* fireManager{};
+  float hitFlashAmount{};
 
   void onInitialise() override;
   void onActivate() override;

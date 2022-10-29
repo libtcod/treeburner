@@ -266,7 +266,7 @@ void FireManager::update(float elapsed) {
   */
 }
 
-void FireManager::renderFire(TCODImage* ground) {
+void FireManager::renderFire(TCODImage& ground) {
   int dx = gameEngine->xOffset * 2;
   int dy = gameEngine->yOffset * 2;
   screenFireZone.x = MAX(dx, screenFireZone.x);
@@ -278,8 +278,8 @@ void FireManager::renderFire(TCODImage* ground) {
       uint8_t v = get(x, y);
       if (v > 0) {
         HDRColor col = fireColor[v];
-        col = col * 1.5f + ground->getPixel(x - dx, y - dy);
-        ground->putPixel(x - dx, y - dy, col);
+        col = col * 1.5f + ground.getPixel(x - dx, y - dy);
+        ground.putPixel(x - dx, y - dy, col);
       }
     }
   }

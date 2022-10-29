@@ -56,7 +56,7 @@ class FireManager {
   void antispark(int x, int y);
   void softspark(int x, int y, int delta);
   void update(float elapsed);
-  void renderFire(TCODImage* ground);
+  void renderFire(TCODImage& ground);
   void addZone(int x, int y, int w, int h);
   void removeZone(int x, int y, int w, int h);
 

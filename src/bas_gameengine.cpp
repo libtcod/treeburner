@@ -37,24 +37,7 @@
 
 GameEngine* gameEngine = nullptr;
 
-GameEngine::GameEngine() : Screen(0), nbPause(0), lookOn(false) {
-  gameEngine = this;
-  lightMap = new LightMap(CON_W * 2, CON_H * 2);
-  ground = new TCODImage(CON_W * 2, CON_H * 2);
-  packer = new Packer(0, 0, CON_W, CON_H);
-  mousex = 0;
-  mousey = 0;
-  xOffset = 0;
-  yOffset = 0;
-  pauseCoef = 0.0f;
-  rippleManager = NULL;
-  fireManager = NULL;
-  firstFrame = true;
-  bossSeen = false;
-  bossIsDead = false;
-}
-
-GameEngine::~GameEngine() {}
+GameEngine::GameEngine() : Screen{0} { gameEngine = this; }
 
 void GameEngine::onActivate() {
   Screen::onActivate();
@@ -181,7 +164,7 @@ TCODColor GameEngine::setSepia(const TCODColor& col, float coef) {
 bool GameEngine::update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse) {
   static float hitFlashDelay = config.getFloatProperty("config.display.hitFlashDelay");
   static TCODColor flashColor = config.getColorProperty("config.display.flashColor");
-  packer->clear();
+  packer.clear();
   if (fade == FADE_OFF) {
     if (hitFlashAmount > 0.0f) {
       hitFlashAmount -= elapsed;

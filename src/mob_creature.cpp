@@ -319,13 +319,13 @@ void Creature::renderTalk() {
   talkText.x = conx;
   talkText.y = cony - talkText.h;
   if (talkText.y < 0) talkText.y = cony + 1;
-  gameEngine->packer->addRect(&talkText);
+  gameEngine->packer.addRect(&talkText);
   TCODConsole::root->setDefaultBackground(TCODColor::lighterYellow);
   TCODConsole::root->setDefaultForeground(TCODColor::darkGrey);
   TCODConsole::root->printEx((int)talkText.x, (int)talkText.y, TCOD_BKGND_SET, TCOD_CENTER, talkText.text);
 }
 
-void Creature::render(LightMap* lightMap) {
+void Creature::render(LightMap& lightMap) {
   static int penumbraLevel = config.getIntProperty("config.gameplay.penumbraLevel");
   static int darknessLevel = config.getIntProperty("config.gameplay.darknessLevel");
   static float fireSpeed = config.getFloatProperty("config.display.fireSpeed");
@@ -356,7 +356,7 @@ void Creature::render(LightMap* lightMap) {
 
   TCODColor c;
   int displayChar = ch;
-  TCODColor lightColor = lightMap->getColor(conx, cony) * 1.5f;
+  TCODColor lightColor = lightMap.getColor(conx, cony) * 1.5f;
   Dungeon* dungeon = gameEngine->dungeon;
   float shadow = dungeon->getShadow(x * 2, y * 2);
   float clouds = dungeon->getCloudCoef(x * 2, y * 2);

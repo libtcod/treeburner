@@ -145,7 +145,7 @@ class Creature : public DynamicEntity, public ITCODPathCallback, public NoisyThi
   static TCODList<Creature*> creatureByType[NB_CREATURE_TYPES];
 
   virtual bool update(float elapsed);
-  virtual void render(LightMap* lightMap);
+  virtual void render(LightMap& lightMap);
   void renderTalk();
   virtual void takeDamage(float amount);
   virtual void stun(float delay);
