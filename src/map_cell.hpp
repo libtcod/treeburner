@@ -24,6 +24,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 #pragma once
+#include <array>
 #include <libtcod.hpp>
 
 #include "bas_savegame.hpp"
@@ -31,12 +32,12 @@
 
 // Terrain system adapted from Umbrarum Regnum Tech Demo 1
 struct TerrainType {
-  const char* name;  // terrain type name
-  TCODColor color;  // background colour
-  bool walkable;  // is it walkable?
-  bool swimmable;  // is it swimmable?
-  bool ripples;  // generates ripples
-  float walkCost;  // cost of moving through it (either walking or swimming)
+  const char* name{};  // terrain type name
+  TCODColor color{};  // background colour
+  bool walkable{};  // is it walkable?
+  bool swimmable{};  // is it swimmable?
+  bool ripples{};  // generates ripples
+  float walkCost{};  // cost of moving through it (either walking or swimming)
 };
 
 enum TerrainId {
@@ -69,18 +70,16 @@ enum TerrainId {
   NB_TERRAINS
 };
 
-extern TerrainType terrainTypes[NB_TERRAINS];
+extern std::array<TerrainType, NB_TERRAINS> terrainTypes;
 class Building;
 struct Cell : public Persistant {
-  Cell() : nbCreatures(0), hasCorpse(false), memory(false), terrain(TERRAIN_GROUND) {}
-  virtual ~Cell() = default;
-  int nbCreatures;
-  TCODList<Item*> items;
-  bool hasCorpse;
+  int nbCreatures{};
+  TCODList<Item*> items{};
+  bool hasCorpse{};
   // cells already seen by the player
-  bool memory;
-  TerrainId terrain;
-  Building* building = nullptr;  // if cell is inside a building
+  bool memory{};
+  TerrainId terrain{TERRAIN_GROUND};
+  Building* building{};  // if cell is inside a building
 
   // SaveListener
   bool loadData(TCODZip* zip) override;
@@ -88,13 +87,11 @@ struct Cell : public Persistant {
 };
 
 struct SubCell : public Persistant {
-  SubCell() : shadow(1.0f) {}
-  virtual ~SubCell() = default;
-  TCODColor groundColor;
+  TCODColor groundColor{};
   // for outdoors, shadow casted by the sun
-  float shadowBeforeTree;
-  float shadow;
-  float waterCoef;
+  float shadowBeforeTree{};
+  float shadow{1.0f};
+  float waterCoef{};
 
   // SaveListener
   bool loadData(TCODZip* zip) override;

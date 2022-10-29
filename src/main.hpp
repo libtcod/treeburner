@@ -60,5 +60,4 @@ extern GameEngine* gameEngine;
 extern TCODImage background;
 extern Sound sound;
 extern ThreadPool* threadPool;
-extern TerrainType terrainTypes[NB_TERRAINS];
 extern TCODParser config;

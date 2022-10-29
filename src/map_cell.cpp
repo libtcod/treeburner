@@ -25,7 +25,7 @@
  */
 #include "map_cell.hpp"
 
-TerrainType terrainTypes[NB_TERRAINS] = {
+std::array<TerrainType, NB_TERRAINS> terrainTypes = {{
     {"deep swamp water", TCODColor(44, 74, 62), false, true, true, 5.0f},
     {"shallow swamp water", TCODColor(49, 82, 68), true, false, true, 3.0f},
     {"morass", TCODColor(51, 98, 49), true, false, false, 2.0f},
@@ -52,7 +52,7 @@ TerrainType terrainTypes[NB_TERRAINS] = {
     {"shallow water", TCODColor(102, 153, 255), true, false, true, 1.7f},
     {"deep water", TCODColor(10, 102, 255), false, true, true, 2.5f},
     {"wooden floor", TCODColor::darkerAmber, true, false, false, 1.0f},
-};
+}};
 
 bool Cell::loadData(TCODZip* zip) {
   memory = zip->getChar() == 1;
