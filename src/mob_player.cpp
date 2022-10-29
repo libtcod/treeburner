@@ -53,7 +53,7 @@ Player::Player()
   static float sprintLength = config.getFloatProperty("config.creatures.player.sprintLength");
 
   ch = playerChar;
-  col = playerColor;
+  color_ = playerColor;
   healLight.color = healthColor;
   healLight.range = 7;
   healLight.randomRad = false;

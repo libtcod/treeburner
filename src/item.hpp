@@ -32,7 +32,8 @@
 #include "map_lightmap.hpp"
 
 class Creature;
-class ItemType;
+class Item;
+struct ItemType;
 
 // item class, mainly for weapons. higher classes have more modifiers
 enum ItemClass {
@@ -74,8 +75,6 @@ struct ItemIngredient {
 #define MAX_INGREDIENTS 5
 
 // item recipe
-class Item;
-class ItemType;
 struct ItemCombination {
   ItemType* resultType;
   int nbResult;
@@ -129,8 +128,6 @@ struct ItemAction {
   inline bool onInventory() { return (flags & ITEM_ACTION_INVENTORY) != 0; }
   inline bool onLoot() { return (flags & ITEM_ACTION_LOOT) != 0; }
 };
-
-class ItemType;
 
 struct ItemFireEffect {
   float resistance;  // in seconds
@@ -272,7 +269,7 @@ class Item : public DynamicEntity {
   virtual Item* putInInventory(
       Creature* owner, int count = 0, const char* verb = "pick up");  // move the item from ground to owner's inventory
   virtual void use();  // use the item (depends on the type)
-  virtual void use(int dx, int dy) {}  // use the item in place (static items)
+  virtual void use([[maybe_unused]] int dx_, [[maybe_unused]] int dy_) {}  // use the item in place (static items)
   virtual Item* drop(int count = 0);  // move the item from it's owner inventory to the ground
   bool isEquiped();
 
@@ -332,7 +329,7 @@ class Item : public DynamicEntity {
   const ItemType* typeData = nullptr;
   ItemClass itemClass;
   TCODColor col;
-  char* typeName = nullptr;
+  char* typeName_ = nullptr;
   char* name = nullptr;
   // something that can affect the name of an item created with this component
   // example : an azuran blade => an azuran knife

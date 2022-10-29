@@ -36,7 +36,7 @@ Archer::Archer() {
   static char archerChar = config.getCharProperty("config.creatures.archer.ch");
   static int archerLife = config.getIntProperty("config.creatures.archer.life");
   ch = archerChar;
-  col = archerColor;
+  color_ = archerColor;
   life = archerLife;
   strcpy(name, "archer");
   pathTimer = 0.0f;
@@ -69,7 +69,7 @@ Villager::Villager() {
   static char villagerChar = config.getCharProperty("config.creatures.villager.ch");
   static int villagerLife = config.getIntProperty("config.creatures.villager.life");
   ch = villagerChar;
-  col = villagerColor;
+  color_ = villagerColor;
   life = villagerLife;
   strcpy(name, "villager");
 }
@@ -94,7 +94,7 @@ Minion::Minion() {
   static int minionLife = config.getIntProperty("config.creatures.minion.life");
   static float pathDelay = config.getFloatProperty("config.creatures.pathDelay");
   ch = minionChar;
-  col = minionColor;
+  color_ = minionColor;
   life = minionLife;
   seen = false;
   speed = 1.0f;

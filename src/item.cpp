@@ -792,7 +792,7 @@ Item::Item(float x, float y, const ItemType& type) : active(false) {
   container = NULL;
   asCreature = NULL;
   adjective = NULL;
-  typeName = strdup(type.name);
+  typeName_ = strdup(type.name);
   name = NULL;
   typeData = &type;
   toDelete = 0;
@@ -940,7 +940,7 @@ void Item::initLight() {
 
 Item::~Item() {
   if (light) delete light;
-  free(typeName);
+  free(typeName_);
   if (adjective) free(adjective);
 }
 
@@ -1107,12 +1107,12 @@ void Item::renderDescription(int x, int y, bool below) {
     else
       descCon->print(CON_W / 4, cy++, name);
     descCon->setDefaultForeground(guiText);
-    descCon->print(CON_W / 4, cy++, typeName);
+    descCon->print(CON_W / 4, cy++, typeName_);
   } else {
     if (count > 1)
-      descCon->print(CON_W / 4, cy++, "%s(%d)", typeName, count);
+      descCon->print(CON_W / 4, cy++, "%s(%d)", typeName_, count);
     else
-      descCon->print(CON_W / 4, cy++, typeName);
+      descCon->print(CON_W / 4, cy++, typeName_);
   }
   descCon->setDefaultForeground(guiText);
   ItemFeature* feat = getFeature(ITEM_FEAT_FOOD);
@@ -1165,12 +1165,12 @@ void Item::renderGenericDescription(int x, int y, bool below, bool frame) {
     else
       descCon->print(CON_W / 4, cy++, name);
     descCon->setDefaultForeground(guiText);
-    descCon->print(CON_W / 4, cy++, typeName);
+    descCon->print(CON_W / 4, cy++, typeName_);
   } else {
     if (count > 1)
-      descCon->print(CON_W / 4, cy++, "%s(%d)", typeName, count);
+      descCon->print(CON_W / 4, cy++, "%s(%d)", typeName_, count);
     else
-      descCon->print(CON_W / 4, cy++, typeName);
+      descCon->print(CON_W / 4, cy++, typeName_);
   }
   descCon->setDefaultForeground(guiText);
   ItemFeature* feat = getFeature(ITEM_FEAT_FOOD);
@@ -1689,11 +1689,11 @@ const char* Item::AName() const {
           (typeData->flags & ITEM_AN) ? "An" : "A",
           adjective ? adjective : "",
           adjective ? " " : "",
-          typeName);
+          typeName_);
     }
   } else {
     int cnt = count > 1 ? count : stack.size() + 1;
-    const char* nameToUse = name ? name : typeName;
+    const char* nameToUse = name ? name : typeName_;
     bool es = (nameToUse[strlen(nameToUse) - 1] == 's');
     sprintf(buf, "%d %s%s%s%s", cnt, adjective ? adjective : "", adjective ? " " : "", nameToUse, es ? "es" : "s");
   }
@@ -1712,11 +1712,11 @@ const char* Item::aName() const {
           (typeData->flags & ITEM_AN) ? "an" : "a",
           adjective ? adjective : "",
           adjective ? " " : "",
-          typeName);
+          typeName_);
     }
   } else {
     int cnt = count > 1 ? count : stack.size() + 1;
-    const char* nameToUse = name ? name : typeName;
+    const char* nameToUse = name ? name : typeName_;
     bool es = (nameToUse[strlen(nameToUse) - 1] == 's');
     sprintf(buf, "%d %s%s%s%s", cnt, adjective ? adjective : "", adjective ? " " : "", nameToUse, es ? "es" : "s");
   }
@@ -1726,10 +1726,10 @@ const char* Item::aName() const {
 const char* Item::TheName() const {
   static char buf[64];
   if (count == 1 && (!isSoftStackable() || stack.size() == 0)) {
-    sprintf(buf, "The %s%s%s", adjective ? adjective : "", adjective ? " " : "", name ? name : typeName);
+    sprintf(buf, "The %s%s%s", adjective ? adjective : "", adjective ? " " : "", name ? name : typeName_);
   } else {
     int cnt = count > 1 ? count : stack.size() + 1;
-    const char* nameToUse = name ? name : typeName;
+    const char* nameToUse = name ? name : typeName_;
     bool es = (nameToUse[strlen(nameToUse) - 1] == 's');
     sprintf(buf, "The %d %s%s%s%s", cnt, adjective ? adjective : "", adjective ? " " : "", nameToUse, es ? "es" : "s");
   }
@@ -1739,10 +1739,10 @@ const char* Item::TheName() const {
 const char* Item::theName() const {
   static char buf[64];
   if (count == 1 && (!isSoftStackable() || stack.size() == 0)) {
-    sprintf(buf, "the %s%s%s", adjective ? adjective : "", adjective ? " " : "", name ? name : typeName);
+    sprintf(buf, "the %s%s%s", adjective ? adjective : "", adjective ? " " : "", name ? name : typeName_);
   } else {
     int cnt = count > 1 ? count : stack.size() + 1;
-    const char* nameToUse = name ? name : typeName;
+    const char* nameToUse = name ? name : typeName_;
     bool es = (nameToUse[strlen(nameToUse) - 1] == 's');
     sprintf(buf, "the %d %s%s%s%s", cnt, adjective ? adjective : "", adjective ? " " : "", nameToUse, es ? "es" : "s");
   }
@@ -1758,7 +1758,7 @@ bool Item::loadData(uint32_t chunkId, uint32_t chunkVersion, TCODZip* zip) {
   itemClass = (ItemClass)zip->getInt();
   if (itemClass < 0 || itemClass >= NB_ITEM_CLASSES) return false;
   col = zip->getColor();
-  typeName = strdup(zip->getString());
+  typeName_ = strdup(zip->getString());
   const char* fname = zip->getString();
   if (fname) name = strdup(fname);
   count = zip->getInt();
@@ -1807,7 +1807,7 @@ void Item::saveData(uint32_t chunkId, TCODZip* zip) {
   zip->putFloat(y);
   zip->putInt(itemClass);
   zip->putColor(&col);
-  zip->putString(typeName);
+  zip->putString(typeName_);
   zip->putString(name);
   zip->putInt(count);
   zip->putInt(ch);

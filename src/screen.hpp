@@ -33,8 +33,8 @@ class Screen : public UmbraModule {
   Screen(const char* name, float fadeLvl) : UmbraModule{name}, fadeLvl{fadeLvl} {}
   void render() override = 0;
   virtual bool update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse) = 0;
-  void keyboard(TCOD_key_t& key) override { this->key = key; }
-  void mouse(TCOD_mouse_t& ms) override { this->ms = ms; }
+  void keyboard(TCOD_key_t& key) override { key_ = key; }
+  void mouse(TCOD_mouse_t& ms) override { ms_ = ms; }
   bool update(void) override;
 
   void setFadeIn(int lengthInMilli, TCODColor col = TCODColor::black);  // set fade lengths in milliseconds
@@ -49,8 +49,8 @@ class Screen : public UmbraModule {
   TCODColor fadeOutColor{};
 
   enum { FADE_UP, FADE_DOWN, FADE_OFF, FADE_NONE } fade{FADE_UP};
-  TCOD_key_t key{};
-  TCOD_mouse_t ms{};
+  TCOD_key_t key_{};
+  TCOD_mouse_t ms_{};
   void onInitialise() override { UmbraModule::onInitialise(); }
   void prepareImage(TCODImage* img) const;
   TCODImage* loadChapterPicture(bool big = false);

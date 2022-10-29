@@ -33,7 +33,7 @@
 Fish::Fish(WaterZone* zone) : Creature(), zone(zone) {
   strcpy(name, "fish");
   ch = 0;
-  col = TCODColor::desaturatedSky;
+  color_ = TCODColor::desaturatedSky;
   life = 10;
   speed = 12.0f;
   type = CREATURE_FISH;
@@ -64,7 +64,7 @@ void Fish::render(LightMap& lightMap) {
 
   int conx2 = getSubX() - gameEngine->xOffset * 2;
   int cony2 = getSubY() - gameEngine->yOffset * 2;
-  TCODColor rcol = col;
+  TCODColor rcol = color_;
   TCODColor bgcol = gameEngine->ground.getPixel(conx2, cony2);
   rcol = TCODColor::lerp(bgcol, rcol, coef);
   gameEngine->ground.putPixel(conx2, cony2, rcol);

@@ -45,20 +45,23 @@ class UIListener;
 
 class Widget {
  public:
-  Widget() : x(0), y(0), w(0), h(0) {}
-  Widget(int x, int y) : x(x), y(y) {}
-  Widget(int x, int y, int w, int h) : x(x), y(y), w(w), h(h) {}
+  Widget() = default;
+  Widget(int x, int y) noexcept : x_{x}, y_{y} {}
+  Widget(int x, int y, int w, int h) noexcept : x_{x}, y_{y}, w_{w}, h_{h} {}
   void setPos(int x, int y) {
-    this->x = x;
-    this->y = y;
+    x_ = x;
+    y_ = y;
   }
   void setSize(int w, int h) {
-    this->w = w;
-    this->h = h;
+    w_ = w;
+    h_ = h;
   }
   void addListener(UIListener* listener) { listeners.push(listener); }
   void removeListener(UIListener* listener) { listeners.removeFast(listener); }
-  int x, y, w, h;
+  int x_{};
+  int y_{};
+  int w_{};
+  int h_{};
 
  protected:
   TCODList<UIListener*> listeners;
@@ -136,11 +139,11 @@ class Dialog : public UmbraWidget {
  public:
   Dialog() : flags(0), isMinimized(false), waitRelease(false) {}
   void keyboard(TCOD_key_t& key) override {
-    this->key = key;
+    key_ = key;
     UmbraWidget::keyboard(key);
   }
   void mouse(TCOD_mouse_t& ms) override {
-    this->ms = ms;
+    ms_ = ms;
     UmbraWidget::mouse(ms);
   }
   bool update(void) override;
@@ -160,8 +163,8 @@ class Dialog : public UmbraWidget {
 
  protected:
   int flags;
-  TCOD_key_t key;
-  TCOD_mouse_t ms;
+  TCOD_key_t key_;
+  TCOD_mouse_t ms_;
   TCODConsole* con;
   bool isMinimized;
   bool waitRelease;

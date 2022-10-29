@@ -61,14 +61,14 @@ void Button::setLabel(const char* label) {
 void Button::render(TCODConsole* con) {
   con->setDefaultBackground(mouseHover && !pressed ? guiHighlightedBackground : guiBackground);
   con->setDefaultForeground(pressed ? guiHighlightedText : guiText);
-  con->printEx(x, y, TCOD_BKGND_SET, TCOD_LEFT, label);
+  con->printEx(x_, y_, TCOD_BKGND_SET, TCOD_LEFT, label);
 }
 
 void Button::update(float elapsed, TCOD_key_t& k, TCOD_mouse_t& mouse, int rectx, int recty) {
-  int mx = mouse.cx - x - rectx;
-  int my = mouse.cy - y - recty;
+  int mx = mouse.cx - x_ - rectx;
+  int my = mouse.cy - y_ - recty;
   mouseHover = pressed = false;
-  if (mx >= 0 && mx < w && my >= 0 && my < h) {
+  if (mx >= 0 && mx < w_ && my >= 0 && my < h_) {
     mouseHover = true;
     pressed = mouse.lbutton;
     if (mouse.lbutton_pressed) {
@@ -224,7 +224,7 @@ bool Dialog::update() {
   }
   if (!UmbraWidget::update()) return false;
   internalUpdate();
-  return update(elapsed, key, ms);
+  return update(elapsed, key_, ms_);
 }
 
 void Dialog::onActivate() {

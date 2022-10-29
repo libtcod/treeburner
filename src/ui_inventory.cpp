@@ -83,7 +83,7 @@ void Inventory::initialize(Creature* owner) {
   cmenudrag = false;
   rect.x = rect.y = 5;
   isDragging = dragOut = false;
-  craft.setPos(rect.w / 2 - craft.w / 2, rect.h - 1);
+  craft.setPos(rect.w / 2 - craft.w_ / 2, rect.h - 1);
 }
 
 void Inventory::initialize(Item* container) {
@@ -107,7 +107,7 @@ void Inventory::initialize(Item* container) {
   rect.x = 6 + INV_WIDTH / 2;
   rect.y = 5;
   isDragging = dragOut = false;
-  takeAll.setPos(rect.w / 2 - takeAll.w / 2, rect.h - 1);
+  takeAll.setPos(rect.w / 2 - takeAll.w_ / 2, rect.h - 1);
 }
 
 void Inventory::checkDefaultAction(Item* item) {
@@ -177,7 +177,7 @@ void Inventory::render() {
         TCOD_BKGND_SET,
         owner             ? "Inventory"
         : container->name ? container->name
-                          : container->typeName);
+                          : container->typeName_);
     con->setChar(w2 - 1, 0, 'x');
     con->setCharForeground(w2 - 1, 0, closeOn ? guiHighlightedText : guiText);
 

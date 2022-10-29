@@ -35,7 +35,7 @@ VillageHead::VillageHead() {
   static char villageHeadChar = config.getCharProperty("config.creatures.villageHead.ch");
   static int villageHeadLife = config.getIntProperty("config.creatures.villageHead.life");
   ch = villageHeadChar;
-  col = villageHeadColor;
+  color_ = villageHeadColor;
   life = villageHeadLife;
   strcpy(name, "village head");
   summonMinions = true;
@@ -60,7 +60,7 @@ Boss::Boss() {
   gameEngine->dungeon->addLight(treasureLight);
 
   ch = bossChar;
-  col = bossColor;
+  color_ = bossColor;
   life = bossLife;
   seen = false;
   speed = 1.0f;

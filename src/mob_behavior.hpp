@@ -29,7 +29,7 @@
 #include "bas_entity.hpp"
 
 class WalkPattern : public ITCODPathCallback {
-  float getWalkCost(int xFrom, int yFrom, int xTo, int yTo, void* userData) const { return 1.0f; }
+  float getWalkCost(int, int, int, int, void*) const { return 1.0f; }
 };
 
 class WaterOnlyWalkPattern : public WalkPattern {
@@ -53,12 +53,12 @@ class Behavior {
 
 class FollowBehavior : public Behavior {
  public:
-  FollowBehavior(WalkPattern* walkPattern) : Behavior(walkPattern), leader(NULL), standDelay(0.0f) {}
-  void setLeader(Creature* leader) { this->leader = leader; }
+  FollowBehavior(WalkPattern* walkPattern) : Behavior(walkPattern), leader_(NULL), standDelay(0.0f) {}
+  void setLeader(Creature* leader) { leader_ = leader; }
   bool update(Creature* crea, float elapsed) override;
 
  protected:
-  Creature* leader = nullptr;
+  Creature* leader_ = nullptr;
   float standDelay;
 };
 

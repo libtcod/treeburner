@@ -109,7 +109,7 @@ class Condition {
 class Creature : public DynamicEntity, public ITCODPathCallback, public NoisyThing, public SaveListener {
  public:
   CreatureTypeId type;
-  TCODColor col;
+  TCODColor color_;
   int ch;  // character
   float life, maxLife;
   float speed;

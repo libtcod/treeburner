@@ -103,7 +103,7 @@ class RandomIntFunc : public ITextGeneratorFunc {
 class RandomNameFunc : public ITextGeneratorFunc {
  public:
   RandomNameFunc(TCODRandom* rnRng) : rnRng(rnRng) {}
-  const char* execute(const char* params) override { return NameGenerator::generateRandomName(rnRng); }
+  const char* execute(const char*) override { return NameGenerator::generateRandomName(rnRng); }
 
  protected:
   TCODRandom* rnRng = nullptr;

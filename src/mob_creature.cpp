@@ -244,7 +244,7 @@ Creature* Creature::getCreature(CreatureTypeId id) {
       ret = new Creature();
       strcpy(ret->name, "deer");
       ret->ch = 'd';
-      ret->col = TCODColor::darkerYellow;
+      ret->color_ = TCODColor::darkerYellow;
       ret->maxLife = ret->life = 10.0f;
       ret->speed = 20.0f;
       ret->flags = CREATURE_SAVE;
@@ -376,7 +376,7 @@ void Creature::render(LightMap& lightMap) {
     c.g = CLAMP(0, 255, g);
     c.b = CLAMP(0, 255, b);
   } else {
-    c = col * lightColor;
+    c = color_ * lightColor;
   }
   int intensity = c.r + c.g + c.b;
   if (intensity < darknessLevel) return;  // creature not seen

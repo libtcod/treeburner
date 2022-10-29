@@ -50,13 +50,13 @@ float AvoidWaterWalkPattern::getWalkCost(int xFrom, int yFrom, int xTo, int yTo,
 }
 
 bool FollowBehavior::update(Creature* crea, float elapsed) {
-  int pdist = (int)crea->distance(*leader);
+  int pdist = (int)crea->distance(*leader_);
   Dungeon* dungeon = gameEngine->dungeon;
   standDelay += elapsed;
   if ((pdist > FOLLOW_DIST || standDelay > 10.0f) && (!crea->path || crea->path->isEmpty())) {
     // go near the leader
-    int destx = (int)(leader->x + TCODRandom::getInstance()->getInt(-FOLLOW_DIST, FOLLOW_DIST));
-    int desty = (int)(leader->y + TCODRandom::getInstance()->getInt(-FOLLOW_DIST, FOLLOW_DIST));
+    int destx = (int)(leader_->x + TCODRandom::getInstance()->getInt(-FOLLOW_DIST, FOLLOW_DIST));
+    int desty = (int)(leader_->y + TCODRandom::getInstance()->getInt(-FOLLOW_DIST, FOLLOW_DIST));
     destx = CLAMP(0, dungeon->width - 1, destx);
     desty = CLAMP(0, dungeon->height - 1, desty);
     dungeon->getClosestWalkable(&destx, &desty, true, true, false);

@@ -32,13 +32,13 @@
 
 class Light : public Entity, public NoisyThing {
  public:
-  Light() : randomRad(false), range(0.0f), color(TCODColor::white) {}
+  Light() : randomRad(false), range(0.0f), color{tcod::ColorRGB{255, 255, 255}} {}
   Light(float range, TCODColor color = TCODColor::white, bool randomRad = false)
       : randomRad(randomRad), range(range), color(color) {}
   void addToLightMap(LightMap& map);
   void addToImage(TCODImage& img);
   void getDungeonPart(int* minx, int* miny, int* maxx, int* maxy);
-  virtual void update(float elapsed) {}
+  virtual void update([[maybe_unused]] float elapsed) {}
 
   bool randomRad;
   float range;
@@ -47,7 +47,7 @@ class Light : public Entity, public NoisyThing {
  protected:
   void add(LightMap* l, TCODImage* i);
   virtual float getIntensity() { return 1.0f; }
-  virtual HDRColor getColor(float rad) { return color; }
+  virtual HDRColor getColor([[maybe_unused]] float rad) { return color; }
   float getFog(int x, int y);
 };
 
