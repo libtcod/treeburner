@@ -25,6 +25,7 @@
  */
 #pragma once
 #include <libtcod.hpp>
+#include <vector>
 
 #include "item.hpp"
 #include "mob_creature.hpp"
@@ -46,7 +47,7 @@ class Craft : public Dialog, public UIListener, public Scrollable {
   void getScrollColor(int idx, TCODColor* fore, TCODColor* back) override;
 
  protected:
-  TCODList<Item*> items;
+  std::vector<Item*> items;
   int selectedItem;
   int selectedIngredient;
   bool selectedTool;
@@ -58,7 +59,7 @@ class Craft : public Dialog, public UIListener, public Scrollable {
   int dragx, dragy, dragStartX, dragStartY;
   Item* dragItem;
   Item* tool;
-  TCODList<Item*> ingredients;
+  std::vector<Item*> ingredients;
   TCODList<ItemCombination*> recipes;
   Item* result;
   ItemCombination* recipe;

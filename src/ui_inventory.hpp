@@ -25,6 +25,7 @@
  */
 #pragma once
 #include <libtcod.hpp>
+#include <vector>
 
 #include "item.hpp"
 #include "ui_dialog.hpp"
@@ -40,7 +41,7 @@ struct InventoryTab {
   //	int x;
   //	int len;
   int offset;
-  TCODList<Item*> items;
+  std::vector<Item*> items;
 };
 
 class Inventory : public Dialog, public UIListener {

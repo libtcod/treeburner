@@ -463,7 +463,7 @@ void Creature::takeDamage(float amount) {
 }
 
 Item* Creature::addToInventory(Item* item) {
-  item = item->addToList(&inventory);
+  item = item->addToList(inventory);
   item->owner = this;
   item->x = x;
   item->y = y;
@@ -472,7 +472,7 @@ Item* Creature::addToInventory(Item* item) {
 
 Item* Creature::removeFromInventory(Item* item, int count) {
   if (count == 0) count = item->count;
-  item = item->removeFromList(&inventory, count);
+  item = item->removeFromList(inventory, count);
   if (item == mainHand || item == offHand) unwield(item);
   item->owner = NULL;
   return item;
@@ -519,11 +519,9 @@ bool Creature::update(float elapsed) {
     takeDamage(burnDamage * elapsed);
   }
   // update items in inventory
-  for (Item** it = inventory.begin(); it != inventory.end(); it++) {
-    if (!(*it)->age(elapsed)) {
-      it = inventory.removeFast(it);  // from inventory
-    }
-  }
+  inventory.erase(
+      std::remove_if(inventory.begin(), inventory.end(), [&elapsed](Item* it) { return it->age(elapsed); }),
+      inventory.end());
   // ai
   if (currentBehavior) {
     if (!currentBehavior->update(this, elapsed)) currentBehavior = NULL;
@@ -608,9 +606,9 @@ void Creature::saveData(uint32_t chunkId, TCODZip* zip) {
   zip->putString(name);
   // save inventory
   zip->putInt(inventory.size());
-  for (Item** it = inventory.begin(); it != inventory.end(); it++) {
-    zip->putString((*it)->typeData->name);
-    (*it)->saveData(ITEM_CHUNK_ID, zip);
+  for (Item* it : inventory) {
+    zip->putString(it->typeData->name);
+    it->saveData(ITEM_CHUNK_ID, zip);
   }
   // save conditions
   zip->putInt(conditions.size());

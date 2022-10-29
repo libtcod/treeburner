@@ -30,6 +30,7 @@
 
 #include <libtcod.hpp>
 
+#include "helpers.hpp"
 #include "item.hpp"
 #include "main.hpp"
 #include "map_building.hpp"
@@ -905,7 +906,7 @@ Item* Item::getRandomWeapon(const char* typeName, ItemClass itemClass) {
 }
 
 void Item::addComponent(Item* component) {
-  components.push(component);
+  components.push_back(component);
   if (component->adjective && !adjective) {
     adjective = strdup(component->adjective);
   }
@@ -968,7 +969,7 @@ Item* Item::putInContainer(Item* it) {
   ItemFeature* cont = it->getFeature(ITEM_FEAT_CONTAINER);
   if (!cont) return NULL;  // it is not a container
   if (it->stack.size() >= cont->container.size) return nullptr;  // no more room
-  Item* item = addToList(&it->stack);
+  Item* item = addToList(it->stack);
   item->container = it;
   item->x = it->x;
   item->y = it->y;
@@ -977,38 +978,38 @@ Item* Item::putInContainer(Item* it) {
 
 // remove it from this container (false if not inside)
 Item* Item::removeFromContainer(int count) {
-  if (!container || !container->stack.contains(this)) return NULL;
-  Item* item = removeFromList(&container->stack, count);
+  if (!container || !helpers::contains(container->stack, this)) return NULL;
+  Item* item = removeFromList(container->stack, count);
   item->container = NULL;
   return item;
 }
 
 // add to the list, posibly stacking
-Item* Item::addToList(TCODList<Item*>* list) {
+Item* Item::addToList(std::vector<Item*>& list) {
   if (isStackable()) {
     // if already in the list, increase the count
-    for (Item** it = list->begin(); it != list->end(); it++) {
-      if ((*it)->typeData == typeData && (!(*it)->name || (name && strcmp((*it)->name, name) == 0))) {
-        (*it)->count += count;
+    for (Item* it : list) {
+      if (it->typeData == typeData && (!it->name || (name && strcmp(it->name, name) == 0))) {
+        it->count += count;
         toDelete = count;
-        return *it;
+        return it;
       }
     }
   } else if (isSoftStackable()) {
     // if already in the list, add to soft stack
-    for (Item** it = list->begin(); it != list->end(); it++) {
-      if ((*it)->typeData == typeData && !(*it)->name) {
-        (*it)->stack.push(this);
-        return *it;
+    for (Item* it : list) {
+      if (it->typeData == typeData && !it->name) {
+        it->stack.push_back(this);
+        return it;
       }
     }
   }
   // add new item in the list
-  list->push(this);
+  list.push_back(this);
   return this;
 }
 // remove one item, possibly unstacking
-Item* Item::removeFromList(TCODList<Item*>* list, int removeCount, bool fast) {
+Item* Item::removeFromList(std::vector<Item*>& list, int removeCount) {
   if (isStackable() && count > removeCount) {
     Item* newItem = Item::getItem(typeData, x, y);
     newItem->count = removeCount;
@@ -1019,47 +1020,43 @@ Item* Item::removeFromList(TCODList<Item*>* list, int removeCount, bool fast) {
       Item* newStackOwner = NULL;
       // this item is the stack owner. rebuild the stack
       if (stack.size() > removeCount) {
-        newStackOwner = stack.pop();
+        newStackOwner = stack.back();
+        stack.pop_back();
         while (stack.size() > removeCount) {
-          newStackOwner->stack.push(stack.pop());
+          newStackOwner->stack.push_back(stack.back());
+          stack.pop_back();
         }
       }
       // remove before adding to avoid list reallocation
-      if (fast)
-        list->removeFast(this);
-      else
-        list->remove(this);
+      helpers::remove(list, this);
       if (newStackOwner) newStackOwner->addToList(list);
       return this;
     } else {
       // this item may be in a stack. find the stack owner
-      for (Item** stackOwner = list->begin(); stackOwner != list->end(); stackOwner++) {
-        if ((*stackOwner) != this && (*stackOwner)->typeData == typeData && (*stackOwner)->stack.contains(this)) {
-          return (*stackOwner)->removeFromList(list, removeCount, fast);
+      for (Item* stackOwner : list) {
+        if (stackOwner != this && stackOwner->typeData == typeData && helpers::contains(stack, this)) {
+          return stackOwner->removeFromList(list, removeCount);
         }
       }
       // single softStackable item. simply remove it from the list
     }
-  } else if (container && list->contains(container)) {
+  } else if (container && helpers::contains(list, container)) {
     // item is inside a container
     removeFromContainer(removeCount);
   }
-  if (fast)
-    list->removeFast(this);
-  else
-    list->remove(this);
+  helpers::remove(list, this);
   return this;
 }
 
 void Item::computeBottleName() {
   if (name) free(name);
   name = NULL;
-  if (stack.isEmpty()) {
+  if (stack.empty()) {
     an = true;
     name = strdup("empty bottle");
     return;
   }
-  Item* liquid = stack.get(0);
+  Item* liquid = stack.at(0);
   if (strcmp(liquid->typeData->name, "water") == 0) {
     an = false;
     name = strdup("bottle of water");
@@ -1335,8 +1332,8 @@ bool Item::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
       }
     }
     if ((int)x != (int)oldx || (int)y != (int)oldy) {
-      dungeon->getCell(oldx, oldy)->items.removeFast(this);
-      dungeon->getCell(x, y)->items.push(this);
+      helpers::remove(dungeon->getCell(oldx, oldy)->items, this);
+      dungeon->getCell(x, y)->items.push_back(this);
     }
     duration -= elapsed;
     if (duration < 0.0f) {
@@ -1426,13 +1423,13 @@ bool Item::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
             int dy = (int)(sqrtf(radius * radius - tx * tx));
             for (int ty = -dy; ty <= dy; ty++) {
               if ((int)(y) + ty >= 0 && (int)(y) + ty < dungeon->height) {
-                TCODList<Item*>* items = dungeon->getItems((int)(x) + tx, (int)(y) + ty);
-                for (Item** it = items->begin(); it != items->end(); it++) {
+                auto* items = dungeon->getItems((int)(x) + tx, (int)(y) + ty);
+                for (Item* it : *items) {
                   // found an adjacent item
-                  ItemFeature* fireFeat = (*it)->getFeature(ITEM_FEAT_FIRE_EFFECT);
+                  ItemFeature* fireFeat = it->getFeature(ITEM_FEAT_FIRE_EFFECT);
                   if (fireFeat) {
                     // item is affected by fire
-                    (*it)->fireResistance -= feat->heat.intensity;
+                    it->fireResistance -= feat->heat.intensity;
                   }
                 }
                 Creature* cr = dungeon->getCreature((int)(x) + tx, (int)(y) + ty);
@@ -1780,7 +1777,7 @@ bool Item::loadData(uint32_t chunkId, uint32_t chunkVersion, TCODZip* zip) {
     Item* it = Item::getItem(itemType, 0, 0);
     if (!it->loadData(itemChunkId, itemChunkVersion, zip)) return false;
     if (soft)
-      stack.push(it);
+      stack.push_back(it);
     else
       it->putInContainer(this);
     nbItems--;
@@ -1818,9 +1815,9 @@ void Item::saveData(uint32_t chunkId, TCODZip* zip) {
   zip->putFloat(life);
   // save items inside this item or soft stacks
   zip->putInt(stack.size());
-  for (Item** it = stack.begin(); it != stack.end(); it++) {
-    zip->putString((*it)->typeData->name);
-    (*it)->saveData(ITEM_CHUNK_ID, zip);
+  for (Item* it : stack) {
+    zip->putString(it->typeData->name);
+    it->saveData(ITEM_CHUNK_ID, zip);
   }
   ItemFeature* feat = getFeature(ITEM_FEAT_ATTACK);
   if (feat) {

@@ -68,9 +68,9 @@ void Inventory::initialize(Creature* owner) {
     tabs[i].items.clear();
     tabs[i].offset = 0;
   }
-  for (Item** it = owner->inventoryBegin(); it != owner->inventoryEnd(); it++) {
-    tabs[(*it)->typeData->inventoryTab].items.push(*it);
-    tabs[INV_ALL].items.push(*it);
+  for (Item* it : owner->getInventory()) {
+    tabs[it->typeData->inventoryTab].items.push_back(it);
+    tabs[INV_ALL].items.push_back(it);
   }
   for (; guiTabs.curTab < NB_INV_TABS && tabs[guiTabs.curTab].items.size() == 0; guiTabs.curTab++) {
   }
@@ -91,9 +91,9 @@ void Inventory::initialize(Item* container) {
     tabs[i].items.clear();
     tabs[i].offset = 0;
   }
-  for (Item** it = container->stack.begin(); it != container->stack.end(); it++) {
-    tabs[(*it)->typeData->inventoryTab].items.push(*it);
-    tabs[INV_ALL].items.push(*it);
+  for (Item* it : container->stack) {
+    tabs[it->typeData->inventoryTab].items.push_back(it);
+    tabs[INV_ALL].items.push_back(it);
   }
   for (; guiTabs.curTab < NB_INV_TABS && tabs[guiTabs.curTab].items.size() == 0; guiTabs.curTab++) {
   }
@@ -148,9 +148,9 @@ void Inventory::checkDefaultAction(Item* item) {
 bool Inventory::onWidgetEvent(Widget* widget, EWidgetEvent event) {
   if (widget == &takeAll && container) {
     InventoryTab* curTab = &tabs[guiTabs.curTab];
-    while (!curTab->items.isEmpty()) {
-      Item** it = curTab->items.begin();
-      runActionOnItem(ITEM_ACTION_TAKE, *it);
+    while (!curTab->items.empty()) {
+      Item* it = curTab->items.front();
+      runActionOnItem(ITEM_ACTION_TAKE, it);
       gameEngine->gui.inventory.guiTabs.curTab = INV_ALL;
     }
   } else if (widget == &craft && owner) {
@@ -199,7 +199,7 @@ void Inventory::render() {
     int skip = curTab->offset;
     int num = 0;
     con->setDefaultForeground(guiText);
-    for (Item** it = curTab->items.begin(); it != curTab->items.end() && ty < rect.y + rect.h - 2; it++, skip--) {
+    for (auto it = curTab->items.begin(); it != curTab->items.end() && ty < rect.y + rect.h - 2; ++it, --skip) {
       if (skip <= 0) {
         con->setDefaultBackground(num == selectedItem ? guiHighlightedBackground : guiBackground);
         con->rect(2, ty, w2 - 4, 1, false, TCOD_BKGND_SET);
@@ -222,7 +222,7 @@ void Inventory::render() {
   if (cmenuon) {
     // render the context menu
     if (selectedItem >= 0) {
-      Item* item = curTab->items.get(selectedItem);
+      Item* item = curTab->items.at(selectedItem);
       checkDefaultAction(item);
       cmenuheight = 0;
       cmenuwidth = 0;
@@ -324,21 +324,21 @@ void Inventory::render() {
       TCODConsole::root->setChar(itemx, itemy - 2, dragItem->ch);
       TCODConsole::root->setCharForeground(itemx, itemy - 2, dragItem->col);
     } else if ((!isDragging && itemToCombine == NULL) || (isDragging && !dragOut && selectedItem == -1)) {
-      Item* item = isDragging ? dragItem : selectedItem >= 0 ? curTab->items.get(selectedItem) : NULL;
+      Item* item = isDragging ? dragItem : selectedItem >= 0 ? curTab->items.at(selectedItem) : NULL;
       if (item) item->renderDescription(itemx, itemy);
     } else if (selectedItem >= 0) {
-      if (itemToCombine2 == curTab->items.get(selectedItem)) {
+      if (itemToCombine2 == curTab->items.at(selectedItem)) {
         combinationResult->renderGenericDescription(itemx, itemy);
       } else if (itemToCombine || dragItem) {
         if (combinationResult) delete combinationResult;
         combinationResult = itemToCombine2 = NULL;
-        combination = Item::getCombination(itemToCombine ? itemToCombine : dragItem, curTab->items.get(selectedItem));
+        combination = Item::getCombination(itemToCombine ? itemToCombine : dragItem, curTab->items.at(selectedItem));
         if (combination) {
-          itemToCombine2 = curTab->items.get(selectedItem);
+          itemToCombine2 = curTab->items.at(selectedItem);
           combinationResult = Item::getItem(combination->resultType, 0, 0, false);
           combinationResult->count = combination->nbResult;
           combinationResult->addComponent(itemToCombine ? itemToCombine : dragItem);
-          combinationResult->addComponent(curTab->items.get(selectedItem));
+          combinationResult->addComponent(curTab->items.at(selectedItem));
         } else {
           TCODConsole::root->setDefaultBackground(guiBackground);
           TCODConsole::root->setDefaultForeground(guiText);
@@ -350,7 +350,7 @@ void Inventory::render() {
 }
 
 void Inventory::activateItem() {
-  Item* item = tabs[guiTabs.curTab].items.get(selectedItem);
+  Item* item = tabs[guiTabs.curTab].items.at(selectedItem);
   checkDefaultAction(item);
   if (combinationResult) {
     gameEngine->gui.log.info("You created %s", combinationResult->aName());
@@ -360,25 +360,25 @@ void Inventory::activateItem() {
     combinationResult = NULL;
     bool destroy1 = false;
     // destroy items if needed
-    TCODList<Item*> toDestroy;
+    std::vector<Item*> toDestroy;
     if (combination->ingredients[0].destroy) {
       if (itemToCombine->isA(combination->ingredients[0].type)) {
-        toDestroy.push(itemToCombine);
+        toDestroy.push_back(itemToCombine);
         destroy1 = true;
       } else if (itemToCombine2->isA(combination->ingredients[0].type)) {
-        toDestroy.push(itemToCombine2);
+        toDestroy.push_back(itemToCombine2);
       }
     }
     if (combination->nbIngredients == 2 && combination->ingredients[1].destroy) {
       if (itemToCombine->isA(combination->ingredients[1].type)) {
-        toDestroy.push(itemToCombine);
+        toDestroy.push_back(itemToCombine);
         destroy1 = true;
       } else if (itemToCombine2->isA(combination->ingredients[1].type)) {
-        toDestroy.push(itemToCombine2);
+        toDestroy.push_back(itemToCombine2);
       }
     }
-    for (Item** it = toDestroy.begin(); it != toDestroy.end(); it++) {
-      (*it)->toDelete = true;
+    for (Item* it : toDestroy) {
+      it->toDelete = true;
     }
     // recompute inventory
     if (owner)
@@ -473,11 +473,11 @@ void Inventory::runActionOnItem(ItemActionId id, Item* item) {
       break;
     case ITEM_ACTION_DISASSEMBLE: {
       // create components
-      for (Item** it = item->components.begin(); it != item->components.end(); it++) {
+      for (Item* it : item->components) {
         if (owner)
-          owner->addToInventory(*it);
+          owner->addToInventory(it);
         else
-          (*it)->putInContainer(container);
+          it->putInContainer(container);
       }
       // destroy item
       item->destroy(1);
@@ -511,7 +511,7 @@ bool Inventory::update(float elapsed, TCOD_key_t& k, TCOD_mouse_t& mouse) {
     cmenuon = false;
     if (cmenuitem >= 0 && selectedItem >= 0) {
       // execute context menu action
-      Item* item = tabs[guiTabs.curTab].items.get(selectedItem);
+      Item* item = tabs[guiTabs.curTab].items.at(selectedItem);
       ItemActionId* id = NULL;
       int count = cmenuitem;
       ItemActionId actionId = (ItemActionId)0;
@@ -564,7 +564,7 @@ bool Inventory::update(float elapsed, TCOD_key_t& k, TCOD_mouse_t& mouse) {
   if (!cmenuon && !isDraggingStart && mouse.lbutton && selectedItem >= 0) {
     // start dragging. to be confirmed
     isDraggingStart = true;
-    dragItem = tabs[guiTabs.curTab].items.get(selectedItem);
+    dragItem = tabs[guiTabs.curTab].items.at(selectedItem);
     dragOut = false;
     dragStartX = mouse.cx;
     dragStartY = mouse.cy;
@@ -616,7 +616,7 @@ bool Inventory::update(float elapsed, TCOD_key_t& k, TCOD_mouse_t& mouse) {
           if (owner)
             newItem = owner->removeFromInventory(dragItem);
           else
-            newItem = dragItem->removeFromList(&container->stack);
+            newItem = dragItem->removeFromList(container->stack);
           newItem->dx = dx;
           newItem->dy = dy;
           newItem->speed = 1.0f / (invLength * 1.5f);

@@ -277,9 +277,9 @@ class Item : public DynamicEntity {
   bool isEquiped();
 
   // add to the list, posibly stacking
-  Item* addToList(TCODList<Item*>* list);
+  Item* addToList(std::vector<Item*>& list);
   // remove one item, possibly unstacking
-  Item* removeFromList(TCODList<Item*>* list, int count = 1, bool fast = true);
+  Item* removeFromList(std::vector<Item*>& list, int count = 1);
 
   void addModifier(ItemModifierId id, float value);
 
@@ -346,8 +346,8 @@ class Item : public DynamicEntity {
   float fireResistance;
   int toDelete;
   int ch;
-  TCODList<Item*> stack;  // for soft stackable items or containers
-  TCODList<Item*> components;  // for items that can be disassembled
+  std::vector<Item*> stack;  // for soft stackable items or containers
+  std::vector<Item*> components;  // for items that can be disassembled
  protected:
   friend class ItemFileListener;
   static void addFeature(const char* typeName, ItemFeature* feat);

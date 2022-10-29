@@ -165,8 +165,8 @@ class Creature : public DynamicEntity, public ITCODPathCallback, public NoisyThi
   // items
   Item* addToInventory(Item* it);  // in case of stackable items, returned item might be != it
   Item* removeFromInventory(Item* it, int count = 1);  // same as addToInventory
-  Item** inventoryBegin() { return inventory.begin(); }
-  Item** inventoryEnd() { return inventory.end(); }
+  auto getInventory() { return inventory; }
+
   void equip(Item* it);
   void unequip(Item* it);
   // same as equip/unequip but with messages (you're wielding...)
@@ -186,7 +186,7 @@ class Creature : public DynamicEntity, public ITCODPathCallback, public NoisyThi
   friend class FollowBehavior;
   friend class HerdBehavior;
   friend class ForestScreen;
-  TCODList<Item*> inventory;
+  std::vector<Item*> inventory;
   float walkTimer, pathTimer;
   float curDmg;
   struct TalkText : public Rect {

@@ -273,25 +273,25 @@ bool Player::activateCell(int dungeonx, int dungeony, bool lbut_pressed, bool wa
   // clink on adjacent pickable item = pick it up
   bool useWeapon = true;
   Dungeon* dungeon = gameEngine->dungeon;
-  TCODList<Item*>* items = dungeon->getItems(dungeonx, dungeony);
+  auto* items = dungeon->getItems(dungeonx, dungeony);
   if (activated) *activated = false;
   if (items->size() > 0) {
     useWeapon = false;
     // if ( lbut_pressed ) {
-    TCODList<Item*> toPick;
-    TCODList<Item*> toUse;
-    for (Item** it = items->begin(); it != items->end(); it++) {
-      if (!(*it)->isPickable())
-        toUse.push(*it);
-      else if ((*it)->speed == 0.0f)
-        toPick.push(*it);
+    std::vector<Item*> toPick;
+    std::vector<Item*> toUse;
+    for (Item* it : *items) {
+      if (!it->isPickable())
+        toUse.push_back(it);
+      else if (it->speed == 0.0f)
+        toPick.push_back(it);
     }
-    for (Item** it = toPick.begin(); it != toPick.end(); it++) {
-      (*it)->putInInventory(this);
+    for (Item* it : toPick) {
+      it->putInInventory(this);
     }
-    for (Item** it = toUse.begin(); it != toUse.end(); it++) {
-      bool deleteOnUse = ((*it)->typeData->flags & ITEM_DELETE_ON_USE) != 0;
-      (*it)->use();
+    for (Item* it : toUse) {
+      bool deleteOnUse = (it->typeData->flags & ITEM_DELETE_ON_USE) != 0;
+      it->use();
       if (activated) *activated = true;
     }
     //}
@@ -353,11 +353,9 @@ bool Player::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
     return true;
   }
   // update items in inventory
-  for (Item** it = inventory.begin(); it != inventory.end(); it++) {
-    if (!(*it)->age(elapsed)) {
-      it = inventory.removeFast(it);  // from inventory
-    }
-  }
+  inventory.erase(
+      std::remove_if(inventory.begin(), inventory.end(), [&elapsed](Item* it) { return it->age(elapsed); }),
+      inventory.end());
 
   // crouching
   crouch = ctrl;
@@ -632,15 +630,15 @@ bool Player::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
     }
     // auto pickup items
     if (oldx != x || oldy != y) {
-      TCODList<Item*>* items = dungeon->getItems((int)x, (int)y);
-      TCODList<Item*> toPick;
-      for (Item** it = items->begin(); it != items->end(); it++) {
-        if (!(*it)->speed > 0 && (*it)->isPickable()) {
-          toPick.push(*it);
+      auto* items = dungeon->getItems((int)x, (int)y);
+      std::vector<Item*> toPick;
+      for (Item* it : *items) {
+        if (!it->speed > 0 && it->isPickable()) {
+          toPick.push_back(it);
         }
       }
-      for (Item** it = toPick.begin(); it != toPick.end(); it++) {
-        (*it)->putInInventory(this);
+      for (Item* it : toPick) {
+        it->putInInventory(this);
       }
       if (dungeon->hasRipples(x, y)) {
         gameEngine->startRipple(x, y);

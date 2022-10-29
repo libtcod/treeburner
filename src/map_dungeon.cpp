@@ -29,6 +29,7 @@
 #include <math.h>
 #include <stdio.h>
 
+#include "helpers.hpp"
 #include "main.hpp"
 #include "mob_player.hpp"
 
@@ -289,7 +290,8 @@ void Dungeon::setMemory(int x, int y) {
 #undef addToMemory
 
 Dungeon::~Dungeon() {
-  items.clearAndDelete();
+  for (auto* it : items) delete it;
+  items.clear();
   creatures.clearAndDelete();
   corpses.clearAndDelete();
   cleanData();
@@ -613,7 +615,7 @@ bool Dungeon::hasActivableItem(int x, int y) const {
   if (!IN_RECTANGLE(x, y, width, height)) return false;
   Cell* cell = getCell(x, y);
   if (cell->items.size() != 1) return false;
-  Item* it = cell->items.peek();
+  Item* it = cell->items.front();
   return it->isActivatedOnBump();
 }
 
@@ -624,8 +626,8 @@ bool Dungeon::hasItemType(int x, int y, const ItemType* type) { return getItem(x
 Item* Dungeon::getItem(int x, int y, const ItemType* type) {
   if (!IN_RECTANGLE(x, y, width, height)) return nullptr;
   Cell* cell = getCell(x, y);
-  for (Item** it = cell->items.begin(); it != cell->items.end(); it++) {
-    if ((*it)->isA(type)) return *it;
+  for (Item* it : cell->items) {
+    if (it->isA(type)) return it;
   }
   return NULL;
 }
@@ -638,31 +640,31 @@ Item* Dungeon::getItem(int x, int y, const char* typeName) {
 bool Dungeon::hasItemFlag(int x, int y, int flag) {
   if (!IN_RECTANGLE(x, y, width, height)) return false;
   Cell* cell = getCell(x, y);
-  for (Item** it = cell->items.begin(); it != cell->items.end(); it++) {
-    if (((*it)->typeData->flags & flag) != 0) return true;
+  for (const Item* it : cell->items) {
+    if ((it->typeData->flags & flag) != 0) return true;
   }
   return false;
 }
 
-TCODList<Item*>* Dungeon::getItems(int x, int y) const {
-  if (!IN_RECTANGLE(x, y, width, height)) return NULL;
+std::vector<Item*>* Dungeon::getItems(int x, int y) const {
+  if (!IN_RECTANGLE(x, y, width, height)) return nullptr;
   return &cells[x + y * width].items;
 }
 
 Item* Dungeon::getFirstItem(int x, int y) const {
   if (!IN_RECTANGLE(x, y, width, height)) return NULL;
   if (cells[x + y * width].items.size() == 0) return NULL;
-  return cells[x + y * width].items.get(0);
+  return cells[x + y * width].items.front();
 }
 
 void Dungeon::addItem(Item* it) {
   if (it == NULL) return;
   if (isUpdatingItems)
-    itemsToAdd.push(it);
+    itemsToAdd.push_back(it);
   else {
-    Item* newItem = it->addToList(&getCell(it->x, it->y)->items);
+    Item* newItem = it->addToList(getCell(it->x, it->y)->items);
     if (newItem == it) {
-      items.push(newItem);
+      items.push_back(newItem);
       if (newItem->light) addLight(newItem->light);
       bool walk = isCellWalkable((int)newItem->x, (int)newItem->y);
       bool transp = isCellTransparent((int)newItem->x, (int)newItem->y);
@@ -678,9 +680,9 @@ void Dungeon::computeWalkTransp(int x, int y) {
   Cell* cell = getCell(x, y);
   bool walk = true;
   bool transp = true;
-  for (Item** it = cell->items.begin(); it != cell->items.end(); it++) {
-    walk = walk && (*it)->isWalkable();
-    transp = transp && (*it)->isTransparent();
+  for (const Item* it : cell->items) {
+    walk = walk && it->isWalkable();
+    transp = transp && it->isTransparent();
   }
   setProperties(x, y, transp, walk);
 }
@@ -703,7 +705,7 @@ void Dungeon::setWalkable(int x, int y, bool walkable) {
 }
 
 Item* Dungeon::removeItem(Item* it, int count, bool del) {
-  Item* newItem = it->removeFromList(&getCell(it->x, it->y)->items, count);
+  Item* newItem = it->removeFromList(getCell(it->x, it->y)->items, count);
   if (newItem == it) {
     if (it->light) removeLight(it->light);
     if (del) it->toDelete = count;
@@ -746,35 +748,35 @@ void Dungeon::renderItems(LightMap& lightMap, TCODImage* ground) {
     }
   }
   // moving items
-  for (Item** it = items.begin(); it != items.end(); it++) {
-    if ((*it)->speed > 0.0f && map->isInFov((int)(*it)->x, (int)(*it)->y)) {
-      (*it)->render(lightMap, ground);
+  for (Item* it : items) {
+    if (it->speed > 0.0f && map->isInFov((int)it->x, (int)it->y)) {
+      it->render(lightMap, ground);
     }
   }
 }
 
 void Dungeon::updateItems(float elapsed, TCOD_key_t k, TCOD_mouse_t* mouse) {
-  TCODList<Item*> toDelete;
+  std::vector<Item*> toDelete;
   isUpdatingItems = true;
-  for (Item** it = items.begin(); it != items.end(); it++) {
-    if ((*it)->toDelete) {
-      toDelete.push(*it);
-    } else if (!(*it)->update(elapsed, k, mouse)) {
-      toDelete.push(*it);
-      (*it)->toDelete = 1;
+  for (Item* it : items) {
+    if (it->toDelete) {
+      toDelete.push_back(it);
+    } else if (!it->update(elapsed, k, mouse)) {
+      toDelete.push_back(it);
+      it->toDelete = 1;
     }
   }
   isUpdatingItems = false;
-  for (Item** it = toDelete.begin(); it != toDelete.end(); it++) {
-    removeItem(*it, (*it)->count);  // from item map
-    items.removeFast(*it);  // from item list
-    if ((*it)->typeData->isA("tree")) {
-      gameEngine->recomputeCanopy(*it);
+  for (Item* it : toDelete) {
+    removeItem(it, it->count);  // from item map
+    helpers::remove(items, it);  // from item list
+    if (it->typeData->isA("tree")) {
+      gameEngine->recomputeCanopy(it);
     }
-    delete (*it);
+    delete it;
   }
-  for (Item** it = itemsToAdd.begin(); it != itemsToAdd.end(); it++) {
-    addItem(*it);
+  for (Item* it : itemsToAdd) {
+    addItem(it);
   }
   itemsToAdd.clear();
 }
@@ -902,9 +904,9 @@ void Dungeon::saveData(uint32_t chunkId, TCODZip* zip) {
   }
   zip->putInt(nbItemsToSave);
   for (int i = 0; i < width * height; i++) {
-    for (Item** it = cells[i].items.begin(); it != cells[i].items.end(); it++) {
-      zip->putString((*it)->typeData->name);
-      (*it)->saveData(ITEM_CHUNK_ID, zip);
+    for (Item* it : cells[i].items) {
+      zip->putString(it->typeData->name);
+      it->saveData(ITEM_CHUNK_ID, zip);
     }
   }
 }

@@ -86,7 +86,12 @@
     "xtree": "cpp",
     "*.rh": "cpp",
     "set": "cpp",
-    "random": "cpp"
+    "random": "cpp",
+    "fstream": "cpp",
+    "mutex": "cpp",
+    "stop_token": "cpp",
+    "thread": "cpp",
+    "variant": "cpp"
   },
   "[yaml]": {
     "editor.defaultFormatter": "redhat.vscode-yaml"

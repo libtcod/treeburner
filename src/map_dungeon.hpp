@@ -26,6 +26,7 @@
 #pragma once
 
 #include <libtcod.hpp>
+#include <vector>
 
 #include "bas_savegame.hpp"
 #include "map_cell.hpp"
@@ -60,7 +61,7 @@ class Dungeon : public SaveListener {
 
   // stair to next level
   int stairx, stairy;
-  TCODList<Item*> items;
+  std::vector<Item*> items;
   TCODList<Creature*> creatures;
   TCODList<Creature*> corpses;
   TCODList<Light*> lights;
@@ -98,7 +99,7 @@ class Dungeon : public SaveListener {
   bool hasItemType(int x, int y, const ItemType* type);
   bool hasItemFlag(int x, int y, int flag);
   // bool hasItemTag(int x, int y, unsigned long long tag);
-  TCODList<Item*>* getItems(int x, int y) const;
+  std::vector<Item*>* getItems(int x, int y) const;
   Item* getFirstItem(int x, int y) const;
   // Item *getItemTag(int x, int y, unsigned long long tag);
   Item* getItem(int x, int y, const ItemType* type);
@@ -180,7 +181,7 @@ class Dungeon : public SaveListener {
  protected:
   int level;
   TCODList<int> spawnSources;
-  TCODList<Item*> itemsToAdd;
+  std::vector<Item*> itemsToAdd;
   bool isUpdatingItems;
   TCODList<Creature*> creaturesToAdd;
   bool isUpdatingCreatures;

@@ -26,6 +26,7 @@
 #pragma once
 #include <array>
 #include <libtcod.hpp>
+#include <vector>
 
 #include "bas_savegame.hpp"
 #include "item.hpp"
@@ -74,7 +75,7 @@ extern std::array<TerrainType, NB_TERRAINS> terrainTypes;
 class Building;
 struct Cell : public Persistant {
   int nbCreatures{};
-  TCODList<Item*> items{};
+  std::vector<Item*> items{};
   bool hasCorpse{};
   // cells already seen by the player
   bool memory{};

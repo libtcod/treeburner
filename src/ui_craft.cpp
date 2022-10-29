@@ -25,6 +25,7 @@
  */
 #include "ui_craft.hpp"
 
+#include "helpers.hpp"
 #include "main.hpp"
 #include "ui_inventory.hpp"
 #include "util_subcell.hpp"
@@ -56,8 +57,8 @@ void Craft::initialize(Creature* owner, bool soft) {
     ingredients.clear();
   }
   computeRecipes();
-  for (Item** it = owner->inventoryBegin(); it != owner->inventoryEnd(); it++) {
-    if (((*it)->isIngredient() || (*it)->isTool()) && !ingredients.contains(*it) && tool != *it) items.push(*it);
+  for (Item* it : owner->getInventory()) {
+    if ((it->isIngredient() || it->isTool()) && !helpers::contains(ingredients, it) && tool != it) items.push_back(it);
   }
   selectedItem = -1;
   isDragging = isDraggingStart = false;
@@ -68,10 +69,10 @@ void Craft::initialize(Creature* owner, bool soft) {
 
 int Craft::getScrollTotalSize() { return items.size(); }
 
-const char* Craft::getScrollText(int idx) { return items.get(idx)->aName(); }
+const char* Craft::getScrollText(int idx) { return items.at(idx)->aName(); }
 
 void Craft::getScrollColor(int idx, TCODColor* fore, TCODColor* back) {
-  Item* item = items.get(idx);
+  Item* item = items.at(idx);
   // check if the item can be used in the current recipes list
   bool enabled = false;
   for (ItemCombination** it = recipes.begin(); it != recipes.end(); it++) {
@@ -117,10 +118,10 @@ void Craft::render() {
 
   // ingredient list
   int y = 5;
-  for (Item** it = ingredients.begin(); it != ingredients.end(); it++) {
-    con->setDefaultForeground(Item::classColor[(*it)->itemClass]);
+  for (Item* it : ingredients) {
+    con->setDefaultForeground(Item::classColor[it->itemClass]);
     con->setDefaultBackground(y - 5 == selectedIngredient ? guiHighlightedBackground : guiBackground);
-    con->printEx(rect.w / 2 + 1, y++, TCOD_BKGND_SET, TCOD_LEFT, (*it)->aName());
+    con->printEx(rect.w / 2 + 1, y++, TCOD_BKGND_SET, TCOD_LEFT, it->aName());
   }
 
   // tool
@@ -132,7 +133,7 @@ void Craft::render() {
 
   // buttons
   if (result) create.render(con);
-  if (tool || !ingredients.isEmpty()) clear.render(con);
+  if (tool || !ingredients.empty()) clear.render(con);
 
   blitSemiTransparent(con, 0, 0, rect.w, rect.h, TCODConsole::root, rect.x, rect.y, 0.8f, 1.0f);
 
@@ -149,8 +150,8 @@ void Craft::render() {
                 : selectedIngredient >= 0 ? rect.y + 7 + selectedIngredient
                                           : rect.y + 5;
     Item* item = isDragging                ? dragItem
-                 : selectedItem >= 0       ? items.get(selectedItem)
-                 : selectedIngredient >= 0 ? ingredients.get(selectedIngredient)
+                 : selectedItem >= 0       ? items.at(selectedItem)
+                 : selectedIngredient >= 0 ? ingredients.at(selectedIngredient)
                                            : tool;
     item->renderDescription(itemx, itemy);
   }
@@ -177,7 +178,7 @@ void Craft::detectItem(TCOD_mouse_t& mouse) {
 bool Craft::update(float elapsed, TCOD_key_t& k, TCOD_mouse_t& mouse) {
   scroller->update(elapsed, k, mouse, rect.x + 1, rect.y + 1);
   if (result) create.update(elapsed, k, mouse, rect.x, rect.y);
-  if (tool || !ingredients.isEmpty()) clear.update(elapsed, k, mouse, rect.x, rect.y);
+  if (tool || !ingredients.empty()) clear.update(elapsed, k, mouse, rect.x, rect.y);
 
   detectItem(mouse);
 
@@ -185,8 +186,8 @@ bool Craft::update(float elapsed, TCOD_key_t& k, TCOD_mouse_t& mouse) {
   if (!isDraggingStart && mouse.lbutton && (selectedItem >= 0 || selectedIngredient >= 0 || selectedTool)) {
     // start dragging. to be confirmed
     isDraggingStart = true;
-    dragItem = selectedItem >= 0         ? items.get(selectedItem)
-               : selectedIngredient >= 0 ? ingredients.get(selectedIngredient)
+    dragItem = selectedItem >= 0         ? items.at(selectedItem)
+               : selectedIngredient >= 0 ? ingredients.at(selectedIngredient)
                : selectedTool            ? tool
                                          : NULL;
     dragStartX = mouse.cx;
@@ -208,18 +209,19 @@ bool Craft::update(float elapsed, TCOD_key_t& k, TCOD_mouse_t& mouse) {
       // change tool
       if (dragItem->isTool() && tool != dragItem) {
         if (tool) {
-          items.push(tool);
-          if (tool->isA("liquid container") && !tool->stack.isEmpty()) {
-            ingredients.remove(tool->stack.get(0));
+          items.push_back(tool);
+          if (tool->isA("liquid container") && !tool->stack.empty()) {
+            helpers::remove(ingredients, tool->stack.at(0));
           }
         }
         tool = dragItem;
-        if (items.contains(tool))
-          items.remove(tool);
-        else if (ingredients.contains(tool))
-          ingredients.remove(tool);
-        if (tool->isA("liquid container") && !tool->stack.isEmpty()) {
-          ingredients.push(tool->stack.get(0));
+        if (helpers::contains(items, tool)) {
+          helpers::remove(items, tool);
+        } else if (helpers::contains(ingredients, tool)) {
+          helpers::remove(ingredients, tool);
+        }
+        if (tool->isA("liquid container") && !tool->stack.empty()) {
+          ingredients.push_back(tool->stack.at(0));
         }
         computeResult();
       }
@@ -228,13 +230,14 @@ bool Craft::update(float elapsed, TCOD_key_t& k, TCOD_mouse_t& mouse) {
         mouse.cy < rect.y + rect.h / 2 + 4) {
       // add ingredient
       if (dragItem->isIngredient()) {
-        if (items.contains(dragItem))
-          items.remove(dragItem);
-        else if (ingredients.contains(dragItem))
-          ingredients.remove(dragItem);
-        else if (tool == dragItem)
+        if (helpers::contains(items, dragItem)) {
+          helpers::remove(items, dragItem);
+        } else if (helpers::contains(ingredients, dragItem)) {
+          helpers::remove(ingredients, dragItem);
+        } else if (tool == dragItem) {
           tool = NULL;
-        ingredients.push(dragItem);
+        }
+        ingredients.push_back(dragItem);
         computeResult();
       }
     } else if (
@@ -242,17 +245,17 @@ bool Craft::update(float elapsed, TCOD_key_t& k, TCOD_mouse_t& mouse) {
         mouse.cy < rect.y + rect.h - 1) {
       // put back something in inventory
       if (!dragItem->container || !dragItem->container->isA("liquid container")) {
-        if (items.contains(dragItem))
-          items.remove(dragItem);
-        else if (ingredients.contains(dragItem))
-          ingredients.remove(dragItem);
-        else if (tool == dragItem) {
-          if (tool->isA("liquid container") && !tool->stack.isEmpty()) {
-            ingredients.remove(tool->stack.get(0));
+        if (helpers::contains(items, dragItem)) {
+          helpers::remove(items, dragItem);
+        } else if (helpers::contains(ingredients, dragItem)) {
+          helpers::remove(ingredients, dragItem);
+        } else if (tool == dragItem) {
+          if (tool->isA("liquid container") && !tool->stack.empty()) {
+            helpers::remove(ingredients, tool->stack.at(0));
           }
           tool = NULL;
         }
-        items.push(dragItem);
+        items.push_back(dragItem);
         computeResult();
       }
     }
@@ -280,23 +283,19 @@ bool Craft::update(float elapsed, TCOD_key_t& k, TCOD_mouse_t& mouse) {
 bool Craft::onWidgetEvent(Widget* widget, EWidgetEvent event) {
   if (widget == &create && result) {
     // delete ingredients
-    for (Item** it = ingredients.begin(); it != ingredients.end(); it++) {
-      const ItemIngredient* ing = recipe->getIngredient(*it);
+    const auto deleteIngredients = [&](Item* it) {
+      const ItemIngredient* ing = recipe->getIngredient(it);
       if (ing->destroy) {
-        if ((*it)->count > ing->quantity)
-          (*it)->count -= ing->quantity;
-        else {
-          //					if ( ! (*it)->container || !(*it)->container->isA("liquid container") )
-          //{
-          owner->removeFromInventory(*it, true);
-          /*					} else {
-                                                          (*it)->removeFromContainer();
-                                                  }
-          */
-          it = ingredients.remove(it);
+        if (it->count > ing->quantity) {
+          it->count -= ing->quantity;
+        } else {
+          owner->removeFromInventory(it, 1);
+          return true;  // Remove item.
         }
       }
-    }
+      return false;
+    };
+    ingredients.erase(std::remove_if(ingredients.begin(), ingredients.end(), deleteIngredients), ingredients.end());
     // put result in player's inventory
     gameEngine->gui.log.info("You created %s", result->aName());
     owner->addToInventory(result);
@@ -309,13 +308,13 @@ bool Craft::onWidgetEvent(Widget* widget, EWidgetEvent event) {
     initialize(owner, true);
   } else if (widget == &clear) {
     if (tool) {
-      items.push(tool);
-      if (tool->isA("liquid container") && !tool->stack.isEmpty()) {
-        ingredients.remove(tool->stack.get(0));
+      items.push_back(tool);
+      if (tool->isA("liquid container") && !tool->stack.empty()) {
+        helpers::remove(ingredients, tool->stack.at(0));
       }
     }
     tool = NULL;
-    items.addAll(ingredients);
+    for (Item* it : ingredients) items.push_back(it);
     ingredients.clear();
     result = NULL;
     computeRecipes();
@@ -332,7 +331,7 @@ void Craft::computeResult() {
       bool checkIng[MAX_INGREDIENTS];
       memset(checkIng, 0, MAX_INGREDIENTS * sizeof(bool));
       // check that all proposed ingredients match
-      for (Item** it = ingredients.begin(); ingredientOk && it != ingredients.end(); it++) {
+      for (auto it = ingredients.begin(); ingredientOk && it != ingredients.end(); ++it) {
         const ItemIngredient* ing = (*cur)->getIngredient(*it);
         if (!ing)
           ingredientOk = false;
@@ -349,14 +348,14 @@ void Craft::computeResult() {
         if (ingredientOk) {
           // generate the result
           if (result) {
-            if (result->isA("liquid container")) delete result->stack.get(0);
+            if (result->isA("liquid container")) delete result->stack.at(0);
             delete result;
           }
           result = Item::getItem((*cur)->resultType, 0, 0, false);
           result->count = (*cur)->nbResult;
-          for (Item** it = ingredients.begin(); it != ingredients.end(); it++) {
-            const ItemIngredient* ing = (*cur)->getIngredient(*it);
-            if (ing->revert) result->addComponent(*it);
+          for (Item* it : ingredients) {
+            const ItemIngredient* ing = (*cur)->getIngredient(it);
+            if (ing->revert) result->addComponent(it);
           }
           if (tool && tool->isA("liquid container")) {
             Item* bottle = Item::getItem("bottle", 0, 0, false);
@@ -371,7 +370,7 @@ void Craft::computeResult() {
     }
   }
   if (result) {
-    if (result->isA("liquid container")) delete result->stack.get(0);
+    if (result->isA("liquid container")) delete result->stack.at(0);
     delete result;
   }
   result = NULL;
@@ -385,7 +384,7 @@ void Craft::computeRecipes() {
     if ((!tool) || (tool && (*cur)->isTool(tool))) {
       bool ingredientOk = true;
       // check that all proposed ingredients match
-      for (Item** it = ingredients.begin(); ingredientOk && it != ingredients.end(); it++) {
+      for (auto it = ingredients.begin(); ingredientOk && it != ingredients.end(); it++) {
         const ItemIngredient* ing = (*cur)->getIngredient(*it);
         if (!ing)
           ingredientOk = false;
