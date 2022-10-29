@@ -91,7 +91,11 @@
     "mutex": "cpp",
     "stop_token": "cpp",
     "thread": "cpp",
-    "variant": "cpp"
+    "variant": "cpp",
+    "span": "cpp",
+    "pointers": "cpp",
+    "assert": "cpp",
+    "util": "cpp"
   },
   "[yaml]": {
     "editor.defaultFormatter": "redhat.vscode-yaml"

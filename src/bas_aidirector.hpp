@@ -24,6 +24,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 #pragma once
+#include <cmath>
+
 #include "mob_creature.hpp"
 
 // the class that manages monsters spawning
@@ -38,17 +40,19 @@ class AiDirector {
   void bossSeen();  // enter final fight mode
   void bossDead();  // exit final fight mode
   void termLevel();
-  void spawnMinion(bool chase, int x = -1, int y = -1);
-  enum { STATUS_CALM, STATUS_MED, STATUS_HIGH, STATUS_HORDE } status;
+  void spawnMinion(bool chase);
+  void spawnMinion(bool chase, int x, int y);
+  enum { STATUS_CALM, STATUS_MED, STATUS_HIGH, STATUS_HORDE } status{STATUS_CALM};
 
  protected:
-  int spawnCount;
-  float spawnTimer;
-  float waitTimer;
-  float timer;
-  float hordeTimer;
-  int killCount;
-  float lowLevel, medLevel;
-  int nbScrolls;
-  CreatureTypeId baseCreature;
+  int spawnCount{};
+  float spawnTimer{};
+  float waitTimer{};
+  float timer{float{-M_PI} / 2.0f};
+  float hordeTimer{};
+  int killCount{};
+  float lowLevel{};
+  float medLevel{};
+  int nbScrolls{};
+  CreatureTypeId baseCreature{CREATURE_MINION};
 };

@@ -25,6 +25,7 @@
  */
 #pragma once
 
+#include <array>
 #include <libtcod.hpp>
 #include <vector>
 
@@ -86,6 +87,11 @@ class Dungeon : public SaveListener {
   void computeSpawnSources();
   void getClosestSpawnSource(float x, float y, int* ssx, int* ssy) const {
     return getClosestSpawnSource((int)x, (int)y, ssx, ssy);
+  }
+  auto getClosestSpawnSource(int x, int y) -> std::array<int, 2> const {
+    std::array<int, 2> out;
+    getClosestSpawnSource(x, y, &out.at(0), &out.at(1));
+    return out;
   }
   void getClosestSpawnSource(int x, int y, int* ssx, int* ssy) const;
   void updateCreatures(float elapsed);
