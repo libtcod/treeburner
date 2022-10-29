@@ -31,12 +31,11 @@ class Screen : public UmbraModule {
  public:
   Screen(float fadeLvl) : UmbraModule{}, fadeLvl{fadeLvl} {}
   Screen(const char* name, float fadeLvl) : UmbraModule{name}, fadeLvl{fadeLvl} {}
-  virtual void render() = 0;
+  void render() override = 0;
   virtual bool update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse) = 0;
-  virtual ~Screen() = default;
-  void keyboard(TCOD_key_t& key) { this->key = key; }
-  void mouse(TCOD_mouse_t& ms) { this->ms = ms; }
-  bool update(void);
+  void keyboard(TCOD_key_t& key) override { this->key = key; }
+  void mouse(TCOD_mouse_t& ms) override { this->ms = ms; }
+  bool update(void) override;
 
   void setFadeIn(int lengthInMilli, TCODColor col = TCODColor::black);  // set fade lengths in milliseconds
   void setFadeOut(int lengthInMilli, TCODColor col = TCODColor::black);  // set fade lengths in milliseconds

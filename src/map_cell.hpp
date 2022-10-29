@@ -73,7 +73,7 @@ extern TerrainType terrainTypes[NB_TERRAINS];
 class Building;
 struct Cell : public Persistant {
   Cell() : nbCreatures(0), hasCorpse(false), memory(false), terrain(TERRAIN_GROUND) {}
-  virtual ~Cell() {}
+  virtual ~Cell() = default;
   int nbCreatures;
   TCODList<Item*> items;
   bool hasCorpse;
@@ -83,13 +83,13 @@ struct Cell : public Persistant {
   Building* building = nullptr;  // if cell is inside a building
 
   // SaveListener
-  bool loadData(TCODZip* zip);
-  void saveData(TCODZip* zip);
+  bool loadData(TCODZip* zip) override;
+  void saveData(TCODZip* zip) override;
 };
 
 struct SubCell : public Persistant {
   SubCell() : shadow(1.0f) {}
-  virtual ~SubCell() {}
+  virtual ~SubCell() = default;
   TCODColor groundColor;
   // for outdoors, shadow casted by the sun
   float shadowBeforeTree;
@@ -97,6 +97,6 @@ struct SubCell : public Persistant {
   float waterCoef;
 
   // SaveListener
-  bool loadData(TCODZip* zip);
-  void saveData(TCODZip* zip);
+  bool loadData(TCODZip* zip) override;
+  void saveData(TCODZip* zip) override;
 };

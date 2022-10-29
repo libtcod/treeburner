@@ -39,7 +39,7 @@ class CaveGenerator : public ITCODBspCallback {
   TCODImage* ground = nullptr;  // ground color (subcell rez)
 
   // dungeon generator stuff
-  bool visitNode(TCODBsp* node, void* userData);
+  bool visitNode(TCODBsp* node, void* userData) override;
   // apply blur to ground bitmap
   static void smoothImage(TCODImage* img);
 

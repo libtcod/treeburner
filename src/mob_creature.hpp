@@ -149,7 +149,7 @@ class Creature : public DynamicEntity, public ITCODPathCallback, public NoisyThi
   void renderTalk();
   virtual void takeDamage(float amount);
   virtual void stun(float delay);
-  virtual float getWalkCost(int xFrom, int yFrom, int xTo, int yTo, void* userData) const;
+  virtual float getWalkCost(int xFrom, int yFrom, int xTo, int yTo, void* userData) const override;
   void talk(const char* text);
   bool isTalking() { return talkText.delay > 0.0f; }
   bool isInRange(int x, int y);
@@ -175,8 +175,8 @@ class Creature : public DynamicEntity, public ITCODPathCallback, public NoisyThi
   virtual void initItem() {}  // build asItem member
 
   // SaveListener
-  bool loadData(uint32_t chunkId, uint32_t chunkVersion, TCODZip* zip);
-  void saveData(uint32_t chunkId, TCODZip* zip);
+  bool loadData(uint32_t chunkId, uint32_t chunkVersion, TCODZip* zip) override;
+  void saveData(uint32_t chunkId, TCODZip* zip) override;
 
   float fovRange;
   bool toDelete;

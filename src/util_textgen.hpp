@@ -67,11 +67,11 @@ class TextGenerator : public ITCODParserListener {
   void setLocalFunction(const char* funcName, ITextGeneratorFunc* func);
 
   // file parsing callbacks
-  bool parserNewStruct(TCODParser* parser, const TCODParserStruct* str, const char* name);
-  bool parserFlag(TCODParser* parser, const char* name);
-  bool parserProperty(TCODParser* parser, const char* name, TCOD_value_type_t type, TCOD_value_t value);
-  bool parserEndStruct(TCODParser* parser, const TCODParserStruct* str, const char* name);
-  void error(const char* msg);
+  bool parserNewStruct(TCODParser* parser, const TCODParserStruct* str, const char* name) override;
+  bool parserFlag(TCODParser* parser, const char* name) override;
+  bool parserProperty(TCODParser* parser, const char* name, TCOD_value_type_t type, TCOD_value_t value) override;
+  bool parserEndStruct(TCODParser* parser, const TCODParserStruct* str, const char* name) override;
+  void error(const char* msg) override;
   TCODList<TextGen*> generators;
   static TCODList<Rule*> globalRules;
   static TCODList<TextGenFunc*> globalFuncs;
@@ -93,7 +93,7 @@ class TextGenerator : public ITCODParserListener {
 class RandomIntFunc : public ITextGeneratorFunc {
  public:
   RandomIntFunc(TCODRandom* riRng) : riRng(riRng) {}
-  const char* execute(const char* params);
+  const char* execute(const char* params) override;
 
  protected:
   TCODRandom* riRng = nullptr;
@@ -103,7 +103,7 @@ class RandomIntFunc : public ITextGeneratorFunc {
 class RandomNameFunc : public ITextGeneratorFunc {
  public:
   RandomNameFunc(TCODRandom* rnRng) : rnRng(rnRng) {}
-  const char* execute(const char* params) { return NameGenerator::generateRandomName(rnRng); }
+  const char* execute(const char* params) override { return NameGenerator::generateRandomName(rnRng); }
 
  protected:
   TCODRandom* rnRng = nullptr;
@@ -112,5 +112,5 @@ class RandomNameFunc : public ITextGeneratorFunc {
 // NUMBER_TO_LETTER(num)
 class NumberToLetterFunc : public ITextGeneratorFunc {
  public:
-  const char* execute(const char* params);
+  const char* execute(const char* params) override;
 };

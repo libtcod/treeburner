@@ -35,10 +35,9 @@ class MainMenu : public Screen {
  public:
   MainMenu();
   static MainMenu* instance;
-  void render();
+  void render() override;
   void onEvent(const SDL_Event&) override{};
-  bool update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse);
-  virtual ~MainMenu() {}
+  bool update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse) override;
   void waitForWorldGen();
   void waitForForestGen();
 

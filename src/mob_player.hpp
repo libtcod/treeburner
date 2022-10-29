@@ -52,8 +52,8 @@ class Player : public Creature {
   void computeStealth(float elapsed);
 
   // SaveListener
-  bool loadData(uint32_t chunkId, uint32_t chunkVersion, TCODZip* zip);
-  void saveData(uint32_t chunkId, TCODZip* zip);
+  bool loadData(uint32_t chunkId, uint32_t chunkVersion, TCODZip* zip) override;
+  void saveData(uint32_t chunkId, TCODZip* zip) override;
 
   float maxFovRange;
   School school;

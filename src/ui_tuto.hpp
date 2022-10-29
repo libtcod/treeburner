@@ -55,9 +55,9 @@ class Tutorial : public Screen, public SaveListener {
  public:
   Tutorial();
   virtual ~Tutorial();
-  void render();
+  void render() override;
   void onEvent(const SDL_Event&) override{};
-  bool update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse);
+  bool update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse) override;
   void startLiveTuto(TutorialPageId id);
   void closeLiveTuto();
   void openMenu();
@@ -67,8 +67,8 @@ class Tutorial : public Screen, public SaveListener {
   void init();
 
   // SaveListener
-  bool loadData(uint32_t chunkId, uint32_t chunkVersion, TCODZip* zip);
-  void saveData(uint32_t chunkId, TCODZip* zip);
+  bool loadData(uint32_t chunkId, uint32_t chunkVersion, TCODZip* zip) override;
+  void saveData(uint32_t chunkId, TCODZip* zip) override;
 
  protected:
   void onInitialise() override;

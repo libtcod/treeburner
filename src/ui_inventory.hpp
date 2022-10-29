@@ -49,13 +49,13 @@ class Inventory : public Dialog, public UIListener {
   virtual ~Inventory() {}
   void initialize(Creature* owner);
   void initialize(Item* container);
-  void render();
+  void render() override;
   void onActivate() override;
   void onDeactivate() override;
-  bool update(float elapsed, TCOD_key_t& k, TCOD_mouse_t& mouse);
+  bool update(float elapsed, TCOD_key_t& k, TCOD_mouse_t& mouse) override;
 
   // UIListener
-  bool onWidgetEvent(Widget* widget, EWidgetEvent event);
+  bool onWidgetEvent(Widget* widget, EWidgetEvent event) override;
 
  protected:
   void activateItem();

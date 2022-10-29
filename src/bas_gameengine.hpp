@@ -44,7 +44,7 @@
 class GameEngine : public Screen {
  public:
   GameEngine();
-  virtual ~GameEngine() = default;
+  ~GameEngine() = default;
 
   void init();
 
@@ -53,7 +53,7 @@ class GameEngine : public Screen {
   void resumeGame();
   void onFontChange();
   void onEvent(const SDL_Event&) override{};
-  bool update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse);
+  bool update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse) override;
 
   Player player{};
   Dungeon* dungeon{};  // current dungeon map

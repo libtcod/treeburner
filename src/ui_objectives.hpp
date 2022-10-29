@@ -60,9 +60,9 @@ class Objectives : public Dialog, public SaveListener, public Scrollable {
   TCODList<Objective*> toFailure;
 
   void setOnOff(bool onoff) { showWindow = onoff; }
-  void render();
+  void render() override;
   // check conditions to enable new objectives or finish existing ones
-  bool update(float elapsed, TCOD_key_t& k, TCOD_mouse_t& mouse);
+  bool update(float elapsed, TCOD_key_t& k, TCOD_mouse_t& mouse) override;
 
   void addObjective(Objective* obj);
   void activateCurrent();
@@ -74,13 +74,13 @@ class Objectives : public Dialog, public SaveListener, public Scrollable {
   Objective* currentObjective;
 
   // SaveListener
-  bool loadData(uint32_t chunkId, uint32_t chunkVersion, TCODZip* zip);
-  void saveData(uint32_t chunkId, TCODZip* zip);
+  bool loadData(uint32_t chunkId, uint32_t chunkVersion, TCODZip* zip) override;
+  void saveData(uint32_t chunkId, TCODZip* zip) override;
 
   // scrollable
-  int getScrollTotalSize();
-  const char* getScrollText(int idx);
-  void getScrollColor(int idx, TCODColor* fore, TCODColor* back);
+  int getScrollTotalSize() override;
+  const char* getScrollText(int idx) override;
+  void getScrollColor(int idx, TCODColor* fore, TCODColor* back) override;
 
  protected:
   float timer;

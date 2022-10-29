@@ -33,10 +33,9 @@
 class EndScreen : public Screen {
  public:
   EndScreen(const char* txt, float fadeLvl = 0.0f, bool stats = false);
-  void render();
-  bool update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse);
+  void render() override;
+  bool update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse) override;
   void onEvent(const SDL_Event&) override{};
-  virtual ~EndScreen() {}
   void renderText(int x, int y, int w, const char* txt);
   void onFontChange();
 
@@ -55,10 +54,9 @@ class EndScreen : public Screen {
 class PaperScreen : public EndScreen, public ITCODSDLRenderer {
  public:
   PaperScreen(const char* txgfile, const char* titlegen, const char* textgen, int chapter);
-  void render();
-  void render(void* sdlSurface);
-  bool update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse);
-  virtual ~PaperScreen() {}
+  void render() override;
+  void render(void* sdlSurface) override;
+  bool update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse) override;
   void onFontChange();
 
  protected:

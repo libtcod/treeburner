@@ -55,7 +55,7 @@ class FollowBehavior : public Behavior {
  public:
   FollowBehavior(WalkPattern* walkPattern) : Behavior(walkPattern), leader(NULL), standDelay(0.0f) {}
   void setLeader(Creature* leader) { this->leader = leader; }
-  bool update(Creature* crea, float elapsed);
+  bool update(Creature* crea, float elapsed) override;
 
  protected:
   Creature* leader = nullptr;
@@ -74,8 +74,8 @@ class ScarePoint : public Entity {
 class HerdBehavior : public Behavior {
  public:
   HerdBehavior(WalkPattern* walkPattern) : Behavior(walkPattern) {}
-  virtual ~HerdBehavior() {}
-  bool update(Creature* crea, float elapsed);
+  virtual ~HerdBehavior() = default;
+  bool update(Creature* crea, float elapsed) override;
   static void addScarePoint(int x, int y, float life = SCARE_LIFE);
   static void updateScarePoints(float elapsed);
   static void recomputeHerds();

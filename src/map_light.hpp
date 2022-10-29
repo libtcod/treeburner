@@ -54,7 +54,7 @@ class Light : public Entity, public NoisyThing {
 class ExtendedLight : public Light {
  public:
   void setup(HDRColor outColor, float intensityPatternDelay, const char* intensityPattern, const char* colorPattern);
-  void update(float elapsed);
+  void update(float elapsed) override;
 
  protected:
   HDRColor outColor;
@@ -66,6 +66,6 @@ class ExtendedLight : public Light {
   float intensityTimer;
   bool noiseIntensity;
 
-  float getIntensity();
-  HDRColor getColor(float rad);
+  float getIntensity() override;
+  HDRColor getColor(float rad) override;
 };

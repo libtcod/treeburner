@@ -31,9 +31,9 @@
 class StatusPanel : public MultiPosDialog {
  public:
   StatusPanel();
-  void render();
-  bool update(float elapsed, TCOD_key_t& k, TCOD_mouse_t& mouse);
-  void setPos(int x, int y);
+  void render() override;
+  bool update(float elapsed, TCOD_key_t& k, TCOD_mouse_t& mouse) override;
+  void setPos(int x, int y) override;
 
  protected:
   float titleBarAlpha;

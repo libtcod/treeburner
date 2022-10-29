@@ -34,7 +34,7 @@ class Boss : public Creature {
   void setSeen();
   void stun(float delay) override;
   void takeDamage(float amount) override;
-  float getWalkCost(int xFrom, int yFrom, int xTo, int yTo, void* userData) const;
+  float getWalkCost(int xFrom, int yFrom, int xTo, int yTo, void* userData) const override;
 
  protected:
   float pathTimer;

@@ -135,15 +135,15 @@ class Scroller {
 class Dialog : public UmbraWidget {
  public:
   Dialog() : flags(0), isMinimized(false), waitRelease(false) {}
-  void keyboard(TCOD_key_t& key) {
+  void keyboard(TCOD_key_t& key) override {
     this->key = key;
     UmbraWidget::keyboard(key);
   }
-  void mouse(TCOD_mouse_t& ms) {
+  void mouse(TCOD_mouse_t& ms) override {
     this->ms = ms;
     UmbraWidget::mouse(ms);
   }
-  bool update(void);
+  bool update(void) override;
   virtual bool update(float elapsed, TCOD_key_t& k, TCOD_mouse_t& mouse) = 0;
   void setMaximized();
   void setMinimized();

@@ -49,10 +49,9 @@ class SchoolScreen : public Screen {
  public:
   static SchoolScreen* instance;
   SchoolScreen();
-  void render();
-  bool update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse);
+  void render() override;
+  bool update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse) override;
   void generateWorld(uint32_t seed);
-  virtual ~SchoolScreen() {}
 
  protected:
   School school[NB_SCHOOLS];

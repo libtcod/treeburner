@@ -36,10 +36,9 @@ class ForestScreen : public GameEngine, public SaveListener {
   Friend* fr;
 
   ForestScreen();
-  virtual ~ForestScreen() {}
 
-  void render();
-  bool update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse);
+  void render() override;
+  bool update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse) override;
   void onEvent(const SDL_Event&) override{};
   void generateMap(uint32_t seed);  // generate a new random map
   void loadMap(uint32_t seed);  // load map from savegame
@@ -47,8 +46,8 @@ class ForestScreen : public GameEngine, public SaveListener {
   void onFontChange();
 
   // SaveListener
-  bool loadData(uint32_t chunkId, uint32_t chunkVersion, TCODZip* zip);
-  void saveData(uint32_t chunkId, TCODZip* zip);
+  bool loadData(uint32_t chunkId, uint32_t chunkVersion, TCODZip* zip) override;
+  void saveData(uint32_t chunkId, TCODZip* zip) override;
 
  protected:
   TCODRandom* forestRng;

@@ -34,16 +34,16 @@ class Craft : public Dialog, public UIListener, public Scrollable {
  public:
   Craft();
   void initialize(Creature* owner, bool soft = false);
-  void render();
-  bool update(float elapsed, TCOD_key_t& k, TCOD_mouse_t& mouse);
+  void render() override;
+  bool update(float elapsed, TCOD_key_t& k, TCOD_mouse_t& mouse) override;
 
   // UIListener
-  bool onWidgetEvent(Widget* widget, EWidgetEvent event);
+  bool onWidgetEvent(Widget* widget, EWidgetEvent event) override;
 
   // scrollable
-  int getScrollTotalSize();
-  const char* getScrollText(int idx);
-  void getScrollColor(int idx, TCODColor* fore, TCODColor* back);
+  int getScrollTotalSize() override;
+  const char* getScrollText(int idx) override;
+  void getScrollColor(int idx, TCODColor* fore, TCODColor* back) override;
 
  protected:
   TCODList<Item*> items;

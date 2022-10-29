@@ -38,11 +38,11 @@ class Friend : public Creature {
  public:
   Friend();
   bool update(float elapsed) override;
-  float getWalkCost(int xFrom, int yFrom, int xTo, int yTo, void* userData) const;
+  float getWalkCost(int xFrom, int yFrom, int xTo, int yTo, void* userData) const override;
 
   // SaveListener
-  bool loadData(uint32_t chunkId, uint32_t chunkVersion, TCODZip* zip);
-  void saveData(uint32_t chunkId, TCODZip* zip);
+  bool loadData(uint32_t chunkId, uint32_t chunkVersion, TCODZip* zip) override;
+  void saveData(uint32_t chunkId, TCODZip* zip) override;
 
  private:
   TextGenerator* talkGenerator = nullptr;

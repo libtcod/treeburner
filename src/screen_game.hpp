@@ -33,8 +33,8 @@ class Game : public GameEngine {
  public:
   Game();
 
-  void render();
-  bool update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse);
+  void render() override;
+  bool update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse) override;
 
   int level;  // current dungeon level
   Boss* boss;

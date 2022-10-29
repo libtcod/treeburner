@@ -40,18 +40,18 @@ class Logger : public MultiPosDialog, public SaveListener, public Scrollable {
   void info(const char* fmt, ...);
   void warn(const char* fmt, ...);
   void critical(const char* fmt, ...);
-  void render();
-  bool update(float elapsed, TCOD_key_t& k, TCOD_mouse_t& mouse);
-  void setPos(int x, int y);
+  void render() override;
+  bool update(float elapsed, TCOD_key_t& k, TCOD_mouse_t& mouse) override;
+  void setPos(int x, int y) override;
 
   // SaveListener
-  bool loadData(uint32_t chunkId, uint32_t chunkVersion, TCODZip* zip);
-  void saveData(uint32_t chunkId, TCODZip* zip);
+  bool loadData(uint32_t chunkId, uint32_t chunkVersion, TCODZip* zip) override;
+  void saveData(uint32_t chunkId, TCODZip* zip) override;
 
   // scrollable
-  int getScrollTotalSize();
-  const char* getScrollText(int idx);
-  void getScrollColor(int idx, TCODColor* fore, TCODColor* back);
+  int getScrollTotalSize() override;
+  const char* getScrollText(int idx) override;
+  void getScrollColor(int idx, TCODColor* fore, TCODColor* back) override;
 
  protected:
   struct Message {

@@ -42,12 +42,12 @@ class Shoal {
 class Fish : public Creature {
  public:
   Fish(WaterZone* zone);
-  ~Fish();
+  ~Fish() override;
   bool update(float elapsed) override;
   void render(LightMap& lightMap) override;
   float oldx, oldy;
   void slide();
-  void initItem();
+  void initItem() override;
   bool wasOnScreen() const;
   bool updated;
 
