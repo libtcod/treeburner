@@ -95,7 +95,11 @@
     "span": "cpp",
     "pointers": "cpp",
     "assert": "cpp",
-    "util": "cpp"
+    "util": "cpp",
+    "byte": "cpp",
+    "narrow": "cpp",
+    "span_ext": "cpp",
+    "string_span": "cpp"
   },
   "[yaml]": {
     "editor.defaultFormatter": "redhat.vscode-yaml"

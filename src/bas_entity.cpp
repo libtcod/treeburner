@@ -25,13 +25,13 @@
  */
 #include "bas_entity.hpp"
 
-#include <math.h>
+#include <cmath>
 
 #include "main.hpp"
 
 // John Carmack's fast inverse sqrt
 float Entity::fastInvSqrt(float x) {
-  float xhalf = 0.5f * x;
+  const float xhalf = 0.5f * x;
   int i = *(int*)&x;
   i = 0x5f3759df - (i >> 1);
   x = *(float*)&i;
@@ -39,6 +39,6 @@ float Entity::fastInvSqrt(float x) {
   return x;
 }
 
-float Entity::distance(const Entity& p) const { return sqrtf((float)squaredDistance(p)); }
+float Entity::distance(const Entity& p) const { return std::sqrtf(squaredDistance(p)); }
 
 bool Entity::isOnScreen() const { return IN_RECTANGLE(x - gameEngine->xOffset, y - gameEngine->yOffset, CON_W, CON_H); }
