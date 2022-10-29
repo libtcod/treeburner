@@ -41,11 +41,13 @@ add_subdirectory(umbra)
 
 find_package(SDL2 CONFIG REQUIRED)
 find_package(libtcod CONFIG REQUIRED)
+find_package(Microsoft.GSL CONFIG REQUIRED)
 target_link_libraries(
     ${PROJECT_NAME}
     PRIVATE
         SDL2::SDL2
         SDL2::SDL2main
         libtcod::libtcod
+        Microsoft.GSL::GSL
         umbra::umbra
 )
