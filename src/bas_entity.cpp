@@ -39,6 +39,6 @@ float Entity::fastInvSqrt(float x) {
   return x;
 }
 
-float Entity::distance(const Entity& p) const { return std::sqrtf(squaredDistance(p)); }
+float Entity::distance(const Entity& p) const { return sqrtf(squaredDistance(p)); }
 
 bool Entity::isOnScreen() const { return IN_RECTANGLE(x - gameEngine->xOffset, y - gameEngine->yOffset, CON_W, CON_H); }

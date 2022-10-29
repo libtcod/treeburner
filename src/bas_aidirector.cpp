@@ -73,7 +73,7 @@ void AiDirector::update(float elapsed) {
   hordeTimer -= elapsed;
   timer += elapsed * (2.0f * float{M_PI}) / waveLength;
   spawnTimer += elapsed;
-  const float wavePos = 0.5f * (1.0f + std::sinf(timer));
+  const float wavePos = 0.5f * (1.0f + sinf(timer));
   if (wavePos < lowLevel) {
     if (wavePos >= lowLevel / 2.0f) status = STATUS_CALM;
     return;
