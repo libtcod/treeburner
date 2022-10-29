@@ -159,7 +159,7 @@ float Boss::getWalkCost(int xFrom, int yFrom, int xTo, int yTo, void* userData) 
   // the boss don't like to be near player
   if (!gameEngine->dungeon->map->isWalkable(xTo, yTo)) return 0.0f;
   if (ignoreCreatures) return 1.0f;
-  float pdist = SQRDIST(gameEngine->player.x, gameEngine->player.y, xTo, yTo);
+  float pdist = SQRDIST(gameEngine->player.x - xTo, gameEngine->player.y - yTo);
   if (pdist < secureDist) return 1.0f + secureCoef * (secureDist - pdist);
   return 1.0f;
 }

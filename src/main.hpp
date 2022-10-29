@@ -24,6 +24,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 #pragma once
+#include <gsl/gsl>
 #include <libtcod.hpp>
 #include <umbra/umbra.hpp>
 
@@ -35,8 +36,26 @@
 #include "util_sound.hpp"
 #include "util_threadpool.hpp"
 
-#define IN_RECTANGLE(x, y, w, h) ((unsigned)(x) < (unsigned)(w) && (unsigned)(y) < (unsigned)(h))
-#define SQRDIST(x1, y1, x2, y2) (((x1) - (x2)) * ((x1) - (x2)) + ((y1) - (y2)) * ((y1) - (y2)))
+/// @brief Return true if x and y in the bounds of a rectable shaped w and h.
+template <typename T>
+static constexpr auto IN_RECTANGLE(T x, T y, T w, T h) -> bool {
+  return 0 <= x && 0 <= y && x < w && y < h;
+}
+static constexpr auto IN_RECTANGLE(float x, float y, int w, int h) -> bool {
+  return IN_RECTANGLE(x, y, gsl::narrow<float>(w), gsl::narrow<float>(h));
+}
+
+/// @brief Return the squared distance of a vector.
+template <typename T>
+static constexpr auto SQRDIST(T x, T y) -> T {
+  return x * x + y * y;
+}
+/// @brief Return the squared distance between two points.
+template <typename T>
+static constexpr auto SQRDIST(T x1, T y1, T x2, T y2) -> T {
+  return SQRDIST(x1 - x2, y1 - y2);
+}
+
 #define TCOD_CHAR_PROGRESSBAR 1
 
 #ifndef NDEBUG
