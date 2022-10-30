@@ -79,7 +79,7 @@ class Objectives : public Dialog, public SaveListener, public Scrollable {
 
   // scrollable
   int getScrollTotalSize() override;
-  const char* getScrollText(int idx) override;
+  const std::string& getScrollText(int idx) override;
   void getScrollColor(int idx, TCODColor* fore, TCODColor* back) override;
 
  protected:

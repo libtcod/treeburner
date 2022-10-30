@@ -26,6 +26,7 @@
 #include "map_dungeon.hpp"
 
 #include <assert.h>
+#include <fmt/core.h>
 #include <math.h>
 #include <stdio.h>
 
@@ -473,9 +474,7 @@ void Dungeon::saveMap(int playerX, int playerY) {
     tmp.putPixel(stairx * 2, stairy * 2 + 2, TCODColor::red);
     tmp.putPixel(stairx * 2, stairy * 2 - 2, TCODColor::red);
   }
-  char fname[128];
-  sprintf(fname, "cave%02d.png", level);
-  tmp.save(fname);
+  tmp.save(fmt::format("cave{:02d}.png", level).c_str());
 }
 
 Creature* Dungeon::getCreature(int x, int y) const {

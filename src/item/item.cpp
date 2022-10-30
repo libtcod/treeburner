@@ -25,6 +25,7 @@
  */
 #include "item.hpp"
 
+#include <fmt/core.h>
 #include <math.h>
 #include <stdio.h>
 
@@ -474,9 +475,7 @@ class ItemFileListener : public ITCODParserListener {
     float ret;
     char unit[32] = "";
     if (sscanf(s, "%f%s", &ret, unit) != 2) {
-      char buf[1024];
-      sprintf(buf, "bad format for delay '%s'. [0-9]*(s|m|h|d) expected", s);
-      error(buf);
+      error(fmt::format("bad format for delay '{}'. [0-9]*(s|m|h|d) expected", s).c_str());
     }
     if (strcmp(unit, "m") == 0)
       ret *= 60;
@@ -485,9 +484,7 @@ class ItemFileListener : public ITCODParserListener {
     else if (strcmp(unit, "d") == 0)
       ret *= 3600 * 24;
     else if (strcmp(unit, "s") != 0) {
-      char buf[1024];
-      sprintf(buf, "bad format for delay '%s'. [0-9]*(s|m|h|d) expected", s);
-      error(buf);
+      error(fmt::format("bad format for delay '{}'. [0-9]*(s|m|h|d) expected", s).c_str());
     }
     return ret;
   }
@@ -507,9 +504,7 @@ class ItemFileListener : public ITCODParserListener {
   void getAttackCoef(const char* s, float* fmin, float* fmax) {
     if (strchr(s, '-')) {
       if (sscanf(s, "%f-%f", fmin, fmax) != 2) {
-        char buf[1024];
-        sprintf(buf, "bad format '%s'.", s);
-        error(buf);
+        error(fmt::format("bad format '{}'.", s).c_str());
       }
     } else {
       *fmin = *fmax = atof(s);
@@ -533,9 +528,7 @@ class RecipeFileListener : public ITCODParserListener {
       mode = RECIPE_RESULT;
     } else if (strcmp(str->getName(), "ingredient") == 0 || strcmp(str->getName(), "optionalIngredient") == 0) {
       if (recipe->nbIngredients == MAX_INGREDIENTS - 1) {
-        char buf[256];
-        sprintf(buf, "too many ingredients/components (max %d)", MAX_INGREDIENTS);
-        error(buf);
+        error(fmt::format("too many ingredients/components (max {})", MAX_INGREDIENTS).c_str());
       }
       mode = RECIPE_INGREDIENT;
       ingredient = &recipe->ingredients[recipe->nbIngredients];
@@ -547,9 +540,7 @@ class RecipeFileListener : public ITCODParserListener {
       recipe->nbIngredients++;
     } else if (strcmp(str->getName(), "component") == 0 || strcmp(str->getName(), "optionalComponent") == 0) {
       if (recipe->nbIngredients == MAX_INGREDIENTS - 1) {
-        char buf[256];
-        sprintf(buf, "too many ingredients/components (max %d)", MAX_INGREDIENTS);
-        error(buf);
+        error(fmt::format("too many ingredients/components (max {})", MAX_INGREDIENTS).c_str());
       }
       mode = RECIPE_INGREDIENT;
       ingredient = &recipe->ingredients[recipe->nbIngredients];
@@ -567,9 +558,7 @@ class RecipeFileListener : public ITCODParserListener {
     if (strcmp(name, "itemType") == 0) {
       ItemType* result = Item::getType(value.s);
       if (!result) {
-        char buf[1024];
-        sprintf(buf, "unknown item type '%s'", value.s);
-        error(buf);
+        error(fmt::format("unknown item type '{}'", value.s).c_str());
       }
       switch (mode) {
         case RECIPE_TOOL:
@@ -1679,15 +1668,13 @@ void Item::renderDescriptionFrame(int x, int y, bool below, bool frame) {
   TCODConsole::blit(descCon, cx, cy, cw, ch, TCODConsole::root, x - cw / 2, y, 1.0f, frame ? 0.7f : 0.0f);
 }
 
-const char* Item::AName() const {
-  static char buf[64];
+std::string Item::AName() const {
   if (count == 1 && (!isSoftStackable() || stack.size() == 0)) {
     if (name) {
-      sprintf(buf, "%s %s%s%s", an ? "An" : "A", adjective ? adjective : "", adjective ? " " : "", name);
+      return fmt::format("{} {}{}{}", an ? "An" : "A", adjective ? adjective : "", adjective ? " " : "", name);
     } else {
-      sprintf(
-          buf,
-          "%s %s%s%s",
+      return fmt::format(
+          "{} {}{}{}",
           (typeData->flags & ITEM_AN) ? "An" : "A",
           adjective ? adjective : "",
           adjective ? " " : "",
@@ -1697,20 +1684,18 @@ const char* Item::AName() const {
     int cnt = count > 1 ? count : stack.size() + 1;
     const char* nameToUse = name ? name : typeName_;
     bool es = (nameToUse[strlen(nameToUse) - 1] == 's');
-    sprintf(buf, "%d %s%s%s%s", cnt, adjective ? adjective : "", adjective ? " " : "", nameToUse, es ? "es" : "s");
+    return fmt::format(
+        "{:d} {}{}{}{}", cnt, adjective ? adjective : "", adjective ? " " : "", nameToUse, es ? "es" : "s");
   }
-  return buf;
 }
 
-const char* Item::aName() const {
-  static char buf[64];
+std::string Item::aName() const {
   if (count == 1 && (!isSoftStackable() || stack.size() == 0)) {
     if (name) {
-      sprintf(buf, "%s %s%s%s", an ? "an" : "a", adjective ? adjective : "", adjective ? " " : "", name);
+      return fmt::format("{} {}{}{}", an ? "an" : "a", adjective ? adjective : "", adjective ? " " : "", name);
     } else {
-      sprintf(
-          buf,
-          "%s %s%s%s",
+      return fmt::format(
+          "{} {}{}{}",
           (typeData->flags & ITEM_AN) ? "an" : "a",
           adjective ? adjective : "",
           adjective ? " " : "",
@@ -1720,35 +1705,33 @@ const char* Item::aName() const {
     int cnt = count > 1 ? count : stack.size() + 1;
     const char* nameToUse = name ? name : typeName_;
     bool es = (nameToUse[strlen(nameToUse) - 1] == 's');
-    sprintf(buf, "%d %s%s%s%s", cnt, adjective ? adjective : "", adjective ? " " : "", nameToUse, es ? "es" : "s");
+    return fmt::format(
+        "{:d} {}{}{}{}", cnt, adjective ? adjective : "", adjective ? " " : "", nameToUse, es ? "es" : "s");
   }
-  return buf;
 }
 
-const char* Item::TheName() const {
-  static char buf[64];
+std::string Item::TheName() const {
   if (count == 1 && (!isSoftStackable() || stack.size() == 0)) {
-    sprintf(buf, "The %s%s%s", adjective ? adjective : "", adjective ? " " : "", name ? name : typeName_);
+    return fmt::format("The {}{}{}", adjective ? adjective : "", adjective ? " " : "", name ? name : typeName_);
   } else {
     int cnt = count > 1 ? count : stack.size() + 1;
     const char* nameToUse = name ? name : typeName_;
     bool es = (nameToUse[strlen(nameToUse) - 1] == 's');
-    sprintf(buf, "The %d %s%s%s%s", cnt, adjective ? adjective : "", adjective ? " " : "", nameToUse, es ? "es" : "s");
+    return fmt::format(
+        "The {:d} {}{}{}{}", cnt, adjective ? adjective : "", adjective ? " " : "", nameToUse, es ? "es" : "s");
   }
-  return buf;
 }
 
-const char* Item::theName() const {
-  static char buf[64];
+std::string Item::theName() const {
   if (count == 1 && (!isSoftStackable() || stack.size() == 0)) {
-    sprintf(buf, "the %s%s%s", adjective ? adjective : "", adjective ? " " : "", name ? name : typeName_);
+    return fmt::format("the {}{}{}", adjective ? adjective : "", adjective ? " " : "", name ? name : typeName_);
   } else {
     int cnt = count > 1 ? count : stack.size() + 1;
     const char* nameToUse = name ? name : typeName_;
     bool es = (nameToUse[strlen(nameToUse) - 1] == 's');
-    sprintf(buf, "the %d %s%s%s%s", cnt, adjective ? adjective : "", adjective ? " " : "", nameToUse, es ? "es" : "s");
+    return fmt::format(
+        "the {:d} {}{}{}{}", cnt, adjective ? adjective : "", adjective ? " " : "", nameToUse, es ? "es" : "s");
   }
-  return buf;
 }
 
 #define ITEM_CHUNK_VERSION 6

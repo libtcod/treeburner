@@ -25,6 +25,7 @@
  */
 #include "spell_fireball.hpp"
 
+#include <fmt/core.h>
 #include <math.h>
 #include <stdio.h>
 
@@ -79,37 +80,36 @@ FireBall::Type* FireBall::getType(const char* name) {
     if (strcmp(name, *it) == 0) return types.get(i);
   }
   Type* type = new Type();
-  char buf[128];
   // this sucks. libtcod parser should have variadic functions
-  sprintf(buf, "config.spells.%s.trailLength", name);
-  type->trailLength = config.getIntProperty(buf);
+  std::string buf = fmt::format("config.spells.{}.trailLength", name);
+  type->trailLength = config.getIntProperty(buf.c_str());
 
-  sprintf(buf, "config.spells.%s.lightColor", name);
-  type->lightColor = getHDRColorProperty(config, buf);
+  buf = fmt::format("config.spells.{}.lightColor", name);
+  type->lightColor = getHDRColorProperty(config, buf.c_str());
 
-  sprintf(buf, "config.spells.%s.lightRange", name);
-  type->lightRange = config.getFloatProperty(buf);
+  buf = fmt::format("config.spells.{}.lightRange", name);
+  type->lightRange = config.getFloatProperty(buf.c_str());
 
-  sprintf(buf, "config.spells.%s.lightRandomRad", name);
-  type->lightRandomRad = config.getBoolProperty(buf);
+  buf = fmt::format("config.spells.{}.lightRandomRad", name);
+  type->lightRandomRad = config.getBoolProperty(buf.c_str());
 
-  sprintf(buf, "config.spells.%s.speed", name);
-  type->speed = config.getFloatProperty(buf);
+  buf = fmt::format("config.spells.{}.speed", name);
+  type->speed = config.getFloatProperty(buf.c_str());
 
-  sprintf(buf, "config.spells.%s.standardLife", name);
-  type->standardLife = config.getFloatProperty(buf);
+  buf = fmt::format("config.spells.{}.standardLife", name);
+  type->standardLife = config.getFloatProperty(buf.c_str());
 
-  sprintf(buf, "config.spells.%s.sparkLife", name);
-  type->sparkLife = config.getFloatProperty(buf);
+  buf = fmt::format("config.spells.{}.sparkLife", name);
+  type->sparkLife = config.getFloatProperty(buf.c_str());
 
-  sprintf(buf, "config.spells.%s.sparkleLife", name);
-  type->sparkleLife = config.getFloatProperty(buf);
+  buf = fmt::format("config.spells.{}.sparkleLife", name);
+  type->sparkleLife = config.getFloatProperty(buf.c_str());
 
-  sprintf(buf, "config.spells.%s.sparkleSpeed", name);
-  type->sparkleSpeed = config.getFloatProperty(buf);
+  buf = fmt::format("config.spells.{}.sparkleSpeed", name);
+  type->sparkleSpeed = config.getFloatProperty(buf.c_str());
 
-  sprintf(buf, "config.spells.%s.stunDelay", name);
-  type->stunDelay = config.getFloatProperty(buf);
+  buf = fmt::format("config.spells.{}.stunDelay", name);
+  type->stunDelay = config.getFloatProperty(buf.c_str());
 
   names.push(strdup(name));
   types.push(type);

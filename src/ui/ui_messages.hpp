@@ -24,8 +24,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 #pragma once
+#include <fmt/printf.h>
 #include <stdarg.h>
 
+#include <deque>
 #include <libtcod.hpp>
 
 #include "bas_savegame.hpp"
@@ -36,10 +38,22 @@ enum MessageSeverity { DEBUG, INFO, WARN, CRITICAL, NB_SEVERITIES };
 class Logger : public MultiPosDialog, public SaveListener, public Scrollable {
  public:
   Logger();
-  void debug(const char* fmt, ...);
-  void info(const char* fmt, ...);
-  void warn(const char* fmt, ...);
-  void critical(const char* fmt, ...);
+  template <typename S, typename... Ts>
+  void debug(const S& fmt, const Ts&... args) {
+    addMessage(DEBUG, fmt::sprintf(fmt, args...));
+  }
+  template <typename S, typename... Ts>
+  void info(const S& fmt, const Ts&... args) {
+    addMessage(INFO, fmt::sprintf(fmt, args...));
+  }
+  template <typename S, typename... Ts>
+  void warn(const S& fmt, const Ts&... args) {
+    addMessage(WARN, fmt::sprintf(fmt, args...));
+  }
+  template <typename S, typename... Ts>
+  void critical(const S& fmt, const Ts&... args) {
+    addMessage(CRITICAL, fmt::sprintf(fmt, args...));
+  }
   void render() override;
   bool update(float elapsed, TCOD_key_t& k, TCOD_mouse_t& mouse) override;
   void setPos(int x, int y) override;
@@ -50,15 +64,14 @@ class Logger : public MultiPosDialog, public SaveListener, public Scrollable {
 
   // scrollable
   int getScrollTotalSize() override;
-  const char* getScrollText(int idx) override;
+  const std::string& getScrollText(int idx) override;
   void getScrollColor(int idx, TCODColor* fore, TCODColor* back) override;
 
  protected:
   struct Message {
-    float timer;
-    const char* txt;
-    MessageSeverity severity;
-    ~Message();
+    float timer{};
+    std::string txt{};
+    MessageSeverity severity{};
   };
 
   int nbActive;
@@ -66,6 +79,6 @@ class Logger : public MultiPosDialog, public SaveListener, public Scrollable {
   bool lookOn;
   float titleBarAlpha;
 
-  void addMessage(MessageSeverity severity, const char* fmt, va_list ap);
-  TCODList<Message*> messages;
+  void addMessage(MessageSeverity severity, std::string msg);
+  std::deque<Message> messages{};
 };

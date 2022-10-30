@@ -129,7 +129,7 @@ void Objectives::render() {
 
 int Objectives::getScrollTotalSize() { return currentList->size(); }
 
-const char* Objectives::getScrollText(int idx) { return currentList->get(idx)->title; }
+const std::string& Objectives::getScrollText(int idx) { return currentList->get(idx)->title; }
 
 void Objectives::getScrollColor(int idx, TCODColor* fore, TCODColor* back) {
   *fore = idx == selected ? guiHighlightedText : guiText;

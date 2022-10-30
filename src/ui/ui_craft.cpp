@@ -69,7 +69,7 @@ void Craft::initialize(Creature* owner, bool soft) {
 
 int Craft::getScrollTotalSize() { return items.size(); }
 
-const char* Craft::getScrollText(int idx) { return items.at(idx)->aName(); }
+const std::string& Craft::getScrollText(int idx) { return items.at(idx)->aName(); }
 
 void Craft::getScrollColor(int idx, TCODColor* fore, TCODColor* back) {
   item::Item* item = items.at(idx);
@@ -121,14 +121,14 @@ void Craft::render() {
   for (item::Item* it : ingredients) {
     con->setDefaultForeground(item::Item::classColor[it->itemClass]);
     con->setDefaultBackground(y - 5 == selectedIngredient ? guiHighlightedBackground : guiBackground);
-    con->printEx(rect.w / 2 + 1, y++, TCOD_BKGND_SET, TCOD_LEFT, it->aName());
+    con->printEx(rect.w / 2 + 1, y++, TCOD_BKGND_SET, TCOD_LEFT, it->aName().c_str());
   }
 
   // tool
   if (tool) {
     con->setDefaultForeground(item::Item::classColor[tool->itemClass]);
     con->setDefaultBackground(selectedTool ? guiHighlightedBackground : guiBackground);
-    con->printEx(rect.w / 2 + 1, 2, TCOD_BKGND_SET, TCOD_LEFT, tool->aName());
+    con->printEx(rect.w / 2 + 1, 2, TCOD_BKGND_SET, TCOD_LEFT, tool->aName().c_str());
   }
 
   // buttons

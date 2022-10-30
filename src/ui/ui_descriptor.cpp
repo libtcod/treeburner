@@ -67,7 +67,7 @@ void Descriptor::render() {
   if (creature) {
     TCODConsole::root->printEx(POSX, POSY, TCOD_BKGND_NONE, TCOD_RIGHT, creature->name);
   } else if (item) {
-    TCODConsole::root->printEx(POSX, POSY, TCOD_BKGND_NONE, TCOD_RIGHT, item->aName());
+    TCODConsole::root->printEx(POSX, POSY, TCOD_BKGND_NONE, TCOD_RIGHT, item->aName().c_str());
     if (lookOn) item->renderDescription(mousex, mousey - 1, false);
   }
   // tooltip

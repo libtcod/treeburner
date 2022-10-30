@@ -112,7 +112,7 @@ class Tabs {
 class Scrollable {
  public:
   virtual int getScrollTotalSize() = 0;
-  virtual const char* getScrollText(int idx) = 0;
+  virtual const std::string& getScrollText(int idx) = 0;
   virtual void getScrollColor(int idx, TCODColor* fore, TCODColor* back) = 0;
 };
 class Scroller {

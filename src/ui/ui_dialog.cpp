@@ -151,7 +151,7 @@ void Scroller::render(TCODConsole* con, int x, int y) {
     scrollable->getScrollColor(idx, &fore, &back);
     con->setDefaultForeground(fore);
     con->setDefaultBackground(back);
-    con->printEx(width / 2, y + ypos, TCOD_BKGND_SET, TCOD_CENTER, scrollable->getScrollText(idx));
+    con->printEx(width / 2, y + ypos, TCOD_BKGND_SET, TCOD_CENTER, scrollable->getScrollText(idx).c_str());
   }
 }
 void Scroller::renderScrollbar(TCODConsole* con, int x, int y) {

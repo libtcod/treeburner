@@ -25,6 +25,7 @@
  */
 #include "ui_inventory.hpp"
 
+#include <fmt/core.h>
 #include <stdio.h>
 
 #include "main.hpp"
@@ -185,9 +186,7 @@ void Inventory::render() {
     for (int i = 0; i < item::NB_INV_TABS; i++) {
       int numItems = tabs[i].items.size();
       if (numItems > 0) {
-        char buf[128];
-        sprintf(buf, "%s:%d", tabNames[i], numItems);
-        guiTabs.setLabel(i, buf);
+        guiTabs.setLabel(i, fmt::format("{:s}:{:d}", tabNames[i], numItems).c_str());
       } else {
         guiTabs.setLabel(i, tabNames[i]);
       }
@@ -205,7 +204,7 @@ void Inventory::render() {
         con->rect(2, ty, w2 - 4, 1, false, TCOD_BKGND_SET);
         con->setDefaultForeground(item::Item::classColor[(*it)->itemClass]);
         if ((*it)->isEquiped())
-          con->print(2, ty++, "%s (equiped)", (*it)->aName());
+          con->print(2, ty++, "%s (equiped)", (*it)->aName().c_str());
         else
           con->print(2, ty++, (*it)->aName());
         num++;

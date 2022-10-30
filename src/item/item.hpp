@@ -25,6 +25,7 @@
  */
 #pragma once
 #include <libtcod.hpp>
+#include <string>
 
 #include "bas_entity.hpp"
 #include "item_modifier.hpp"
@@ -307,13 +308,13 @@ class Item : public DynamicEntity {
   void computeBottleName();
 
   // returns "A/An <item name>"
-  const char* AName() const;
+  std::string AName() const;
   // returns "a/an <item name>"
-  const char* aName() const;
+  std::string aName() const;
   // returns "The <item name>"
-  const char* TheName() const;
+  std::string TheName() const;
   // returns "the <item name>"
-  const char* theName() const;
+  std::string theName() const;
 
   const char* getRateName(float rate) const;
 

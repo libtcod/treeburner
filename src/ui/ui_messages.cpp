@@ -25,6 +25,7 @@
  */
 #include "ui_messages.hpp"
 
+#include <fmt/core.h>
 #include <stdio.h>
 
 #include "constants.hpp"
@@ -36,10 +37,6 @@
 #define LOG_WIDTH (CON_W - 12)
 
 static TCODColor sevColor[NB_SEVERITIES];
-
-Logger::Message::~Message() {
-  if (txt) free((void*)txt);
-}
 
 Logger::Logger() {
   con = new TCODConsole(CON_W - 12, CON_H);
@@ -84,16 +81,15 @@ Logger::Logger() {
 
 int Logger::getScrollTotalSize() { return messages.size(); }
 
-const char* Logger::getScrollText(int idx) { return messages.get(idx)->txt; }
+const std::string& Logger::getScrollText(int idx) { return messages.at(idx).txt; }
 
 void Logger::getScrollColor(int idx, TCODColor* fore, TCODColor* back) {
-  *fore = sevColor[messages.get(idx)->severity];
+  *fore = sevColor[messages.at(idx).severity];
   *back = guiBackground;
 }
 
 void Logger::render() {
   // render messages
-  Message** it = NULL;
   int y = 0;
   if (!isMinimized) {
     scroller->render(con, 0, 1);
@@ -123,6 +119,7 @@ void Logger::render() {
         con, 0, 0, rect.w, rect.h, TCODConsole::root, rect.x, rect.y, 0.8f * titleBarAlpha, titleBarAlpha);
   } else if (nbActive > 0) {
     int ry = 0, dy = 0, count = 0;
+    auto it = messages.end();
     if (rect.y == 0) {
       y = 0;
       count = MIN(rect.h, nbActive);
@@ -137,7 +134,7 @@ void Logger::render() {
       it = messages.end() - count;
     }
     for (; count > 0; it += dy, y++, ry++, count--) {
-      float timer = (*it)->timer;
+      float timer = it->timer;
       if (timer >= 0.5f)
         timer = 1.0f;
       else
@@ -152,21 +149,16 @@ bool Logger::update(float elapsed, TCOD_key_t& k, TCOD_mouse_t& mouse) {
   static float messageLife = config.getFloatProperty("config.display.messageLife");
 
   // update messages
-  TCODList<Message*> messagesToRemove;
-  while (messages.size() > HISTORY_SIZE) {
-    messagesToRemove.push(messages.get(0));
-    messages.remove(messages.begin());
-  }
+  while (messages.size() > HISTORY_SIZE) messages.pop_front();
 
   if (!gameEngine->isGamePaused()) {
-    for (Message** it = messages.end() - nbActive; it != messages.end(); it++) {
-      (*it)->timer -= elapsed / messageLife;
-      if ((*it)->timer < 0.0f) {
+    for (auto it = messages.end() - nbActive; it != messages.end(); ++it) {
+      it->timer -= elapsed / messageLife;
+      if (it->timer < 0.0f) {
         nbActive--;
       }
     }
   }
-  messagesToRemove.clearAndDelete();
   if (!k.pressed && (toupper(k.c) == 'M' || (!isMinimized && k.c == ' ') || (!isMinimized && k.vk == TCODK_ESCAPE)) &&
       messages.size() > 0) {
     if (isMinimized)
@@ -195,7 +187,6 @@ bool Logger::update(float elapsed, TCOD_key_t& k, TCOD_mouse_t& mouse) {
     titleBarAlpha = MAX(0.0f, titleBarAlpha);
   }
 
-  Message** it = NULL;
   int y = 0, count = 0, dy = 0;
 
   if (!isMinimized) {
@@ -218,6 +209,7 @@ bool Logger::update(float elapsed, TCOD_key_t& k, TCOD_mouse_t& mouse) {
       count = rect.h - y;
     }
   }
+  auto it = messages.end();
   if (isMinimized && rect.y == 0) {
     it = messages.end() - 1;
     dy = -1;
@@ -227,66 +219,28 @@ bool Logger::update(float elapsed, TCOD_key_t& k, TCOD_mouse_t& mouse) {
     dy = 1;
   }
   for (; count > 0; it += dy, y++, count--) {
-    con->setDefaultForeground(sevColor[(*it)->severity]);
-    con->printEx(rect.w / 2, y, TCOD_BKGND_NONE, TCOD_CENTER, (*it)->txt);
+    con->setDefaultForeground(sevColor[it->severity]);
+    con->printEx(rect.w / 2, y, TCOD_BKGND_NONE, TCOD_CENTER, it->txt.c_str());
   }
   return true;
 }
 
-void Logger::addMessage(MessageSeverity severity, const char* fmt, va_list ap) {
-  char tmp[256];
-  vsprintf(tmp, fmt, ap);
-  char* msg = tmp;
+void Logger::addMessage(MessageSeverity severity, std::string msg_in) {
+  char* msg = msg_in.data();
   while (strlen(msg) >= LOG_WIDTH - 2) {
     char* ptr = msg + LOG_WIDTH - 2;
     while (!isspace(*ptr) && ptr > msg) ptr--;
     if (ptr == msg) ptr = msg + LOG_WIDTH - 2;
     char backup = *ptr;
     *ptr = 0;
-    Message* message = new Message();
-    message->timer = 1.0f;
-    message->txt = strdup(msg);
-    message->severity = severity;
-    messages.push(message);
+    messages.emplace_back(Message{1.0f, std::string(msg), severity});
     *ptr = backup;
     msg = ptr;
     while (isspace(*msg)) msg++;
     nbActive++;
   }
-  Message* message = new Message();
-  message->timer = 1.0f;
-  message->txt = strdup(msg);
-  message->severity = severity;
-  messages.push(message);
+  messages.emplace_back(Message{1.0f, std::string(msg), severity});
   nbActive++;
-}
-
-void Logger::debug(const char* fmt, ...) {
-  va_list ap;
-  va_start(ap, fmt);
-  addMessage(DEBUG, fmt, ap);
-  va_end(ap);
-}
-
-void Logger::info(const char* fmt, ...) {
-  va_list ap;
-  va_start(ap, fmt);
-  addMessage(INFO, fmt, ap);
-  va_end(ap);
-}
-
-void Logger::warn(const char* fmt, ...) {
-  va_list ap;
-  va_start(ap, fmt);
-  addMessage(WARN, fmt, ap);
-  va_end(ap);
-}
-
-void Logger::critical(const char* fmt, ...) {
-  va_list ap;
-  va_start(ap, fmt);
-  addMessage(CRITICAL, fmt, ap);
-  va_end(ap);
 }
 
 #define HIST_CHUNK_VERSION 2
@@ -296,10 +250,10 @@ void Logger::saveData(uint32_t chunkId, TCODZip* zip) {
   scroller->save(zip);
   zip->putInt(messages.size());
   for (int i = 0; i < messages.size(); i++) {
-    Message* msg = messages.get(i);
-    zip->putFloat(msg->timer);
-    zip->putString(msg->txt);
-    zip->putInt(msg->severity);
+    Message& msg = messages.at(i);
+    zip->putFloat(msg.timer);
+    zip->putString(msg.txt.c_str());
+    zip->putInt(msg.severity);
   }
 }
 
@@ -310,11 +264,7 @@ bool Logger::loadData(uint32_t chunkId, uint32_t chunkVersion, TCODZip* zip) {
   int nbMessages = zip->getInt();
   while (nbMessages > 0) {
     nbMessages--;
-    Message* msg = new Message();
-    msg->timer = zip->getFloat();
-    msg->txt = strdup(zip->getString());
-    msg->severity = (MessageSeverity)zip->getInt();
-    messages.push(msg);
+    messages.emplace_back(Message{zip->getFloat(), zip->getString(), static_cast<MessageSeverity>(zip->getInt())});
   }
   if (isMinimized)
     setMinimized();
