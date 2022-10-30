@@ -45,7 +45,7 @@ void GameEngine::onActivate() {
   firstFrame = true;
   computeAspectRatio();
   gui.activate();
-  memset(&stats, 0, sizeof(stats));
+  stats = {};
   TCODConsole::mapAsciiCodeToFont(TCOD_CHAR_PROGRESSBAR, 26, 3);
   isUpdatingFireballs = false;
 }

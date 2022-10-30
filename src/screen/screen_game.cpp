@@ -49,7 +49,7 @@ void Game::onActivate() {
   initLevel();
   boss = NULL;
   finalExplosion = 2.0f;
-  memset(&stats, 0, sizeof(stats));
+  stats = {};
   item::Item* wand = item::Item::getRandomWeapon("wand", item::ITEM_CLASS_STANDARD);
   wand->name = strdup("pyromancer wand");
   player.addToInventory(wand);

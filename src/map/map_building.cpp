@@ -30,12 +30,6 @@
 
 #include "main.hpp"
 
-Building::Building(int w, int h) : Rect(0, 0, w, h) {
-  map = new int[w * h];
-  memset(map, 0, sizeof(int) * w * h);
-  doorx = doory = 0;
-}
-
 Building* Building::generate(int width, int height, int nbRooms, TCODRandom* rng) {
   Building* ret = generateWallsOnly(width, height, nbRooms, rng);
   ret->placeRandomDoor(rng);

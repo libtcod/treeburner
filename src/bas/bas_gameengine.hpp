@@ -79,12 +79,12 @@ class GameEngine : public Screen {
 
   // stats
   struct {
-    int nbCreatureKilled;
-    int nbSpellStandard;
-    int nbSpellBurst;
-    int nbSpellIncandescence;
-    int nbSteps;
-    int creatureDeath[NB_CREATURE_TYPES];
+    int nbCreatureKilled{};
+    int nbSpellStandard{};
+    int nbSpellBurst{};
+    int nbSpellIncandescence{};
+    int nbSteps{};
+    int creatureDeath[NB_CREATURE_TYPES]{};
   } stats;
   inline void startRipple(float x, float y) { startRipple((int)x, (int)y); }
   void startRipple(int dungeonx, int dungeony, float height = 0.0f);
