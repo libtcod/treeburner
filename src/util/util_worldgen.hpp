@@ -24,11 +24,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 #pragma once
+#include <array>
 #include <libtcod.hpp>
+#include <vector>
 
 // size of the heightmap
-#define HM_WIDTH 800
-#define HM_HEIGHT 800
+static constexpr auto HM_WIDTH = 800;
+static constexpr auto HM_HEIGHT = 800;
 
 // biome and climate list. based on Whittaker Biome Diagram
 enum EClimate { ARTIC_ALPINE, COLD, TEMPERATE, WARM, TROPICAL, NB_CLIMATES };
@@ -52,44 +54,29 @@ enum EBiome {
 
 class WorldGenerator {
  public:
-  // altitude->color map
-  TCODColor mapGradient[256];
-  // world height map (0.0 - 1.0)
-  TCODHeightMap* hm = nullptr;
-  // height map without erosion
-  TCODHeightMap* hm2 = nullptr;
-  // complete world map (not shaded)
-  TCODImage* worldmap = nullptr;
-  // temperature map (in °C)
-  TCODHeightMap* temperature = nullptr;
-  // precipitation map (0.0 - 1.0)
-  TCODHeightMap* precipitation = nullptr;
-  // biome map
-  EBiome* biomeMap;
-
   void generate(TCODRandom* wRng);
 
   // getters
-  int getWidth() const;
-  int getHeight() const;
-  float getAltitude(int x, int y) const;  // heightmap. between 0 and 1
-  float getInterpolatedAltitude(float x, float y) const;
-  float getSandHeight() const;
-  bool isOnSea(float x, float y) const;
-  float getCloudThickness(float x, float y) const;
-  void getInterpolatedNormal(float x, float y, float n[3]) const;
-  TCODColor getInterpolatedColor(float worldX, float worldY);
-  float getInterpolatedIntensity(float worldX, float worldY);
+  [[nodiscard]] int getWidth() const;
+  [[nodiscard]] int getHeight() const;
+  [[nodiscard]] float getAltitude(int x, int y) const;  // heightmap. between 0 and 1
+  [[nodiscard]] float getInterpolatedAltitude(float x, float y) const;
+  [[nodiscard]] float getSandHeight() const;
+  [[nodiscard]] bool isOnSea(float x, float y) const;
+  [[nodiscard]] float getCloudThickness(float x, float y) const;
+  [[nodiscard]] auto getInterpolatedNormal(float x, float y) -> std::array<float, 3> const;
+  [[nodiscard]] TCODColor getInterpolatedColor(float worldX, float worldY);
+  [[nodiscard]] float getInterpolatedIntensity(float worldX, float worldY);
 
   // update
   void updateClouds(float elapsedTime);
   void computeSunLight(float lightDir[3]);
 
   // data
-  float getRealAltitude(float x, float y) const;  // altitude in meters
-  float getPrecipitations(float x, float y) const;  // in centimeter/m²/year
-  float getTemperature(float x, float y) const;  // in °C
-  EBiome getBiome(float x, float y) const;
+  [[nodiscard]] float getRealAltitude(float x, float y) const;  // altitude in meters
+  [[nodiscard]] float getPrecipitations(float x, float y) const;  // in centimeter/m²/year
+  [[nodiscard]] float getTemperature(float x, float y) const;  // in °C
+  [[nodiscard]] EBiome getBiome(float x, float y) const;
 
   // map generators
   void saveBiomeMap(const char* filename = NULL);
@@ -97,53 +84,69 @@ class WorldGenerator {
   void saveTemperatureMap(const char* filename = NULL);
   void savePrecipitationMap(const char* filename = NULL);
 
+  // altitude->color map
+  std::array<TCODColor, 256> map_gradient_{};
+  // world height map (0.0 - 1.0)
+  TCODHeightMap heightmap_{HM_WIDTH, HM_HEIGHT};
+  // height map without erosion
+  TCODHeightMap heightmap_no_erosion_{HM_WIDTH, HM_HEIGHT};
+  // complete world map (not shaded)
+  TCODImage worldmap_{HM_WIDTH, HM_HEIGHT};
+  // temperature map (in °C)
+  TCODHeightMap temperature_{HM_WIDTH, HM_HEIGHT};
+  // precipitation map (0.0 - 1.0)
+  TCODHeightMap precipitation_{HM_WIDTH, HM_HEIGHT};
+  // biome map
+  std::array<EBiome, HM_WIDTH * HM_HEIGHT> biome_map_{};
+
  protected:
   friend class RiverPathCbk;
-  TCODNoise* noise;
-  // cloud thickness
-  float clouds[HM_WIDTH][HM_HEIGHT];
-  float cloudDx;  // horizontal offset for smooth scrolling
-  float cloudTotalDx;
-  // world light intensity map (shadow map)
-  float* worldint = nullptr;
-  typedef struct {
+  struct MapData {
     float slope;
     // number of cells flowing into this cell
     uint32_t area;
     // direction of lowest neighbour
     uint8_t flowDir;
     // inverse flow direction
-    uint8_t upDir;
-    uint8_t inFlags;  // incoming flows
-    uint8_t riverId;
-    int riverLength;
-  } map_data_t;
-  map_data_t* mapData = nullptr;
-  typedef struct {
-    TCODList<int> coords;
-    TCODList<int> strength;
-  } river_t;
-  TCODList<river_t*> rivers;
-  TCODRandom* wgRng = nullptr;
+    uint8_t up_dir;
+    uint8_t in_flags;  // incoming flows
+    int river_id;
+    int river_length;
+  };
+  struct River {
+    std::vector<int> coords;
+    std::vector<int> strength;
+  };
 
   void addHill(int nbHill, float baseRadius, float radiusVar, float height);
   void buildBaseMap();
   void erodeMap();
   void smoothMap();
   // compute the ground color from the heightmap
-  TCODColor getMapColor(float h);
+  [[nodiscard]] TCODColor getMapColor(float h);
   // get sun light intensity on a point of the map
-  float getMapIntensity(float worldX, float worldY, float lightDir[3]);
-  TCODColor getInterpolatedColor(TCODImage* img, float x, float y);
-  float getInterpolatedFloat(float* arr, float x, float y, int width, int height);
+  [[nodiscard]] float getMapIntensity(float worldX, float worldY, float lightDir[3]);
+  [[nodiscard]] TCODColor getInterpolatedColor(TCODImage& img, float x, float y);
+  [[nodiscard]] float getInterpolatedFloat(float* arr, float x, float y, int width, int height);
   void generateRivers();
   void smoothPrecipitations();
-  int getRiverStrength(int riverId);
+  [[nodiscard]] int getRiverStrength(int riverId);
   void setLandMass(float percent, float waterLevel);
   void computeTemperaturesAndBiomes();
-  TCODColor getBiomeColor(EBiome biome, int x, int y);
+  [[nodiscard]] TCODColor getBiomeColor(EBiome biome, int x, int y);
   void computePrecipitations();
   void computeColors();
-  void drawCoasts(TCODImage* img);
-  EClimate getClimateFromTemp(float temp);
+  void drawCoasts(TCODImage& img);
+  [[nodiscard]] EClimate getClimateFromTemp(float temp);
+
+  TCODNoise noise_{2};
+  // cloud thickness
+  float clouds_[HM_WIDTH][HM_HEIGHT]{};
+  float cloud_dx_{};  // horizontal offset for smooth scrolling
+  float cloud_total_dx_{};
+  // world light intensity map (shadow map)
+  std::array<float, HM_WIDTH * HM_HEIGHT> light_intensity_{};
+  std::array<MapData, HM_WIDTH * HM_HEIGHT> map_data_{};
+  std::vector<River> rivers_{};
+  TCODRandom* wg_rng_{};
 };

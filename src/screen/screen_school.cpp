@@ -111,7 +111,7 @@ void SchoolScreen::generateWorld(uint32_t seed) {
     // precipitation map of the world
     worldGen.savePrecipitationMap();
     // generate a PNG with the world map
-    worldGen.worldmap->save("world.png");
+    worldGen.worldmap_.save("world.png");
     // generate the biome map
     worldGen.saveBiomeMap();
     // and the shaded version
