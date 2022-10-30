@@ -464,17 +464,17 @@ void Creature::takeDamage(float amount) {
 
 item::Item* Creature::addToInventory(item::Item* item) {
   item = item->addToList(inventory);
-  item->owner = this;
+  item->owner_ = this;
   item->x = x;
   item->y = y;
   return item;
 }
 
 item::Item* Creature::removeFromInventory(item::Item* item, int count) {
-  if (count == 0) count = item->count;
+  if (count == 0) count = item->count_;
   item = item->removeFromList(inventory, count);
   if (item == mainHand || item == offHand) unwield(item);
-  item->owner = NULL;
+  item->owner_ = NULL;
   return item;
 }
 
@@ -607,7 +607,7 @@ void Creature::saveData(uint32_t chunkId, TCODZip* zip) {
   // save inventory
   zip->putInt(inventory.size());
   for (item::Item* it : inventory) {
-    zip->putString(it->typeData->name);
+    zip->putString(it->typeData->name.c_str());
     it->saveData(ITEM_CHUNK_ID, zip);
   }
   // save conditions

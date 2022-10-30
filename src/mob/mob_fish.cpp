@@ -72,7 +72,7 @@ void Fish::render(LightMap& lightMap) {
 
 void Fish::initItem() {
   asItem = item::Item::getItem("living fish", x, y);
-  asItem->asCreature = this;
+  asItem->as_creature_ = this;
 }
 
 bool Fish::wasOnScreen() const {

@@ -30,6 +30,7 @@
 #include <stdio.h>
 
 #include <libtcod.hpp>
+#include <string>
 
 #include "helpers.hpp"
 #include "item.hpp"
@@ -226,7 +227,7 @@ class ItemFileListener : public ITCODParserListener {
       type->inventoryTab = INV_MISC;
       type->flags = 0;
       type->character = 0;
-      type->onPick = NULL;
+      type->onPick = {};
       // inheritance
       if (types.size() > 0) {
         type->inherits.push(types.peek());
@@ -293,7 +294,8 @@ class ItemFileListener : public ITCODParserListener {
     return true;
   }
   bool parserProperty(TCODParser* parser, const char* name, TCOD_value_type_t vtype, TCOD_value_t value) {
-    if (strcmp(name, "inventoryTab") == 0) {
+    using namespace std::literals::string_literals;
+    if ("inventoryTab"s == name) {
       if (strcmp(value.s, "armor") == 0)
         type->inventoryTab = INV_ARMOR;
       else if (strcmp(value.s, "weapon") == 0)
@@ -302,10 +304,10 @@ class ItemFileListener : public ITCODParserListener {
         type->inventoryTab = INV_FOOD;
       else if (strcmp(value.s, "misc") == 0)
         type->inventoryTab = INV_MISC;
-    } else if (strcmp(name, "col") == 0) {
+    } else if ("col"s == name) {
       type->color = value.col;
     } else if (strcmp(name, "onPick") == 0) {
-      type->onPick = strdup(value.s);
+      type->onPick = value.s;
     } else if (strcmp(name, "character") == 0) {
       type->character = value.c;
     } else if (strcmp(name, "flags") == 0) {
@@ -588,7 +590,7 @@ class RecipeFileListener : public ITCODParserListener {
   ItemIngredient* ingredient;
 };
 
-bool Item::init() {
+bool Item::initDatabase() {
   const char* inventoryTabs[] = {"armor", "weapon", "food", "misc", NULL};
   const char* wieldTypes[] = {"oneHand", "twoHands", "mainHand", "offHand", NULL};
   // parse item types
@@ -709,10 +711,10 @@ void ItemType::computeActions() {
 ItemType* Item::getType(const char* name) {
   if (name == NULL) return NULL;
   if (types.size() == 0) {
-    if (!init()) std::abort();  // fatal error. cannot load items configuration
+    if (!initDatabase()) std::abort();  // fatal error. cannot load items configuration
   }
   for (ItemType** it = types.begin(); it != types.end(); it++) {
-    if (strcmp((*it)->name, name) == 0) return *it;
+    if ((*it)->name == name) return *it;
   }
   return NULL;
 }
@@ -770,57 +772,51 @@ ItemCombination* ItemType::getCombination() const {
   return NULL;
 }
 
-Item::Item(float x, float y, const ItemType& type) : active(false) {
+Item::Item(float x, float y, const ItemType& type) {
   if (descCon == NULL) {
     descCon = new TCODConsole(CON_W / 2, CON_H / 2);
     descCon->setAlignment(TCOD_CENTER);
     descCon->setDefaultBackground(guiBackground);
   }
   setPos(x, y);
-  light = NULL;
-  count = 1;
-  owner = NULL;
-  container = NULL;
-  asCreature = NULL;
-  adjective = NULL;
-  typeName_ = strdup(type.name);
-  name = NULL;
+  typeName_ = type.name;
+  name_ = {};
   typeData = &type;
-  toDelete = 0;
   ItemFeature* feat = getFeature(ITEM_FEAT_LIGHT);
   if (feat) {
     initLight();
-    light->range = feat->light.range;
-    light->color = TCODColor(feat->light.color.r, feat->light.color.g, feat->light.color.b);
-    light->setup(light->color, feat->light.patternDelay, feat->light.pattern, NULL);
+    light_->range = feat->light.range;
+    light_->color = TCODColor(feat->light.color.r, feat->light.color.g, feat->light.color.b);
+    light_->setup(light_->color, feat->light.patternDelay, feat->light.pattern, NULL);
   }
-  col = type.color;
-  ch = type.character;
-  itemClass = ITEM_CLASS_STANDARD;
+  color_ = type.color;
+  ch_ = type.character;
+  item_class_ = ITEM_CLASS_STANDARD;
   feat = typeData->getFeature(ITEM_FEAT_AGE_EFFECT);
   if (feat)
-    life = feat->ageEffect.delay;
+    life_ = feat->ageEffect.delay;
   else
-    life = 0.0f;
+    life_ = 0.0f;
   feat = typeData->getFeature(ITEM_FEAT_FIRE_EFFECT);
   if (feat)
-    fireResistance = feat->fireEffect.resistance;
+    fire_resistance_ = feat->fireEffect.resistance;
   else
-    fireResistance = 0.0f;
+    fire_resistance_ = 0.0f;
   feat = typeData->getFeature(ITEM_FEAT_ATTACK);
-  castDelay = reloadDelay = damages = 0.0f;
+  cast_delay_ = reload_delay_ = damages_ = 0.0f;
   if (feat) {
-    castDelay = rng->getFloat(feat->attack.minCastDelay, feat->attack.maxCastDelay);
-    reloadDelay = rng->getFloat(feat->attack.minReloadDelay, feat->attack.maxReloadDelay);
-    damages = 15 * (reloadDelay + castDelay) * rng->getFloat(feat->attack.minDamagesCoef, feat->attack.maxDamagesCoef);
+    cast_delay_ = rng->getFloat(feat->attack.minCastDelay, feat->attack.maxCastDelay);
+    reload_delay_ = rng->getFloat(feat->attack.minReloadDelay, feat->attack.maxReloadDelay);
+    damages_ =
+        15 * (reload_delay_ + cast_delay_) * rng->getFloat(feat->attack.minDamagesCoef, feat->attack.maxDamagesCoef);
   }
 
-  phase = IDLE;
-  phaseTimer = 0.0f;
-  targetx = targety = -1;
-  heatTimer = 0.0f;
-  onoff = false;
-  an = false;
+  phase_ = IDLE;
+  phase_timer_ = 0.0f;
+  target_x_ = target_y_ = -1;
+  heat_timer_ = 0.0f;
+  toggle_ = false;
+  an_ = false;
 }
 
 Item* Item::getItem(const char* typeName, float x, float y, bool createComponents) {
@@ -851,8 +847,8 @@ Item* Item::getRandomWeapon(const char* typeName, ItemClass itemClass) {
     return NULL;
   }
   Item* weapon = Item::getItem(type, -1, -1, false);
-  weapon->itemClass = itemClass;
-  weapon->col = Item::classColor[itemClass];
+  weapon->item_class_ = itemClass;
+  weapon->color_ = Item::classColor[itemClass];
   if (itemClass > ITEM_CLASS_STANDARD) {
     /*
     TODO
@@ -866,12 +862,12 @@ Item* Item::getRandomWeapon(const char* typeName, ItemClass itemClass) {
     int modType = rng->getInt(MOD_RELOAD, MOD_MODIFIER);
     switch (modType) {
       case MOD_RELOAD:
-        weapon->reloadDelay -= rng->getFloat(0.05f, MAX_RELOAD_BONUS);
-        weapon->reloadDelay = MAX(0.1f, weapon->reloadDelay);
+        weapon->reload_delay_ -= rng->getFloat(0.05f, MAX_RELOAD_BONUS);
+        weapon->reload_delay_ = MAX(0.1f, weapon->reload_delay_);
         break;
       case MOD_CAST:
-        weapon->castDelay -= rng->getFloat(0.05f, MAX_CAST_BONUS);
-        weapon->castDelay = MAX(0.1f, weapon->reloadDelay);
+        weapon->cast_delay_ -= rng->getFloat(0.05f, MAX_CAST_BONUS);
+        weapon->cast_delay_ = MAX(0.1f, weapon->reload_delay_);
         break;
       case MOD_MODIFIER:
         ItemModifierId id = (ItemModifierId)0;
@@ -889,17 +885,17 @@ Item* Item::getRandomWeapon(const char* typeName, ItemClass itemClass) {
         break;
     }
   }
-  weapon->damages += weapon->damages * (int)(itemClass)*0.2f;  // 20% increase per color level
-  weapon->damages = MIN(1.0f, weapon->damages);
+  weapon->damages_ += weapon->damages_ * (int)(itemClass)*0.2f;  // 20% increase per color level
+  weapon->damages_ = MIN(1.0f, weapon->damages_);
   // build components
   weapon->generateComponents();
   return weapon;
 }
 
 void Item::addComponent(Item* component) {
-  components.push_back(component);
-  if (component->adjective && !adjective) {
-    adjective = strdup(component->adjective);
+  components_.push_back(component);
+  if (component->adjective_ && !adjective_) {
+    adjective_ = component->adjective_;
   }
 }
 
@@ -907,7 +903,7 @@ void Item::generateComponents() {
   // check if this item type has components
   ItemCombination* combination = getCombination();
   if (!combination) return;
-  int maxOptionals = itemClass - ITEM_CLASS_STANDARD;
+  int maxOptionals = item_class_ - ITEM_CLASS_STANDARD;
   int i = rng->getInt(0, combination->nbIngredients - 1);
   for (int count = combination->nbIngredients; count > 0; count--) {
     if (combination->ingredients[i].revert && (!combination->ingredients[i].optional || maxOptionals > 0)) {
@@ -923,16 +919,14 @@ void Item::generateComponents() {
 }
 
 void Item::initLight() {
-  light = new ExtendedLight();
-  light->x = x * 2;
-  light->y = y * 2;
-  light->randomRad = false;
+  light_ = new ExtendedLight();
+  light_->x = x * 2;
+  light_->y = y * 2;
+  light_->randomRad = false;
 }
 
 Item::~Item() {
-  if (light) delete light;
-  free(typeName_);
-  if (adjective) free(adjective);
+  if (light_) delete light_;
 }
 
 // look for a 2 items recipe
@@ -959,9 +953,9 @@ ItemCombination* Item::getCombination() const { return typeData->getCombination(
 Item* Item::putInContainer(Item* it) {
   ItemFeature* cont = it->getFeature(ITEM_FEAT_CONTAINER);
   if (!cont) return NULL;  // it is not a container
-  if (it->stack.size() >= cont->container.size) return nullptr;  // no more room
-  Item* item = addToList(it->stack);
-  item->container = it;
+  if (it->stack_.size() >= cont->container.size) return nullptr;  // no more room
+  Item* item = addToList(it->stack_);
+  item->container_ = it;
   item->x = it->x;
   item->y = it->y;
   return item;
@@ -969,9 +963,9 @@ Item* Item::putInContainer(Item* it) {
 
 // remove it from this container (false if not inside)
 Item* Item::removeFromContainer(int count) {
-  if (!container || !helpers::contains(container->stack, this)) return NULL;
-  Item* item = removeFromList(container->stack, count);
-  item->container = NULL;
+  if (!container_ || !helpers::contains(container_->stack_, this)) return NULL;
+  Item* item = removeFromList(container_->stack_, count);
+  item->container_ = NULL;
   return item;
 }
 
@@ -980,17 +974,17 @@ Item* Item::addToList(std::vector<Item*>& list) {
   if (isStackable()) {
     // if already in the list, increase the count
     for (Item* it : list) {
-      if (it->typeData == typeData && (!it->name || (name && strcmp(it->name, name) == 0))) {
-        it->count += count;
-        toDelete = count;
+      if (it->typeData == typeData && (!it->name_ || (name_ && it->name_ == *name_))) {
+        it->count_ += count_;
+        to_delete_ = count_;
         return it;
       }
     }
   } else if (isSoftStackable()) {
     // if already in the list, add to soft stack
     for (Item* it : list) {
-      if (it->typeData == typeData && !it->name) {
-        it->stack.push_back(this);
+      if (it->typeData == typeData && !it->name_) {
+        it->stack_.push_back(this);
         return it;
       }
     }
@@ -1001,21 +995,21 @@ Item* Item::addToList(std::vector<Item*>& list) {
 }
 // remove one item, possibly unstacking
 Item* Item::removeFromList(std::vector<Item*>& list, int removeCount) {
-  if (isStackable() && count > removeCount) {
+  if (isStackable() && count_ > removeCount) {
     Item* newItem = Item::getItem(typeData, x, y);
-    newItem->count = removeCount;
-    count -= removeCount;
+    newItem->count_ = removeCount;
+    count_ -= removeCount;
     return newItem;
   } else if (isSoftStackable()) {
-    if (stack.size() > 0) {
+    if (stack_.size() > 0) {
       Item* newStackOwner = NULL;
       // this item is the stack owner. rebuild the stack
-      if (stack.size() > removeCount) {
-        newStackOwner = stack.back();
-        stack.pop_back();
-        while (stack.size() > removeCount) {
-          newStackOwner->stack.push_back(stack.back());
-          stack.pop_back();
+      if (stack_.size() > removeCount) {
+        newStackOwner = stack_.back();
+        stack_.pop_back();
+        while (stack_.size() > removeCount) {
+          newStackOwner->stack_.push_back(stack_.back());
+          stack_.pop_back();
         }
       }
       // remove before adding to avoid list reallocation
@@ -1025,13 +1019,13 @@ Item* Item::removeFromList(std::vector<Item*>& list, int removeCount) {
     } else {
       // this item may be in a stack. find the stack owner
       for (Item* stackOwner : list) {
-        if (stackOwner != this && stackOwner->typeData == typeData && helpers::contains(stack, this)) {
+        if (stackOwner != this && stackOwner->typeData == typeData && helpers::contains(stack_, this)) {
           return stackOwner->removeFromList(list, removeCount);
         }
       }
       // single softStackable item. simply remove it from the list
     }
-  } else if (container && helpers::contains(list, container)) {
+  } else if (container_ && helpers::contains(list, container_)) {
     // item is inside a container
     removeFromContainer(removeCount);
   }
@@ -1040,32 +1034,32 @@ Item* Item::removeFromList(std::vector<Item*>& list, int removeCount) {
 }
 
 void Item::computeBottleName() {
-  if (name) free(name);
-  name = NULL;
-  if (stack.empty()) {
-    an = true;
-    name = strdup("empty bottle");
+  using namespace std::literals::string_literals;
+  name_ = {};
+  if (stack_.empty()) {
+    an_ = true;
+    name_ = "empty bottle";
     return;
   }
-  Item* liquid = stack.at(0);
-  if (strcmp(liquid->typeData->name, "water") == 0) {
-    an = false;
-    name = strdup("bottle of water");
-  } else if (strcmp(liquid->typeData->name, "poison") == 0) {
-    an = false;
-    name = strdup("bottle of poison");
-  } else if (strcmp(liquid->typeData->name, "sleep") == 0) {
-    an = false;
-    name = strdup("bottle of soporific");
-  } else if (strcmp(liquid->typeData->name, "antidote") == 0) {
-    an = true;
-    name = strdup("antidote");
-  } else if (strcmp(liquid->typeData->name, "health") == 0) {
-    an = false;
-    name = strdup("health potion");
+  Item* liquid = stack_.at(0);
+  if (liquid->typeData->name == "water"s) {
+    an_ = false;
+    name_ = "bottle of water";
+  } else if (liquid->typeData->name == "poison"s) {
+    an_ = false;
+    name_ = "bottle of poison";
+  } else if (liquid->typeData->name == "sleep"s) {
+    an_ = false;
+    name_ = "bottle of soporific";
+  } else if (liquid->typeData->name == "antidote"s) {
+    an_ = true;
+    name_ = "antidote";
+  } else if (liquid->typeData->name == "health"s) {
+    an_ = false;
+    name_ = "health potion";
   } else {
-    an = liquid->an;
-    name = strdup(liquid->typeData->name);
+    an_ = liquid->an_;
+    name_ = liquid->typeData->name;
   }
 }
 
@@ -1079,8 +1073,8 @@ void Item::render(LightMap& lightMap, TCODImage* ground) {
   float clouds = dungeon->getCloudCoef(x * 2, y * 2);
   shadow = MIN(shadow, clouds);
   lightColor = lightColor * shadow;
-  TCODConsole::root->setChar(conx, cony, ch);
-  TCODConsole::root->setCharForeground(conx, cony, col * lightColor);
+  TCODConsole::root->setChar(conx, cony, ch_);
+  TCODConsole::root->setCharForeground(conx, cony, color_ * lightColor);
   if (ground) {
     TCODConsole::root->setCharBackground(conx, cony, ground->getPixel(conx * 2, cony * 2));
   } else {
@@ -1091,19 +1085,19 @@ void Item::render(LightMap& lightMap, TCODImage* ground) {
 void Item::renderDescription(int x, int y, bool below) {
   int cy = 0;
   descCon->clear();
-  descCon->setDefaultForeground(Item::classColor[itemClass]);
-  if (name) {
-    if (count > 1)
-      descCon->print(CON_W / 4, cy++, "%s(%d)", name, count);
+  descCon->setDefaultForeground(Item::classColor[item_class_]);
+  if (name_) {
+    if (count_ > 1)
+      descCon->print(CON_W / 4, cy++, "%s(%d)", name_->c_str(), count_);
     else
-      descCon->print(CON_W / 4, cy++, name);
+      descCon->print(CON_W / 4, cy++, name_->c_str());
     descCon->setDefaultForeground(guiText);
-    descCon->print(CON_W / 4, cy++, typeName_);
+    descCon->print(CON_W / 4, cy++, typeName_.c_str());
   } else {
-    if (count > 1)
-      descCon->print(CON_W / 4, cy++, "%s(%d)", typeName_, count);
+    if (count_ > 1)
+      descCon->print(CON_W / 4, cy++, "%s(%d)", typeName_.c_str(), count_);
     else
-      descCon->print(CON_W / 4, cy++, typeName_);
+      descCon->print(CON_W / 4, cy++, typeName_.c_str());
   }
   descCon->setDefaultForeground(guiText);
   ItemFeature* feat = getFeature(ITEM_FEAT_FOOD);
@@ -1114,11 +1108,11 @@ void Item::renderDescription(int x, int y, bool below) {
     if (feat->attack.wield) {
       descCon->print(CON_W / 4, cy++, wieldname[feat->attack.wield]);
     }
-    float rate = 1.0f / (castDelay + reloadDelay);
-    int dmgPerSec = (int)(damages * rate + 0.5f);
+    float rate = 1.0f / (cast_delay_ + reload_delay_);
+    int dmgPerSec = (int)(damages_ * rate + 0.5f);
     descCon->print(CON_W / 4, cy++, "%d damages/sec", dmgPerSec);
     descCon->print(CON_W / 4, cy++, "Attack rate:%s", getRateName(rate));
-    ItemModifier::renderDescription(descCon, 2, cy, modifiers);
+    ItemModifier::renderDescription(descCon, 2, cy, modifiers_);
   }
 
   /*
@@ -1149,19 +1143,19 @@ const char* Item::getRateName(float rate) const {
 void Item::renderGenericDescription(int x, int y, bool below, bool frame) {
   int cy = 0;
   descCon->clear();
-  descCon->setDefaultForeground(Item::classColor[itemClass]);
-  if (name) {
-    if (count > 1)
-      descCon->print(CON_W / 4, cy++, "%s(%d)", name, count);
+  descCon->setDefaultForeground(Item::classColor[item_class_]);
+  if (name_) {
+    if (count_ > 1)
+      descCon->print(CON_W / 4, cy++, "%s(%d)", name_->c_str(), count_);
     else
-      descCon->print(CON_W / 4, cy++, name);
+      descCon->print(CON_W / 4, cy++, name_->c_str());
     descCon->setDefaultForeground(guiText);
-    descCon->print(CON_W / 4, cy++, typeName_);
+    descCon->print(CON_W / 4, cy++, typeName_.c_str());
   } else {
-    if (count > 1)
-      descCon->print(CON_W / 4, cy++, "%s(%d)", typeName_, count);
+    if (count_ > 1)
+      descCon->print(CON_W / 4, cy++, "%s(%d)", typeName_.c_str(), count_);
     else
-      descCon->print(CON_W / 4, cy++, typeName_);
+      descCon->print(CON_W / 4, cy++, typeName_.c_str());
   }
   descCon->setDefaultForeground(guiText);
   ItemFeature* feat = getFeature(ITEM_FEAT_FOOD);
@@ -1172,12 +1166,12 @@ void Item::renderGenericDescription(int x, int y, bool below, bool frame) {
     if (feat->attack.wield) {
       descCon->print(CON_W / 4, cy++, wieldname[feat->attack.wield]);
     }
-    float minCast = feat->attack.minCastDelay - itemClass * MAX_CAST_BONUS;
-    float minReload = feat->attack.minReloadDelay - itemClass * MAX_RELOAD_BONUS;
+    float minCast = feat->attack.minCastDelay - item_class_ * MAX_CAST_BONUS;
+    float minReload = feat->attack.minReloadDelay - item_class_ * MAX_RELOAD_BONUS;
     float minDamages = 15 * (minCast + minReload) * feat->attack.minDamagesCoef;
     float maxDamages = 15 * (feat->attack.maxCastDelay + feat->attack.maxReloadDelay) * feat->attack.maxDamagesCoef;
-    minDamages += minDamages * (int)(itemClass)*0.2f;
-    maxDamages += maxDamages * (int)(itemClass)*0.2f;
+    minDamages += minDamages * (int)(item_class_)*0.2f;
+    maxDamages += maxDamages * (int)(item_class_)*0.2f;
     minDamages = (int)MIN(1.0f, minDamages);
     maxDamages = (int)MIN(1.0f, maxDamages);
 
@@ -1209,20 +1203,20 @@ void Item::convertTo(ItemType* newType) {
   newItem->speed = speed;
   newItem->dx = dx;
   newItem->dy = dy;
-  if (isA("wall")) newItem->ch = ch;
-  if (owner) {
-    if (owner->isPlayer()) {
-      if (asCreature)
+  if (isA("wall")) newItem->ch_ = ch_;
+  if (owner_) {
+    if (owner_->isPlayer()) {
+      if (as_creature_)
         gameEngine->gui.log.info("%s died.", TheName());
       else {
-        if (strncmp(newType->name, "rotten", 6) == 0) {
+        if (strncmp(newType->name.c_str(), "rotten", 6) == 0) {
           gameEngine->gui.log.info("%s has rotted.", TheName());
         } else {
           gameEngine->gui.log.info("%s turned into %s.", TheName(), newItem->aName());
         }
       }
     }
-    owner->addToInventory(newItem);
+    owner_->addToInventory(newItem);
   } else
     gameEngine->dungeon->addItem(newItem);
 }
@@ -1230,16 +1224,16 @@ void Item::convertTo(ItemType* newType) {
 bool Item::age(float elapsed, ItemFeature* feat) {
   if (!feat) feat = typeData->getFeature(ITEM_FEAT_AGE_EFFECT);
   if (feat) {
-    life -= elapsed;
-    if (life <= 0.0f) {
+    life_ -= elapsed;
+    if (life_ <= 0.0f) {
       if (feat->ageEffect.type) {
         convertTo(feat->ageEffect.type);
       }
       // destroy this item
-      if (!owner) {
-        if (asCreature) gameEngine->dungeon->removeCreature(asCreature, false);
+      if (!owner_) {
+        if (as_creature_) gameEngine->dungeon->removeCreature(as_creature_, false);
       } else {
-        if (asCreature) asCreature->toDelete = true;
+        if (as_creature_) as_creature_->toDelete = true;
       }
       return false;
     }
@@ -1249,12 +1243,12 @@ bool Item::age(float elapsed, ItemFeature* feat) {
 
 bool Item::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
   Dungeon* dungeon = gameEngine->dungeon;
-  if (!owner && !isOnScreen()) {
+  if (!owner_ && !isOnScreen()) {
     // when not on screen, update only once per second
-    cumulatedElapsed += elapsed;
-    if (cumulatedElapsed < 1.0f) return true;
-    elapsed = cumulatedElapsed;
-    cumulatedElapsed = 0.0f;
+    cumulated_elapsed_ += elapsed;
+    if (cumulated_elapsed_ < 1.0f) return true;
+    elapsed = cumulated_elapsed_;
+    cumulated_elapsed_ = 0.0f;
   }
   if (speed > 0.0f) {
     float oldx = x;
@@ -1342,16 +1336,17 @@ bool Item::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
     if (feat->id == ITEM_FEAT_AGE_EFFECT) {
       if (!age(elapsed, feat)) return false;
     } else if (feat->id == ITEM_FEAT_ATTACK) {
-      switch (phase) {
+      switch (phase_) {
         case CAST:
-          phaseTimer -= elapsed;
-          if (phaseTimer <= 0.0f && (feat->attack.flags & WEAPON_PROJECTILE) == 0 && feat->attack.spellCasted) {
-            phaseTimer = reloadDelay;
-            if (phaseTimer > 0.0f)
-              phase = RELOAD;
+          phase_timer_ -= elapsed;
+          if (phase_timer_ <= 0.0f && (feat->attack.flags & WEAPON_PROJECTILE) == 0 && feat->attack.spellCasted) {
+            phase_timer_ = reload_delay_;
+            if (phase_timer_ > 0.0f)
+              phase_ = RELOAD;
             else
-              phase = IDLE;
-            FireBall* fb = new FireBall(owner->x, owner->y, targetx, targety, FB_STANDARD, feat->attack.spellCasted);
+              phase_ = IDLE;
+            FireBall* fb =
+                new FireBall(owner_->x, owner_->y, target_x_, target_y_, FB_STANDARD, feat->attack.spellCasted);
             ((Game*)gameEngine)->addFireball(fb);
             gameEngine->stats.nbSpellStandard++;
           } else {
@@ -1359,21 +1354,21 @@ bool Item::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
               // keep targetting while the mouse button is pressed
               int dx = mouse->cx + gameEngine->xOffset;
               int dy = mouse->cy + gameEngine->yOffset;
-              targetx = dx;
-              targety = dy;
+              target_x_ = dx;
+              target_y_ = dy;
               if (!mouse->lbutton) {
                 // fire when mouse button released
-                phaseTimer = MAX(phaseTimer, 0.0f);
-                float speed = (castDelay - phaseTimer) / castDelay;
+                phase_timer_ = MAX(phase_timer_, 0.0f);
+                float speed = (cast_delay_ - phase_timer_) / cast_delay_;
                 speed = MIN(speed, 1.0f);
-                phase = RELOAD;
-                phaseTimer = reloadDelay;
-                if ((int)targetx == (int)owner->x && (int)targety == (int)owner->y) return true;
-                x = owner->x;
-                y = owner->y;
-                Item* it = owner->removeFromInventory(this);
-                it->dx = targetx - x;
-                it->dy = targety - y;
+                phase_ = RELOAD;
+                phase_timer_ = reload_delay_;
+                if ((int)target_x_ == (int)owner_->x && (int)target_y_ == (int)owner_->y) return true;
+                x = owner_->x;
+                y = owner_->y;
+                Item* it = owner_->removeFromInventory(this);
+                it->dx = target_x_ - x;
+                it->dy = target_y_ - y;
                 float l = fastInvSqrt(it->dx * it->dx + it->dy * it->dy);
                 it->dx *= l;
                 it->dy *= l;
@@ -1387,27 +1382,27 @@ bool Item::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
           }
           break;
         case RELOAD:
-          phaseTimer -= elapsed;
-          if (phaseTimer <= 0.0f) {
-            phase = IDLE;
+          phase_timer_ -= elapsed;
+          if (phase_timer_ <= 0.0f) {
+            phase_ = IDLE;
           }
           break;
         case IDLE:
-          if (owner->isPlayer() && mouse->lbutton_pressed && isEquiped()) {
-            phaseTimer = castDelay;
-            phase = CAST;
+          if (owner_->isPlayer() && mouse->lbutton_pressed && isEquiped()) {
+            phase_timer_ = cast_delay_;
+            phase_ = CAST;
             int dx = mouse->cx + gameEngine->xOffset;
             int dy = mouse->cy + gameEngine->yOffset;
-            targetx = dx;
-            targety = dy;
+            target_x_ = dx;
+            target_y_ = dy;
           }
           break;
       }
     } else if (feat->id == ITEM_FEAT_HEAT) {
-      heatTimer += elapsed;
-      if (heatTimer > 1.0f) {
+      heat_timer_ += elapsed;
+      if (heat_timer_ > 1.0f) {
         // warm up adjacent items
-        heatTimer = 0.0f;
+        heat_timer_ = 0.0f;
         float radius = feat->heat.radius;
         for (int tx = -(int)floor(radius); tx <= (int)ceil(radius); tx++) {
           if ((int)(x) + tx >= 0 && (int)(x) + tx < dungeon->width) {
@@ -1420,7 +1415,7 @@ bool Item::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
                   ItemFeature* fireFeat = it->getFeature(ITEM_FEAT_FIRE_EFFECT);
                   if (fireFeat) {
                     // item is affected by fire
-                    it->fireResistance -= feat->heat.intensity;
+                    it->fire_resistance_ -= feat->heat.intensity;
                   }
                 }
                 Creature* cr = dungeon->getCreature((int)(x) + tx, (int)(y) + ty);
@@ -1436,7 +1431,7 @@ bool Item::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
           }
         }
       }
-    } else if (feat->id == ITEM_FEAT_FIRE_EFFECT && fireResistance <= 0.0f) {
+    } else if (feat->id == ITEM_FEAT_FIRE_EFFECT && fire_resistance_ <= 0.0f) {
       if (feat->fireEffect.type) {
         convertTo(feat->fireEffect.type);
         // set this item to fire!
@@ -1447,10 +1442,10 @@ bool Item::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
         }
       }
       // destroy this item
-      if (!owner) {
-        if (asCreature) gameEngine->dungeon->removeCreature(asCreature, false);
+      if (!owner_) {
+        if (as_creature_) gameEngine->dungeon->removeCreature(as_creature_, false);
       } else {
-        if (asCreature) asCreature->toDelete = true;
+        if (as_creature_) as_creature_->toDelete = true;
       }
       ItemFeature* ignite = typeData->getFeature(ITEM_FEAT_HEAT);
       if (ignite) {
@@ -1468,14 +1463,14 @@ bool Item::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
   return true;
 }
 
-bool Item::isEquiped() { return (owner && (owner->mainHand == this || owner->offHand == this)); }
+bool Item::isEquiped() { return (owner_ && (owner_->mainHand == this || owner_->offHand == this)); }
 
 void Item::destroy(int count) {
   Item* newItem = NULL;
-  if (owner) {
-    newItem = owner->removeFromInventory(this, count);
+  if (owner_) {
+    newItem = owner_->removeFromInventory(this, count);
     if (newItem) delete newItem;
-  } else if (container) {
+  } else if (container_) {
     newItem = removeFromContainer(count);
     if (newItem) delete newItem;
   } else {
@@ -1485,7 +1480,7 @@ void Item::destroy(int count) {
 }
 
 void Item::use() {
-  active = true;
+  active_ = true;
   if (hasFeature(ITEM_FEAT_PRODUCES)) {
     float odds = TCODRandom::getInstance()->getFloat(0.0f, 1.0f);
     if (isA("tree")) {
@@ -1521,42 +1516,41 @@ void Item::use() {
     gameEngine->player.heal(feat->food.health);
   }
   feat = getFeature(ITEM_FEAT_ATTACK);
-  if (feat && owner) {
+  if (feat && owner_) {
     if (isEquiped())
-      owner->unwield(this);
+      owner_->unwield(this);
     else
-      owner->wield(this);
+      owner_->wield(this);
   }
   feat = getFeature(ITEM_FEAT_CONTAINER);
   if (feat) {
     gameEngine->openCloseLoot(this);
   }
   if (isA("door")) {
-    onoff = !onoff;
-    gameEngine->gui.log.info("You %s %s", onoff ? "open" : "close", theName());
-    ch = onoff ? '/' : '+';
-    gameEngine->dungeon->setProperties((int)x, (int)y, onoff, onoff);
+    toggle_ = !toggle_;
+    gameEngine->gui.log.info("You %s %s", toggle_ ? "open" : "close", theName());
+    ch_ = toggle_ ? '/' : '+';
+    gameEngine->dungeon->setProperties((int)x, (int)y, toggle_, toggle_);
   }
   if (isDeletedOnUse()) {
-    if (count > 1)
-      count--;
+    if (count_ > 1)
+      count_--;
     else {
-      if (!owner) {
+      if (!owner_) {
         gameEngine->dungeon->removeItem(this, true);
       } else {
-        owner->removeFromInventory(this, true);
+        owner_->removeFromInventory(this, true);
       }
     }
   }
 }
 
 Item* Item::putInInventory(Creature* owner, int putCount, const char* verb) {
-  if (putCount == 0) putCount = count;
+  if (putCount == 0) putCount = count_;
   Item* it = gameEngine->dungeon->removeItem(this, putCount, false);
-  it->owner = owner;
+  it->owner_ = owner;
   if (it->typeData->onPick) {
-    if (it->name) free(it->name);
-    it->name = strdup(it->typeData->onPick);
+    it->name_ = it->typeData->onPick;
   }
   if (verb != NULL) gameEngine->gui.log.info("You %s %s.", verb, it->aName());
   it = owner->addToInventory(it);
@@ -1580,15 +1574,15 @@ Item* Item::putInInventory(Creature* owner, int putCount, const char* verb) {
 }
 
 Item* Item::drop(int dropCount) {
-  if (!owner) return this;
-  if (dropCount == 0) dropCount = count;
-  Creature* ownerBackup = owner;  // keep the owner for once the item is removed from inventory
-  Item* newItem = owner->removeFromInventory(this, dropCount);
+  if (!owner_) return this;
+  if (dropCount == 0) dropCount = count_;
+  Creature* ownerBackup = owner_;  // keep the owner for once the item is removed from inventory
+  Item* newItem = owner_->removeFromInventory(this, dropCount);
   newItem->x = ownerBackup->x;
   newItem->y = ownerBackup->y;
-  if (asCreature) {
+  if (as_creature_) {
     // convert item back to creature
-    gameEngine->dungeon->addCreature(asCreature);
+    gameEngine->dungeon->addCreature(as_creature_);
   } else {
     gameEngine->dungeon->addItem(newItem);
   }
@@ -1600,13 +1594,13 @@ Item* Item::drop(int dropCount) {
 }
 
 void Item::addModifier(ItemModifierId id, float value) {
-  for (ItemModifier** mod = modifiers.begin(); mod != modifiers.end(); mod++) {
+  for (ItemModifier** mod = modifiers_.begin(); mod != modifiers_.end(); mod++) {
     if ((*mod)->id == id) {
       (*mod)->value += value;
       return;
     }
   }
-  modifiers.push(new ItemModifier(id, value));
+  modifiers_.push(new ItemModifier(id, value));
 }
 
 void Item::renderDescriptionFrame(int x, int y, bool below, bool frame) {
@@ -1668,69 +1662,60 @@ void Item::renderDescriptionFrame(int x, int y, bool below, bool frame) {
   TCODConsole::blit(descCon, cx, cy, cw, ch, TCODConsole::root, x - cw / 2, y, 1.0f, frame ? 0.7f : 0.0f);
 }
 
+static auto GetCountedName(const Item& item) -> std::string {
+  const int count = item.count_ > 1 ? item.count_ : item.stack_.size() + 1;
+  const auto& nameToUse = item.name_.value_or(item.typeName_);
+  bool es = (nameToUse[nameToUse.size() - 1] == 's');
+  return fmt::format(
+      "{:d} {}{}{}{}", count, item.adjective_.value_or(""), item.adjective_ ? " " : "", nameToUse, es ? "es" : "s");
+}
+
+static auto GetNameWithPrefix(const Item& item, const char* prefix) -> std::string {
+  return fmt::format(
+      "{} {}{}{}",
+      prefix,
+      item.adjective_.value_or(""),
+      item.adjective_ ? " " : "",
+      item.name_.value_or(item.typeName_));
+}
+
 std::string Item::AName() const {
-  if (count == 1 && (!isSoftStackable() || stack.size() == 0)) {
-    if (name) {
-      return fmt::format("{} {}{}{}", an ? "An" : "A", adjective ? adjective : "", adjective ? " " : "", name);
+  if (count_ == 1 && (!isSoftStackable() || stack_.size() == 0)) {
+    if (name_) {
+      return GetNameWithPrefix(*this, an_ ? "An" : "A");
     } else {
-      return fmt::format(
-          "{} {}{}{}",
-          (typeData->flags & ITEM_AN) ? "An" : "A",
-          adjective ? adjective : "",
-          adjective ? " " : "",
-          typeName_);
+      return GetNameWithPrefix(*this, (typeData->flags & ITEM_AN) ? "An" : "A");
     }
   } else {
-    int cnt = count > 1 ? count : stack.size() + 1;
-    const char* nameToUse = name ? name : typeName_;
-    bool es = (nameToUse[strlen(nameToUse) - 1] == 's');
-    return fmt::format(
-        "{:d} {}{}{}{}", cnt, adjective ? adjective : "", adjective ? " " : "", nameToUse, es ? "es" : "s");
+    return GetCountedName(*this);
   }
 }
 
 std::string Item::aName() const {
-  if (count == 1 && (!isSoftStackable() || stack.size() == 0)) {
-    if (name) {
-      return fmt::format("{} {}{}{}", an ? "an" : "a", adjective ? adjective : "", adjective ? " " : "", name);
+  if (count_ == 1 && (!isSoftStackable() || stack_.size() == 0)) {
+    if (name_) {
+      return GetNameWithPrefix(*this, an_ ? "an" : "a");
     } else {
-      return fmt::format(
-          "{} {}{}{}",
-          (typeData->flags & ITEM_AN) ? "an" : "a",
-          adjective ? adjective : "",
-          adjective ? " " : "",
-          typeName_);
+      return GetNameWithPrefix(*this, (typeData->flags & ITEM_AN) ? "An" : "A");
     }
   } else {
-    int cnt = count > 1 ? count : stack.size() + 1;
-    const char* nameToUse = name ? name : typeName_;
-    bool es = (nameToUse[strlen(nameToUse) - 1] == 's');
-    return fmt::format(
-        "{:d} {}{}{}{}", cnt, adjective ? adjective : "", adjective ? " " : "", nameToUse, es ? "es" : "s");
+    return GetCountedName(*this);
   }
 }
 
 std::string Item::TheName() const {
-  if (count == 1 && (!isSoftStackable() || stack.size() == 0)) {
-    return fmt::format("The {}{}{}", adjective ? adjective : "", adjective ? " " : "", name ? name : typeName_);
+  if (count_ == 1 && (!isSoftStackable() || stack_.size() == 0)) {
+    return GetNameWithPrefix(*this, "The");
   } else {
-    int cnt = count > 1 ? count : stack.size() + 1;
-    const char* nameToUse = name ? name : typeName_;
-    bool es = (nameToUse[strlen(nameToUse) - 1] == 's');
-    return fmt::format(
-        "The {:d} {}{}{}{}", cnt, adjective ? adjective : "", adjective ? " " : "", nameToUse, es ? "es" : "s");
+    return GetCountedName(*this);
   }
 }
 
 std::string Item::theName() const {
-  if (count == 1 && (!isSoftStackable() || stack.size() == 0)) {
-    return fmt::format("the {}{}{}", adjective ? adjective : "", adjective ? " " : "", name ? name : typeName_);
+  if (count_ == 1 && (!isSoftStackable() || stack_.size() == 0)) {
+    return GetNameWithPrefix(*this, "the");
   } else {
-    int cnt = count > 1 ? count : stack.size() + 1;
-    const char* nameToUse = name ? name : typeName_;
-    bool es = (nameToUse[strlen(nameToUse) - 1] == 's');
-    return fmt::format(
-        "the {:d} {}{}{}{}", cnt, adjective ? adjective : "", adjective ? " " : "", nameToUse, es ? "es" : "s");
+    return GetCountedName(*this);
   }
 }
 
@@ -1740,16 +1725,16 @@ bool Item::loadData(uint32_t chunkId, uint32_t chunkVersion, TCODZip* zip) {
   if (chunkVersion != ITEM_CHUNK_VERSION) return false;
   x = zip->getFloat();
   y = zip->getFloat();
-  itemClass = (ItemClass)zip->getInt();
-  if (itemClass < 0 || itemClass >= NB_ITEM_CLASSES) return false;
-  col = zip->getColor();
-  typeName_ = strdup(zip->getString());
+  item_class_ = (ItemClass)zip->getInt();
+  if (item_class_ < 0 || item_class_ >= NB_ITEM_CLASSES) return false;
+  color_ = zip->getColor();
+  typeName_ = zip->getString();
   const char* fname = zip->getString();
-  if (fname) name = strdup(fname);
-  count = zip->getInt();
-  ch = zip->getInt();
-  an = zip->getChar() == 1;
-  life = zip->getFloat();
+  if (fname) name_ = fname;
+  count_ = zip->getInt();
+  ch_ = zip->getInt();
+  an_ = zip->getChar() == 1;
+  life_ = zip->getFloat();
 
   int nbItems = zip->getInt();
   bool soft = isSoftStackable();
@@ -1762,7 +1747,7 @@ bool Item::loadData(uint32_t chunkId, uint32_t chunkVersion, TCODZip* zip) {
     Item* it = Item::getItem(itemType, 0, 0);
     if (!it->loadData(itemChunkId, itemChunkVersion, zip)) return false;
     if (soft)
-      stack.push_back(it);
+      stack_.push_back(it);
     else
       it->putInContainer(this);
     nbItems--;
@@ -1770,9 +1755,9 @@ bool Item::loadData(uint32_t chunkId, uint32_t chunkVersion, TCODZip* zip) {
 
   ItemFeature* feat = getFeature(ITEM_FEAT_ATTACK);
   if (feat) {
-    castDelay = zip->getFloat();
-    reloadDelay = zip->getFloat();
-    damages = zip->getFloat();
+    cast_delay_ = zip->getFloat();
+    reload_delay_ = zip->getFloat();
+    damages_ = zip->getFloat();
   }
 
   int nbModifiers = zip->getInt();
@@ -1781,7 +1766,7 @@ bool Item::loadData(uint32_t chunkId, uint32_t chunkVersion, TCODZip* zip) {
     if (id < 0 || id >= ITEM_MOD_NUMBER) return false;
     float value = zip->getFloat();
     ItemModifier* mod = new ItemModifier(id, value);
-    modifiers.push(mod);
+    modifiers_.push(mod);
   }
   return true;
 }
@@ -1790,29 +1775,29 @@ void Item::saveData(uint32_t chunkId, TCODZip* zip) {
   saveGame.saveChunk(ITEM_CHUNK_ID, ITEM_CHUNK_VERSION);
   zip->putFloat(x);
   zip->putFloat(y);
-  zip->putInt(itemClass);
-  zip->putColor(&col);
-  zip->putString(typeName_);
-  zip->putString(name);
-  zip->putInt(count);
-  zip->putInt(ch);
-  zip->putChar(an ? 1 : 0);
-  zip->putFloat(life);
+  zip->putInt(item_class_);
+  zip->putColor(&color_);
+  zip->putString(typeName_.c_str());
+  zip->putString(name_ ? name_->c_str() : nullptr);
+  zip->putInt(count_);
+  zip->putInt(ch_);
+  zip->putChar(an_ ? 1 : 0);
+  zip->putFloat(life_);
   // save items inside this item or soft stacks
-  zip->putInt(stack.size());
-  for (Item* it : stack) {
-    zip->putString(it->typeData->name);
+  zip->putInt(stack_.size());
+  for (Item* it : stack_) {
+    zip->putString(it->typeData->name.c_str());
     it->saveData(ITEM_CHUNK_ID, zip);
   }
   ItemFeature* feat = getFeature(ITEM_FEAT_ATTACK);
   if (feat) {
-    zip->putFloat(castDelay);
-    zip->putFloat(reloadDelay);
-    zip->putFloat(damages);
+    zip->putFloat(cast_delay_);
+    zip->putFloat(reload_delay_);
+    zip->putFloat(damages_);
   }
 
-  zip->putInt(modifiers.size());
-  for (ItemModifier** it = modifiers.begin(); it != modifiers.end(); it++) {
+  zip->putInt(modifiers_.size());
+  for (ItemModifier** it = modifiers_.begin(); it != modifiers_.end(); it++) {
     zip->putInt((*it)->id);
     zip->putFloat((*it)->value);
   }

@@ -76,7 +76,7 @@ struct ItemIngredient {
   bool revert;  // can be disassembled back ?
 };
 
-#define MAX_INGREDIENTS 5
+static constexpr auto MAX_INGREDIENTS = 5;
 
 // item recipe
 struct ItemCombination {
@@ -227,15 +227,6 @@ enum InventoryTabId { INV_ALL, INV_ARMOR, INV_WEAPON, INV_FOOD, INV_MISC, NB_INV
 
 // data shared by all item types
 struct ItemType {
-  InventoryTabId inventoryTab;
-  const char* name;  // name displayed to the player
-  const char* onPick;  // name when picked up
-  TCODColor color;  // color on screen
-  int character;  // character on screen
-  int flags;
-  TCODList<ItemType*> inherits;
-  TCODList<ItemFeature*> features;
-  TCODList<ItemActionId> actions;
   ItemFeature* getFeature(ItemFeatureId id) const;
   bool hasFeature(ItemFeatureId id) const { return getFeature(id) != NULL; }
   bool isA(const ItemType* type) const;
@@ -247,7 +238,17 @@ struct ItemType {
   Item* produce(float rng) const;  // for items with Produce feature(s)
 
   bool isIngredient() const;  // in any recipe
-  bool isTool() const;  // in any recipe
+  bool isTool() const;  // in any recipeW
+
+  InventoryTabId inventoryTab{};
+  std::string name{};  // name displayed to the player
+  std::optional<std::string> onPick{};  // name when picked up
+  TCODColor color{};  // color on screen
+  int character{};  // character on screen
+  int flags{};
+  TCODList<ItemType*> inherits{};
+  TCODList<ItemFeature*> features{};
+  TCODList<ItemActionId> actions{};
 };
 
 class Item : public DynamicEntity {
@@ -257,7 +258,7 @@ class Item : public DynamicEntity {
   static Item* getItem(const ItemType* type, float x, float y, bool createComponents = true);
   static Item* getRandomWeapon(const char* type, ItemClass itemClass);
 
-  static bool init();
+  static bool initDatabase();
   static ItemType* getType(const char* name);
   void destroy(int count = 1);
 
@@ -291,8 +292,8 @@ class Item : public DynamicEntity {
   bool isWalkable() const { return (typeData->flags & ITEM_NOT_WALKABLE) == 0; }
   bool isTransparent() const { return (typeData->flags & ITEM_NOT_TRANSPARENT) == 0; }
   bool isPickable() const { return (typeData->flags & ITEM_NOT_PICKABLE) == 0; }
-  bool isStackable() const { return (typeData->flags & ITEM_STACKABLE) != 0 && name == NULL; }
-  bool isSoftStackable() const { return (typeData->flags & ITEM_SOFT_STACKABLE) != 0 && name == NULL; }
+  bool isStackable() const { return (typeData->flags & ITEM_STACKABLE) != 0 && name_; }
+  bool isSoftStackable() const { return (typeData->flags & ITEM_SOFT_STACKABLE) != 0 && name_; }
   bool isDeletedOnUse() const { return typeData->flags & ITEM_DELETE_ON_USE; }
   bool isUsedWhenPicked() const { return typeData->flags & ITEM_USE_WHEN_PICKED; }
   bool isActivatedOnBump() const { return typeData->flags & ITEM_ACTIVATE_ON_BUMP; }
@@ -329,47 +330,46 @@ class Item : public DynamicEntity {
   bool hasComponents() const;
   void addComponent(Item* component);
   ItemCombination* getCombination() const;
+  ExtendedLight* getLight() { return light_; };
 
-  const ItemType* typeData = nullptr;
-  ItemClass itemClass;
-  TCODColor col;
-  char* typeName_ = nullptr;
-  char* name = nullptr;
+  const ItemType* typeData{};
+  ItemClass item_class_{};
+  TCODColor color_{};
+  std::string typeName_{};
+  std::optional<std::string> name_{};
   // something that can affect the name of an item created with this component
   // example : an azuran blade => an azuran knife
-  char* adjective = nullptr;
-  bool an;
-  int count;
-  TCODList<ItemModifier*> modifiers;
-  Creature* owner = nullptr;  // this is in owner's inventory
-  Item* container = nullptr;  // this is inside container
-  Creature* asCreature = nullptr;  // a creature corresponding to this item
-  float fireResistance;
-  int toDelete;
-  int ch;
-  std::vector<Item*> stack;  // for soft stackable items or containers
-  std::vector<Item*> components;  // for items that can be disassembled
-  ExtendedLight* getLight() { return light; };
-
+  std::optional<std::string> adjective_{};
+  bool an_{};  //  If the name begins with a vowel sound.
+  int count_{1};
+  TCODList<ItemModifier*> modifiers_{};
+  Creature* owner_{};  // this is in owner's inventory
+  Item* container_{};  // this is inside container
+  Creature* as_creature_{};  // a creature corresponding to this item
+  float fire_resistance_{};
+  int to_delete_{};
+  int ch_{};
+  std::vector<Item*> stack_{};  // for soft stackable items or containers
+  std::vector<Item*> components_{};  // for items that can be disassembled
  protected:
   friend class ItemFileListener;
   static void addFeature(const char* typeName, ItemFeature* feat);
   static TCODList<ItemType*> types;
   Item(float x, float y, const ItemType& type);
-  bool active;
-  float life;  // remaining time before aging effect turn this item into something else
+  bool active_{};
+  float life_{};  // remaining time before aging effect turn this item into something else
   // attack feature data
-  WeaponPhase phase;
-  float phaseTimer;
-  float castDelay;
-  float reloadDelay;
-  float damages;
-  float cumulatedElapsed;
-  int targetx, targety;
-  float heatTimer;  // time before next heat update (1 per second)
-  bool onoff;  // for doors, torchs, ... on = open/turned on, off = closed/turned off
+  WeaponPhase phase_{};
+  float phase_timer_{};
+  float cast_delay_{};
+  float reload_delay_{};
+  float damages_{};
+  float cumulated_elapsed_{};
+  int target_x_{}, target_y_{};
+  float heat_timer_{};  // time before next heat update (1 per second)
+  bool toggle_{};  // for doors, torchs, ... on = open/turned on, off = closed/turned off
 
-  ExtendedLight* light = nullptr;
+  ExtendedLight* light_{};
   static TCODConsole* descCon;  // offscreen console for item description
 
   void initLight();

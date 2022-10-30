@@ -267,7 +267,7 @@ bool FireBall::updateMove(float elapsed) {
               item::ItemFeature* feat = it->getFeature(item::ITEM_FEAT_FIRE_EFFECT);
               if (feat) {
                 float dmg = TCODRandom::getInstance()->getFloat(damage / 2, damage);
-                it->fireResistance -= dmg;
+                it->fire_resistance_ -= dmg;
               }
               end = true;
             }
@@ -380,7 +380,7 @@ bool FireBall::updateTorch(float elapsed) {
               item::ItemFeature* fireFeat = it->getFeature(item::ITEM_FEAT_FIRE_EFFECT);
               if (fireFeat) {
                 // item is affected by fire
-                it->fireResistance -= damage / 4;
+                it->fire_resistance_ -= damage / 4;
               }
             }
             Creature* cr = dungeon->getCreature((int)(x) + tx, (int)(y) + ty);

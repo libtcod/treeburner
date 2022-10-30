@@ -665,8 +665,8 @@ void ForestScreen::onActivate() {
     fr = new Friend();
     item::Item* knife = item::Item::getRandomWeapon("knife", item::ITEM_CLASS_STANDARD);
     knife->addComponent(item::Item::getItem("emerald", 0, 0, false));
-    knife->name = strdup("emerald pocketknife");
-    knife->an = true;
+    knife->name_ = strdup("emerald pocketknife");
+    knife->an_ = true;
     player.addToInventory(knife);
     player.x = housex;
     player.y = housey + 10;

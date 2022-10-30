@@ -92,7 +92,7 @@ void Inventory::initialize(item::Item* container) {
     tabs[i].items.clear();
     tabs[i].offset = 0;
   }
-  for (item::Item* it : container->stack) {
+  for (item::Item* it : container->stack_) {
     tabs[it->typeData->inventoryTab].items.push_back(it);
     tabs[item::INV_ALL].items.push_back(it);
   }
@@ -176,9 +176,9 @@ void Inventory::render() {
         rect.h,
         true,
         TCOD_BKGND_SET,
-        owner             ? "Inventory"
-        : container->name ? container->name
-                          : container->typeName_);
+        owner              ? "Inventory"
+        : container->name_ ? container->name_->c_str()
+                           : container->typeName_.c_str());
     con->setChar(w2 - 1, 0, 'x');
     con->setCharForeground(w2 - 1, 0, closeOn ? guiHighlightedText : guiText);
 
@@ -202,7 +202,7 @@ void Inventory::render() {
       if (skip <= 0) {
         con->setDefaultBackground(num == selectedItem ? guiHighlightedBackground : guiBackground);
         con->rect(2, ty, w2 - 4, 1, false, TCOD_BKGND_SET);
-        con->setDefaultForeground(item::Item::classColor[(*it)->itemClass]);
+        con->setDefaultForeground(item::Item::classColor[(*it)->item_class_]);
         if ((*it)->isEquiped())
           con->print(2, ty++, "%s (equiped)", (*it)->aName().c_str());
         else
@@ -236,12 +236,12 @@ void Inventory::render() {
         if ((owner && action->onInventory()) || (container && action->onLoot())) {
           cmenuheight++;
           cmenuwidth = MAX(cmenuwidth, (int)strlen(action->name) + 2);
-          if (*id == item::ITEM_ACTION_TAKE && item->count > 1) {
+          if (*id == item::ITEM_ACTION_TAKE && item->count_ > 1) {
             // add one entry for 'Take all'
             cmenuheight++;
             item::ItemAction* takeAll = item::ItemAction::getFromId(item::ITEM_ACTION_TAKE_ALL);
             cmenuwidth = MAX(cmenuwidth, (int)strlen(takeAll->name) + 2);
-          } else if (*id == item::ITEM_ACTION_DROP && item->count > 1) {
+          } else if (*id == item::ITEM_ACTION_DROP && item->count_ > 1) {
             // add one entry for 'Drop all'
             cmenuheight++;
             item::ItemAction* dropAll = item::ItemAction::getFromId(item::ITEM_ACTION_DROP_ALL);
@@ -279,7 +279,7 @@ void Inventory::render() {
               "");
           first = false;
           num++;
-          if (*id == item::ITEM_ACTION_TAKE && item->count > 1) {
+          if (*id == item::ITEM_ACTION_TAKE && item->count_ > 1) {
             TCODConsole::root->setDefaultForeground(
                 num == cmenuitem ? TCODColor::white
                 : first          ? guiHighlightedText
@@ -296,7 +296,7 @@ void Inventory::render() {
                 cmenuwidth - 1 - strlen(takeAll->name),
                 "");
             num++;
-          } else if (*id == item::ITEM_ACTION_DROP && item->count > 1) {
+          } else if (*id == item::ITEM_ACTION_DROP && item->count_ > 1) {
             TCODConsole::root->setDefaultForeground(
                 num == cmenuitem ? TCODColor::white
                 : first          ? guiHighlightedText
@@ -320,8 +320,8 @@ void Inventory::render() {
   } else {
     // render the item description
     if (dragOut && isDragging && dragItem) {
-      TCODConsole::root->setChar(itemx, itemy - 2, dragItem->ch);
-      TCODConsole::root->setCharForeground(itemx, itemy - 2, dragItem->col);
+      TCODConsole::root->setChar(itemx, itemy - 2, dragItem->ch_);
+      TCODConsole::root->setCharForeground(itemx, itemy - 2, dragItem->color_);
     } else if ((!isDragging && itemToCombine == NULL) || (isDragging && !dragOut && selectedItem == -1)) {
       item::Item* item = isDragging ? dragItem : selectedItem >= 0 ? curTab->items.at(selectedItem) : NULL;
       if (item) item->renderDescription(itemx, itemy);
@@ -336,7 +336,7 @@ void Inventory::render() {
         if (combination) {
           itemToCombine2 = curTab->items.at(selectedItem);
           combinationResult = item::Item::getItem(combination->resultType, 0, 0, false);
-          combinationResult->count = combination->nbResult;
+          combinationResult->count_ = combination->nbResult;
           combinationResult->addComponent(itemToCombine ? itemToCombine : dragItem);
           combinationResult->addComponent(curTab->items.at(selectedItem));
         } else {
@@ -378,7 +378,7 @@ void Inventory::activateItem() {
       }
     }
     for (item::Item* it : toDestroy) {
-      it->toDelete = true;
+      it->to_delete_ = true;
     }
     // recompute inventory
     if (owner)
@@ -473,7 +473,7 @@ void Inventory::runActionOnItem(item::ItemActionId id, item::Item* item) {
       break;
     case item::ITEM_ACTION_DISASSEMBLE: {
       // create components
-      for (item::Item* it : item->components) {
+      for (item::Item* it : item->components_) {
         if (owner)
           owner->addToInventory(it);
         else
@@ -523,13 +523,13 @@ bool Inventory::update(float elapsed, TCOD_key_t& k, TCOD_mouse_t& mouse) {
             break;
           }
           count--;
-          if (*id == item::ITEM_ACTION_TAKE && item->count > 1) {
+          if (*id == item::ITEM_ACTION_TAKE && item->count_ > 1) {
             if (count == 0) {
               actionId = item::ITEM_ACTION_TAKE_ALL;
               break;
             }
             count--;
-          } else if (*id == item::ITEM_ACTION_DROP && item->count > 1) {
+          } else if (*id == item::ITEM_ACTION_DROP && item->count_ > 1) {
             if (count == 0) {
               actionId = item::ITEM_ACTION_DROP_ALL;
               break;
@@ -616,7 +616,7 @@ bool Inventory::update(float elapsed, TCOD_key_t& k, TCOD_mouse_t& mouse) {
           if (owner)
             newItem = owner->removeFromInventory(dragItem);
           else
-            newItem = dragItem->removeFromList(container->stack);
+            newItem = dragItem->removeFromList(container->stack_);
           newItem->dx = dx;
           newItem->dy = dy;
           newItem->speed = 1.0f / (invLength * 1.5f);

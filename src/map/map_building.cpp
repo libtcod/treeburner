@@ -240,18 +240,18 @@ void Building::setHuntingHide(Dungeon* dungeon) {
 
     item::Item* item = item::Item::getItem("short bronze blade", 0, 0);
     // Item *knife=Item::getRandomWeapon(ITEM_KNIFE,ITEM_CLASS_STANDARD);
-    // knife->name = strdup("hunting knife");
-    item->name = strdup("knife blade");
-    item->adjective = strdup("hunting");
+    // knife->name = "hunting knife";
+    item->name_ = "knife blade";
+    item->adjective_ = "hunting";
     item->putInContainer(chest);
 
     item = item::Item::getItem("bottle", 0, 0);
     item->putInContainer(chest);
-    item->name = strdup("empty bottle");
-    item->an = true;
+    item->name_ = "empty bottle";
+    item->an_ = true;
 
     item = item::Item::getItem("linen thread", 0, 0);
-    item->count = 2;
+    item->count_ = 2;
     item->putInContainer(chest);
 
     item = item::Item::getItem("bone hook", 0, 0);
@@ -291,7 +291,7 @@ void Building::applyTo(Dungeon* dungeon, int dungeonDoorx, int dungeonDoory, boo
               TCOD_CHAR_SE,
               TCOD_CHAR_SW};
           item::Item* wall = item::Item::getItem(cityWalls ? "city wall" : "wall", x + cx, y + cy);
-          wall->ch = wallToChar[cellType];
+          wall->ch_ = wallToChar[cellType];
           dungeon->addItem(wall);
         }
         // no break!
@@ -321,11 +321,11 @@ void Building::applyTo(Dungeon* dungeon, int dungeonDoorx, int dungeonDoory, boo
             dungeon->addItem(item::Item::getItem("door", x + cx, y + cy));
           } else if (cellType == BUILDING_WINDOW_H) {
             item::Item* item = item::Item::getItem(cityWalls ? "arrow slit" : "window", x + cx, y + cy);
-            item->ch = TCOD_CHAR_HLINE;
+            item->ch_ = TCOD_CHAR_HLINE;
             dungeon->addItem(item);
           } else if (cellType == BUILDING_WINDOW_V) {
             item::Item* item = item::Item::getItem(cityWalls ? "arrow slit" : "window", x + cx, y + cy);
-            item->ch = TCOD_CHAR_VLINE;
+            item->ch_ = TCOD_CHAR_VLINE;
             dungeon->addItem(item);
           }
           break;
@@ -367,7 +367,7 @@ void Building::setBuildingWallCell(int x, int y, int ysym, int ch, Dungeon* dung
   static int subcx[] = {0, 1, 0, 1};
   static int subcy[] = {0, 0, 1, 1};
   item::Item* wall = item::Item::getItem("city wall", x, y);
-  wall->ch = ch;
+  wall->ch_ = ch;
   dungeon->addItem(wall);
   dungeon->getCell(x, y)->terrain = TERRAIN_WOODEN_FLOOR;
   for (int i = 0; i < 4; i++) {
@@ -395,7 +395,7 @@ void Building::setBuildingWallCell(int x, int y, int ysym, int ch, Dungeon* dung
       default:
         break;
     }
-    wall->ch = ch;
+    wall->ch_ = ch;
     dungeon->addItem(wall);
     dungeon->getCell(x, y2)->terrain = TERRAIN_WOODEN_FLOOR;
     for (int i = 0; i < 4; i++) {

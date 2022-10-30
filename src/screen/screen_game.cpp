@@ -51,7 +51,7 @@ void Game::onActivate() {
   finalExplosion = 2.0f;
   stats = {};
   item::Item* wand = item::Item::getRandomWeapon("wand", item::ITEM_CLASS_STANDARD);
-  wand->name = strdup("pyromancer wand");
+  wand->name_ = strdup("pyromancer wand");
   player.addToInventory(wand);
   player.equip(wand);
   player.setLightRange(playerLightRange);
@@ -385,7 +385,7 @@ bool Game::update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse) {
       static int i = 0;
       item::Item* w = item::Item::getRandomWeapon("staff", (item::ItemClass)i++);
       w->setPos(player.x, player.y - 1);
-      w->name = strdup("Pyromancer's staff");
+      w->name_ = strdup("Pyromancer's staff");
       if (i > item::ITEM_CLASS_GOLD) i = 0;
       dungeon->addItem(w);
     }

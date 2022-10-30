@@ -707,7 +707,7 @@ item::Item* Dungeon::removeItem(item::Item* it, int count, bool del) {
   item::Item* newItem = it->removeFromList(getCell(it->x, it->y)->items, count);
   if (newItem == it) {
     if (it->getLight()) removeLight(it->getLight());
-    if (del) it->toDelete = count;
+    if (del) it->to_delete_ = count;
     computeWalkTransp((int)it->x, (int)it->y);
   }
   return newItem;
@@ -758,16 +758,16 @@ void Dungeon::updateItems(float elapsed, TCOD_key_t k, TCOD_mouse_t* mouse) {
   std::vector<item::Item*> toDelete;
   isUpdatingItems = true;
   for (item::Item* it : items) {
-    if (it->toDelete) {
+    if (it->to_delete_) {
       toDelete.push_back(it);
     } else if (!it->update(elapsed, k, mouse)) {
       toDelete.push_back(it);
-      it->toDelete = 1;
+      it->to_delete_ = 1;
     }
   }
   isUpdatingItems = false;
   for (item::Item* it : toDelete) {
-    removeItem(it, it->count);  // from item map
+    removeItem(it, it->count_);  // from item map
     helpers::remove(items, it);  // from item list
     if (it->typeData->isA("tree")) {
       gameEngine->recomputeCanopy(it);
@@ -904,7 +904,7 @@ void Dungeon::saveData(uint32_t chunkId, TCODZip* zip) {
   zip->putInt(nbItemsToSave);
   for (int i = 0; i < width * height; i++) {
     for (item::Item* it : cells[i].items) {
-      zip->putString(it->typeData->name);
+      zip->putString(it->typeData->name.c_str());
       it->saveData(ITEM_CHUNK_ID, zip);
     }
   }

@@ -117,9 +117,9 @@ void GameEngine::setCanopy(int x, int y, const item::ItemType* treeType, const R
         if (y + ty >= r.y && y + ty < r.y + r.h) {
           if (dungeon->getShadowHeight(x + tx, y + ty) < 2.0f) {
             TCODColor treecol = TCODColor::lerp(green1, green2, TCODRandom::getInstance()->getFloat(0.0f, 1.0f));
-            if (strcmp(treeType->name, "pine tree") == 0) treecol = treecol * 0.75f;
+            if (treeType->name == "pine tree") treecol = treecol * 0.75f;
             treecol = treecol * (0.6f + 0.4f * (tx + treeRadiusW) / (2 * treeRadiusW));
-            if (strcmp(treeType->name, "apple tree") == 0 && TCODRandom::getInstance()->getInt(0, 80) == 0)
+            if (treeType->name == "apple tree" && TCODRandom::getInstance()->getInt(0, 80) == 0)
               treecol = TCODColor::darkOrange;
             dungeon->canopy->putPixel(x + tx, y + ty, treecol);
             if (x + tx >= 2) {
