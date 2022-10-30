@@ -3,6 +3,7 @@ name: CMake
 on:
   push:
   pull_request:
+    types: [opened, reopened]
 
 defaults:
   run:
