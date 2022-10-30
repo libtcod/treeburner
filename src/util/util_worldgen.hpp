@@ -97,7 +97,7 @@ class WorldGenerator {
   // precipitation map (0.0 - 1.0)
   TCODHeightMap precipitation_{HM_WIDTH, HM_HEIGHT};
   // biome map
-  std::array<EBiome, HM_WIDTH * HM_HEIGHT> biome_map_{};
+  std::vector<EBiome> biome_map_{std::vector<EBiome>(HM_WIDTH * HM_HEIGHT)};
 
  protected:
   friend class RiverPathCbk;
@@ -145,8 +145,8 @@ class WorldGenerator {
   float cloud_dx_{};  // horizontal offset for smooth scrolling
   float cloud_total_dx_{};
   // world light intensity map (shadow map)
-  std::array<float, HM_WIDTH * HM_HEIGHT> light_intensity_{};
-  std::array<MapData, HM_WIDTH * HM_HEIGHT> map_data_{};
+  std::vector<float> light_intensity_{std::vector<float>(HM_WIDTH * HM_HEIGHT)};
+  std::vector<MapData> map_data_{std::vector<MapData>(HM_WIDTH * HM_HEIGHT)};
   std::vector<River> rivers_{};
   TCODRandom* wg_rng_{};
 };

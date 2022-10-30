@@ -1177,11 +1177,11 @@ void WorldGenerator::generate(TCODRandom* wRng) {
   heightmap_.clear();
   heightmap_no_erosion_.clear();
   worldmap_.clear(BLACK);
-  light_intensity_.fill(0);
+  for (auto& it : light_intensity_) it = {};
   temperature_.clear();
   precipitation_.clear();
-  biome_map_.fill(EBiome{});
-  map_data_.fill(MapData{});
+  for (auto& it : biome_map_) it = {};
+  for (auto& it : map_data_) it = {};
   float t1 = getTime();
   DBG(("Initialization... %g\n", t1 - t0));
   t0 = t1;
