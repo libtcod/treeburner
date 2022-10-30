@@ -25,16 +25,16 @@
  */
 #pragma once
 #include <libtcod.hpp>
+#include <vector>
 
 class CellularAutomata {
  public:
   typedef bool (CellularAutomata::*CAFunc)(int x, int y, void* userData);
-
-  CellularAutomata(int w, int h, int per);
+  CellularAutomata() = default;
+  CellularAutomata(int w, int h) : w_{w}, h_{h}, min_x_{0}, min_y_{0}, max_x_{w - 1}, max_y_{h - 1}, data_(w * h) {}
+  CellularAutomata(int w, int h, int per) : CellularAutomata{w, h} { randomize(per); }
   CellularAutomata(TCODMap* map);
-  CellularAutomata(CellularAutomata* c1);
-  CellularAutomata(CellularAutomata* c1, CellularAutomata* c2, float morphCoef);
-  virtual ~CellularAutomata();
+  CellularAutomata(CellularAutomata& c1, CellularAutomata& c2, float morphCoef);
   // per % of cells are empty
   void randomize(int per);
   void generate(CAFunc func, int nbLoops, void* userData = NULL);
@@ -55,7 +55,7 @@ class CellularAutomata {
   bool CAFunc_cleanIsolatedWalls(int x, int y, void* userData);
 
  private:
-  int w, h;
-  int minx, miny, maxx, maxy;
-  uint8_t* data = nullptr;
+  int w_{}, h_{};
+  int min_x_{}, min_y_{}, max_x_{}, max_y_{};
+  std::vector<uint8_t> data_{};
 };

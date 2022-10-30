@@ -87,24 +87,23 @@ CaveGenerator::CaveGenerator(int level) : level(level) {
     CellularAutomata cell(map);
 
     // the cavified dungeon
-    CellularAutomata* cavecell = NULL;
+    CellularAutomata cavecell{};
     if (level < 2 * nbLevels / 3)
-      cavecell = new CellularAutomata(&cell);
+      cavecell = CellularAutomata(cell);
     else
-      cavecell = new CellularAutomata(size, size, 40);
+      cavecell = CellularAutomata(size, size, 40);
     // cavecell.generate(&CellularAutomata::CAFunc_dig,1);
-    cavecell->generate(&CellularAutomata::CAFunc_cave, 4);
-    cavecell->generate(&CellularAutomata::CAFunc_cave2, 3);
-    cavecell->connect();
+    cavecell.generate(&CellularAutomata::CAFunc_cave, 4);
+    cavecell.generate(&CellularAutomata::CAFunc_cave2, 3);
+    cavecell.connect();
 
     // the morphed dungeon
-    CellularAutomata morph(cavecell, &cell, ((float)(level - nbLevels / 3) / (nbLevels - nbLevels / 3)));
+    CellularAutomata morph(cavecell, cell, ((float)(level - nbLevels / 3) / (nbLevels - nbLevels / 3)));
     morph.generate(&CellularAutomata::CAFunc_cave, 4);
     morph.generate(&CellularAutomata::CAFunc_dig, 1);
     morph.seal();
     morph.connect();
     morph.apply(map);
-    delete cavecell;
   }
 }
 
