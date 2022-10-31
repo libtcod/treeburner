@@ -31,7 +31,6 @@
 #include "base/savegame.hpp"
 #include "item.hpp"
 
-
 // Terrain system adapted from Umbrarum Regnum Tech Demo 1
 struct TerrainType {
   const char* name{};  // terrain type name

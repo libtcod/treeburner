@@ -36,7 +36,6 @@
 #include "util_cellular.hpp"
 #include "util_clouds.hpp"
 
-
 class Player;
 class LightMap;
 

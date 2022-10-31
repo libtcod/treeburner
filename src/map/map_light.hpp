@@ -30,7 +30,6 @@
 #include "base/noisything.hpp"
 #include "map_lightmap.hpp"
 
-
 class Light : public base::Entity, public base::NoisyThing {
  public:
   Light() : randomRad(false), range(0.0f), color{tcod::ColorRGB{255, 255, 255}} {}

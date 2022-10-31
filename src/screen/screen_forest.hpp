@@ -31,7 +31,6 @@
 #include "mob_friend.hpp"
 #include "ui_input.hpp"
 
-
 class ForestScreen : public base::GameEngine, public base::SaveListener {
  public:
   Friend* fr;
