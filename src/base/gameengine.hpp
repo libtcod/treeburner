@@ -41,7 +41,7 @@
 #include "util_packer.hpp"
 #include "util_ripples.hpp"
 
-namespace bas {
+namespace base {
 class GameEngine : public Screen {
  public:
   GameEngine();
@@ -122,4 +122,4 @@ class GameEngine : public Screen {
   void onDeactivate() override;
   void computeAspectRatio();
 };
-}  // namespace bas
+}  // namespace base

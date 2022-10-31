@@ -29,7 +29,7 @@
 
 #include "main.hpp"
 
-namespace bas {
+namespace base {
 // John Carmack's fast inverse sqrt
 float Entity::fastInvSqrt(float x) {
   const float xhalf = 0.5f * x;
@@ -43,4 +43,4 @@ float Entity::fastInvSqrt(float x) {
 float Entity::distance(const Entity& p) const { return sqrtf(squaredDistance(p)); }
 
 bool Entity::isOnScreen() const { return IN_RECTANGLE(x - gameEngine->xOffset, y - gameEngine->yOffset, CON_W, CON_H); }
-}  // namespace bas
+}  // namespace base

@@ -52,7 +52,7 @@ Objective::Objective(const char* title, const char* description, const char* ena
 #define UPDATE_DELAY 3.0f
 
 Objectives::Objectives() : timer(0.0f), showWindow(false), firstObj(true) {
-  saveGame.registerListener(OBJE_CHUNK_ID, bas::PHASE_START, this);
+  saveGame.registerListener(OBJE_CHUNK_ID, base::PHASE_START, this);
   rect = UmbraRect(2, 5, OBJ_WIDTH, OBJ_HEIGHT);
   con = new TCODConsole(OBJ_WIDTH, OBJ_HEIGHT);
   con->setDefaultBackground(guiBackground);

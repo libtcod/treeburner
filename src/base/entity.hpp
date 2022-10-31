@@ -27,7 +27,7 @@
 #include <algorithm>
 #include <gsl/gsl>
 
-namespace bas {
+namespace base {
 // a position in the world
 class Entity {
  public:
@@ -115,4 +115,4 @@ class DynamicEntity : public Entity {
   float speed{};  // speed in cells/sec
   DynamicEntity() = default;
 };
-}  // namespace bas
+}  // namespace base

@@ -39,7 +39,7 @@
 class Player;
 class LightMap;
 
-class Dungeon : public bas::SaveListener {
+class Dungeon : public base::SaveListener {
  public:
   Dungeon(int width, int height);  // empty dungeon
   Dungeon(int level, CaveGenerator* caveGen);  // bsp / cellular automate dungeon

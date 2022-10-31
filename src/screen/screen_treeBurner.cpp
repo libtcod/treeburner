@@ -127,8 +127,8 @@ void TreeBurner::render() {
   int minx, maxx, miny, maxy;
   bool showDebugMap = false;
   ground.clear(TCODColor::black);
-  bas::Rect r1(xOffset * 2, yOffset * 2, CON_W * 2, CON_H * 2);
-  bas::Rect r2(0, 0, dungeon->width * 2, dungeon->height * 2);
+  base::Rect r1(xOffset * 2, yOffset * 2, CON_W * 2, CON_H * 2);
+  base::Rect r2(0, 0, dungeon->width * 2, dungeon->height * 2);
   r1.intersect(r2);
   minx = (int)(r1.x - xOffset * 2);
   maxx = (int)(r1.x + r1.w - xOffset * 2);
@@ -447,13 +447,13 @@ void TreeBurner::generateMap(uint32_t seed) {
   // set water as non buildable
   for (int x = FOREST_W - 100; x < FOREST_W - 20; x++) {
     for (int y = 20; y < FOREST_H; y++) {
-      if (dungeon->hasRipples(x, y)) packer.addForbiddenZone(bas::Rect(x, y, 1, 1));
+      if (dungeon->hasRipples(x, y)) packer.addForbiddenZone(base::Rect(x, y, 1, 1));
     }
   }
   // boss house
   int housex = forestRng->getInt(FOREST_W - 50, FOREST_W - 20);
   int housey = forestRng->getInt(20, FOREST_H - 20);
-  bas::Rect house(housex, housey, forestRng->getInt(20, 30), forestRng->getInt(20, 30));
+  base::Rect house(housex, housey, forestRng->getInt(20, 30), forestRng->getInt(20, 30));
   if (packer.addRect(&house)) {
     Building* building = Building::generate(house.w, house.h, house.w * house.h / 20, forestRng);
     building->applyTo(dungeon, (int)(house.x + building->doorx), (int)(house.y + building->doory));
@@ -468,7 +468,7 @@ void TreeBurner::generateMap(uint32_t seed) {
   for (int i = 0; i < 20; i++) {
     int housex = forestRng->getInt(FOREST_W - 100, FOREST_W - 20);
     int housey = forestRng->getInt(20, FOREST_H - 20);
-    bas::Rect house(housex, housey, forestRng->getInt(6, 12), forestRng->getInt(6, 12));
+    base::Rect house(housex, housey, forestRng->getInt(6, 12), forestRng->getInt(6, 12));
     if (packer.addRect(&house)) {
       Building* building = Building::generate(house.w, house.h, house.w * house.h / 30, forestRng);
       building->applyTo(dungeon, (int)(house.x + building->doorx), (int)(house.y + building->doory));

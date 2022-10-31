@@ -73,7 +73,7 @@ enum TerrainId {
 
 extern std::array<TerrainType, NB_TERRAINS> terrainTypes;
 class Building;
-struct Cell : public bas::Persistant {
+struct Cell : public base::Persistant {
   int nbCreatures{};
   std::vector<item::Item*> items{};
   bool hasCorpse{};
@@ -87,7 +87,7 @@ struct Cell : public bas::Persistant {
   void saveData(TCODZip* zip) override;
 };
 
-struct SubCell : public bas::Persistant {
+struct SubCell : public base::Persistant {
   TCODColor groundColor{};
   // for outdoors, shadow casted by the sun
   float shadowBeforeTree{};

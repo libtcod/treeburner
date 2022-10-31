@@ -396,7 +396,7 @@ bool Creature::walk(float elapsed) {
     walkTimer = -walkTime;
     if (path && !path->isEmpty()) {
       int newx, newy;
-      bas::GameEngine* game = gameEngine;
+      base::GameEngine* game = gameEngine;
       path->get(0, &newx, &newy);
       if ((game->player.x != newx || game->player.y != newy) && !game->dungeon->hasCreature(newx, newy)) {
         int oldx = (int)x, oldy = (int)y;
@@ -423,7 +423,7 @@ void Creature::randomWalk(float elapsed) {
     static int diry[] = {-1, -1, -1, 0, 0, 1, 1, 1};
     int d = TCODRandom::getInstance()->getInt(0, 7);
     int count = 8;
-    bas::GameEngine* game = gameEngine;
+    base::GameEngine* game = gameEngine;
     do {
       int newx = (int)(x + dirx[d]), newy = (int)(y + diry[d]);
       if (IN_RECTANGLE(newx, newy, game->dungeon->width, game->dungeon->height) &&
@@ -441,7 +441,7 @@ void Creature::randomWalk(float elapsed) {
 }
 
 float Creature::getWalkCost(int xFrom, int yFrom, int xTo, int yTo, void* userData) const {
-  bas::GameEngine* game = gameEngine;
+  base::GameEngine* game = gameEngine;
   if (!game->dungeon->map->isWalkable(xTo, yTo)) return 0.0f;
   if (ignoreCreatures) return 1.0f;
   if (game->dungeon->hasCreature(xTo, yTo)) return 50.0f;
@@ -454,7 +454,7 @@ void Creature::takeDamage(float amount) {
   int idmg = (int)curDmg;
   if (idmg > 0) {
     if (life > 0 && life <= idmg && this != &gameEngine->player) {
-      bas::AiDirector::instance->killCreature(this);
+      base::AiDirector::instance->killCreature(this);
       gameEngine->stats.creatureDeath[type]++;
     }
     life -= idmg;
@@ -506,11 +506,11 @@ bool Creature::update(float elapsed) {
 
   updateConditions(elapsed);
 
-  bas::GameEngine* game = gameEngine;
+  base::GameEngine* game = gameEngine;
   if (isReplacable()) {
     int pdist = (int)squaredDistance(game->player);
     if (pdist > distReplace) {
-      bas::AiDirector::instance->replace(this);
+      base::AiDirector::instance->replace(this);
       return true;
     }
   }
