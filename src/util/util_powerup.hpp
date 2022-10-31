@@ -30,47 +30,48 @@ typedef enum { PW_FIRST = 0, PW_FB = 0, PW_BURST, PW_SPARKLE_THROUGH, PW_SPARKLE
 
 class Powerup {
  public:
-  PowerupId id;
-
-  const char* name = nullptr;
-  int level;
-  const char* type = nullptr;
-  const char* description = nullptr;
-  Powerup*
-    requires
-  = nullptr;
-  bool enabled;
-
   static TCODList<Powerup*> list;
 
-  static void init();
   Powerup(
       PowerupId id,
       int level,
-      const char* name = NULL,
-      const char* type = NULL,
-      const char* description = NULL,
-      Powerup* requires = NULL);
+      const char* name = nullptr,
+      const char* type = nullptr,
+      const char* description = nullptr,
+      Powerup* prerequisite = nullptr);
+
+  static void init();
   void apply();
   static void getAvailable(TCODList<Powerup*>* l);
+
+  PowerupId id_{};
+  const char* name_{};
+  int level_{};
+  const char* type_{};
+  const char* description_{};
+  Powerup* prerequisite_{};
+  bool enabled_{};
 };
 
 class PowerupGraph {
  public:
   static PowerupGraph* instance;
-  void refresh() { needRefresh = true; }
+
+  void refresh() { need_refresh_ = true; }
   void setFontSize(int fontSize);
   void render();
   bool update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse);
 
  protected:
-  static TCODImage* img[PW_NB];
-  static const char* imgName[PW_NB];
-  bool needRefresh;
-  int iconWidth, iconHeight;  // in console cells
-  int mousecx, mousecy;
-  Powerup* selected = nullptr;
-
   friend class Powerup;
+
+  static TCODImage* img_[PW_NB];
+  static const char* img_name_[PW_NB];
+
   PowerupGraph();
+
+  bool need_refresh_{};
+  int icon_width_{}, icon_height_{};  // in console cells
+  int mouse_cx_{}, mouse_cy_{};
+  Powerup* selected{};
 };
