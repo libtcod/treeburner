@@ -41,8 +41,8 @@ TCODNoise noise3d(3);
 TCODRandom* rng = nullptr;
 bool mouseControl = false;
 bool newGame = false;
-SaveGame saveGame;
-UserPref userPref;
+base::SaveGame saveGame;
+base::UserPref userPref;
 UmbraEngine engine("./data/cfg/umbra.txt", UMBRA_REGISTER_ALL);
 TCODImage background("./data/img/background.png");
 TCODParser config;
@@ -193,7 +193,7 @@ int main(int argc, char* argv[]) {
   threadPool = new ThreadPool();
 
   // initialise random number generator
-  if (!saveGame.load(PHASE_INIT)) {
+  if (!saveGame.load(base::PHASE_INIT)) {
     newGame = true;
     saveGame.init();
     if (config.getBoolProperty("config.debug") && argc == 2) {

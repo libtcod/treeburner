@@ -26,9 +26,9 @@
 #pragma once
 #include <libtcod.hpp>
 
-#include "bas_entity.hpp"
-#include "bas_noisything.hpp"
-#include "bas_savegame.hpp"
+#include "base/entity.hpp"
+#include "base/noisything.hpp"
+#include "base/savegame.hpp"
 #include "item.hpp"
 #include "mob_behavior.hpp"
 
@@ -106,7 +106,10 @@ class Condition {
   void load(TCODZip* zip);
 };
 
-class Creature : public DynamicEntity, public ITCODPathCallback, public NoisyThing, public SaveListener {
+class Creature : public base::DynamicEntity,
+                 public ITCODPathCallback,
+                 public base::NoisyThing,
+                 public base::SaveListener {
  public:
   CreatureTypeId type;
   TCODColor color_;
@@ -189,7 +192,7 @@ class Creature : public DynamicEntity, public ITCODPathCallback, public NoisyThi
   std::vector<item::Item*> inventory;
   float walkTimer, pathTimer;
   float curDmg;
-  struct TalkText : public Rect {
+  struct TalkText : public base::Rect {
     char text[CREATURE_TALK_SIZE];
     float delay;
   } talkText;

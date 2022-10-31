@@ -25,8 +25,8 @@
  */
 #include "mob_boss.hpp"
 
-#include "bas_aidirector.hpp"
-#include "bas_gameengine.hpp"
+#include "base/aidirector.hpp"
+#include "base/gameengine.hpp"
 #include "main.hpp"
 #include "screen_game.hpp"
 
@@ -76,7 +76,7 @@ void Boss::setSeen() {
 
   seen = true;
   ((Game*)(gameEngine))->bossSeen = true;
-  AiDirector::instance->bossSeen();
+  base::AiDirector::instance->bossSeen();
   speed = bossSpeed;
 }
 
@@ -88,7 +88,7 @@ void Boss::takeDamage(float amount) {
   if (life <= 0.0f) {
     // the boss dies
     gameEngine->bossIsDead = true;
-    AiDirector::instance->bossDead();
+    base::AiDirector::instance->bossDead();
     gameEngine->dungeon->stairx = (int)x;
     gameEngine->dungeon->stairy = (int)y;
   }
@@ -121,7 +121,7 @@ bool Boss::update(float elapsed) {
     // summon some minions to protect the boss
     summonTimer = 0.0f;
     for (int i = 0; i < minionCount; i++) {
-      AiDirector::instance->spawnMinion(true, (int)x, (int)y);
+      base::AiDirector::instance->spawnMinion(true, (int)x, (int)y);
     }
   }
   if (pathTimer > pathDelay) {

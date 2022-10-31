@@ -27,7 +27,7 @@
 #include <libtcod.hpp>
 #include <vector>
 
-#include "bas_entity.hpp"
+#include "base/entity.hpp"
 #include "map_dungeon.hpp"
 
 enum BuildingMapId {
@@ -47,7 +47,7 @@ enum BuildingMapId {
   BUILDING_ITEM,
 };
 
-class Building : public Rect {
+class Building : public base::Rect {
  public:
   int doorx{}, doory{};  // in building local coordinates
   std::vector<int> map{};  // a map of BuildingMapId representing the building
@@ -60,7 +60,7 @@ class Building : public Rect {
   void collapseRoof();
 
  protected:
-  Building(int w, int h) : Rect{0, 0, w, h}, map(w * h, 0) {}
+  Building(int w, int h) : base::Rect{0, 0, w, h}, map(w * h, 0) {}
   void buildExternalWalls();
   void placeRandomDoor(TCODRandom* rng);
   void placeRandomWindow(TCODRandom* rng);

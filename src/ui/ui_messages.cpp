@@ -75,7 +75,7 @@ Logger::Logger() {
   setMinimized();
   titleBarAlpha = 0.0f;
   lookOn = false;
-  saveGame.registerListener(HIST_CHUNK_ID, PHASE_START, this);
+  saveGame.registerListener(HIST_CHUNK_ID, base::PHASE_START, this);
   scroller = new Scroller(this, LOG_WIDTH, CON_H - 1, true);
 }
 

@@ -30,7 +30,13 @@
 // #define PACKER_DBG
 
 Packer::Packer(int x, int y, int w, int h)
-    : Rect(x, y, w, h), minWidth(1), minHeight(1), leftPadding(0), rightPadding(0), topPadding(0), bottomPadding(0) {
+    : base::Rect(x, y, w, h),
+      minWidth(1),
+      minHeight(1),
+      leftPadding(0),
+      rightPadding(0),
+      topPadding(0),
+      bottomPadding(0) {
   clear();
 }
 
@@ -49,16 +55,16 @@ void Packer::setPadding(int leftPadding, int rightPadding, int topPadding, int b
 void Packer::clear() {
   rects.clear();
   empty.clear();
-  Rect r((int)x, (int)y, w, h);
+  base::Rect r((int)x, (int)y, w, h);
   empty.push(r);
 }
 
-bool Packer::findEmptyPlace(Rect* rect) {
+bool Packer::findEmptyPlace(base::Rect* rect) {
   float bestdist = w * w * h * h;
   float bestdx = 0, bestdy = 0;
   bool found = false;
 
-  for (Rect* r = empty.begin(); r != empty.end(); r++) {
+  for (base::Rect* r = empty.begin(); r != empty.end(); r++) {
     if (rect->x >= r->x && rect->y >= r->y && rect->x + rect->w <= r->x + r->w && rect->y + rect->h <= r->y + r->h) {
       return true;  // rect is inside an empty rect
     }
@@ -88,8 +94,8 @@ bool Packer::findEmptyPlace(Rect* rect) {
   return found;
 }
 
-bool Packer::addRect(Rect* prect, bool fill) {
-  Rect rect = *prect;
+bool Packer::addRect(base::Rect* prect, bool fill) {
+  base::Rect rect = *prect;
   rect.x -= leftPadding;
   rect.y -= topPadding;
   rect.w += leftPadding + rightPadding;
@@ -128,9 +134,9 @@ bool Packer::addRect(Rect* prect, bool fill) {
   return true;
 }
 
-void Packer::merge(TCODList<Rect>& list) {
-  for (Rect* r1 = list.begin(); r1 != list.end(); r1++) {
-    for (Rect* r2 = r1 + 1; r2 != list.end(); r2++) {
+void Packer::merge(TCODList<base::Rect>& list) {
+  for (base::Rect* r1 = list.begin(); r1 != list.end(); r1++) {
+    for (base::Rect* r2 = r1 + 1; r2 != list.end(); r2++) {
       if (r1->x == r2->x && r1->y == r2->y && r1->w == r2->w && r1->h == r2->h) {
         // r1 and r2 identical
         r2 = list.removeFast(r2);
@@ -162,50 +168,50 @@ void Packer::merge(TCODList<Rect>& list) {
   }
 }
 
-void Packer::addRectInternal(Rect* prect, bool duplicate) {
-  Rect rect = *prect;
+void Packer::addRectInternal(base::Rect* prect, bool duplicate) {
+  base::Rect rect = *prect;
   /*
   if ( duplicate ) rect=new Rect(*prect);
   else rect=prect;
   */
   rects.push(rect);
-  TCODList<Rect> toAdd;
-  for (Rect* r = empty.begin(); r != empty.end(); r++) {
+  TCODList<base::Rect> toAdd;
+  for (base::Rect* r = empty.begin(); r != empty.end(); r++) {
     if (r->isIntersecting(rect)) {
       if (!(prect->x <= r->x && prect->y <= r->y && prect->x + prect->w >= r->x + r->w &&
             prect->y + prect->h >= r->y + r->h)) {
         // empty rectangle not completely covered. split it
         if (prect->x + prect->w < r->x + r->w) {
           // right part
-          Rect newr(prect->x + prect->w, r->y, (int)(r->x + r->w - prect->x - prect->w), r->h);
+          base::Rect newr(prect->x + prect->w, r->y, (int)(r->x + r->w - prect->x - prect->w), r->h);
           toAdd.push(newr);
         }
         if (prect->y + prect->h < r->y + r->h) {
           // bottom part
-          Rect newr(r->x, prect->y + prect->h, r->w, (int)(r->y + r->h - prect->y - prect->h));
+          base::Rect newr(r->x, prect->y + prect->h, r->w, (int)(r->y + r->h - prect->y - prect->h));
           toAdd.push(newr);
         }
         if (prect->x > r->x) {
           // left part
-          Rect newr(r->x, r->y, (int)(prect->x - r->x), r->h);
+          base::Rect newr(r->x, r->y, (int)(prect->x - r->x), r->h);
           toAdd.push(newr);
         }
         if (prect->y > r->y) {
           // top part
-          Rect newr(r->x, r->y, r->w, (int)(prect->y - r->y));
+          base::Rect newr(r->x, r->y, r->w, (int)(prect->y - r->y));
           toAdd.push(newr);
         }
       }
       r = empty.remove(r);
     }
   }
-  for (Rect* r1 = toAdd.begin(); r1 != toAdd.end(); r1++) {
+  for (base::Rect* r1 = toAdd.begin(); r1 != toAdd.end(); r1++) {
     // check size
     if (r1->w < minWidth || r1->h < minHeight) {
       r1 = toAdd.remove(r1);  // too small
       continue;
     }
-    for (Rect* r2 = toAdd.begin(); r2 != toAdd.end(); r2++) {
+    for (base::Rect* r2 = toAdd.begin(); r2 != toAdd.end(); r2++) {
       if (r2 == r1) continue;
       if (r1->x == r2->x && r1->y == r2->y && r1->w == r2->w && r1->h == r2->h) {
         // r1 and r2 identical
@@ -221,16 +227,16 @@ void Packer::addRectInternal(Rect* prect, bool duplicate) {
     }
   }
   // add remaining rectangles to the free rectangles list
-  for (Rect* r1 = toAdd.begin(); r1 != toAdd.end(); r1++) {
+  for (base::Rect* r1 = toAdd.begin(); r1 != toAdd.end(); r1++) {
     empty.push(*r1);
   }
 }
 
-void Packer::addForbiddenZone(const Rect rect) {
+void Packer::addForbiddenZone(const base::Rect rect) {
 #ifdef PACKER_DBG
   printf("%dx%d-%dx%d => forbidden\n", (int)rect.x, (int)rect.y, rect.w, rect.h);
 #endif
-  addRectInternal((Rect*)(&rect), true);
+  addRectInternal((base::Rect*)(&rect), true);
 }
 
 /*

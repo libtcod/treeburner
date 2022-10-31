@@ -26,10 +26,10 @@
 #pragma once
 #include <libtcod.hpp>
 
-#include "bas_gameengine.hpp"
+#include "base/gameengine.hpp"
 #include "mob_boss.hpp"
 
-class Game : public GameEngine {
+class Game : public base::GameEngine {
  public:
   Game();
 

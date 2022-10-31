@@ -26,14 +26,14 @@
 #pragma once
 #include <libtcod.hpp>
 
-#include "bas_entity.hpp"
+#include "base/entity.hpp"
 #include "util_ripples.hpp"
 
 class Dungeon;
 class Shoal;
 
 struct WaterZone {
-  Rect rect;  // water zone
+  base::Rect rect;  // water zone
   float cumulatedElapsed;
   float* data = nullptr;  // water height data after update
   float* oldData = nullptr;  // water height data before update

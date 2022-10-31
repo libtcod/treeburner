@@ -28,9 +28,9 @@
 #include <libtcod.hpp>
 #include <umbra/umbra.hpp>
 
-#include "bas_gameengine.hpp"
-#include "bas_savegame.hpp"
-#include "bas_userpref.hpp"
+#include "base/gameengine.hpp"
+#include "base/savegame.hpp"
+#include "base/userpref.hpp"
 #include "map_cell.hpp"
 #include "map_lightmap.hpp"
 #include "util_sound.hpp"
@@ -72,10 +72,10 @@ extern TCODNoise noise3d;
 extern TCODRandom* rng;
 extern bool mouseControl;
 extern bool newGame;
-extern SaveGame saveGame;
-extern UserPref userPref;
+extern base::SaveGame saveGame;
+extern base::UserPref userPref;
 extern UmbraEngine engine;
-extern GameEngine* gameEngine;
+extern base::GameEngine* gameEngine;
 extern TCODImage background;
 extern Sound sound;
 extern ThreadPool* threadPool;

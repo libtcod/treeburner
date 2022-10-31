@@ -28,7 +28,7 @@
 #include <assert.h>
 #include <ctype.h>
 
-#include "bas/movement.hpp"
+#include "base/movement.hpp"
 #include "main.hpp"
 #include "util_subcell.hpp"
 

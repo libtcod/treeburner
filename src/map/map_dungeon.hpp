@@ -29,17 +29,18 @@
 #include <libtcod.hpp>
 #include <vector>
 
-#include "bas_savegame.hpp"
+#include "base/savegame.hpp"
 #include "map_cell.hpp"
 #include "mob_creature.hpp"
 #include "util_cavegen.hpp"
 #include "util_cellular.hpp"
 #include "util_clouds.hpp"
 
+
 class Player;
 class LightMap;
 
-class Dungeon : public SaveListener {
+class Dungeon : public base::SaveListener {
  public:
   Dungeon(int width, int height);  // empty dungeon
   Dungeon(int level, CaveGenerator* caveGen);  // bsp / cellular automate dungeon

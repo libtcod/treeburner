@@ -28,7 +28,7 @@
 #include <libtcod.hpp>
 #include <umbra/umbra.hpp>
 
-#include "bas_entity.hpp"
+#include "base/entity.hpp"
 #include "map_dungeon.hpp"
 #include "map_lightmap.hpp"
 #include "mob_creature.hpp"
@@ -41,6 +41,7 @@
 #include "util_packer.hpp"
 #include "util_ripples.hpp"
 
+namespace base {
 class GameEngine : public Screen {
  public:
   GameEngine();
@@ -121,3 +122,4 @@ class GameEngine : public Screen {
   void onDeactivate() override;
   void computeAspectRatio();
 };
+}  // namespace base

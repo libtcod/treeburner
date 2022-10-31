@@ -23,12 +23,13 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#include "bas_savegame.hpp"
+#include "base/savegame.hpp"
 
 #include <stdio.h>
 
 #include <filesystem>
 
+namespace base {
 bool SaveGame::isBigEndian() {
   union {
     uint32_t i;
@@ -213,3 +214,4 @@ bool SaveGame::loadData(uint32_t chunkId, uint32_t chunkVersion, TCODZip* zip) {
   }
   return false;
 }
+}  // namespace base

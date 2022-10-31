@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#include "bas_aidirector.hpp"
+#include "base/aidirector.hpp"
 
 #include <math.h>
 #include <stdio.h>
@@ -35,6 +35,7 @@
 #include "mob_minion.hpp"
 #include "util_powerup.hpp"
 
+namespace base {
 AiDirector* AiDirector::instance = NULL;
 
 AiDirector::AiDirector() {
@@ -183,3 +184,4 @@ void AiDirector::killCreature(Creature* cr) {
 }
 
 void AiDirector::termLevel() { nbScrolls = 0; }
+}  // namespace base

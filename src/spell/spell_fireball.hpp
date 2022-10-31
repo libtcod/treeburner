@@ -26,14 +26,15 @@
 #pragma once
 #include <libtcod.hpp>
 
-#include "bas_entity.hpp"
-#include "bas_noisything.hpp"
+#include "base/entity.hpp"
+#include "base/noisything.hpp"
 #include "map_light.hpp"
 #include "map_lightmap.hpp"
 
+
 typedef enum { FB_SPARK, FB_STANDARD, FB_BURST, FB_INCANDESCENCE } FireBallType;
 
-class FireBall : public Entity, public NoisyThing {
+class FireBall : public base::Entity, public base::NoisyThing {
  public:
   Light light;  // light associated with this fireball
 

@@ -26,12 +26,13 @@
 #pragma once
 #include <libtcod.hpp>
 
-#include "bas_gameengine.hpp"
-#include "bas_savegame.hpp"
+#include "base/gameengine.hpp"
+#include "base/savegame.hpp"
 #include "mob_friend.hpp"
 #include "ui_input.hpp"
 
-class ForestScreen : public GameEngine, public SaveListener {
+
+class ForestScreen : public base::GameEngine, public base::SaveListener {
  public:
   Friend* fr;
 
@@ -55,7 +56,7 @@ class ForestScreen : public GameEngine, public SaveListener {
   void onActivate() override;
   void onDeactivate() override;
   void placeTree(Dungeon* dungeon, int x, int y, const item::ItemType* treeType);
-  void placeHouse(Dungeon* dungeon, int doorx, int doory, Entity::Direction dir);
+  void placeHouse(Dungeon* dungeon, int doorx, int doory, base::Entity::Direction dir);
   int debugMap;
   TextInput textInput;
 };

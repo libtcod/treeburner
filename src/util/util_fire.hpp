@@ -64,12 +64,12 @@ class FireManager {
   inline uint8_t get(int x, int y) { return buf[x + dungeon->width * 2 * y]; }
   inline void set(int x, int y, uint8_t v) { buf[x + dungeon->width * 2 * y] = v; }
   struct FireZone {
-    Rect r;
+    base::Rect r;
     float life;
   };
   TCODList<FireZone> zones;
   Dungeon* dungeon = nullptr;
   uint8_t* buf = nullptr;
   float el;
-  Rect screenFireZone;
+  base::Rect screenFireZone;
 };

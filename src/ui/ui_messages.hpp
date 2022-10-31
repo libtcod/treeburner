@@ -30,12 +30,12 @@
 #include <deque>
 #include <libtcod.hpp>
 
-#include "bas_savegame.hpp"
+#include "base/savegame.hpp"
 #include "ui_dialog.hpp"
 
 enum MessageSeverity { DEBUG, INFO, WARN, CRITICAL, NB_SEVERITIES };
 
-class Logger : public MultiPosDialog, public SaveListener, public Scrollable {
+class Logger : public MultiPosDialog, public base::SaveListener, public Scrollable {
  public:
   Logger();
   template <typename S, typename... Ts>

@@ -26,7 +26,7 @@
 #pragma once
 #include <libtcod.hpp>
 
-#include "bas_savegame.hpp"
+#include "base/savegame.hpp"
 #include "ui_dialog.hpp"
 #include "util_script.hpp"
 
@@ -47,7 +47,7 @@ class Objective {
   Script* onSuccess;
 };
 
-class Objectives : public Dialog, public SaveListener, public Scrollable {
+class Objectives : public Dialog, public base::SaveListener, public Scrollable {
  public:
   Objectives();
   TCODList<Objective*> sleeping;

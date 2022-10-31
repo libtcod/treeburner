@@ -122,7 +122,7 @@ bool HerdBehavior::update(Creature* crea1, float elapsed) {
   for (ScarePoint** spit = scare.begin(); spit != scare.end(); spit++) {
     float dx = (*spit)->x - crea1->x;
     float dy = (*spit)->y - crea1->y;
-    float dist = Entity::fastInvSqrt(dx * dx + dy * dy);
+    float dist = base::Entity::fastInvSqrt(dx * dx + dy * dy);
     if (dist < 1E4f && dist > 1.0f / SCARE_RANGE) {
       float coef = (SCARE_RANGE - 1.0f / dist) * SCARE_RANGE;
       crea1->dx -= elapsed * crea1->speed * 10 * coef * dx * dist;

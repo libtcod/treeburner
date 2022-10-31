@@ -23,19 +23,40 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#pragma once
-#include <cstdint>
+#include "base/userpref.hpp"
 
-// user preferences (independant from the current game)
-class UserPref {
- public:
-  uint32_t nbLaunches;
-  bool mouseOnly;
-  int statusx, statusy;
-  int logx, logy;
-  void load();
-  void save();
+#include <filesystem>
+#include <libtcod.hpp>
 
- protected:
-  void setDefault();
-};
+#include "main.hpp"
+
+namespace base {
+#define USERPREF_VERSION 5
+
+void UserPref::load() {
+  TCODZip zip;
+  if (zip.loadFromFile("data/sav/userpref.dat") == 0 || zip.getInt() != USERPREF_VERSION) {
+    // no file or bad file version.
+    setDefault();
+  } else {
+    zip.getData(sizeof(UserPref), this);
+  }
+}
+
+void UserPref::setDefault() {
+  mouseOnly = false;
+  nbLaunches = 0;
+  statusx = CON_W - 12;
+  statusy = 0;
+  logx = 0;
+  logy = CON_H - 11;
+}
+
+void UserPref::save() {
+  TCODZip zip;
+  zip.putInt(USERPREF_VERSION);
+  zip.putData(sizeof(UserPref), this);
+  std::filesystem::create_directories("data/sav");
+  zip.saveToFile("data/sav/userpref.dat");
+}
+}  // namespace base

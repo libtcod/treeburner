@@ -23,22 +23,38 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#include "bas_entity.hpp"
-
+#pragma once
 #include <cmath>
 
-#include "main.hpp"
+#include "mob_creature.hpp"
 
-// John Carmack's fast inverse sqrt
-float Entity::fastInvSqrt(float x) {
-  const float xhalf = 0.5f * x;
-  int i = *(int*)&x;
-  i = 0x5f3759df - (i >> 1);
-  x = *(float*)&i;
-  x = x * (1.5f - xhalf * x * x);
-  return x;
-}
+namespace base {
+// the class that manages monsters spawning
+class AiDirector {
+ public:
+  static AiDirector* instance;
+  AiDirector();
+  void setBaseCreature(CreatureTypeId id) { baseCreature = id; }
+  void update(float elapsed);
+  void replace(Creature* cr);
+  void killCreature(Creature* cr);
+  void bossSeen();  // enter final fight mode
+  void bossDead();  // exit final fight mode
+  void termLevel();
+  void spawnMinion(bool chase);
+  void spawnMinion(bool chase, int x, int y);
+  enum { STATUS_CALM, STATUS_MED, STATUS_HIGH, STATUS_HORDE } status{STATUS_CALM};
 
-float Entity::distance(const Entity& p) const { return sqrtf(squaredDistance(p)); }
-
-bool Entity::isOnScreen() const { return IN_RECTANGLE(x - gameEngine->xOffset, y - gameEngine->yOffset, CON_W, CON_H); }
+ protected:
+  int spawnCount{};
+  float spawnTimer{};
+  float waitTimer{};
+  float timer{float{-M_PI} / 2.0f};
+  float hordeTimer{};
+  int killCount{};
+  float lowLevel{};
+  float medLevel{};
+  int nbScrolls{};
+  CreatureTypeId baseCreature{CREATURE_MINION};
+};
+}  // namespace base

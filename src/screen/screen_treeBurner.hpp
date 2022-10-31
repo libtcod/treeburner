@@ -26,10 +26,10 @@
 #pragma once
 #include <libtcod.hpp>
 
-#include "bas_aidirector.hpp"
-#include "bas_gameengine.hpp"
+#include "base/aidirector.hpp"
+#include "base/gameengine.hpp"
 
-class TreeBurner : public GameEngine {
+class TreeBurner : public base::GameEngine {
  public:
   TreeBurner();
 
@@ -46,9 +46,9 @@ class TreeBurner : public GameEngine {
   void onActivate() override;
   void onDeactivate() override;
   void placeTree(Dungeon* dungeon, int x, int y, const item::ItemType* treeType);
-  void placeHouse(Dungeon* dungeon, int doorx, int doory, Entity::Direction dir);
+  void placeHouse(Dungeon* dungeon, int doorx, int doory, base::Entity::Direction dir);
   int debugMap;
-  AiDirector aiDirector;
+  base::AiDirector aiDirector;
   Creature* boss;
   int cityWallX;
   float endTimer;

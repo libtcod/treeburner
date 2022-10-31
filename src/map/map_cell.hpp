@@ -28,8 +28,9 @@
 #include <libtcod.hpp>
 #include <vector>
 
-#include "bas_savegame.hpp"
+#include "base/savegame.hpp"
 #include "item.hpp"
+
 
 // Terrain system adapted from Umbrarum Regnum Tech Demo 1
 struct TerrainType {
@@ -73,7 +74,7 @@ enum TerrainId {
 
 extern std::array<TerrainType, NB_TERRAINS> terrainTypes;
 class Building;
-struct Cell : public Persistant {
+struct Cell : public base::Persistant {
   int nbCreatures{};
   std::vector<item::Item*> items{};
   bool hasCorpse{};
@@ -87,7 +88,7 @@ struct Cell : public Persistant {
   void saveData(TCODZip* zip) override;
 };
 
-struct SubCell : public Persistant {
+struct SubCell : public base::Persistant {
   TCODColor groundColor{};
   // for outdoors, shadow casted by the sun
   float shadowBeforeTree{};

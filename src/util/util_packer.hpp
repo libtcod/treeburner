@@ -26,9 +26,9 @@
 #pragma once
 #include <libtcod.hpp>
 
-#include "bas_entity.hpp"
+#include "base/entity.hpp"
 
-class Packer : public Rect {
+class Packer : public base::Rect {
  public:
   TCODList<Rect> rects;
 
@@ -37,15 +37,15 @@ class Packer : public Rect {
 
   void setMinimumSize(int minWidth, int minHeight);
   void setPadding(int leftPadding, int rightPadding, int topPadding, int bottomPadding);
-  bool addRect(Rect* rect, bool fill = true);
-  void addForbiddenZone(const Rect rect);
+  bool addRect(base::Rect* rect, bool fill = true);
+  void addForbiddenZone(const base::Rect rect);
   void clear();
   static void merge(TCODList<Rect>& list);
 
  protected:
   int minWidth, minHeight;
   int leftPadding, rightPadding, topPadding, bottomPadding;
-  TCODList<Rect> empty;
-  bool findEmptyPlace(Rect* rect);
-  void addRectInternal(Rect* rect, bool duplicate);
+  TCODList<base::Rect> empty;
+  bool findEmptyPlace(base::Rect* rect);
+  void addRectInternal(base::Rect* rect, bool duplicate);
 };

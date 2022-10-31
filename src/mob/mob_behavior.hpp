@@ -26,7 +26,7 @@
 #pragma once
 #include <libtcod.hpp>
 
-#include "bas_entity.hpp"
+#include "base/entity.hpp"
 
 class WalkPattern : public ITCODPathCallback {
   float getWalkCost(int, int, int, int, void*) const { return 1.0f; }
@@ -65,10 +65,10 @@ class FollowBehavior : public Behavior {
 // default duration of a scare point in seconds
 #define SCARE_LIFE 1.0
 
-class ScarePoint : public Entity {
+class ScarePoint : public base::Entity {
  public:
   float life;
-  ScarePoint(float x, float y, float life = SCARE_LIFE) : Entity(x, y), life(life) {}
+  ScarePoint(float x, float y, float life = SCARE_LIFE) : base::Entity(x, y), life(life) {}
 };
 
 class HerdBehavior : public Behavior {

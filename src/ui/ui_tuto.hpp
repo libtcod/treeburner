@@ -26,7 +26,7 @@
 #pragma once
 #include <libtcod.hpp>
 
-#include "bas_savegame.hpp"
+#include "base/savegame.hpp"
 #include "screen.hpp"
 
 typedef enum {
@@ -51,7 +51,7 @@ struct TutorialPage {
   float delay;
 };
 
-class Tutorial : public Screen, public SaveListener {
+class Tutorial : public Screen, public base::SaveListener {
  public:
   Tutorial();
   virtual ~Tutorial();

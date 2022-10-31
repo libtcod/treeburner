@@ -27,7 +27,7 @@
 #include <libtcod.hpp>
 #include <string>
 
-#include "bas_entity.hpp"
+#include "base/entity.hpp"
 #include "map_light.hpp"
 #include "map_lightmap.hpp"
 #include "modifier.hpp"
@@ -251,7 +251,7 @@ struct ItemType {
   TCODList<ItemActionId> actions{};
 };
 
-class Item : public DynamicEntity {
+class Item : public base::DynamicEntity {
  public:
   // factories
   static Item* getItem(const char* type, float x, float y, bool createComponents = true);
