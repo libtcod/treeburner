@@ -64,7 +64,7 @@ class FireBall : public Entity, public NoisyThing {
     float stunDelay;
     float lightRange;
     bool lightRandomRad;
-  } * typeData;
+  }* typeData;
   Type* getType(const char* name);
 
   float dx, dy;
