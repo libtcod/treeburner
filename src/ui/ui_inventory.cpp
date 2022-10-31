@@ -332,7 +332,8 @@ void Inventory::render() {
       } else if (itemToCombine || dragItem) {
         if (combinationResult) delete combinationResult;
         combinationResult = itemToCombine2 = NULL;
-        combination = item::Item::getCombination(itemToCombine ? itemToCombine : dragItem, curTab->items.at(selectedItem));
+        combination =
+            item::Item::getCombination(itemToCombine ? itemToCombine : dragItem, curTab->items.at(selectedItem));
         if (combination) {
           itemToCombine2 = curTab->items.at(selectedItem);
           combinationResult = item::Item::getItem(combination->resultType, 0, 0, false);

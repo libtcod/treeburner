@@ -36,9 +36,7 @@ class Powerup {
   int level;
   const char* type = nullptr;
   const char* description = nullptr;
-  Powerup*
-    requires
-  = nullptr;
+  Powerup* requires = nullptr;
   bool enabled;
 
   static TCODList<Powerup*> list;
