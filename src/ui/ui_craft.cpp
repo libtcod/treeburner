@@ -150,9 +150,9 @@ void Craft::render() {
                 : selectedIngredient >= 0 ? rect.y + 7 + selectedIngredient
                                           : rect.y + 5;
     item::Item* item = isDragging                ? dragItem
-                 : selectedItem >= 0       ? items.at(selectedItem)
-                 : selectedIngredient >= 0 ? ingredients.at(selectedIngredient)
-                                           : tool;
+                       : selectedItem >= 0       ? items.at(selectedItem)
+                       : selectedIngredient >= 0 ? ingredients.at(selectedIngredient)
+                                                 : tool;
     item->renderDescription(itemx, itemy);
   }
 }
