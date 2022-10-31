@@ -239,28 +239,28 @@ void Building::setHuntingHide(Dungeon* dungeon) {
   }
   */
   if (getFreeFloor(&ix, &iy)) {
-    Item* chest = Item::getItem("chest", x + ix, y + iy);
+    item::Item* chest = item::Item::getItem("chest", x + ix, y + iy);
     dungeon->addItem(chest);
     map[ix + iy * w] = BUILDING_ITEM;
     // fill the chest
 
-    Item* item = Item::getItem("short bronze blade", 0, 0);
+    item::Item* item = item::Item::getItem("short bronze blade", 0, 0);
     // Item *knife=Item::getRandomWeapon(ITEM_KNIFE,ITEM_CLASS_STANDARD);
     // knife->name = strdup("hunting knife");
     item->name = strdup("knife blade");
     item->adjective = strdup("hunting");
     item->putInContainer(chest);
 
-    item = Item::getItem("bottle", 0, 0);
+    item = item::Item::getItem("bottle", 0, 0);
     item->putInContainer(chest);
     item->name = strdup("empty bottle");
     item->an = true;
 
-    item = Item::getItem("linen thread", 0, 0);
+    item = item::Item::getItem("linen thread", 0, 0);
     item->count = 2;
     item->putInContainer(chest);
 
-    item = Item::getItem("bone hook", 0, 0);
+    item = item::Item::getItem("bone hook", 0, 0);
     item->putInContainer(chest);
   }
 }
@@ -296,7 +296,7 @@ void Building::applyTo(Dungeon* dungeon, int dungeonDoorx, int dungeonDoory, boo
               TCOD_CHAR_NE,
               TCOD_CHAR_SE,
               TCOD_CHAR_SW};
-          Item* wall = Item::getItem(cityWalls ? "city wall" : "wall", x + cx, y + cy);
+          item::Item* wall = item::Item::getItem(cityWalls ? "city wall" : "wall", x + cx, y + cy);
           wall->ch = wallToChar[cellType];
           dungeon->addItem(wall);
         }
@@ -324,13 +324,13 @@ void Building::applyTo(Dungeon* dungeon, int dungeonDoorx, int dungeonDoory, boo
             dungeon->canopy->putPixel(d2x, d2y, cx * 2 + subcx[i] < w ? roofcol * 0.7f : roofcol);
           }
           if (cellType == BUILDING_DOOR) {
-            dungeon->addItem(Item::getItem("door", x + cx, y + cy));
+            dungeon->addItem(item::Item::getItem("door", x + cx, y + cy));
           } else if (cellType == BUILDING_WINDOW_H) {
-            Item* item = Item::getItem(cityWalls ? "arrow slit" : "window", x + cx, y + cy);
+            item::Item* item = item::Item::getItem(cityWalls ? "arrow slit" : "window", x + cx, y + cy);
             item->ch = TCOD_CHAR_HLINE;
             dungeon->addItem(item);
           } else if (cellType == BUILDING_WINDOW_V) {
-            Item* item = Item::getItem(cityWalls ? "arrow slit" : "window", x + cx, y + cy);
+            item::Item* item = item::Item::getItem(cityWalls ? "arrow slit" : "window", x + cx, y + cy);
             item->ch = TCOD_CHAR_VLINE;
             dungeon->addItem(item);
           }
@@ -342,7 +342,7 @@ void Building::applyTo(Dungeon* dungeon, int dungeonDoorx, int dungeonDoory, boo
 
 // break roof too far away from a wall
 void Building::collapseRoof() {
-  ItemType* wall = Item::getType("wall");
+  item::ItemType* wall = item::Item::getType("wall");
   Dungeon* dungeon = gameEngine->dungeon;
   for (int cy = 0; cy < h; cy++) {
     for (int cx = 0; cx < w; cx++) {
@@ -372,7 +372,7 @@ void Building::collapseRoof() {
 void Building::setBuildingWallCell(int x, int y, int ysym, int ch, Dungeon* dungeon) {
   static int subcx[] = {0, 1, 0, 1};
   static int subcy[] = {0, 0, 1, 1};
-  Item* wall = Item::getItem("city wall", x, y);
+  item::Item* wall = item::Item::getItem("city wall", x, y);
   wall->ch = ch;
   dungeon->addItem(wall);
   dungeon->getCell(x, y)->terrain = TERRAIN_WOODEN_FLOOR;
@@ -384,7 +384,7 @@ void Building::setBuildingWallCell(int x, int y, int ysym, int ch, Dungeon* dung
   }
   int y2 = 2 * ysym - y;
   if (y2 != y && y2 >= 0 && y2 < dungeon->height) {
-    wall = Item::getItem("city wall", x, y2);
+    wall = item::Item::getItem("city wall", x, y2);
     switch (ch) {
       case TCOD_CHAR_SW:
         ch = TCOD_CHAR_NW;

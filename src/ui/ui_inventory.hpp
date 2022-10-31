@@ -41,7 +41,7 @@ struct InventoryTab {
   //	int x;
   //	int len;
   int offset;
-  std::vector<Item*> items;
+  std::vector<item::Item*> items;
 };
 
 class Inventory : public Dialog, public UIListener {
@@ -49,7 +49,7 @@ class Inventory : public Dialog, public UIListener {
   Inventory();
   virtual ~Inventory() {}
   void initialize(Creature* owner);
-  void initialize(Item* container);
+  void initialize(item::Item* container);
   void render() override;
   void onActivate() override;
   void onDeactivate() override;
@@ -60,10 +60,10 @@ class Inventory : public Dialog, public UIListener {
 
  protected:
   void activateItem();
-  void runActionOnItem(ItemActionId id, Item* it);
-  void checkDefaultAction(Item* it);
+  void runActionOnItem(item::ItemActionId id, item::Item* it);
+  void checkDefaultAction(item::Item* it);
 
-  InventoryTab tabs[NB_INV_TABS];
+  InventoryTab tabs[item::NB_INV_TABS];
   // InventoryTabId curTabId,mouseTabId;
   Tabs guiTabs;
   Button takeAll;
@@ -71,17 +71,17 @@ class Inventory : public Dialog, public UIListener {
   int selectedItem;
   bool closeOn;  // mouse hovers close button
   Creature* owner;  // either owner or container is NULL
-  Item* container;
+  item::Item* container;
   // for item combination
-  ItemCombination* combination;
-  Item* itemToCombine;
-  Item* itemToCombine2;
-  Item* combinationResult;
+  item::ItemCombination* combination;
+  item::Item* itemToCombine;
+  item::Item* itemToCombine2;
+  item::Item* combinationResult;
   bool firstOpen;  // launch tutorial the fist time inventory is open
   // drag & drop support
   bool isDragging, isDraggingStart, dragOut, cmenudrag;
   int dragx, dragy, dragStartX, dragStartY;
-  Item* dragItem;
+  item::Item* dragItem;
   // context (right-click) menu position
   int cmenux, cmenuy, cmenuitem, cmenuwidth, cmenuheight;
   bool cmenuon;

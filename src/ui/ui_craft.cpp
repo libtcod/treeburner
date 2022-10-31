@@ -57,7 +57,7 @@ void Craft::initialize(Creature* owner, bool soft) {
     ingredients.clear();
   }
   computeRecipes();
-  for (Item* it : owner->getInventory()) {
+  for (item::Item* it : owner->getInventory()) {
     if ((it->isIngredient() || it->isTool()) && !helpers::contains(ingredients, it) && tool != it) items.push_back(it);
   }
   selectedItem = -1;
@@ -72,21 +72,21 @@ int Craft::getScrollTotalSize() { return items.size(); }
 const char* Craft::getScrollText(int idx) { return items.at(idx)->aName(); }
 
 void Craft::getScrollColor(int idx, TCODColor* fore, TCODColor* back) {
-  Item* item = items.at(idx);
+  item::Item* item = items.at(idx);
   // check if the item can be used in the current recipes list
   bool enabled = false;
-  for (ItemCombination** it = recipes.begin(); it != recipes.end(); it++) {
+  for (item::ItemCombination** it = recipes.begin(); it != recipes.end(); it++) {
     if ((*it)->isTool(item)) {
       enabled = true;
       break;
     }
-    const ItemIngredient* ing = (*it)->getIngredient(item);
+    const item::ItemIngredient* ing = (*it)->getIngredient(item);
     if (ing && ing->quantity <= item->count) {
       enabled = true;
       break;
     }
   }
-  *fore = enabled ? Item::classColor[item->itemClass] : guiDisabledText;
+  *fore = enabled ? item::Item::classColor[item->itemClass] : guiDisabledText;
   *back = (enabled && idx == selectedItem ? guiHighlightedBackground : guiBackground);
 }
 
@@ -118,15 +118,15 @@ void Craft::render() {
 
   // ingredient list
   int y = 5;
-  for (Item* it : ingredients) {
-    con->setDefaultForeground(Item::classColor[it->itemClass]);
+  for (item::Item* it : ingredients) {
+    con->setDefaultForeground(item::Item::classColor[it->itemClass]);
     con->setDefaultBackground(y - 5 == selectedIngredient ? guiHighlightedBackground : guiBackground);
     con->printEx(rect.w / 2 + 1, y++, TCOD_BKGND_SET, TCOD_LEFT, it->aName());
   }
 
   // tool
   if (tool) {
-    con->setDefaultForeground(Item::classColor[tool->itemClass]);
+    con->setDefaultForeground(item::Item::classColor[tool->itemClass]);
     con->setDefaultBackground(selectedTool ? guiHighlightedBackground : guiBackground);
     con->printEx(rect.w / 2 + 1, 2, TCOD_BKGND_SET, TCOD_LEFT, tool->aName());
   }
@@ -149,7 +149,7 @@ void Craft::render() {
                 : selectedItem >= 0       ? rect.y + selectedItem + 4 - scroller->getOffset()
                 : selectedIngredient >= 0 ? rect.y + 7 + selectedIngredient
                                           : rect.y + 5;
-    Item* item = isDragging                ? dragItem
+    item::Item* item = isDragging                ? dragItem
                  : selectedItem >= 0       ? items.at(selectedItem)
                  : selectedIngredient >= 0 ? ingredients.at(selectedIngredient)
                                            : tool;
@@ -283,8 +283,8 @@ bool Craft::update(float elapsed, TCOD_key_t& k, TCOD_mouse_t& mouse) {
 bool Craft::onWidgetEvent(Widget* widget, EWidgetEvent event) {
   if (widget == &create && result) {
     // delete ingredients
-    const auto deleteIngredients = [&](Item* it) {
-      const ItemIngredient* ing = recipe->getIngredient(it);
+    const auto deleteIngredients = [&](item::Item* it) {
+      const item::ItemIngredient* ing = recipe->getIngredient(it);
       if (ing->destroy) {
         if (it->count > ing->quantity) {
           it->count -= ing->quantity;
@@ -314,7 +314,7 @@ bool Craft::onWidgetEvent(Widget* widget, EWidgetEvent event) {
       }
     }
     tool = NULL;
-    for (Item* it : ingredients) items.push_back(it);
+    for (item::Item* it : ingredients) items.push_back(it);
     ingredients.clear();
     result = NULL;
     computeRecipes();
@@ -324,7 +324,7 @@ bool Craft::onWidgetEvent(Widget* widget, EWidgetEvent event) {
 
 void Craft::computeResult() {
   computeRecipes();
-  for (ItemCombination** cur = Item::combinations.begin(); cur != Item::combinations.end(); cur++) {
+  for (item::ItemCombination** cur = item::Item::combinations.begin(); cur != item::Item::combinations.end(); cur++) {
     // check that the tool matches
     if ((!(*cur)->hasTool() && !tool) || (tool && (*cur)->isTool(tool))) {
       bool ingredientOk = true;
@@ -332,7 +332,7 @@ void Craft::computeResult() {
       memset(checkIng, 0, MAX_INGREDIENTS * sizeof(bool));
       // check that all proposed ingredients match
       for (auto it = ingredients.begin(); ingredientOk && it != ingredients.end(); ++it) {
-        const ItemIngredient* ing = (*cur)->getIngredient(*it);
+        const item::ItemIngredient* ing = (*cur)->getIngredient(*it);
         if (!ing)
           ingredientOk = false;
         else if (!ing->optional && ing->quantity > (*it)->count)
@@ -351,14 +351,14 @@ void Craft::computeResult() {
             if (result->isA("liquid container")) delete result->stack.at(0);
             delete result;
           }
-          result = Item::getItem((*cur)->resultType, 0, 0, false);
+          result = item::Item::getItem((*cur)->resultType, 0, 0, false);
           result->count = (*cur)->nbResult;
-          for (Item* it : ingredients) {
-            const ItemIngredient* ing = (*cur)->getIngredient(it);
+          for (item::Item* it : ingredients) {
+            const item::ItemIngredient* ing = (*cur)->getIngredient(it);
             if (ing->revert) result->addComponent(it);
           }
           if (tool && tool->isA("liquid container")) {
-            Item* bottle = Item::getItem("bottle", 0, 0, false);
+            item::Item* bottle = item::Item::getItem("bottle", 0, 0, false);
             result->putInContainer(bottle);
             result = bottle;
             result->computeBottleName();
@@ -380,12 +380,12 @@ void Craft::computeResult() {
 // get the list of recipes that match the current tool/ingredients
 void Craft::computeRecipes() {
   recipes.clear();
-  for (ItemCombination** cur = Item::combinations.begin(); cur != Item::combinations.end(); cur++) {
+  for (item::ItemCombination** cur = item::Item::combinations.begin(); cur != item::Item::combinations.end(); cur++) {
     if ((!tool) || (tool && (*cur)->isTool(tool))) {
       bool ingredientOk = true;
       // check that all proposed ingredients match
       for (auto it = ingredients.begin(); ingredientOk && it != ingredients.end(); it++) {
-        const ItemIngredient* ing = (*cur)->getIngredient(*it);
+        const item::ItemIngredient* ing = (*cur)->getIngredient(*it);
         if (!ing)
           ingredientOk = false;
         else if (!ing->optional && ing->quantity > (*it)->count)

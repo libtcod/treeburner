@@ -119,8 +119,8 @@ class Creature : public DynamicEntity, public ITCODPathCallback, public NoisyThi
   bool burn;
   int flags;
   char name[CREATURE_NAME_SIZE];
-  Item *mainHand, *offHand = nullptr;
-  Item* asItem;  // an item corresponding to this creature
+  item::Item *mainHand, *offHand = nullptr;
+  item::Item* asItem;  // an item corresponding to this creature
   TCODList<Condition*> conditions;
 
   // ai
@@ -163,15 +163,15 @@ class Creature : public DynamicEntity, public ITCODPathCallback, public NoisyThi
   bool isCatchable() const { return (flags & CREATURE_CATCHABLE) != 0; }
 
   // items
-  Item* addToInventory(Item* it);  // in case of stackable items, returned item might be != it
-  Item* removeFromInventory(Item* it, int count = 1);  // same as addToInventory
+  item::Item* addToInventory(item::Item* it);  // in case of stackable items, returned item might be != it
+  item::Item* removeFromInventory(item::Item* it, int count = 1);  // same as addToInventory
   auto getInventory() { return inventory; }
 
-  void equip(Item* it);
-  void unequip(Item* it);
+  void equip(item::Item* it);
+  void unequip(item::Item* it);
   // same as equip/unequip but with messages (you're wielding...)
-  void wield(Item* it);
-  void unwield(Item* it);
+  void wield(item::Item* it);
+  void unwield(item::Item* it);
   virtual void initItem() {}  // build asItem member
 
   // SaveListener
@@ -186,7 +186,7 @@ class Creature : public DynamicEntity, public ITCODPathCallback, public NoisyThi
   friend class FollowBehavior;
   friend class HerdBehavior;
   friend class ForestScreen;
-  std::vector<Item*> inventory;
+  std::vector<item::Item*> inventory;
   float walkTimer, pathTimer;
   float curDmg;
   struct TalkText : public Rect {

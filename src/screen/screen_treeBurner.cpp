@@ -402,17 +402,18 @@ bool TreeBurner::update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse) {
   return true;
 }
 
-void TreeBurner::placeTree(Dungeon* dungeon, int x, int y, const ItemType* treeType) {
+void TreeBurner::placeTree(Dungeon* dungeon, int x, int y, const item::ItemType* treeType) {
   // trunk
   int dx = x / 2;
   int dy = y / 2;
   // no tree against a door
-  if (dungeon->hasItemFlag(dx - 1, dy, ITEM_BUILD_NOT_BLOCK) ||
-      dungeon->hasItemFlag(dx + 1, dy, ITEM_BUILD_NOT_BLOCK) ||
-      dungeon->hasItemFlag(dx, dy - 1, ITEM_BUILD_NOT_BLOCK) || dungeon->hasItemFlag(dx, dy + 1, ITEM_BUILD_NOT_BLOCK))
+  if (dungeon->hasItemFlag(dx - 1, dy, item::ITEM_BUILD_NOT_BLOCK) ||
+      dungeon->hasItemFlag(dx + 1, dy, item::ITEM_BUILD_NOT_BLOCK) ||
+      dungeon->hasItemFlag(dx, dy - 1, item::ITEM_BUILD_NOT_BLOCK) ||
+      dungeon->hasItemFlag(dx, dy + 1, item::ITEM_BUILD_NOT_BLOCK))
     return;
 
-  dungeon->addItem(Item::getItem(treeType, x / 2, y / 2));
+  dungeon->addItem(item::Item::getItem(treeType, x / 2, y / 2));
   // folliage
   setCanopy(x, y, treeType);
 }
@@ -575,7 +576,7 @@ else if ( swimmable2 ) waterCoef2=layer2Height;
           if (layer1Height >= itemData->minThreshold && layer1Height < itemData->maxThreshold &&
               forestRng->getFloat(0.0, 1.0) < itemData->density) {
             if (itemData->itemTypeName) {
-              ItemType* type = Item::getType(itemData->itemTypeName);
+              item::ItemType* type = item::Item::getType(itemData->itemTypeName);
               if (!type) {
                 printf("FATAL : unknown item type '%s'\n", itemData->itemTypeName);
 
@@ -583,7 +584,7 @@ else if ( swimmable2 ) waterCoef2=layer2Height;
                 if (type->isA("tree"))
                   placeTree(dungeon, x, y, type);
                 else
-                  dungeon->addItem(Item::getItem(type, x / 2, y / 2));
+                  dungeon->addItem(item::Item::getItem(type, x / 2, y / 2));
               }
             } else {
               Creature* cr = Creature::getCreature((CreatureTypeId)itemData->creatureType);

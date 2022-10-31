@@ -615,57 +615,57 @@ bool Dungeon::hasActivableItem(int x, int y) const {
   if (!IN_RECTANGLE(x, y, width, height)) return false;
   Cell* cell = getCell(x, y);
   if (cell->items.size() != 1) return false;
-  Item* it = cell->items.front();
+  item::Item* it = cell->items.front();
   return it->isActivatedOnBump();
 }
 
 bool Dungeon::hasItemType(int x, int y, const char* typeName) { return getItem(x, y, typeName) != NULL; }
 
-bool Dungeon::hasItemType(int x, int y, const ItemType* type) { return getItem(x, y, type) != NULL; }
+bool Dungeon::hasItemType(int x, int y, const item::ItemType* type) { return getItem(x, y, type) != NULL; }
 
-Item* Dungeon::getItem(int x, int y, const ItemType* type) {
+item::Item* Dungeon::getItem(int x, int y, const item::ItemType* type) {
   if (!IN_RECTANGLE(x, y, width, height)) return nullptr;
   Cell* cell = getCell(x, y);
-  for (Item* it : cell->items) {
+  for (item::Item* it : cell->items) {
     if (it->isA(type)) return it;
   }
   return NULL;
 }
 
-Item* Dungeon::getItem(int x, int y, const char* typeName) {
+item::Item* Dungeon::getItem(int x, int y, const char* typeName) {
   if (!IN_RECTANGLE(x, y, width, height)) return nullptr;
-  return getItem(x, y, Item::getType(typeName));
+  return getItem(x, y, item::Item::getType(typeName));
 }
 
 bool Dungeon::hasItemFlag(int x, int y, int flag) {
   if (!IN_RECTANGLE(x, y, width, height)) return false;
   Cell* cell = getCell(x, y);
-  for (const Item* it : cell->items) {
+  for (const item::Item* it : cell->items) {
     if ((it->typeData->flags & flag) != 0) return true;
   }
   return false;
 }
 
-std::vector<Item*>* Dungeon::getItems(int x, int y) const {
+std::vector<item::Item*>* Dungeon::getItems(int x, int y) const {
   if (!IN_RECTANGLE(x, y, width, height)) return nullptr;
   return &cells[x + y * width].items;
 }
 
-Item* Dungeon::getFirstItem(int x, int y) const {
+item::Item* Dungeon::getFirstItem(int x, int y) const {
   if (!IN_RECTANGLE(x, y, width, height)) return NULL;
   if (cells[x + y * width].items.size() == 0) return NULL;
   return cells[x + y * width].items.front();
 }
 
-void Dungeon::addItem(Item* it) {
+void Dungeon::addItem(item::Item* it) {
   if (it == NULL) return;
   if (isUpdatingItems)
     itemsToAdd.push_back(it);
   else {
-    Item* newItem = it->addToList(getCell(it->x, it->y)->items);
+    item::Item* newItem = it->addToList(getCell(it->x, it->y)->items);
     if (newItem == it) {
       items.push_back(newItem);
-      if (newItem->light) addLight(newItem->light);
+      if (newItem->getLight()) addLight(newItem->getLight());
       bool walk = isCellWalkable((int)newItem->x, (int)newItem->y);
       bool transp = isCellTransparent((int)newItem->x, (int)newItem->y);
       walk = walk && newItem->isWalkable();
@@ -680,7 +680,7 @@ void Dungeon::computeWalkTransp(int x, int y) {
   Cell* cell = getCell(x, y);
   bool walk = true;
   bool transp = true;
-  for (const Item* it : cell->items) {
+  for (const item::Item* it : cell->items) {
     walk = walk && it->isWalkable();
     transp = transp && it->isTransparent();
   }
@@ -704,10 +704,10 @@ void Dungeon::setWalkable(int x, int y, bool walkable) {
   map2x->setProperties(x * 2 + 1, y * 2 + 1, transp, walkable);
 }
 
-Item* Dungeon::removeItem(Item* it, int count, bool del) {
-  Item* newItem = it->removeFromList(getCell(it->x, it->y)->items, count);
+item::Item* Dungeon::removeItem(item::Item* it, int count, bool del) {
+  item::Item* newItem = it->removeFromList(getCell(it->x, it->y)->items, count);
   if (newItem == it) {
-    if (it->light) removeLight(it->light);
+    if (it->getLight()) removeLight(it->getLight());
     if (del) it->toDelete = count;
     computeWalkTransp((int)it->x, (int)it->y);
   }
@@ -739,7 +739,7 @@ void Dungeon::renderItems(LightMap& lightMap, TCODImage* ground) {
       for (int ty = -dy; ty <= dy; ty++) {
         int y = (int)(player->y + ty);
         if ((unsigned)y < (unsigned)height && map->isInFov(x, y) && !terrainTypes[getTerrainType(x, y)].swimmable) {
-          Item* it = getFirstItem(x, y);
+          item::Item* it = getFirstItem(x, y);
           if (it && it->speed == 0.0f) {
             it->render(lightMap, ground);
           }
@@ -748,7 +748,7 @@ void Dungeon::renderItems(LightMap& lightMap, TCODImage* ground) {
     }
   }
   // moving items
-  for (Item* it : items) {
+  for (item::Item* it : items) {
     if (it->speed > 0.0f && map->isInFov((int)it->x, (int)it->y)) {
       it->render(lightMap, ground);
     }
@@ -756,9 +756,9 @@ void Dungeon::renderItems(LightMap& lightMap, TCODImage* ground) {
 }
 
 void Dungeon::updateItems(float elapsed, TCOD_key_t k, TCOD_mouse_t* mouse) {
-  std::vector<Item*> toDelete;
+  std::vector<item::Item*> toDelete;
   isUpdatingItems = true;
-  for (Item* it : items) {
+  for (item::Item* it : items) {
     if (it->toDelete) {
       toDelete.push_back(it);
     } else if (!it->update(elapsed, k, mouse)) {
@@ -767,7 +767,7 @@ void Dungeon::updateItems(float elapsed, TCOD_key_t k, TCOD_mouse_t* mouse) {
     }
   }
   isUpdatingItems = false;
-  for (Item* it : toDelete) {
+  for (item::Item* it : toDelete) {
     removeItem(it, it->count);  // from item map
     helpers::remove(items, it);  // from item list
     if (it->typeData->isA("tree")) {
@@ -775,7 +775,7 @@ void Dungeon::updateItems(float elapsed, TCOD_key_t k, TCOD_mouse_t* mouse) {
     }
     delete it;
   }
-  for (Item* it : itemsToAdd) {
+  for (item::Item* it : itemsToAdd) {
     addItem(it);
   }
   itemsToAdd.clear();
@@ -904,7 +904,7 @@ void Dungeon::saveData(uint32_t chunkId, TCODZip* zip) {
   }
   zip->putInt(nbItemsToSave);
   for (int i = 0; i < width * height; i++) {
-    for (Item* it : cells[i].items) {
+    for (item::Item* it : cells[i].items) {
       zip->putString(it->typeData->name);
       it->saveData(ITEM_CHUNK_ID, zip);
     }
@@ -966,11 +966,11 @@ bool Dungeon::loadData(uint32_t chunkId, uint32_t chunkVersion, TCODZip* zip) {
   int nbItems = zip->getInt();
   while (nbItems > 0) {
     const char* itemTypeName = zip->getString();
-    ItemType* itemType = Item::getType(itemTypeName);
+    item::ItemType* itemType = item::Item::getType(itemTypeName);
     if (!itemType) return false;
     uint32_t itemChunkId, itemChunkVersion;
     saveGame.loadChunk(&itemChunkId, &itemChunkVersion);
-    Item* it = Item::getItem(itemType, 0, 0);
+    item::Item* it = item::Item::getItem(itemType, 0, 0);
     if (!it->loadData(itemChunkId, itemChunkVersion, zip)) return false;
     addItem(it);
     nbItems--;

@@ -343,7 +343,7 @@ bool ForestScreen::update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse) {
       debugMap = (debugMap + 1) % NB_DEBUGMAPS;
     } else if (k.c == 'i' && k.lalt && !k.pressed) {
       // debug mode : Alt-i = item
-      dungeon->addItem(Item::getItem("short bronze blade", player.x, player.y - 1));
+      dungeon->addItem(item::Item::getItem("short bronze blade", player.x, player.y - 1));
     }
   }
   if (k.vk == TCODK_ALT || k.lalt) lookOn = k.pressed;
@@ -398,27 +398,28 @@ void ForestScreen::placeHouse(Dungeon* dungeon, int doorx, int doory, Entity::Di
   building->setHuntingHide(dungeon);
 }
 
-void ForestScreen::placeTree(Dungeon* dungeon, int x, int y, const ItemType* treeType) {
+void ForestScreen::placeTree(Dungeon* dungeon, int x, int y, const item::ItemType* treeType) {
   // trunk
   int dx = x / 2;
   int dy = y / 2;
   // no tree against a door
-  if (dungeon->hasItemFlag(dx - 1, dy, ITEM_BUILD_NOT_BLOCK) ||
-      dungeon->hasItemFlag(dx + 1, dy, ITEM_BUILD_NOT_BLOCK) ||
-      dungeon->hasItemFlag(dx, dy - 1, ITEM_BUILD_NOT_BLOCK) || dungeon->hasItemFlag(dx, dy + 1, ITEM_BUILD_NOT_BLOCK))
+  if (dungeon->hasItemFlag(dx - 1, dy, item::ITEM_BUILD_NOT_BLOCK) ||
+      dungeon->hasItemFlag(dx + 1, dy, item::ITEM_BUILD_NOT_BLOCK) ||
+      dungeon->hasItemFlag(dx, dy - 1, item::ITEM_BUILD_NOT_BLOCK) ||
+      dungeon->hasItemFlag(dx, dy + 1, item::ITEM_BUILD_NOT_BLOCK))
     return;
 
-  dungeon->addItem(Item::getItem(treeType, x / 2, y / 2));
+  dungeon->addItem(item::Item::getItem(treeType, x / 2, y / 2));
   // folliage
   setCanopy(x, y, treeType);
-  if (treeType->hasFeature(ITEM_FEAT_PRODUCES)) {
+  if (treeType->hasFeature(item::ITEM_FEAT_PRODUCES)) {
     float odds = forestRng->getFloat(0.0, 30.0);
     if (odds <= 1.0) {
       // drop some fruit/twig
       int dx = x / 2;
       int dy = y / 2;
       dungeon->getClosestWalkable(&dx, &dy);
-      Item* it = treeType->produce(odds);
+      item::Item* it = treeType->produce(odds);
       if (it) {
         it->setPos(dx, dy);
         dungeon->addItem(it);
@@ -569,7 +570,7 @@ else if ( swimmable2 ) waterCoef2=layer2Height;
           if (layer1Height >= itemData->minThreshold && layer1Height < itemData->maxThreshold &&
               forestRng->getFloat(0.0, 1.0) < itemData->density) {
             if (itemData->itemTypeName) {
-              ItemType* type = Item::getType(itemData->itemTypeName);
+              item::ItemType* type = item::Item::getType(itemData->itemTypeName);
               if (!type) {
                 printf("FATAL : unknown item type '%s'\n", itemData->itemTypeName);
 
@@ -577,7 +578,7 @@ else if ( swimmable2 ) waterCoef2=layer2Height;
                 if (type->isA("tree"))
                   placeTree(dungeon, x, y, type);
                 else
-                  dungeon->addItem(Item::getItem(type, x / 2, y / 2));
+                  dungeon->addItem(item::Item::getItem(type, x / 2, y / 2));
               }
             } else {
               Creature* cr = Creature::getCreature((CreatureTypeId)itemData->creatureType);
@@ -662,8 +663,8 @@ void ForestScreen::onActivate() {
     dungeon->setPlayerStartingPosition();
     int fx, fy;
     fr = new Friend();
-    Item* knife = Item::getRandomWeapon("knife", ITEM_CLASS_STANDARD);
-    knife->addComponent(Item::getItem("emerald", 0, 0, false));
+    item::Item* knife = item::Item::getRandomWeapon("knife", item::ITEM_CLASS_STANDARD);
+    knife->addComponent(item::Item::getItem("emerald", 0, 0, false));
     knife->name = strdup("emerald pocketknife");
     knife->an = true;
     player.addToInventory(knife);

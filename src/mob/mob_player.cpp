@@ -278,19 +278,19 @@ bool Player::activateCell(int dungeonx, int dungeony, bool lbut_pressed, bool wa
   if (items->size() > 0) {
     useWeapon = false;
     // if ( lbut_pressed ) {
-    std::vector<Item*> toPick;
-    std::vector<Item*> toUse;
-    for (Item* it : *items) {
+    std::vector<item::Item*> toPick;
+    std::vector<item::Item*> toUse;
+    for (item::Item* it : *items) {
       if (!it->isPickable())
         toUse.push_back(it);
       else if (it->speed == 0.0f)
         toPick.push_back(it);
     }
-    for (Item* it : toPick) {
+    for (item::Item* it : toPick) {
       it->putInInventory(this);
     }
-    for (Item* it : toUse) {
-      bool deleteOnUse = (it->typeData->flags & ITEM_DELETE_ON_USE) != 0;
+    for (item::Item* it : toUse) {
+      bool deleteOnUse = (it->typeData->flags & item::ITEM_DELETE_ON_USE) != 0;
       it->use();
       if (activated) *activated = true;
     }
@@ -354,7 +354,7 @@ bool Player::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
   }
   // update items in inventory
   inventory.erase(
-      std::remove_if(inventory.begin(), inventory.end(), [&elapsed](Item* it) { return it->age(elapsed); }),
+      std::remove_if(inventory.begin(), inventory.end(), [&elapsed](item::Item* it) { return it->age(elapsed); }),
       inventory.end());
 
   // crouching
@@ -631,13 +631,13 @@ bool Player::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
     // auto pickup items
     if (oldx != x || oldy != y) {
       auto* items = dungeon->getItems((int)x, (int)y);
-      std::vector<Item*> toPick;
-      for (Item* it : *items) {
+      std::vector<item::Item*> toPick;
+      for (item::Item* it : *items) {
         if (!it->speed > 0 && it->isPickable()) {
           toPick.push_back(it);
         }
       }
-      for (Item* it : toPick) {
+      for (item::Item* it : toPick) {
         it->putInInventory(this);
       }
       if (dungeon->hasRipples(x, y)) {

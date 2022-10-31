@@ -170,8 +170,8 @@ void AiDirector::killCreature(Creature* cr) {
     killCount = TCODRandom::getInstance()->getInt((int)(itemKillCount * 0.75), (int)(itemKillCount * 1.25));
     if (list.size() - nbScrolls <= 0 ||
         TCODRandom::getInstance()->getFloat(0.0f, 1.0f) > gameEngine->player.getHealth()) {
-      Item* it = Item::getItem("health", 0, 0);
-      Item* bottle = Item::getItem("bottle", cr->x, cr->y);
+      item::Item* it = item::Item::getItem("health", 0, 0);
+      item::Item* bottle = item::Item::getItem("bottle", cr->x, cr->y);
       it->putInContainer(bottle);
       gameEngine->dungeon->addItem(bottle);
     } else {

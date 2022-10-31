@@ -263,8 +263,8 @@ bool FireBall::updateMove(float elapsed) {
         for (int i = 0; i < 5; i++) {
           auto* items = dungeon->getItems(oldx + deltax[i], oldy + deltay[i]);
           if (items && items->size() > 0) {
-            for (Item* it : *items) {
-              ItemFeature* feat = it->getFeature(ITEM_FEAT_FIRE_EFFECT);
+            for (item::Item* it : *items) {
+              item::ItemFeature* feat = it->getFeature(item::ITEM_FEAT_FIRE_EFFECT);
               if (feat) {
                 float dmg = TCODRandom::getInstance()->getFloat(damage / 2, damage);
                 it->fireResistance -= dmg;
@@ -375,9 +375,9 @@ bool FireBall::updateTorch(float elapsed) {
         for (int ty = -dy; ty <= dy; ty++) {
           if ((int)(y) + ty >= 0 && (int)(y) + ty < dungeon->height) {
             auto* items = dungeon->getItems((int)(x) + tx, (int)(y) + ty);
-            for (Item* it : *items) {
+            for (item::Item* it : *items) {
               // found an adjacent item
-              ItemFeature* fireFeat = it->getFeature(ITEM_FEAT_FIRE_EFFECT);
+              item::ItemFeature* fireFeat = it->getFeature(item::ITEM_FEAT_FIRE_EFFECT);
               if (fireFeat) {
                 // item is affected by fire
                 it->fireResistance -= damage / 4;
