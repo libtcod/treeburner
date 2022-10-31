@@ -31,7 +31,7 @@
 #include "savegame.hpp"
 #include "ui_input.hpp"
 
-class ForestScreen : public bas::GameEngine, public bas::SaveListener {
+class ForestScreen : public base::GameEngine, public base::SaveListener {
  public:
   Friend* fr;
 
@@ -55,7 +55,7 @@ class ForestScreen : public bas::GameEngine, public bas::SaveListener {
   void onActivate() override;
   void onDeactivate() override;
   void placeTree(Dungeon* dungeon, int x, int y, const item::ItemType* treeType);
-  void placeHouse(Dungeon* dungeon, int doorx, int doory, bas::Entity::Direction dir);
+  void placeHouse(Dungeon* dungeon, int doorx, int doory, base::Entity::Direction dir);
   int debugMap;
   TextInput textInput;
 };

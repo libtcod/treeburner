@@ -26,7 +26,7 @@
 #pragma once
 #include <libtcod.hpp>
 
-namespace bas {
+namespace base {
 #define SAVEGAME_MAGIC_NUMBER 0xFD051E4F
 
 #define GAME_CHUNK_ID 0x47414D45
@@ -108,4 +108,4 @@ class SaveGame : public SaveListener {
   TCODList<uint32_t> sizes;
   uint32_t nbChunks;
 };
-}  // namespace bas
+}  // namespace base

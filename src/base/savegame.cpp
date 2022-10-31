@@ -29,7 +29,7 @@
 
 #include <filesystem>
 
-namespace bas {
+namespace base {
 bool SaveGame::isBigEndian() {
   union {
     uint32_t i;
@@ -214,4 +214,4 @@ bool SaveGame::loadData(uint32_t chunkId, uint32_t chunkVersion, TCODZip* zip) {
   }
   return false;
 }
-}  // namespace bas
+}  // namespace base

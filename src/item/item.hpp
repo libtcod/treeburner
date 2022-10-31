@@ -251,7 +251,7 @@ struct ItemType {
   TCODList<ItemActionId> actions{};
 };
 
-class Item : public bas::DynamicEntity {
+class Item : public base::DynamicEntity {
  public:
   // factories
   static Item* getItem(const char* type, float x, float y, bool createComponents = true);

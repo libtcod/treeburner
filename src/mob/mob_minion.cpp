@@ -113,7 +113,7 @@ bool Minion::update(float elapsed) {
   static float minionDamage = config.getFloatProperty("config.creatures.minion.damage");
   static float pathDelay = config.getFloatProperty("config.creatures.pathDelay");
 
-  bas::GameEngine* game = gameEngine;
+  base::GameEngine* game = gameEngine;
   if (!Creature::update(elapsed)) return false;
   pathTimer += elapsed;
   if (!seen && game->dungeon->map->isInFov((int)x, (int)y) && game->dungeon->getMemory(x, y)) {

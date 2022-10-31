@@ -45,7 +45,7 @@ void Game::onActivate() {
   static TCODColor playerLightColor = config.getColorProperty("config.display.playerLightColor");
   // set keyboard mode to RELEASED + PRESSED
   init();  // init game engine
-  bas::GameEngine::onActivate();
+  base::GameEngine::onActivate();
   initLevel();
   boss = NULL;
   finalExplosion = 2.0f;
@@ -256,7 +256,7 @@ void Game::render() {
 bool Game::update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse) {
   static int nbLevels = config.getIntProperty("config.gameplay.nbLevels");
   static bool debug = config.getBoolProperty("config.debug");
-  static bas::AiDirector aiDirector;
+  static base::AiDirector aiDirector;
   static float finalExplosionTime = config.getFloatProperty("config.display.finalExplosionTime");
 
   mousex = mouse.cx;
@@ -490,5 +490,5 @@ void Game::termLevel() {
   player.termLevel();
   delete dungeon;
   fireballs.clearAndDelete();
-  bas::AiDirector::instance->termLevel();
+  base::AiDirector::instance->termLevel();
 }

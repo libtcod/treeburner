@@ -33,7 +33,7 @@
 
 typedef enum { FB_SPARK, FB_STANDARD, FB_BURST, FB_INCANDESCENCE } FireBallType;
 
-class FireBall : public bas::Entity, public bas::NoisyThing {
+class FireBall : public base::Entity, public base::NoisyThing {
  public:
   Light light;  // light associated with this fireball
 

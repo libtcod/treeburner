@@ -47,7 +47,7 @@ enum BuildingMapId {
   BUILDING_ITEM,
 };
 
-class Building : public bas::Rect {
+class Building : public base::Rect {
  public:
   int doorx{}, doory{};  // in building local coordinates
   std::vector<int> map{};  // a map of BuildingMapId representing the building
@@ -60,7 +60,7 @@ class Building : public bas::Rect {
   void collapseRoof();
 
  protected:
-  Building(int w, int h) : bas::Rect{0, 0, w, h}, map(w * h, 0) {}
+  Building(int w, int h) : base::Rect{0, 0, w, h}, map(w * h, 0) {}
   void buildExternalWalls();
   void placeRandomDoor(TCODRandom* rng);
   void placeRandomWindow(TCODRandom* rng);

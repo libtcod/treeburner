@@ -609,7 +609,7 @@ bool Inventory::update(float elapsed, TCOD_key_t& k, TCOD_mouse_t& mouse) {
           // drag and drop on another cell = throw
           float dx = dungeonx - (owner ? owner->x : container->x);
           float dy = dungeony - (owner ? owner->y : container->y);
-          float invLength = bas::Entity::fastInvSqrt(dx * dx + dy * dy);
+          float invLength = base::Entity::fastInvSqrt(dx * dx + dy * dy);
           dx *= invLength;
           dy *= invLength;
           item::Item* newItem = NULL;

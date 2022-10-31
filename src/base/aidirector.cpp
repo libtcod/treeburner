@@ -35,7 +35,7 @@
 #include "mob_minion.hpp"
 #include "util_powerup.hpp"
 
-namespace bas {
+namespace base {
 AiDirector* AiDirector::instance = NULL;
 
 AiDirector::AiDirector() {
@@ -184,4 +184,4 @@ void AiDirector::killCreature(Creature* cr) {
 }
 
 void AiDirector::termLevel() { nbScrolls = 0; }
-}  // namespace bas
+}  // namespace base

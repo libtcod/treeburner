@@ -106,7 +106,10 @@ class Condition {
   void load(TCODZip* zip);
 };
 
-class Creature : public bas::DynamicEntity, public ITCODPathCallback, public bas::NoisyThing, public bas::SaveListener {
+class Creature : public base::DynamicEntity,
+                 public ITCODPathCallback,
+                 public base::NoisyThing,
+                 public base::SaveListener {
  public:
   CreatureTypeId type;
   TCODColor color_;
@@ -189,7 +192,7 @@ class Creature : public bas::DynamicEntity, public ITCODPathCallback, public bas
   std::vector<item::Item*> inventory;
   float walkTimer, pathTimer;
   float curDmg;
-  struct TalkText : public bas::Rect {
+  struct TalkText : public base::Rect {
     char text[CREATURE_TALK_SIZE];
     float delay;
   } talkText;
