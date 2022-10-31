@@ -26,6 +26,8 @@
 #pragma once
 #include <libtcod.hpp>
 
+namespace item {
+namespace modifier {
 typedef enum {
   ITEM_MOD_FIRE_BEGIN,
   ITEM_MOD_FIRE_BLAST = ITEM_MOD_FIRE_BEGIN,
@@ -50,3 +52,5 @@ class ItemModifier {
 
   static void renderDescription(TCODConsole* con, int x, int y, const TCODList<ItemModifier*>& list);
 };
+}  // namespace modifier
+}  // namespace item

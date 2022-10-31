@@ -28,9 +28,9 @@
 #include <string>
 
 #include "bas_entity.hpp"
-#include "item_modifier.hpp"
 #include "map_light.hpp"
 #include "map_lightmap.hpp"
+#include "modifier.hpp"
 
 class Creature;
 class Dungeon;
@@ -283,7 +283,7 @@ class Item : public DynamicEntity {
   // remove one item, possibly unstacking
   Item* removeFromList(std::vector<Item*>& list, int count = 1);
 
-  void addModifier(ItemModifierId id, float value);
+  void addModifier(modifier::ItemModifierId id, float value);
 
   bool isA(const ItemType* type) const { return typeData->isA(type); }
   bool isA(const char* typeName) const { return isA(getType(typeName)); }
@@ -342,7 +342,7 @@ class Item : public DynamicEntity {
   std::optional<std::string> adjective_{};
   bool an_{};  //  If the name begins with a vowel sound.
   int count_{1};
-  TCODList<ItemModifier*> modifiers_{};
+  TCODList<modifier::ItemModifier*> modifiers_{};
   Creature* owner_{};  // this is in owner's inventory
   Item* container_{};  // this is inside container
   Creature* as_creature_{};  // a creature corresponding to this item
