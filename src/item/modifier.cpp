@@ -23,8 +23,10 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#include "item_modifier.hpp"
+#include "modifier.hpp"
 
+namespace item {
+namespace modifier {
 const char* modifierName[ITEM_MOD_NUMBER] = {
     "blast power",
     "sparkles",
@@ -39,3 +41,5 @@ void ItemModifier::renderDescription(TCODConsole* con, int x, int y, const TCODL
     con->print(x, y++, "%s +%d%%", modifierName[(*mod)->id], (int)((*mod)->value * 100));
   }
 }
+}  // namespace modifier
+}  // namespace item

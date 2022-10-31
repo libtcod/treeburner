@@ -870,13 +870,13 @@ Item* Item::getRandomWeapon(const char* typeName, ItemClass itemClass) {
         weapon->cast_delay_ = MAX(0.1f, weapon->reload_delay_);
         break;
       case MOD_MODIFIER:
-        ItemModifierId id = (ItemModifierId)0;
+        modifier::ItemModifierId id = (modifier::ItemModifierId)0;
         switch (gameEngine->player.school.type) {
           case SCHOOL_FIRE:
-            id = (ItemModifierId)rng->getInt(ITEM_MOD_FIRE_BEGIN, ITEM_MOD_FIRE_END);
+            id = (modifier::ItemModifierId)rng->getInt(modifier::ITEM_MOD_FIRE_BEGIN, modifier::ITEM_MOD_FIRE_END);
             break;
           case SCHOOL_WATER:
-            id = (ItemModifierId)rng->getInt(ITEM_MOD_WATER_BEGIN, ITEM_MOD_WATER_END);
+            id = (modifier::ItemModifierId)rng->getInt(modifier::ITEM_MOD_WATER_BEGIN, modifier::ITEM_MOD_WATER_END);
             break;
           default:
             break;
@@ -1112,7 +1112,7 @@ void Item::renderDescription(int x, int y, bool below) {
     int dmgPerSec = (int)(damages_ * rate + 0.5f);
     descCon->print(CON_W / 4, cy++, "%d damages/sec", dmgPerSec);
     descCon->print(CON_W / 4, cy++, "Attack rate:%s", getRateName(rate));
-    ItemModifier::renderDescription(descCon, 2, cy, modifiers_);
+    modifier::ItemModifier::renderDescription(descCon, 2, cy, modifiers_);
   }
 
   /*
@@ -1593,14 +1593,14 @@ Item* Item::drop(int dropCount) {
   return newItem;
 }
 
-void Item::addModifier(ItemModifierId id, float value) {
-  for (ItemModifier** mod = modifiers_.begin(); mod != modifiers_.end(); mod++) {
+void Item::addModifier(modifier::ItemModifierId id, float value) {
+  for (modifier::ItemModifier** mod = modifiers_.begin(); mod != modifiers_.end(); mod++) {
     if ((*mod)->id == id) {
       (*mod)->value += value;
       return;
     }
   }
-  modifiers_.push(new ItemModifier(id, value));
+  modifiers_.push(new modifier::ItemModifier(id, value));
 }
 
 void Item::renderDescriptionFrame(int x, int y, bool below, bool frame) {
@@ -1762,10 +1762,10 @@ bool Item::loadData(uint32_t chunkId, uint32_t chunkVersion, TCODZip* zip) {
 
   int nbModifiers = zip->getInt();
   while (nbModifiers > 0) {
-    ItemModifierId id = (ItemModifierId)zip->getInt();
-    if (id < 0 || id >= ITEM_MOD_NUMBER) return false;
+    modifier::ItemModifierId id = (modifier::ItemModifierId)zip->getInt();
+    if (id < 0 || id >= modifier::ITEM_MOD_NUMBER) return false;
     float value = zip->getFloat();
-    ItemModifier* mod = new ItemModifier(id, value);
+    modifier::ItemModifier* mod = new modifier::ItemModifier(id, value);
     modifiers_.push(mod);
   }
   return true;
@@ -1797,7 +1797,7 @@ void Item::saveData(uint32_t chunkId, TCODZip* zip) {
   }
 
   zip->putInt(modifiers_.size());
-  for (ItemModifier** it = modifiers_.begin(); it != modifiers_.end(); it++) {
+  for (modifier::ItemModifier** it = modifiers_.begin(); it != modifiers_.end(); it++) {
     zip->putInt((*it)->id);
     zip->putFloat((*it)->value);
   }
