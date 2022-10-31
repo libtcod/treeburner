@@ -26,8 +26,8 @@
 #pragma once
 #include <libtcod.hpp>
 
-#include "bas_aidirector.hpp"
-#include "bas_gameengine.hpp"
+#include "aidirector.hpp"
+#include "gameengine.hpp"
 
 class TreeBurner : public GameEngine {
  public:

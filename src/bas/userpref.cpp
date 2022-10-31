@@ -23,22 +23,38 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#include "bas_entity.hpp"
+#include "userpref.hpp"
 
-#include <cmath>
+#include <filesystem>
+#include <libtcod.hpp>
 
 #include "main.hpp"
 
-// John Carmack's fast inverse sqrt
-float Entity::fastInvSqrt(float x) {
-  const float xhalf = 0.5f * x;
-  int i = *(int*)&x;
-  i = 0x5f3759df - (i >> 1);
-  x = *(float*)&i;
-  x = x * (1.5f - xhalf * x * x);
-  return x;
+#define USERPREF_VERSION 5
+
+void UserPref::load() {
+  TCODZip zip;
+  if (zip.loadFromFile("data/sav/userpref.dat") == 0 || zip.getInt() != USERPREF_VERSION) {
+    // no file or bad file version.
+    setDefault();
+  } else {
+    zip.getData(sizeof(UserPref), this);
+  }
 }
 
-float Entity::distance(const Entity& p) const { return sqrtf(squaredDistance(p)); }
+void UserPref::setDefault() {
+  mouseOnly = false;
+  nbLaunches = 0;
+  statusx = CON_W - 12;
+  statusy = 0;
+  logx = 0;
+  logy = CON_H - 11;
+}
 
-bool Entity::isOnScreen() const { return IN_RECTANGLE(x - gameEngine->xOffset, y - gameEngine->yOffset, CON_W, CON_H); }
+void UserPref::save() {
+  TCODZip zip;
+  zip.putInt(USERPREF_VERSION);
+  zip.putData(sizeof(UserPref), this);
+  std::filesystem::create_directories("data/sav");
+  zip.saveToFile("data/sav/userpref.dat");
+}

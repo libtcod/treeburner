@@ -26,11 +26,12 @@
 #pragma once
 #include <libtcod.hpp>
 
-#include "bas_entity.hpp"
-#include "bas_noisything.hpp"
-#include "bas_savegame.hpp"
+#include "entity.hpp"
 #include "item.hpp"
 #include "mob_behavior.hpp"
+#include "noisything.hpp"
+#include "savegame.hpp"
+
 
 class Game;
 class Creature;

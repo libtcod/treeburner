@@ -27,7 +27,7 @@
 
 #include <stdio.h>
 
-#include "bas_aidirector.hpp"
+#include "aidirector.hpp"
 #include "constants.hpp"
 #include "main.hpp"
 #include "mob_boss.hpp"

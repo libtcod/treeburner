@@ -26,10 +26,11 @@
 #pragma once
 #include <libtcod.hpp>
 
-#include "bas_entity.hpp"
-#include "bas_noisything.hpp"
+#include "entity.hpp"
 #include "map_light.hpp"
 #include "map_lightmap.hpp"
+#include "noisything.hpp"
+
 
 typedef enum { FB_SPARK, FB_STANDARD, FB_BURST, FB_INCANDESCENCE } FireBallType;
 

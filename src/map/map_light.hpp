@@ -26,9 +26,10 @@
 #pragma once
 #include <libtcod.hpp>
 
-#include "bas_entity.hpp"
-#include "bas_noisything.hpp"
+#include "entity.hpp"
 #include "map_lightmap.hpp"
+#include "noisything.hpp"
+
 
 class Light : public Entity, public NoisyThing {
  public:

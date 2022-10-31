@@ -27,7 +27,7 @@
 #include <libtcod.hpp>
 #include <vector>
 
-#include "bas_entity.hpp"
+#include "entity.hpp"
 #include "map_dungeon.hpp"
 
 enum BuildingMapId {

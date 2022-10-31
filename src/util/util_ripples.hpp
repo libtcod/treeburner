@@ -26,7 +26,7 @@
 #pragma once
 #include <libtcod.hpp>
 
-#include "bas_entity.hpp"
+#include "entity.hpp"
 #include "util_ripples.hpp"
 
 class Dungeon;

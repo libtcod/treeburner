@@ -23,14 +23,14 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#include "bas_gameengine.hpp"
+#include "gameengine.hpp"
 
 #include <ctype.h>
 #include <math.h>
 #include <stdarg.h>
 #include <stdio.h>
 
-#include "bas_entity.hpp"
+#include "entity.hpp"
 #include "item.hpp"
 #include "main.hpp"
 #include "spell_fireball.hpp"

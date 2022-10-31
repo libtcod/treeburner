@@ -29,12 +29,13 @@
 #include <libtcod.hpp>
 #include <vector>
 
-#include "bas_savegame.hpp"
 #include "map_cell.hpp"
 #include "mob_creature.hpp"
+#include "savegame.hpp"
 #include "util_cavegen.hpp"
 #include "util_cellular.hpp"
 #include "util_clouds.hpp"
+
 
 class Player;
 class LightMap;
