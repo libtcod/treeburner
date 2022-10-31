@@ -179,8 +179,8 @@ void ForestScreen::render() {
   int minx, maxx, miny, maxy;
   bool showDebugMap = false;
   ground.clear(TCODColor::black);
-  Rect r1(xOffset * 2, yOffset * 2, CON_W * 2, CON_H * 2);
-  Rect r2(0, 0, dungeon->width * 2, dungeon->height * 2);
+  bas::Rect r1(xOffset * 2, yOffset * 2, CON_W * 2, CON_H * 2);
+  bas::Rect r2(0, 0, dungeon->width * 2, dungeon->height * 2);
   r1.intersect(r2);
   minx = (int)(r1.x - xOffset * 2);
   maxx = (int)(r1.x + r1.w - xOffset * 2);
@@ -392,7 +392,7 @@ bool ForestScreen::update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse) {
   return true;
 }
 
-void ForestScreen::placeHouse(Dungeon* dungeon, int doorx, int doory, Entity::Direction dir) {
+void ForestScreen::placeHouse(Dungeon* dungeon, int doorx, int doory, bas::Entity::Direction dir) {
   Building* building = Building::generate(9, 7, 2, forestRng);
   building->applyTo(dungeon, doorx, doory);
   building->setHuntingHide(dungeon);
@@ -435,9 +435,9 @@ void ForestScreen::generateMap(uint32_t seed) {
   forestRng = new TCODRandom(seed);
   dungeon = new Dungeon(FOREST_W, FOREST_H);
 
-  saveGame.registerListener(CHA1_CHUNK_ID, PHASE_START, this);
-  saveGame.registerListener(DUNG_CHUNK_ID, PHASE_START, dungeon);
-  saveGame.registerListener(PLAY_CHUNK_ID, PHASE_START, &player);
+  saveGame.registerListener(CHA1_CHUNK_ID, bas::PHASE_START, this);
+  saveGame.registerListener(DUNG_CHUNK_ID, bas::PHASE_START, dungeon);
+  saveGame.registerListener(PLAY_CHUNK_ID, bas::PHASE_START, &player);
 
   lightMap.clear(sunColor);
   for (int x = 1; x < FOREST_W - 1; x++) {
@@ -471,7 +471,7 @@ void ForestScreen::generateMap(uint32_t seed) {
       if (housey > dungeon->height - 20) housey = 20;
     }
   }
-  placeHouse(dungeon, housex, housey, Entity::NORTH);
+  placeHouse(dungeon, housex, housey, bas::Entity::NORTH);
   dungeon->saveShadowBeforeTree();
 
   for (int x = 2 * FOREST_W - 1; x >= 0; x--) {
@@ -620,9 +620,9 @@ void ForestScreen::loadMap(uint32_t seed) {
   forestRng = new TCODRandom(seed);
   dungeon = new Dungeon(FOREST_W, FOREST_H);
 
-  saveGame.registerListener(CHA1_CHUNK_ID, PHASE_START, this);
-  saveGame.registerListener(DUNG_CHUNK_ID, PHASE_START, dungeon);
-  saveGame.registerListener(PLAY_CHUNK_ID, PHASE_START, &player);
+  saveGame.registerListener(CHA1_CHUNK_ID, bas::PHASE_START, this);
+  saveGame.registerListener(DUNG_CHUNK_ID, bas::PHASE_START, dungeon);
+  saveGame.registerListener(PLAY_CHUNK_ID, bas::PHASE_START, &player);
 
   for (int x = 1; x < FOREST_W - 1; x++) {
     for (int y = 1; y < FOREST_H - 1; y++) {
@@ -637,7 +637,7 @@ void ForestScreen::loadMap(uint32_t seed) {
 #ifndef NDEBUG
   float t0 = TCODSystem::getElapsedSeconds();
 #endif
-  saveGame.load(PHASE_START);
+  saveGame.load(bas::PHASE_START);
 
   dungeon->computeSpawnSources();
   fr = (Friend*)dungeon->getCreature(CREATURE_FRIEND);

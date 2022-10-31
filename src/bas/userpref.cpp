@@ -30,6 +30,7 @@
 
 #include "main.hpp"
 
+namespace bas {
 #define USERPREF_VERSION 5
 
 void UserPref::load() {
@@ -58,3 +59,4 @@ void UserPref::save() {
   std::filesystem::create_directories("data/sav");
   zip.saveToFile("data/sav/userpref.dat");
 }
+}  // namespace bas

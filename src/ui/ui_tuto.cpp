@@ -49,7 +49,7 @@ Tutorial::Tutorial() : Screen(255) {
   renderMenu = false;
   lastPage = TUTO_MOVE;
   selectedItem = 0;
-  saveGame.registerListener(TUTO_CHUNK_ID, PHASE_START, this);
+  saveGame.registerListener(TUTO_CHUNK_ID, bas::PHASE_START, this);
 }
 
 Tutorial::~Tutorial() { saveGame.unregisterListener(this); }

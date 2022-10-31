@@ -76,7 +76,7 @@ void Boss::setSeen() {
 
   seen = true;
   ((Game*)(gameEngine))->bossSeen = true;
-  AiDirector::instance->bossSeen();
+  bas::AiDirector::instance->bossSeen();
   speed = bossSpeed;
 }
 
@@ -88,7 +88,7 @@ void Boss::takeDamage(float amount) {
   if (life <= 0.0f) {
     // the boss dies
     gameEngine->bossIsDead = true;
-    AiDirector::instance->bossDead();
+    bas::AiDirector::instance->bossDead();
     gameEngine->dungeon->stairx = (int)x;
     gameEngine->dungeon->stairy = (int)y;
   }
@@ -121,7 +121,7 @@ bool Boss::update(float elapsed) {
     // summon some minions to protect the boss
     summonTimer = 0.0f;
     for (int i = 0; i < minionCount; i++) {
-      AiDirector::instance->spawnMinion(true, (int)x, (int)y);
+      bas::AiDirector::instance->spawnMinion(true, (int)x, (int)y);
     }
   }
   if (pathTimer > pathDelay) {

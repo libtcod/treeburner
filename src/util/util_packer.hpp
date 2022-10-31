@@ -28,7 +28,7 @@
 
 #include "entity.hpp"
 
-class Packer : public Rect {
+class Packer : public bas::Rect {
  public:
   TCODList<Rect> rects;
 
@@ -37,15 +37,15 @@ class Packer : public Rect {
 
   void setMinimumSize(int minWidth, int minHeight);
   void setPadding(int leftPadding, int rightPadding, int topPadding, int bottomPadding);
-  bool addRect(Rect* rect, bool fill = true);
-  void addForbiddenZone(const Rect rect);
+  bool addRect(bas::Rect* rect, bool fill = true);
+  void addForbiddenZone(const bas::Rect rect);
   void clear();
   static void merge(TCODList<Rect>& list);
 
  protected:
   int minWidth, minHeight;
   int leftPadding, rightPadding, topPadding, bottomPadding;
-  TCODList<Rect> empty;
-  bool findEmptyPlace(Rect* rect);
-  void addRectInternal(Rect* rect, bool duplicate);
+  TCODList<bas::Rect> empty;
+  bool findEmptyPlace(bas::Rect* rect);
+  void addRectInternal(bas::Rect* rect, bool duplicate);
 };

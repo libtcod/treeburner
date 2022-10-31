@@ -36,11 +36,10 @@
 #include "util_cellular.hpp"
 #include "util_clouds.hpp"
 
-
 class Player;
 class LightMap;
 
-class Dungeon : public SaveListener {
+class Dungeon : public bas::SaveListener {
  public:
   Dungeon(int width, int height);  // empty dungeon
   Dungeon(int level, CaveGenerator* caveGen);  // bsp / cellular automate dungeon

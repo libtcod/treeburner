@@ -35,7 +35,7 @@
 
 enum MessageSeverity { DEBUG, INFO, WARN, CRITICAL, NB_SEVERITIES };
 
-class Logger : public MultiPosDialog, public SaveListener, public Scrollable {
+class Logger : public MultiPosDialog, public bas::SaveListener, public Scrollable {
  public:
   Logger();
   template <typename S, typename... Ts>

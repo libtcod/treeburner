@@ -32,7 +32,6 @@
 #include "noisything.hpp"
 #include "savegame.hpp"
 
-
 class Game;
 class Creature;
 
@@ -107,7 +106,7 @@ class Condition {
   void load(TCODZip* zip);
 };
 
-class Creature : public DynamicEntity, public ITCODPathCallback, public NoisyThing, public SaveListener {
+class Creature : public bas::DynamicEntity, public ITCODPathCallback, public bas::NoisyThing, public bas::SaveListener {
  public:
   CreatureTypeId type;
   TCODColor color_;
@@ -190,7 +189,7 @@ class Creature : public DynamicEntity, public ITCODPathCallback, public NoisyThi
   std::vector<item::Item*> inventory;
   float walkTimer, pathTimer;
   float curDmg;
-  struct TalkText : public Rect {
+  struct TalkText : public bas::Rect {
     char text[CREATURE_TALK_SIZE];
     float delay;
   } talkText;

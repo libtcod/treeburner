@@ -28,6 +28,7 @@
 
 #include "mob_creature.hpp"
 
+namespace bas {
 // the class that manages monsters spawning
 class AiDirector {
  public:
@@ -56,3 +57,4 @@ class AiDirector {
   int nbScrolls{};
   CreatureTypeId baseCreature{CREATURE_MINION};
 };
+}  // namespace bas

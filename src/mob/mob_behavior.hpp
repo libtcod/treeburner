@@ -65,10 +65,10 @@ class FollowBehavior : public Behavior {
 // default duration of a scare point in seconds
 #define SCARE_LIFE 1.0
 
-class ScarePoint : public Entity {
+class ScarePoint : public bas::Entity {
  public:
   float life;
-  ScarePoint(float x, float y, float life = SCARE_LIFE) : Entity(x, y), life(life) {}
+  ScarePoint(float x, float y, float life = SCARE_LIFE) : bas::Entity(x, y), life(life) {}
 };
 
 class HerdBehavior : public Behavior {

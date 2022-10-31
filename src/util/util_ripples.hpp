@@ -33,7 +33,7 @@ class Dungeon;
 class Shoal;
 
 struct WaterZone {
-  Rect rect;  // water zone
+  bas::Rect rect;  // water zone
   float cumulatedElapsed;
   float* data = nullptr;  // water height data after update
   float* oldData = nullptr;  // water height data before update
