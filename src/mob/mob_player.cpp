@@ -28,6 +28,7 @@
 #include <assert.h>
 #include <ctype.h>
 
+#include "bas/movement.hpp"
 #include "main.hpp"
 #include "util_subcell.hpp"
 
@@ -367,7 +368,14 @@ bool Player::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
   // update fov according to breath
   computeFovRange(elapsed);
 
-  Player::getMoveKey(key, &up, &down, &left, &right);
+  {
+    // Hack to fix movement.
+    auto [new_dx, new_dy] = base::get_current_movement_dir();
+    left = new_dx < 0;
+    right = new_dx > 0;
+    up = new_dy < 0;
+    down = new_dy > 0;
+  }
 
   // mouse coordinates
   int dungeonx = mouse->cx + gameEngine->xOffset;

@@ -47,7 +47,7 @@ class Player : public Creature {
   void setLightColor(TCODColor col) { light.color = col; }
   float getHealing();
   float getHealth();
-  static void getMoveKey(TCOD_key_t key, bool* up, bool* down, bool* left, bool* right);
+  [[depreaced]] static void getMoveKey(TCOD_key_t key, bool* up, bool* down, bool* left, bool* right);
   inline float getAverageSpeed() { return averageSpeed; }
   void computeStealth(float elapsed);
 
