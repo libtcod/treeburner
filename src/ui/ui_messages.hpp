@@ -30,7 +30,7 @@
 #include <deque>
 #include <libtcod.hpp>
 
-#include "savegame.hpp"
+#include "base/savegame.hpp"
 #include "ui_dialog.hpp"
 
 enum MessageSeverity { DEBUG, INFO, WARN, CRITICAL, NB_SEVERITIES };

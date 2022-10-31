@@ -26,7 +26,7 @@
 #pragma once
 #include <libtcod.hpp>
 
-#include "gameengine.hpp"
+#include "base/gameengine.hpp"
 #include "mob_boss.hpp"
 
 class Game : public base::GameEngine {

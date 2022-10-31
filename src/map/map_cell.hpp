@@ -28,8 +28,9 @@
 #include <libtcod.hpp>
 #include <vector>
 
+#include "base/savegame.hpp"
 #include "item.hpp"
-#include "savegame.hpp"
+
 
 // Terrain system adapted from Umbrarum Regnum Tech Demo 1
 struct TerrainType {

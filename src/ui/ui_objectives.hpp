@@ -26,7 +26,7 @@
 #pragma once
 #include <libtcod.hpp>
 
-#include "savegame.hpp"
+#include "base/savegame.hpp"
 #include "ui_dialog.hpp"
 #include "util_script.hpp"
 

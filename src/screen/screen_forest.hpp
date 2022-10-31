@@ -26,10 +26,11 @@
 #pragma once
 #include <libtcod.hpp>
 
-#include "gameengine.hpp"
+#include "base/gameengine.hpp"
+#include "base/savegame.hpp"
 #include "mob_friend.hpp"
-#include "savegame.hpp"
 #include "ui_input.hpp"
+
 
 class ForestScreen : public base::GameEngine, public base::SaveListener {
  public:

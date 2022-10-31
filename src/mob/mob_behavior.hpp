@@ -26,7 +26,7 @@
 #pragma once
 #include <libtcod.hpp>
 
-#include "entity.hpp"
+#include "base/entity.hpp"
 
 class WalkPattern : public ITCODPathCallback {
   float getWalkCost(int, int, int, int, void*) const { return 1.0f; }

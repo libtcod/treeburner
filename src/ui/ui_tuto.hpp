@@ -26,7 +26,7 @@
 #pragma once
 #include <libtcod.hpp>
 
-#include "savegame.hpp"
+#include "base/savegame.hpp"
 #include "screen.hpp"
 
 typedef enum {

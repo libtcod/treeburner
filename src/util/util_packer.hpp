@@ -26,7 +26,7 @@
 #pragma once
 #include <libtcod.hpp>
 
-#include "entity.hpp"
+#include "base/entity.hpp"
 
 class Packer : public base::Rect {
  public:

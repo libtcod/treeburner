@@ -29,7 +29,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 
-#include "aidirector.hpp"
+#include "base/aidirector.hpp"
 #include "main.hpp"
 #include "util_powerup.hpp"
 

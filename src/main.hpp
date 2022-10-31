@@ -28,11 +28,11 @@
 #include <libtcod.hpp>
 #include <umbra/umbra.hpp>
 
-#include "gameengine.hpp"
+#include "base/gameengine.hpp"
+#include "base/savegame.hpp"
+#include "base/userpref.hpp"
 #include "map_cell.hpp"
 #include "map_lightmap.hpp"
-#include "savegame.hpp"
-#include "userpref.hpp"
 #include "util_sound.hpp"
 #include "util_threadpool.hpp"
 

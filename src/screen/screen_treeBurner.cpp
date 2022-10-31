@@ -28,7 +28,7 @@
 #include <math.h>
 #include <stdio.h>
 
-#include "entity.hpp"
+#include "base/entity.hpp"
 #include "main.hpp"
 #include "map_building.hpp"
 #include "map_cell.hpp"

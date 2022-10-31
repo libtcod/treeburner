@@ -25,8 +25,8 @@
  */
 #include "mob_boss.hpp"
 
-#include "aidirector.hpp"
-#include "gameengine.hpp"
+#include "base/aidirector.hpp"
+#include "base/gameengine.hpp"
 #include "main.hpp"
 #include "screen_game.hpp"
 
