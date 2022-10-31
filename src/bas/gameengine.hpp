@@ -28,7 +28,7 @@
 #include <libtcod.hpp>
 #include <umbra/umbra.hpp>
 
-#include "bas_entity.hpp"
+#include "entity.hpp"
 #include "map_dungeon.hpp"
 #include "map_lightmap.hpp"
 #include "mob_creature.hpp"

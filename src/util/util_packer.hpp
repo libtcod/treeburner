@@ -26,7 +26,7 @@
 #pragma once
 #include <libtcod.hpp>
 
-#include "bas_entity.hpp"
+#include "entity.hpp"
 
 class Packer : public Rect {
  public:

@@ -27,7 +27,7 @@
 #include <libtcod.hpp>
 #include <string>
 
-#include "bas_entity.hpp"
+#include "entity.hpp"
 #include "map_light.hpp"
 #include "map_lightmap.hpp"
 #include "modifier.hpp"
