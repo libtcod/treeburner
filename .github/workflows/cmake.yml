@@ -16,7 +16,20 @@ env:
   VCPKG_ROOT: ${{ github.workspace }}/vcpkg
 
 jobs:
+  check-formatting:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: false
+          lfs: false
+      - uses: jidicula/clang-format-action@v4.9.0
+        with:
+          clang-format-version: 15
+          check-path: src
+
   build:
+    needs: [check-formatting]
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: true
