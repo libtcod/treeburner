@@ -30,8 +30,7 @@
 #include "map_lightmap.hpp"
 #include "noisything.hpp"
 
-
-class Light : public Entity, public NoisyThing {
+class Light : public bas::Entity, public bas::NoisyThing {
  public:
   Light() : randomRad(false), range(0.0f), color{tcod::ColorRGB{255, 255, 255}} {}
   Light(float range, TCODColor color = TCODColor::white, bool randomRad = false)

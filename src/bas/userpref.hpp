@@ -26,6 +26,7 @@
 #pragma once
 #include <cstdint>
 
+namespace bas {
 // user preferences (independant from the current game)
 class UserPref {
  public:
@@ -39,3 +40,4 @@ class UserPref {
  protected:
   void setDefault();
 };
+}  // namespace bas

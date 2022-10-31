@@ -51,7 +51,7 @@ struct TutorialPage {
   float delay;
 };
 
-class Tutorial : public Screen, public SaveListener {
+class Tutorial : public Screen, public bas::SaveListener {
  public:
   Tutorial();
   virtual ~Tutorial();

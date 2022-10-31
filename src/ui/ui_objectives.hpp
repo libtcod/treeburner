@@ -47,7 +47,7 @@ class Objective {
   Script* onSuccess;
 };
 
-class Objectives : public Dialog, public SaveListener, public Scrollable {
+class Objectives : public Dialog, public bas::SaveListener, public Scrollable {
  public:
   Objectives();
   TCODList<Objective*> sleeping;

@@ -31,10 +31,9 @@
 #include "map_lightmap.hpp"
 #include "noisything.hpp"
 
-
 typedef enum { FB_SPARK, FB_STANDARD, FB_BURST, FB_INCANDESCENCE } FireBallType;
 
-class FireBall : public Entity, public NoisyThing {
+class FireBall : public bas::Entity, public bas::NoisyThing {
  public:
   Light light;  // light associated with this fireball
 

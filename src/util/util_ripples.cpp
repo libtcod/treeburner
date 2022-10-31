@@ -172,7 +172,7 @@ void RippleManager::startRipple(int dungeonx, int dungeony, float height) {
 
 bool RippleManager::updateRipples(float elapsed) {
   // compute visible part of the dungeon
-  Rect visibleZone;
+  bas::Rect visibleZone;
   visibleZone.x = gameEngine->xOffset;
   visibleZone.y = gameEngine->yOffset;
   visibleZone.w = CON_W;
@@ -289,7 +289,7 @@ bool RippleManager::updateRipples(float elapsed) {
 void RippleManager::renderRipples(TCODImage& ground) {
   if (zones.size() == 0) init();
   // compute visible part of the dungeon
-  Rect visibleZone;
+  bas::Rect visibleZone;
   visibleZone.x = gameEngine->xOffset;
   visibleZone.y = gameEngine->yOffset;
   visibleZone.w = CON_W;
@@ -298,7 +298,7 @@ void RippleManager::renderRipples(TCODImage& ground) {
   for (WaterZone** it = zones.begin(); it != zones.end(); it++) {
     WaterZone* zone = *it;
     if (zone->rect.isIntersecting(visibleZone)) {
-      Rect z = zone->rect;
+      bas::Rect z = zone->rect;
       // remove borders
       z.x++;
       z.y++;

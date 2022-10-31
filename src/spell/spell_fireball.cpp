@@ -180,7 +180,7 @@ void FireBall::render(TCODImage& ground) {
 }
 
 bool FireBall::updateMove(float elapsed) {
-  GameEngine* game = gameEngine;
+  bas::GameEngine* game = gameEngine;
   Dungeon* dungeon = game->dungeon;
   int oldx = (int)x;
   int oldy = (int)y;
@@ -341,7 +341,7 @@ bool FireBall::updateStandard(float elapsed) {
 }
 
 bool FireBall::updateTorch(float elapsed) {
-  GameEngine* game = gameEngine;
+  bas::GameEngine* game = gameEngine;
   Dungeon* dungeon = game->dungeon;
   float f;
   fx_life_ -= elapsed / incanLife;
@@ -397,7 +397,7 @@ bool FireBall::updateTorch(float elapsed) {
 }
 
 bool FireBall::updateSparkle(float elapsed) {
-  GameEngine* game = gameEngine;
+  bas::GameEngine* game = gameEngine;
   Dungeon* dungeon = game->dungeon;
   bool firstFrame = (fx_life_ == 1.0f);
   fx_life_ -= elapsed / type_data_->sparkleLife;

@@ -160,7 +160,7 @@ void FireManager::addZone(int x, int y, int w, int h) {
   y = MAX(0, y);
   w = MIN(dungeon->width * 2 - 1 - x, w);
   h = MIN(dungeon->height * 2 - 1 - y, h);
-  z.r = Rect(x, y, w, h);
+  z.r = bas::Rect(x, y, w, h);
   z.life = -1.0f;
   zones.push(z);
 #ifdef FIRE_DEBUG
@@ -186,7 +186,7 @@ void FireManager::update(float elapsed) {
   el += elapsed;
   if (el < UPDATE_DELAY) return;
   el = 0.0f;
-  Rect screenZone;
+  bas::Rect screenZone;
   screenZone.x = gameEngine->xOffset * 2;
   screenZone.w = CON_W * 2;
   screenZone.y = gameEngine->yOffset * 2;

@@ -29,7 +29,7 @@
 #include "gameengine.hpp"
 #include "mob_boss.hpp"
 
-class Game : public GameEngine {
+class Game : public bas::GameEngine {
  public:
   Game();
 

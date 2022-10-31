@@ -29,7 +29,7 @@
 #include "aidirector.hpp"
 #include "gameengine.hpp"
 
-class TreeBurner : public GameEngine {
+class TreeBurner : public bas::GameEngine {
  public:
   TreeBurner();
 
@@ -46,9 +46,9 @@ class TreeBurner : public GameEngine {
   void onActivate() override;
   void onDeactivate() override;
   void placeTree(Dungeon* dungeon, int x, int y, const item::ItemType* treeType);
-  void placeHouse(Dungeon* dungeon, int doorx, int doory, Entity::Direction dir);
+  void placeHouse(Dungeon* dungeon, int doorx, int doory, bas::Entity::Direction dir);
   int debugMap;
-  AiDirector aiDirector;
+  bas::AiDirector aiDirector;
   Creature* boss;
   int cityWallX;
   float endTimer;

@@ -35,8 +35,9 @@
 #include "main.hpp"
 #include "spell_fireball.hpp"
 
-GameEngine* gameEngine = nullptr;
+bas::GameEngine* gameEngine = nullptr;
 
+namespace bas {
 GameEngine::GameEngine() : Screen{0} { gameEngine = this; }
 
 void GameEngine::onActivate() {
@@ -280,3 +281,4 @@ void GameEngine::displayProgress(float prog) {
   TCODConsole::root->flush();
   TCODConsole::checkForKeypress();
 }
+}  // namespace bas
