@@ -75,7 +75,7 @@ extern std::array<TerrainType, NB_TERRAINS> terrainTypes;
 class Building;
 struct Cell : public Persistant {
   int nbCreatures{};
-  std::vector<Item*> items{};
+  std::vector<item::Item*> items{};
   bool hasCorpse{};
   // cells already seen by the player
   bool memory{};

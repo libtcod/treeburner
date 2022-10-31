@@ -62,7 +62,7 @@ class Dungeon : public SaveListener {
 
   // stair to next level
   int stairx, stairy;
-  std::vector<Item*> items;
+  std::vector<item::Item*> items;
   TCODList<Creature*> creatures;
   TCODList<Creature*> corpses;
   TCODList<Light*> lights;
@@ -102,16 +102,16 @@ class Dungeon : public SaveListener {
   bool hasItem(int x, int y) const;
   bool hasActivableItem(int x, int y) const;
   bool hasItemType(int x, int y, const char* typeName);
-  bool hasItemType(int x, int y, const ItemType* type);
+  bool hasItemType(int x, int y, const item::ItemType* type);
   bool hasItemFlag(int x, int y, int flag);
   // bool hasItemTag(int x, int y, unsigned long long tag);
-  std::vector<Item*>* getItems(int x, int y) const;
-  Item* getFirstItem(int x, int y) const;
+  std::vector<item::Item*>* getItems(int x, int y) const;
+  item::Item* getFirstItem(int x, int y) const;
   // Item *getItemTag(int x, int y, unsigned long long tag);
-  Item* getItem(int x, int y, const ItemType* type);
-  Item* getItem(int x, int y, const char* typeName);
-  void addItem(Item* it);
-  Item* removeItem(Item* it, int count = 1, bool del = true);
+  item::Item* getItem(int x, int y, const item::ItemType* type);
+  item::Item* getItem(int x, int y, const char* typeName);
+  void addItem(item::Item* it);
+  item::Item* removeItem(item::Item* it, int count = 1, bool del = true);
   void renderItems(LightMap& lightMap, TCODImage* ground = NULL);
   void updateItems(float elapsed, TCOD_key_t k, TCOD_mouse_t* mouse);
   void computeWalkTransp(int x, int y);
@@ -187,7 +187,7 @@ class Dungeon : public SaveListener {
  protected:
   int level;
   TCODList<int> spawnSources;
-  std::vector<Item*> itemsToAdd;
+  std::vector<item::Item*> itemsToAdd;
   bool isUpdatingItems;
   TCODList<Creature*> creaturesToAdd;
   bool isUpdatingCreatures;

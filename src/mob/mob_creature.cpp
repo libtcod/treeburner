@@ -462,7 +462,7 @@ void Creature::takeDamage(float amount) {
   }
 }
 
-Item* Creature::addToInventory(Item* item) {
+item::Item* Creature::addToInventory(item::Item* item) {
   item = item->addToList(inventory);
   item->owner = this;
   item->x = x;
@@ -470,7 +470,7 @@ Item* Creature::addToInventory(Item* item) {
   return item;
 }
 
-Item* Creature::removeFromInventory(Item* item, int count) {
+item::Item* Creature::removeFromInventory(item::Item* item, int count) {
   if (count == 0) count = item->count;
   item = item->removeFromList(inventory, count);
   if (item == mainHand || item == offHand) unwield(item);
@@ -520,7 +520,7 @@ bool Creature::update(float elapsed) {
   }
   // update items in inventory
   inventory.erase(
-      std::remove_if(inventory.begin(), inventory.end(), [&elapsed](Item* it) { return it->age(elapsed); }),
+      std::remove_if(inventory.begin(), inventory.end(), [&elapsed](item::Item* it) { return it->age(elapsed); }),
       inventory.end());
   // ai
   if (currentBehavior) {
@@ -529,16 +529,16 @@ bool Creature::update(float elapsed) {
   return life > 0;
 }
 
-void Creature::equip(Item* it) {
-  ItemFeature* feat = it->getFeature(ITEM_FEAT_ATTACK);
+void Creature::equip(item::Item* it) {
+  item::ItemFeature* feat = it->getFeature(item::ITEM_FEAT_ATTACK);
   switch (feat->attack.wield) {
-    case WIELD_NONE:
+    case item::WIELD_NONE:
       break;
-    case WIELD_MAIN_HAND:
+    case item::WIELD_MAIN_HAND:
       if (offHand && offHand == mainHand) offHand = NULL;  // unequip two hands weapon
       mainHand = it;
       break;
-    case WIELD_ONE_HAND:
+    case item::WIELD_ONE_HAND:
       if (!mainHand)
         mainHand = it;
       else if (!offHand)
@@ -548,38 +548,38 @@ void Creature::equip(Item* it) {
         mainHand = it;
       }
       break;
-    case WIELD_OFF_HAND:
+    case item::WIELD_OFF_HAND:
       if (mainHand && offHand == mainHand) mainHand = NULL;  // unequip two hands weapon
       offHand = it;
       break;
-    case WIELD_TWO_HANDS:
+    case item::WIELD_TWO_HANDS:
       mainHand = offHand = it;
       break;
   }
 }
 
-void Creature::unequip(Item* it) {
+void Creature::unequip(item::Item* it) {
   if (it == mainHand) mainHand = NULL;
   if (it == offHand) offHand = NULL;  // might be both for two hands items
 }
 
-void Creature::wield(Item* it) {
-  ItemFeature* feat = it->getFeature(ITEM_FEAT_ATTACK);
+void Creature::wield(item::Item* it) {
+  item::ItemFeature* feat = it->getFeature(item::ITEM_FEAT_ATTACK);
   switch (feat->attack.wield) {
-    case WIELD_NONE:
+    case item::WIELD_NONE:
       gameEngine->gui.log.warn("You cannot wield %s", it->aName());
       return;
       break;
-    case WIELD_MAIN_HAND:
+    case item::WIELD_MAIN_HAND:
       if (mainHand) unwield(mainHand);
       break;
-    case WIELD_OFF_HAND:
+    case item::WIELD_OFF_HAND:
       if (offHand) unwield(offHand);
       break;
-    case WIELD_ONE_HAND:
+    case item::WIELD_ONE_HAND:
       if (mainHand && offHand) unwield(mainHand);
       break;
-    case WIELD_TWO_HANDS:
+    case item::WIELD_TWO_HANDS:
       if (mainHand) unwield(mainHand);
       if (offHand) unwield(offHand);
       break;
@@ -590,7 +590,7 @@ void Creature::wield(Item* it) {
   }
 }
 
-void Creature::unwield(Item* it) {
+void Creature::unwield(item::Item* it) {
   unequip(it);
   if (this == &gameEngine->player) {
     gameEngine->gui.log.info("You were wielding %s", it->aName());
@@ -606,7 +606,7 @@ void Creature::saveData(uint32_t chunkId, TCODZip* zip) {
   zip->putString(name);
   // save inventory
   zip->putInt(inventory.size());
-  for (Item* it : inventory) {
+  for (item::Item* it : inventory) {
     zip->putString(it->typeData->name);
     it->saveData(ITEM_CHUNK_ID, zip);
   }
@@ -627,11 +627,11 @@ bool Creature::loadData(uint32_t chunkId, uint32_t chunkVersion, TCODZip* zip) {
   int nbItems = zip->getInt();
   while (nbItems > 0) {
     const char* itemTypeName = zip->getString();
-    ItemType* itemType = Item::getType(itemTypeName);
+    item::ItemType* itemType = item::Item::getType(itemTypeName);
     if (!itemType) return false;
     uint32_t itemChunkId, itemChunkVersion;
     saveGame.loadChunk(&itemChunkId, &itemChunkVersion);
-    Item* it = Item::getItem(itemType, 0, 0);
+    item::Item* it = item::Item::getItem(itemType, 0, 0);
     if (!it->loadData(itemChunkId, itemChunkVersion, zip)) return false;
     addToInventory(it);
     nbItems--;

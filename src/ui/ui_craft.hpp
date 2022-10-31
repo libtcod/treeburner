@@ -47,7 +47,7 @@ class Craft : public Dialog, public UIListener, public Scrollable {
   void getScrollColor(int idx, TCODColor* fore, TCODColor* back) override;
 
  protected:
-  std::vector<Item*> items;
+  std::vector<item::Item*> items;
   int selectedItem;
   int selectedIngredient;
   bool selectedTool;
@@ -57,12 +57,12 @@ class Craft : public Dialog, public UIListener, public Scrollable {
   Creature* owner;
   bool isDragging, isDraggingStart;
   int dragx, dragy, dragStartX, dragStartY;
-  Item* dragItem;
-  Item* tool;
-  std::vector<Item*> ingredients;
-  TCODList<ItemCombination*> recipes;
-  Item* result;
-  ItemCombination* recipe;
+  item::Item* dragItem;
+  item::Item* tool;
+  std::vector<item::Item*> ingredients;
+  TCODList<item::ItemCombination*> recipes;
+  item::Item* result;
+  item::ItemCombination* recipe;
 
   void detectItem(TCOD_mouse_t& mouse);
   void computeResult();

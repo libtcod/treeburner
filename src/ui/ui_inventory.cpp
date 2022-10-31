@@ -40,7 +40,7 @@ TCODColor guiDisabledText(95, 95, 95);
 TCODColor guiText(255, 180, 0);
 TCODColor guiHighlightedText(114, 114, 255);
 
-static const char* tabNames[NB_INV_TABS] = {"All", "Arm", "Wea", "Foo", "Mis"};
+static const char* tabNames[item::NB_INV_TABS] = {"All", "Arm", "Wea", "Foo", "Mis"};
 
 Inventory::Inventory() : selectedItem(-1), closeOn(false) {
   con = new TCODConsole(INV_WIDTH, INV_HEIGHT);
@@ -55,8 +55,8 @@ Inventory::Inventory() : selectedItem(-1), closeOn(false) {
   cmenudrag = false;
   flags = DIALOG_MODAL | DIALOG_CLOSABLE;
   closeButton.set(rect.w - 1, 0);
-  for (int i = 0; i < NB_INV_TABS; i++) guiTabs.addTab(tabNames[i]);
-  guiTabs.curTab = INV_ARMOR;
+  for (int i = 0; i < item::NB_INV_TABS; i++) guiTabs.addTab(tabNames[i]);
+  guiTabs.curTab = item::INV_ARMOR;
   takeAll.setLabel("Take all");
   takeAll.addListener(this);
   craft.setLabel("Craft");
@@ -64,17 +64,17 @@ Inventory::Inventory() : selectedItem(-1), closeOn(false) {
 }
 
 void Inventory::initialize(Creature* owner) {
-  for (int i = 0; i < NB_INV_TABS; i++) {
+  for (int i = 0; i < item::NB_INV_TABS; i++) {
     tabs[i].items.clear();
     tabs[i].offset = 0;
   }
-  for (Item* it : owner->getInventory()) {
+  for (item::Item* it : owner->getInventory()) {
     tabs[it->typeData->inventoryTab].items.push_back(it);
-    tabs[INV_ALL].items.push_back(it);
+    tabs[item::INV_ALL].items.push_back(it);
   }
-  for (; guiTabs.curTab < NB_INV_TABS && tabs[guiTabs.curTab].items.size() == 0; guiTabs.curTab++) {
+  for (; guiTabs.curTab < item::NB_INV_TABS && tabs[guiTabs.curTab].items.size() == 0; guiTabs.curTab++) {
   }
-  if (guiTabs.curTab == NB_INV_TABS) guiTabs.curTab = 0;
+  if (guiTabs.curTab == item::NB_INV_TABS) guiTabs.curTab = 0;
   if (selectedItem >= tabs[guiTabs.curTab].items.size()) selectedItem = tabs[guiTabs.curTab].items.size() - 1;
   this->owner = owner;
   container = NULL;
@@ -86,18 +86,18 @@ void Inventory::initialize(Creature* owner) {
   craft.setPos(rect.w / 2 - craft.w_ / 2, rect.h - 1);
 }
 
-void Inventory::initialize(Item* container) {
-  for (int i = 0; i < NB_INV_TABS; i++) {
+void Inventory::initialize(item::Item* container) {
+  for (int i = 0; i < item::NB_INV_TABS; i++) {
     tabs[i].items.clear();
     tabs[i].offset = 0;
   }
-  for (Item* it : container->stack) {
+  for (item::Item* it : container->stack) {
     tabs[it->typeData->inventoryTab].items.push_back(it);
-    tabs[INV_ALL].items.push_back(it);
+    tabs[item::INV_ALL].items.push_back(it);
   }
-  for (; guiTabs.curTab < NB_INV_TABS && tabs[guiTabs.curTab].items.size() == 0; guiTabs.curTab++) {
+  for (; guiTabs.curTab < item::NB_INV_TABS && tabs[guiTabs.curTab].items.size() == 0; guiTabs.curTab++) {
   }
-  if (guiTabs.curTab == NB_INV_TABS) guiTabs.curTab = 0;
+  if (guiTabs.curTab == item::NB_INV_TABS) guiTabs.curTab = 0;
   if (selectedItem >= tabs[guiTabs.curTab].items.size()) selectedItem = tabs[guiTabs.curTab].items.size() - 1;
   this->container = container;
   owner = NULL;
@@ -110,23 +110,23 @@ void Inventory::initialize(Item* container) {
   takeAll.setPos(rect.w / 2 - takeAll.w_ / 2, rect.h - 1);
 }
 
-void Inventory::checkDefaultAction(Item* item) {
+void Inventory::checkDefaultAction(item::Item* item) {
   // when looting, drop item is the default action instead of use
   // check that the default action is coherent with current mode (inventory or loot)
   if (container) return;  // concerns only inventory
-  ItemActionId* dropAction = NULL;
-  ItemActionId* useAction = NULL;
+  item::ItemActionId* dropAction = NULL;
+  item::ItemActionId* useAction = NULL;
   bool dropFirst = false;
-  for (ItemActionId* id = item->typeData->actions.begin(); id != item->typeData->actions.end(); id++) {
-    ItemAction* action = ItemAction::getFromId(*id);
+  for (item::ItemActionId* id = item->typeData->actions.begin(); id != item->typeData->actions.end(); id++) {
+    item::ItemAction* action = item::ItemAction::getFromId(*id);
     if (action->onWater()) {
       if (!gameEngine->dungeon->hasRipples((int)gameEngine->player.x, (int)gameEngine->player.y)) {
         continue;
       }
     }
     if ((owner && action->onInventory()) || (container && action->onLoot())) {
-      if (*id == ITEM_ACTION_USE) useAction = id;
-      if (*id == ITEM_ACTION_DROP) {
+      if (*id == item::ITEM_ACTION_USE) useAction = id;
+      if (*id == item::ITEM_ACTION_DROP) {
         dropAction = id;
         if (useAction != NULL)
           dropFirst = false;
@@ -138,7 +138,7 @@ void Inventory::checkDefaultAction(Item* item) {
   if (useAction && dropAction) {
     if ((gameEngine->gui.loot.getActive() && !dropFirst) || (!gameEngine->gui.loot.getActive() && dropFirst)) {
       // bad default action. swap use and drop
-      ItemActionId tmp = *useAction;
+      item::ItemActionId tmp = *useAction;
       *useAction = *dropAction;
       *dropAction = tmp;
     }
@@ -149,9 +149,9 @@ bool Inventory::onWidgetEvent(Widget* widget, EWidgetEvent event) {
   if (widget == &takeAll && container) {
     InventoryTab* curTab = &tabs[guiTabs.curTab];
     while (!curTab->items.empty()) {
-      Item* it = curTab->items.front();
-      runActionOnItem(ITEM_ACTION_TAKE, it);
-      gameEngine->gui.inventory.guiTabs.curTab = INV_ALL;
+      item::Item* it = curTab->items.front();
+      runActionOnItem(item::ITEM_ACTION_TAKE, it);
+      gameEngine->gui.inventory.guiTabs.curTab = item::INV_ALL;
     }
   } else if (widget == &craft && owner) {
     gameEngine->gui.setMode(GUI_CRAFT);
@@ -182,7 +182,7 @@ void Inventory::render() {
     con->setCharForeground(w2 - 1, 0, closeOn ? guiHighlightedText : guiText);
 
     // render the tabs
-    for (int i = 0; i < NB_INV_TABS; i++) {
+    for (int i = 0; i < item::NB_INV_TABS; i++) {
       int numItems = tabs[i].items.size();
       if (numItems > 0) {
         char buf[128];
@@ -203,7 +203,7 @@ void Inventory::render() {
       if (skip <= 0) {
         con->setDefaultBackground(num == selectedItem ? guiHighlightedBackground : guiBackground);
         con->rect(2, ty, w2 - 4, 1, false, TCOD_BKGND_SET);
-        con->setDefaultForeground(Item::classColor[(*it)->itemClass]);
+        con->setDefaultForeground(item::Item::classColor[(*it)->itemClass]);
         if ((*it)->isEquiped())
           con->print(2, ty++, "%s (equiped)", (*it)->aName());
         else
@@ -222,13 +222,13 @@ void Inventory::render() {
   if (cmenuon) {
     // render the context menu
     if (selectedItem >= 0) {
-      Item* item = curTab->items.at(selectedItem);
+      item::Item* item = curTab->items.at(selectedItem);
       checkDefaultAction(item);
       cmenuheight = 0;
       cmenuwidth = 0;
       // compute context menu size
-      for (ItemActionId* id = item->typeData->actions.begin(); id != item->typeData->actions.end(); id++) {
-        ItemAction* action = ItemAction::getFromId(*id);
+      for (item::ItemActionId* id = item->typeData->actions.begin(); id != item->typeData->actions.end(); id++) {
+        item::ItemAction* action = item::ItemAction::getFromId(*id);
         if (action->onWater()) {
           if (!gameEngine->dungeon->hasRipples((int)gameEngine->player.x, (int)gameEngine->player.y)) {
             continue;
@@ -237,15 +237,15 @@ void Inventory::render() {
         if ((owner && action->onInventory()) || (container && action->onLoot())) {
           cmenuheight++;
           cmenuwidth = MAX(cmenuwidth, (int)strlen(action->name) + 2);
-          if (*id == ITEM_ACTION_TAKE && item->count > 1) {
+          if (*id == item::ITEM_ACTION_TAKE && item->count > 1) {
             // add one entry for 'Take all'
             cmenuheight++;
-            ItemAction* takeAll = ItemAction::getFromId(ITEM_ACTION_TAKE_ALL);
+            item::ItemAction* takeAll = item::ItemAction::getFromId(item::ITEM_ACTION_TAKE_ALL);
             cmenuwidth = MAX(cmenuwidth, (int)strlen(takeAll->name) + 2);
-          } else if (*id == ITEM_ACTION_DROP && item->count > 1) {
+          } else if (*id == item::ITEM_ACTION_DROP && item->count > 1) {
             // add one entry for 'Drop all'
             cmenuheight++;
-            ItemAction* dropAll = ItemAction::getFromId(ITEM_ACTION_DROP_ALL);
+            item::ItemAction* dropAll = item::ItemAction::getFromId(item::ITEM_ACTION_DROP_ALL);
             cmenuwidth = MAX(cmenuwidth, (int)strlen(dropAll->name) + 2);
           }
         }
@@ -256,8 +256,8 @@ void Inventory::render() {
       }
       // print the actions names
       bool first = true;
-      for (ItemActionId* id = item->typeData->actions.begin(); id != item->typeData->actions.end(); id++) {
-        ItemAction* action = ItemAction::getFromId(*id);
+      for (item::ItemActionId* id = item->typeData->actions.begin(); id != item->typeData->actions.end(); id++) {
+        item::ItemAction* action = item::ItemAction::getFromId(*id);
         if (action->onWater()) {
           if (!gameEngine->dungeon->hasRipples((int)gameEngine->player.x, (int)gameEngine->player.y)) {
             continue;
@@ -280,13 +280,13 @@ void Inventory::render() {
               "");
           first = false;
           num++;
-          if (*id == ITEM_ACTION_TAKE && item->count > 1) {
+          if (*id == item::ITEM_ACTION_TAKE && item->count > 1) {
             TCODConsole::root->setDefaultForeground(
                 num == cmenuitem ? TCODColor::white
                 : first          ? guiHighlightedText
                                  : guiText);
             TCODConsole::root->setDefaultBackground(num == cmenuitem ? guiHighlightedBackground : guiBackground);
-            ItemAction* takeAll = ItemAction::getFromId(ITEM_ACTION_TAKE_ALL);
+            item::ItemAction* takeAll = item::ItemAction::getFromId(item::ITEM_ACTION_TAKE_ALL);
             TCODConsole::root->printEx(
                 cmenux,
                 cmenuy + num,
@@ -297,13 +297,13 @@ void Inventory::render() {
                 cmenuwidth - 1 - strlen(takeAll->name),
                 "");
             num++;
-          } else if (*id == ITEM_ACTION_DROP && item->count > 1) {
+          } else if (*id == item::ITEM_ACTION_DROP && item->count > 1) {
             TCODConsole::root->setDefaultForeground(
                 num == cmenuitem ? TCODColor::white
                 : first          ? guiHighlightedText
                                  : guiText);
             TCODConsole::root->setDefaultBackground(num == cmenuitem ? guiHighlightedBackground : guiBackground);
-            ItemAction* dropAll = ItemAction::getFromId(ITEM_ACTION_DROP_ALL);
+            item::ItemAction* dropAll = item::ItemAction::getFromId(item::ITEM_ACTION_DROP_ALL);
             TCODConsole::root->printEx(
                 cmenux,
                 cmenuy + num,
@@ -324,7 +324,7 @@ void Inventory::render() {
       TCODConsole::root->setChar(itemx, itemy - 2, dragItem->ch);
       TCODConsole::root->setCharForeground(itemx, itemy - 2, dragItem->col);
     } else if ((!isDragging && itemToCombine == NULL) || (isDragging && !dragOut && selectedItem == -1)) {
-      Item* item = isDragging ? dragItem : selectedItem >= 0 ? curTab->items.at(selectedItem) : NULL;
+      item::Item* item = isDragging ? dragItem : selectedItem >= 0 ? curTab->items.at(selectedItem) : NULL;
       if (item) item->renderDescription(itemx, itemy);
     } else if (selectedItem >= 0) {
       if (itemToCombine2 == curTab->items.at(selectedItem)) {
@@ -332,10 +332,10 @@ void Inventory::render() {
       } else if (itemToCombine || dragItem) {
         if (combinationResult) delete combinationResult;
         combinationResult = itemToCombine2 = NULL;
-        combination = Item::getCombination(itemToCombine ? itemToCombine : dragItem, curTab->items.at(selectedItem));
+        combination = item::Item::getCombination(itemToCombine ? itemToCombine : dragItem, curTab->items.at(selectedItem));
         if (combination) {
           itemToCombine2 = curTab->items.at(selectedItem);
-          combinationResult = Item::getItem(combination->resultType, 0, 0, false);
+          combinationResult = item::Item::getItem(combination->resultType, 0, 0, false);
           combinationResult->count = combination->nbResult;
           combinationResult->addComponent(itemToCombine ? itemToCombine : dragItem);
           combinationResult->addComponent(curTab->items.at(selectedItem));
@@ -350,17 +350,17 @@ void Inventory::render() {
 }
 
 void Inventory::activateItem() {
-  Item* item = tabs[guiTabs.curTab].items.at(selectedItem);
+  item::Item* item = tabs[guiTabs.curTab].items.at(selectedItem);
   checkDefaultAction(item);
   if (combinationResult) {
     gameEngine->gui.log.info("You created %s", combinationResult->aName());
     combinationResult = gameEngine->player.addToInventory(combinationResult);
     // switch to the tab of the generated item
-    if (guiTabs.curTab != INV_ALL) guiTabs.curTab = combinationResult->typeData->inventoryTab;
+    if (guiTabs.curTab != item::INV_ALL) guiTabs.curTab = combinationResult->typeData->inventoryTab;
     combinationResult = NULL;
     bool destroy1 = false;
     // destroy items if needed
-    std::vector<Item*> toDestroy;
+    std::vector<item::Item*> toDestroy;
     if (combination->ingredients[0].destroy) {
       if (itemToCombine->isA(combination->ingredients[0].type)) {
         toDestroy.push_back(itemToCombine);
@@ -377,7 +377,7 @@ void Inventory::activateItem() {
         toDestroy.push_back(itemToCombine2);
       }
     }
-    for (Item* it : toDestroy) {
+    for (item::Item* it : toDestroy) {
       it->toDelete = true;
     }
     // recompute inventory
@@ -392,9 +392,9 @@ void Inventory::activateItem() {
     }
   } else {
     // check the first valid action
-    ItemActionId* id = NULL;
+    item::ItemActionId* id = NULL;
     for (id = item->typeData->actions.begin(); id != item->typeData->actions.end(); id++) {
-      ItemAction* action = ItemAction::getFromId(*id);
+      item::ItemAction* action = item::ItemAction::getFromId(*id);
       if ((owner && action->onInventory()) || (container && action->onLoot())) break;
     }
     runActionOnItem(*id, item);
@@ -426,54 +426,54 @@ void Inventory::onDeactivate() {
   }
 }
 
-void Inventory::runActionOnItem(ItemActionId id, Item* item) {
+void Inventory::runActionOnItem(item::ItemActionId id, item::Item* item) {
   switch (id) {
-    case ITEM_ACTION_USE:
+    case item::ITEM_ACTION_USE:
       item->use();
       if (owner)
         initialize(owner);
       else
         initialize(container);
       break;
-    case ITEM_ACTION_DROP:
-    case ITEM_ACTION_DROP_ALL:
+    case item::ITEM_ACTION_DROP:
+    case item::ITEM_ACTION_DROP_ALL:
       if (gameEngine->gui.loot.getActive()) {
-        Item* newItem = owner->removeFromInventory(item, id == ITEM_ACTION_DROP ? 1 : 0);
+        item::Item* newItem = owner->removeFromInventory(item, id == item::ITEM_ACTION_DROP ? 1 : 0);
         newItem->putInContainer(gameEngine->gui.loot.container);
         gameEngine->gui.loot.initialize(gameEngine->gui.loot.container);
       } else {
-        item->drop(id == ITEM_ACTION_DROP ? 1 : 0);
+        item->drop(id == item::ITEM_ACTION_DROP ? 1 : 0);
       }
       if (owner)
         initialize(owner);
       else
         initialize(container);
       break;
-    case ITEM_ACTION_TAKE:
-    case ITEM_ACTION_TAKE_ALL:
-      item = item->putInInventory(&gameEngine->player, id == ITEM_ACTION_TAKE ? 1 : 0);
+    case item::ITEM_ACTION_TAKE:
+    case item::ITEM_ACTION_TAKE_ALL:
+      item = item->putInInventory(&gameEngine->player, id == item::ITEM_ACTION_TAKE ? 1 : 0);
       initialize(container);
       if (gameEngine->gui.inventory.getActive()) {
-        if (gameEngine->gui.inventory.guiTabs.curTab != INV_ALL)
+        if (gameEngine->gui.inventory.guiTabs.curTab != item::INV_ALL)
           gameEngine->gui.inventory.guiTabs.curTab = item->typeData->inventoryTab;
         gameEngine->gui.inventory.initialize(&gameEngine->player);
       }
       break;
-    case ITEM_ACTION_FILL: {
-      Item* water = Item::getItem("water", 0, 0);
+    case item::ITEM_ACTION_FILL: {
+      item::Item* water = item::Item::getItem("water", 0, 0);
       water->putInContainer(item);
       item->computeBottleName();
     } break;
-    case ITEM_ACTION_THROW:
+    case item::ITEM_ACTION_THROW:
       isDraggingStart = isDragging = true;
       dragItem = item;
       dragOut = true;
       cmenuon = false;
       cmenudrag = true;
       break;
-    case ITEM_ACTION_DISASSEMBLE: {
+    case item::ITEM_ACTION_DISASSEMBLE: {
       // create components
-      for (Item* it : item->components) {
+      for (item::Item* it : item->components) {
         if (owner)
           owner->addToInventory(it);
         else
@@ -511,27 +511,27 @@ bool Inventory::update(float elapsed, TCOD_key_t& k, TCOD_mouse_t& mouse) {
     cmenuon = false;
     if (cmenuitem >= 0 && selectedItem >= 0) {
       // execute context menu action
-      Item* item = tabs[guiTabs.curTab].items.at(selectedItem);
-      ItemActionId* id = NULL;
+      item::Item* item = tabs[guiTabs.curTab].items.at(selectedItem);
+      item::ItemActionId* id = NULL;
       int count = cmenuitem;
-      ItemActionId actionId = (ItemActionId)0;
+      item::ItemActionId actionId = (item::ItemActionId)0;
       for (id = item->typeData->actions.begin(); id != item->typeData->actions.end(); id++) {
-        ItemAction* action = ItemAction::getFromId(*id);
+        item::ItemAction* action = item::ItemAction::getFromId(*id);
         if ((owner && action->onInventory()) || (container && action->onLoot())) {
           if (count == 0) {
             actionId = *id;
             break;
           }
           count--;
-          if (*id == ITEM_ACTION_TAKE && item->count > 1) {
+          if (*id == item::ITEM_ACTION_TAKE && item->count > 1) {
             if (count == 0) {
-              actionId = ITEM_ACTION_TAKE_ALL;
+              actionId = item::ITEM_ACTION_TAKE_ALL;
               break;
             }
             count--;
-          } else if (*id == ITEM_ACTION_DROP && item->count > 1) {
+          } else if (*id == item::ITEM_ACTION_DROP && item->count > 1) {
             if (count == 0) {
-              actionId = ITEM_ACTION_DROP_ALL;
+              actionId = item::ITEM_ACTION_DROP_ALL;
               break;
             }
             count--;
@@ -540,7 +540,7 @@ bool Inventory::update(float elapsed, TCOD_key_t& k, TCOD_mouse_t& mouse) {
       }
 
       runActionOnItem(actionId, item);
-      if (actionId == ITEM_ACTION_THROW) {
+      if (actionId == item::ITEM_ACTION_THROW) {
         dragx = dragStartX = mouse.cx;
         dragy = dragStartY = mouse.cy;
       }
@@ -612,7 +612,7 @@ bool Inventory::update(float elapsed, TCOD_key_t& k, TCOD_mouse_t& mouse) {
           float invLength = Entity::fastInvSqrt(dx * dx + dy * dy);
           dx *= invLength;
           dy *= invLength;
-          Item* newItem = NULL;
+          item::Item* newItem = NULL;
           if (owner)
             newItem = owner->removeFromInventory(dragItem);
           else
@@ -650,13 +650,13 @@ bool Inventory::update(float elapsed, TCOD_key_t& k, TCOD_mouse_t& mouse) {
   }
   if (!k.pressed) {
     if (k.c == 'A' || k.c == 'a')
-      guiTabs.curTab = INV_ARMOR;
+      guiTabs.curTab = item::INV_ARMOR;
     else if (k.c == 'W' || k.c == 'w')
-      guiTabs.curTab = INV_WEAPON;
+      guiTabs.curTab = item::INV_WEAPON;
     else if (k.c == 'F' || k.c == 'f')
-      guiTabs.curTab = INV_FOOD;
+      guiTabs.curTab = item::INV_FOOD;
     else if (k.c == 'M' || k.c == 'm')
-      guiTabs.curTab = INV_MISC;
+      guiTabs.curTab = item::INV_MISC;
     if (strchr("AWFMawfm", k.c)) {
       k.vk = TCODK_NONE;
       k.c = 0;

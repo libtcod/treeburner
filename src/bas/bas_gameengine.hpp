@@ -73,7 +73,7 @@ class GameEngine : public Screen {
 
   // UI
   void openCloseInventory();
-  void openCloseLoot(Item* toLoot);
+  void openCloseLoot(item::Item* toLoot);
   void openCloseObjectives();
   void openCloseCraft();
 
@@ -92,8 +92,8 @@ class GameEngine : public Screen {
   // fire
   void startFireZone(int x, int y, int w, int h);
   void removeFireZone(int x, int y, int w, int h);
-  void recomputeCanopy(Item* it = NULL);
-  void setCanopy(int x, int y, const ItemType* treeType, const Rect* r = NULL);
+  void recomputeCanopy(item::Item* it = NULL);
+  void setCanopy(int x, int y, const item::ItemType* treeType, const Rect* r = NULL);
 
   // base utilities. to be moved elsewhere
   static TCODColor setSepia(const TCODColor& col, float coef);

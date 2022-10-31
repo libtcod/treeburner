@@ -50,7 +50,7 @@ void Game::onActivate() {
   boss = NULL;
   finalExplosion = 2.0f;
   memset(&stats, 0, sizeof(stats));
-  Item* wand = Item::getRandomWeapon("wand", ITEM_CLASS_STANDARD);
+  item::Item* wand = item::Item::getRandomWeapon("wand", item::ITEM_CLASS_STANDARD);
   wand->name = strdup("pyromancer wand");
   player.addToInventory(wand);
   player.equip(wand);
@@ -215,7 +215,7 @@ void Game::render() {
   if (!isGamePaused()) {
     int dungeonx = mousex + xOffset;
     int dungeony = mousey + yOffset;
-    Item* mouseItem = dungeon->getFirstItem(dungeonx, dungeony);
+    item::Item* mouseItem = dungeon->getFirstItem(dungeonx, dungeony);
     if (mouseItem) {
       mouseItem->renderDescription(mousex, mousey);
     } else if (dungeonx == dungeon->stairx && dungeony == dungeon->stairy) {
@@ -363,7 +363,7 @@ bool Game::update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse) {
     }
     if (k.c == 'i' && k.lalt && !k.pressed) {
       // debug mode : Alt-i = item
-      dungeon->addItem(Item::getItem("knife", player.x, player.y - 1));
+      dungeon->addItem(item::Item::getItem("knife", player.x, player.y - 1));
     }
     if (k.c == 'm' && k.lalt && !k.pressed) {
       // debug mode : Alt-m : max spells
@@ -383,10 +383,10 @@ bool Game::update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse) {
     if (k.c == 'w' && k.lalt && !k.pressed) {
       // debug mode : Alt-w : weapon
       static int i = 0;
-      Item* w = Item::getRandomWeapon("staff", (ItemClass)i++);
+      item::Item* w = item::Item::getRandomWeapon("staff", (item::ItemClass)i++);
       w->setPos(player.x, player.y - 1);
       w->name = strdup("Pyromancer's staff");
-      if (i > ITEM_CLASS_GOLD) i = 0;
+      if (i > item::ITEM_CLASS_GOLD) i = 0;
       dungeon->addItem(w);
     }
     if (k.c == 's' && k.lalt && !k.pressed) {

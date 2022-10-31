@@ -50,7 +50,7 @@ bool Archer::update(float elapsed) {
     // see player
     if (pathTimer > 1.0f) {
       pathTimer = 0.0f;
-      Item* arrow = Item::getItem("arrow", x + 0.5f, y + 0.5f, false);
+      item::Item* arrow = item::Item::getItem("arrow", x + 0.5f, y + 0.5f, false);
       arrow->dx = gameEngine->player.x - x;
       arrow->dy = gameEngine->player.y - y;
       arrow->speed = arrowSpeed;

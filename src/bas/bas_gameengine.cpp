@@ -57,7 +57,7 @@ void GameEngine::onDeactivate() {
 
 void GameEngine::onFontChange() { computeAspectRatio(); }
 
-void GameEngine::recomputeCanopy(Item* it) {
+void GameEngine::recomputeCanopy(item::Item* it) {
   static const int treeRadius = config.getIntProperty("config.display.treeRadius");
   if (dungeon->canopy) {
     if (it) {
@@ -80,7 +80,7 @@ void GameEngine::recomputeCanopy(Item* it) {
       for (int x = (int)(it->x + treeRadius); x >= (int)(it->x - treeRadius); x--) {
         for (int y = (int)(it->y - treeRadius); y < (int)(it->y + treeRadius); y++) {
           if (IN_RECTANGLE(x, y, dungeon->width, dungeon->height)) {
-            Item* tree = dungeon->getItem(x, y, "tree");
+            item::Item* tree = dungeon->getItem(x, y, "tree");
             if (tree) {
               setCanopy(x * 2, y * 2, tree->typeData, &r);
             }
@@ -93,7 +93,7 @@ void GameEngine::recomputeCanopy(Item* it) {
       dungeon->restoreShadowBeforeTree();
       for (int x = dungeon->width - 1; x >= 0; x--) {
         for (int y = 0; y < dungeon->height - 1; y++) {
-          Item* tree = dungeon->getItem(x, y, "tree");
+          item::Item* tree = dungeon->getItem(x, y, "tree");
           if (tree) {
             setCanopy(x * 2, y * 2, tree->typeData);
           }
@@ -103,7 +103,7 @@ void GameEngine::recomputeCanopy(Item* it) {
   }
 }
 
-void GameEngine::setCanopy(int x, int y, const ItemType* treeType, const Rect* pr) {
+void GameEngine::setCanopy(int x, int y, const item::ItemType* treeType, const Rect* pr) {
   static TCODColor green1 = TCODColor::darkChartreuse;
   static TCODColor green2 = TCODColor::green * 0.7f;
   static const int treeRadiusW = config.getIntProperty("config.display.treeRadius");
@@ -233,7 +233,7 @@ void GameEngine::openCloseCraft() {
     gui.setMode(GUI_CRAFT);
 }
 
-void GameEngine::openCloseLoot(Item* toLoot) {
+void GameEngine::openCloseLoot(item::Item* toLoot) {
   if (gui.mode == GUI_LOOT)
     gui.setMode(GUI_NONE);
   else {

@@ -71,7 +71,7 @@ void Fish::render(LightMap& lightMap) {
 }
 
 void Fish::initItem() {
-  asItem = Item::getItem("living fish", x, y);
+  asItem = item::Item::getItem("living fish", x, y);
   asItem->asCreature = this;
 }
 
