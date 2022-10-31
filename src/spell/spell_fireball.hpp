@@ -32,15 +32,11 @@
 #include "map_lightmap.hpp"
 
 typedef enum { FB_SPARK, FB_STANDARD, FB_BURST, FB_INCANDESCENCE } FireBallType;
+
 class FireBall : public Entity, public NoisyThing {
  public:
-  FireBall(float xFrom, float yFrom, int xTo, int yTo, FireBallType type, const char* subtype = "fireball");
-  void render(LightMap& lightMap);
-  void render(TCODImage& ground);
-  bool update(float elapsed);
-  ~FireBall();
-
   Light light;  // light associated with this fireball
+
   static float incanRange;  // incandescence cloud radius
   static float incanLife;  // incandescence cloud life in seconds
   static float sparkleSpeed;  // sparkles speed (cell/second)
@@ -51,6 +47,14 @@ class FireBall : public Entity, public NoisyThing {
   static bool incandescence;  // wether long lmb triggers incandescence
   static bool sparkleThrough;  // wether sparkles can go though creatures
   static bool sparkleBounce;  // wether sparkles bounce against walls
+
+  FireBall(float xFrom, float yFrom, int xTo, int yTo, FireBallType type, const char* subtype = "fireball");
+  ~FireBall();
+
+  void render(LightMap& lightMap);
+  void render(TCODImage& ground);
+  bool update(float elapsed);
+
  protected:
   // type data
   struct Type {
@@ -64,25 +68,26 @@ class FireBall : public Entity, public NoisyThing {
     float stunDelay;
     float lightRange;
     bool lightRandomRad;
-  }* typeData;
-  Type* getType(const char* name);
+  };
+  struct Sparkle {
+    float x, y, dx, dy;
+  };
 
-  float dx, dy;
-  float fx, fy;
-  FireBallType type;
-  enum { FIREBALL_MOVE, FIREBALL_STANDARD, FIREBALL_TORCH, FIREBALL_SPARKLE } effect;
-  float fxLife;
-  float heatTimer;
-  float curRange;
+  static TCODList<FireBall*> incandescences;
+
+  Type* getType(const char* name);
   bool updateMove(float elapsed);
   bool updateStandard(float elapsed);
   bool updateTorch(float elapsed);
   bool updateSparkle(float elapsed);
 
-  class Sparkle {
-   public:
-    float x, y, dx, dy;
-  };
-  TCODList<Sparkle*> sparkles;
-  static TCODList<FireBall*> incandescences;
+  float dx_{}, dy_{};
+  float fx_{}, fy_{};
+  FireBallType type{};
+  enum { FIREBALL_MOVE, FIREBALL_STANDARD, FIREBALL_TORCH, FIREBALL_SPARKLE } effect{FIREBALL_MOVE};
+  float fx_life_{1.0f};
+  float heat_timer_{};
+  float current_range_{};
+  Type* type_data_{};
+  TCODList<Sparkle*> sparkles_{};
 };

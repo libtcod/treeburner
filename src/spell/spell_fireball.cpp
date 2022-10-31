@@ -49,27 +49,24 @@ FireBall::FireBall(float xFrom, float yFrom, int xTo, int yTo, FireBallType type
     range = config.getFloatProperty("config.spells.fireball.baseRange");
   }
   x = xFrom;
-  fx = x;
+  fx_ = x;
   y = yFrom;
-  fy = y;
+  fy_ = y;
 
   light.x = x * 2;
   light.y = y * 2;
 
-  dx = xTo - xFrom;
-  dy = yTo - yFrom;
-  float l = 1.0f / sqrt(dx * dx + dy * dy);
-  dx *= l;
-  dy *= l;
-  effect = FIREBALL_MOVE;
+  dx_ = xTo - xFrom;
+  dy_ = yTo - yFrom;
+  float l = 1.0f / sqrt(dx_ * dx_ + dy_ * dy_);
+  dx_ *= l;
+  dy_ *= l;
   gameEngine->dungeon->addLight(&light);
-  fxLife = 1.0f;
 
-  typeData = getType(subtype);
-  light.color = typeData->lightColor;
-  light.range = typeData->lightRange * range;
-  light.randomRad = typeData->lightRandomRad;
-  heatTimer = 0.0f;
+  type_data_ = getType(subtype);
+  light.color = type_data_->lightColor;
+  light.range = type_data_->lightRange * range;
+  light.randomRad = type_data_->lightRandomRad;
 }
 
 FireBall::Type* FireBall::getType(const char* name) {
@@ -120,10 +117,10 @@ FireBall::~FireBall() { gameEngine->dungeon->removeLight(&light); }
 
 void FireBall::render(LightMap& lightMap) {
   if (effect == FIREBALL_MOVE) {
-    float curx = fx * 2 - gameEngine->xOffset * 2;
-    float cury = fy * 2 - gameEngine->yOffset * 2;
-    HDRColor col = typeData->lightColor;
-    for (int i = 0; i < typeData->trailLength; i++) {
+    float curx = fx_ * 2 - gameEngine->xOffset * 2;
+    float cury = fy_ * 2 - gameEngine->yOffset * 2;
+    HDRColor col = type_data_->lightColor;
+    for (int i = 0; i < type_data_->trailLength; i++) {
       int icurx = (int)curx;
       int icury = (int)cury;
       if (IN_RECTANGLE(icurx, icury, lightMap.width, lightMap.height)) {
@@ -131,12 +128,12 @@ void FireBall::render(LightMap& lightMap) {
         lcol = lcol + col;
         lightMap.setColor2x(icurx, icury, lcol);
       }
-      curx -= dx;
-      cury -= dy;
+      curx -= dx_;
+      cury -= dy_;
       col = col * 0.8f;
     }
   } else if (effect == FIREBALL_SPARKLE) {
-    for (Sparkle** it = sparkles.begin(); it != sparkles.end(); it++) {
+    for (Sparkle** it = sparkles_.begin(); it != sparkles_.end(); it++) {
       int lmx = (int)((*it)->x) - gameEngine->xOffset * 2;
       int lmy = (int)((*it)->y) - gameEngine->yOffset * 2;
       if (IN_RECTANGLE(lmx, lmy, lightMap.width, lightMap.height)) {
@@ -152,10 +149,10 @@ void FireBall::render(LightMap& lightMap) {
 
 void FireBall::render(TCODImage& ground) {
   if (effect == FIREBALL_MOVE) {
-    float curx = fx * 2 - gameEngine->xOffset * 2;
-    float cury = fy * 2 - gameEngine->yOffset * 2;
-    TCODColor col = typeData->lightColor;
-    for (int i = 0; i < typeData->trailLength; i++) {
+    float curx = fx_ * 2 - gameEngine->xOffset * 2;
+    float cury = fy_ * 2 - gameEngine->yOffset * 2;
+    TCODColor col = type_data_->lightColor;
+    for (int i = 0; i < type_data_->trailLength; i++) {
       int icurx = (int)curx;
       int icury = (int)cury;
       if (IN_RECTANGLE(icurx, icury, CON_W * 2, CON_H * 2)) {
@@ -163,12 +160,12 @@ void FireBall::render(TCODImage& ground) {
         lcol = lcol + col;
         ground.putPixel(icurx, icury, lcol);
       }
-      curx -= dx;
-      cury -= dy;
+      curx -= dx_;
+      cury -= dy_;
       col = col * 0.8f;
     }
   } else if (effect == FIREBALL_SPARKLE) {
-    for (Sparkle** it = sparkles.begin(); it != sparkles.end(); it++) {
+    for (Sparkle** it = sparkles_.begin(); it != sparkles_.end(); it++) {
       int lmx = (int)((*it)->x) - gameEngine->xOffset * 2;
       int lmy = (int)((*it)->y) - gameEngine->yOffset * 2;
       if (IN_RECTANGLE(lmx, lmy, CON_W * 2, CON_H * 2)) {
@@ -187,15 +184,15 @@ bool FireBall::updateMove(float elapsed) {
   Dungeon* dungeon = game->dungeon;
   int oldx = (int)x;
   int oldy = (int)y;
-  fx += dx * typeData->speed;
-  fy += dy * typeData->speed;
-  x = (int)fx;
-  y = (int)fy;
+  fx_ += dx_ * type_data_->speed;
+  fy_ += dy_ * type_data_->speed;
+  x = (int)fx_;
+  y = (int)fy_;
   light.x = x * 2;
   light.y = y * 2;
   if (type == FB_SPARK) {
-    fxLife -= elapsed / typeData->sparkLife;
-    if (fxLife < 0.0f) return false;
+    fx_life_ -= elapsed / type_data_->sparkLife;
+    if (fx_life_ < 0.0f) return false;
   }
 
   // check if we hit a wall
@@ -218,20 +215,20 @@ bool FireBall::updateMove(float elapsed) {
         for (FireBall** fb = gameEngine->fireballs.begin(); fb != gameEngine->fireballs.end(); fb++) {
           if ((*fb)->effect == FIREBALL_MOVE && (*fb)->type == FB_INCANDESCENCE &&
               ABS((*fb)->x - x) < (*fb)->light.range / 2 && ABS((*fb)->y - y) < (*fb)->light.range / 2) {
-            float newdx = (*fb)->dx;
-            float newdy = (*fb)->dy;
+            float newdx = (*fb)->dx_;
+            float newdy = (*fb)->dy_;
             float angle = atan2f(newdy, newdx);
             angle += 0.78f;
-            (*fb)->dx = cosf(angle);
-            (*fb)->dy = sinf(angle);
+            (*fb)->dx_ = cosf(angle);
+            (*fb)->dy_ = sinf(angle);
             type = FB_INCANDESCENCE;
-            typeData = getType("fireball2");
-            light.color = typeData->lightColor;
-            light.range = typeData->lightRange * range;
-            light.randomRad = typeData->lightRandomRad;
+            type_data_ = getType("fireball2");
+            light.color = type_data_->lightColor;
+            light.range = type_data_->lightRange * range;
+            light.randomRad = type_data_->lightRandomRad;
             angle -= 2 * 0.78f;
-            dx = cosf(angle);
-            dy = sinf(angle);
+            dx_ = cosf(angle);
+            dy_ = sinf(angle);
             x = (*fb)->x;
             y = (*fb)->y;
             end = true;
@@ -250,7 +247,7 @@ bool FireBall::updateMove(float elapsed) {
             float dmg = TCODRandom::getInstance()->getFloat(damage / 2, damage);
             if (type == FB_BURST) dmg *= 4;
             cr->takeDamage(dmg);
-            cr->stun(typeData->stunDelay);
+            cr->stun(type_data_->stunDelay);
             end = true;
           }
         }
@@ -290,7 +287,7 @@ bool FireBall::updateMove(float elapsed) {
       light.x = x * 2;
       light.y = y * 2;
       // start effect
-      fxLife = 1.0f;
+      fx_life_ = 1.0f;
       switch (type) {
         case FB_SPARK:
           return false;
@@ -301,7 +298,7 @@ bool FireBall::updateMove(float elapsed) {
         case FB_INCANDESCENCE:
           effect = FIREBALL_TORCH;
           light.color = light.color * 1.5f;
-          curRange = 0.0f;
+          current_range_ = 0.0f;
           incandescences.push(this);
           break;
         case FB_BURST:
@@ -310,7 +307,7 @@ bool FireBall::updateMove(float elapsed) {
             Sparkle* sparkle = new Sparkle();
             sparkle->x = x * 2;
             sparkle->y = y * 2;
-            float sparkleAngle = atan2f(-dy, -dx);
+            float sparkleAngle = atan2f(-dy_, -dx_);
             if (wallhit) {
               sparkleAngle += TCODRandom::getInstance()->getFloat(-1.5f, 1.5f);
             } else {
@@ -319,7 +316,7 @@ bool FireBall::updateMove(float elapsed) {
             sparkle->dx = cosf(sparkleAngle) * sparkleSpeed;
             sparkle->dy = sinf(sparkleAngle) * sparkleSpeed;
             if (IN_RECTANGLE(sparkle->x, sparkle->y, dungeon->width * 2, dungeon->height * 2)) {
-              sparkles.push(sparkle);
+              sparkles_.push(sparkle);
             } else {
               delete sparkle;
             }
@@ -336,10 +333,10 @@ bool FireBall::updateMove(float elapsed) {
 }
 
 bool FireBall::updateStandard(float elapsed) {
-  fxLife -= elapsed * typeData->standardLife;
-  if (fxLife < 0.0f) return false;
-  light.range = range * (3.0 - 2 * fxLife);
-  light.color = typeData->lightColor * fxLife;
+  fx_life_ -= elapsed * type_data_->standardLife;
+  if (fx_life_ < 0.0f) return false;
+  light.range = range * (3.0 - 2 * fx_life_);
+  light.color = type_data_->lightColor * fx_life_;
   return true;
 }
 
@@ -347,15 +344,15 @@ bool FireBall::updateTorch(float elapsed) {
   GameEngine* game = gameEngine;
   Dungeon* dungeon = game->dungeon;
   float f;
-  fxLife -= elapsed / incanLife;
-  if (fxLife < 0.0f) {
+  fx_life_ -= elapsed / incanLife;
+  if (fx_life_ < 0.0f) {
     incandescences.removeFast(this);
     return false;
   }
-  f = noiseOffset + fxLife * 250.0f;
+  f = noiseOffset + fx_life_ * 250.0f;
   float var = 0.2 * (4.0f + noise1d.get(&f));
-  curRange = incanRange * (2.0 - fxLife) * var;
-  light.range = 2 * curRange;
+  current_range_ = incanRange * (2.0 - fx_life_) * var;
+  light.range = 2 * current_range_;
   /*
   for (Creature **cr=dungeon->creatures.begin(); cr != dungeon->creatures.end(); cr++) {
           if ( ABS((*cr)->x-x)<curRange && ABS((*cr)->y-y)< curRange ) {
@@ -364,11 +361,11 @@ bool FireBall::updateTorch(float elapsed) {
           }
   }
   */
-  heatTimer += elapsed;
-  if (heatTimer > 1.0f) {
+  heat_timer_ += elapsed;
+  if (heat_timer_ > 1.0f) {
     // warm up adjacent items
-    heatTimer = 0.0f;
-    float radius = curRange;
+    heat_timer_ = 0.0f;
+    float radius = current_range_;
     for (int tx = -(int)floor(radius); tx <= (int)ceil(radius); tx++) {
       if ((int)(x) + tx >= 0 && (int)(x) + tx < dungeon->width) {
         int dy = (int)(sqrtf(radius * radius - tx * tx));
@@ -393,8 +390,8 @@ bool FireBall::updateTorch(float elapsed) {
       }
     }
   }
-  if (fxLife < 0.25f) {
-    light.color = typeData->lightColor * fxLife * 4;
+  if (fx_life_ < 0.25f) {
+    light.color = type_data_->lightColor * fx_life_ * 4;
   }
   return true;
 }
@@ -402,23 +399,23 @@ bool FireBall::updateTorch(float elapsed) {
 bool FireBall::updateSparkle(float elapsed) {
   GameEngine* game = gameEngine;
   Dungeon* dungeon = game->dungeon;
-  bool firstFrame = (fxLife == 1.0f);
-  fxLife -= elapsed / typeData->sparkleLife;
-  if (fxLife < 0.0f) {
-    sparkles.clearAndDelete();
+  bool firstFrame = (fx_life_ == 1.0f);
+  fx_life_ -= elapsed / type_data_->sparkleLife;
+  if (fx_life_ < 0.0f) {
+    sparkles_.clearAndDelete();
     return false;
   }
   if (firstFrame) {
     // burst flash
     light.range = range * 4.0;
-    light.color = typeData->lightColor * 3.0f;
+    light.color = type_data_->lightColor * 3.0f;
   } else {
-    light.range = range * (3.0 - 2 * fxLife);
-    light.color = typeData->lightColor * fxLife;
+    light.range = range * (3.0 - 2 * fx_life_);
+    light.color = type_data_->lightColor * fx_life_;
   }
-  for (Sparkle** it = sparkles.begin(); it != sparkles.end(); it++) {
+  for (Sparkle** it = sparkles_.begin(); it != sparkles_.end(); it++) {
     Sparkle* sparkle = *it;
-    float speed = typeData->sparkleSpeed * fxLife;
+    float speed = type_data_->sparkleSpeed * fx_life_;
     sparkle->x += sparkle->dx * speed;
     sparkle->y += sparkle->dy * speed;
     int dungeonx = (int)(sparkle->x) / 2;
@@ -426,7 +423,8 @@ bool FireBall::updateSparkle(float elapsed) {
     Creature* cr = NULL;
     bool del = false;
     for (FireBall** fb = incandescences.begin(); fb != incandescences.end(); fb++) {
-      if (ABS((*fb)->x - sparkle->x / 2) < (*fb)->curRange && ABS((*fb)->y - sparkle->y / 2) < (*fb)->curRange) {
+      if (ABS((*fb)->x - sparkle->x / 2) < (*fb)->current_range_ &&
+          ABS((*fb)->y - sparkle->y / 2) < (*fb)->current_range_) {
         FireBall* fb = new FireBall(
             sparkle->x / 2,
             sparkle->y / 2,
@@ -434,7 +432,7 @@ bool FireBall::updateSparkle(float elapsed) {
             (int)(sparkle->y / 2 + sparkle->dy * 10),
             FB_STANDARD);
         gameEngine->addFireball(fb);
-        it = sparkles.removeFast(it);
+        it = sparkles_.removeFast(it);
         delete sparkle;
         del = true;
         break;
@@ -448,7 +446,7 @@ bool FireBall::updateSparkle(float elapsed) {
     if ((cr && !sparkleThrough) || !IN_RECTANGLE(sparkle->x, sparkle->y, dungeon->width * 2, dungeon->height * 2) ||
         (!sparkleBounce && !dungeon->map->isWalkable(dungeonx, dungeony))) {
       // sparkle hit an obstacle. delete it
-      it = sparkles.removeFast(it);
+      it = sparkles_.removeFast(it);
       delete sparkle;
     } else if (sparkleBounce && !dungeon->map->isWalkable(dungeonx, dungeony)) {
       // sparkle bounces
