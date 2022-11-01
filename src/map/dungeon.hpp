@@ -37,7 +37,9 @@
 #include "util_clouds.hpp"
 
 class Player;
-class map::LightMap;
+namespace map {
+class LightMap;
+}
 
 namespace map {
 class Dungeon : public base::SaveListener {
