@@ -32,7 +32,7 @@
 
 #include "helpers.hpp"
 #include "main.hpp"
-#include "mob_player.hpp"
+#include "mob/player.hpp"
 
 namespace map {
 Dungeon::Dungeon(int width, int height) : level(0), ambient(TCODColor::black) {

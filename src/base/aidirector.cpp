@@ -32,7 +32,7 @@
 #include <libtcod.hpp>
 
 #include "main.hpp"
-#include "mob_minion.hpp"
+#include "mob/minion.hpp"
 #include "util_powerup.hpp"
 
 namespace base {

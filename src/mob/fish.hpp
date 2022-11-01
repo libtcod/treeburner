@@ -27,8 +27,8 @@
 #include <libtcod.hpp>
 
 #include "map/lightmap.hpp"
-#include "mob_behavior.hpp"
-#include "mob_creature.hpp"
+#include "mob/behavior.hpp"
+#include "mob/creature.hpp"
 #include "util_ripples.hpp"
 
 class Fish;

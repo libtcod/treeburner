@@ -27,7 +27,7 @@
 #include <libtcod.hpp>
 
 #include "base/gameengine.hpp"
-#include "mob_boss.hpp"
+#include "mob/boss.hpp"
 
 class Game : public base::GameEngine {
  public:

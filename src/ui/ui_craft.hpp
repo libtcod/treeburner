@@ -28,7 +28,7 @@
 #include <vector>
 
 #include "item.hpp"
-#include "mob_creature.hpp"
+#include "mob/creature.hpp"
 #include "ui_dialog.hpp"
 
 class Craft : public Dialog, public UIListener, public Scrollable {

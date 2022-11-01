@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#include "mob_boss.hpp"
+#include "mob/boss.hpp"
 
 #include "base/aidirector.hpp"
 #include "base/gameengine.hpp"

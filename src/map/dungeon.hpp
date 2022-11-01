@@ -31,7 +31,7 @@
 
 #include "base/savegame.hpp"
 #include "map/cell.hpp"
-#include "mob_creature.hpp"
+#include "mob/creature.hpp"
 #include "util_cavegen.hpp"
 #include "util_cellular.hpp"
 #include "util_clouds.hpp"

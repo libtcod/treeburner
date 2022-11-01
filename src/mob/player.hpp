@@ -27,7 +27,7 @@
 #include <libtcod.hpp>
 
 #include "map/lightmap.hpp"
-#include "mob_creature.hpp"
+#include "mob/creature.hpp"
 #include "screen_school.hpp"
 
 namespace map {

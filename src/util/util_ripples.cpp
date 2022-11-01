@@ -32,7 +32,7 @@
 
 #include "main.hpp"
 #include "map/dungeon.hpp"
-#include "mob_fish.hpp"
+#include "mob/fish.hpp"
 
 // range below which fishes try to get away from each other
 #define SHOAL_CLOSE_RANGE 2.0f

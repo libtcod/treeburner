@@ -26,7 +26,7 @@
 #pragma once
 #include <cmath>
 
-#include "mob_creature.hpp"
+#include "mob/creature.hpp"
 
 namespace base {
 // the class that manages monsters spawning

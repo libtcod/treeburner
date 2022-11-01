@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Jice
+ * Copyright (c) 2009 Jice
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,46 +24,31 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 #pragma once
-#include <libtcod.hpp>
+#include "mob/creature.hpp"
 
-#include "mob_creature.hpp"
-#include "util_textgen.hpp"
+class Minion : public Creature {
+ public:
+  Minion();
+  bool update(float elapsed) override;
+  void setSeen();
+  void onReplace() override;
 
-enum FriendAiMode {
-  AI_CATCH_ME,
-  AI_HIDE_AND_SEEK,
+ protected:
+  float pathTimer;
+  bool seen;
 };
 
-class Friend : public Creature {
+class Villager : public Minion {
  public:
-  Friend();
+  Villager();
   bool update(float elapsed) override;
-  float getWalkCost(int xFrom, int yFrom, int xTo, int yTo, void* userData) const override;
 
-  // SaveListener
-  bool loadData(uint32_t chunkId, uint32_t chunkVersion, TCODZip* zip) override;
-  void saveData(uint32_t chunkId, TCODZip* zip) override;
+ protected:
+  static float talkDelay;
+};
 
- private:
-  TextGenerator* talkGenerator = nullptr;
-  float timer;
-  bool startPhrase, foodTuto, foodObj;
-
-  // catch me vars
-  float lostDelay;
-
-  int awayCount;
-  int caught;
-
-  // hide & seek vars
-  int counter;
-  bool see, tutoPause;
-  float sight;
-
-  bool updateCatchMe(float elapsed);
-  bool updateHideAndSeek(float elapsed);
-  bool updateFollow(float elapsed);
-  float getWalkCostCatchMe(int xFrom, int yFrom, int xTo, int yTo, void* userData) const;
-  float getWalkCostHideAndSeek(int xFrom, int yFrom, int xTo, int yTo, void* userData) const;
-  float getWalkCostFollow(int xFrom, int yFrom, int xTo, int yTo, void* userData) const;
+class Archer : public Minion {
+ public:
+  Archer();
+  bool update(float elapsed) override;
 };

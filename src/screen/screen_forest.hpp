@@ -28,7 +28,7 @@
 
 #include "base/gameengine.hpp"
 #include "base/savegame.hpp"
-#include "mob_friend.hpp"
+#include "mob/friend.hpp"
 #include "ui_input.hpp"
 
 class ForestScreen : public base::GameEngine, public base::SaveListener {

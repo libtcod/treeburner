@@ -30,7 +30,7 @@
 #include "base/noisything.hpp"
 #include "base/savegame.hpp"
 #include "item.hpp"
-#include "mob_behavior.hpp"
+#include "mob/behavior.hpp"
 
 class Game;
 class Creature;

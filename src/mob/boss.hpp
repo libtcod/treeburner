@@ -25,7 +25,7 @@
  */
 #pragma once
 #include "map/light.hpp"
-#include "mob_creature.hpp"
+#include "mob/creature.hpp"
 
 class Boss : public Creature {
  public:

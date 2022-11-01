@@ -25,7 +25,7 @@
  */
 #pragma once
 #include "item.hpp"
-#include "mob_creature.hpp"
+#include "mob/creature.hpp"
 
 // displays a description of an item/creature/...
 class Descriptor {
