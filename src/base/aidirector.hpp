@@ -34,10 +34,10 @@ class AiDirector {
  public:
   static AiDirector* instance;
   AiDirector();
-  void setBaseCreature(CreatureTypeId id) { baseCreature = id; }
+  void setBaseCreature(mob::CreatureTypeId id) { baseCreature = id; }
   void update(float elapsed);
-  void replace(Creature* cr);
-  void killCreature(Creature* cr);
+  void replace(mob::Creature* cr);
+  void killCreature(mob::Creature* cr);
   void bossSeen();  // enter final fight mode
   void bossDead();  // exit final fight mode
   void termLevel();
@@ -55,6 +55,6 @@ class AiDirector {
   float lowLevel{};
   float medLevel{};
   int nbScrolls{};
-  CreatureTypeId baseCreature{CREATURE_MINION};
+  mob::CreatureTypeId baseCreature{mob::CREATURE_MINION};
 };
 }  // namespace base

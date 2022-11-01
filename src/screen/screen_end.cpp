@@ -116,9 +116,10 @@ if ( gameEngine && ((Game *)gameEngine)->bossIsDead ) {
         gameEngine->stats.nbSteps);
     int thy = CON_H - 7;
     TCODConsole::root->printEx(78, thy++, TCOD_BKGND_NONE, TCOD_RIGHT, "Table hunting");
-    for (CreatureTypeId id = (CreatureTypeId)0; id != NB_CREATURE_TYPES; id = (CreatureTypeId)(id + 1)) {
+    for (mob::CreatureTypeId id = (mob::CreatureTypeId)0; id != mob::NB_CREATURE_TYPES;
+         id = (mob::CreatureTypeId)(id + 1)) {
       if (gameEngine->stats.creatureDeath[id] > 0) {
-        Creature* cr = Creature::getCreature(id);  // yeah this sucks...
+        mob::Creature* cr = mob::Creature::getCreature(id);  // yeah this sucks...
         TCODConsole::root->printEx(
             78, thy++, TCOD_BKGND_NONE, TCOD_RIGHT, "%s : %d", cr->name, gameEngine->stats.creatureDeath[id]);
       }

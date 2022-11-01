@@ -37,7 +37,7 @@ class Descriptor {
  protected:
   int x, y, mousex, mousey;
   item::Item* item;
-  Creature* creature;
+  mob::Creature* creature;
   char tooltip[32];
   bool lookOn;
 };

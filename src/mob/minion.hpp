@@ -26,6 +26,7 @@
 #pragma once
 #include "mob/creature.hpp"
 
+namespace mob {
 class Minion : public Creature {
  public:
   Minion();
@@ -52,3 +53,4 @@ class Archer : public Minion {
   Archer();
   bool update(float elapsed) override;
 };
+}  // namespace mob

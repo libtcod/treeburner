@@ -40,7 +40,7 @@ void Descriptor::setFocus(int mousex, int mousey, int x, int y, bool lookOn) {
   this->mousex = mousex;
   this->mousey = mousey;
   map::Dungeon* dungeon = gameEngine->dungeon;
-  Player* player = &gameEngine->player;
+  mob::Player* player = &gameEngine->player;
   tooltip[0] = 0;
   item = NULL;
   creature = NULL;

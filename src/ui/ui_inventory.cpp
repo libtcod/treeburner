@@ -64,7 +64,7 @@ Inventory::Inventory() : selectedItem(-1), closeOn(false) {
   craft.addListener(this);
 }
 
-void Inventory::initialize(Creature* owner) {
+void Inventory::initialize(mob::Creature* owner) {
   for (int i = 0; i < item::NB_INV_TABS; i++) {
     tabs[i].items.clear();
     tabs[i].offset = 0;

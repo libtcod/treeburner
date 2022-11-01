@@ -1418,7 +1418,7 @@ bool Item::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
                     it->fire_resistance_ -= feat->heat.intensity;
                   }
                 }
-                Creature* cr = dungeon->getCreature((int)(x) + tx, (int)(y) + ty);
+                mob::Creature* cr = dungeon->getCreature((int)(x) + tx, (int)(y) + ty);
                 if (cr) {
                   cr->takeDamage(feat->heat.intensity);
                   cr->burn = true;
@@ -1497,7 +1497,7 @@ void Item::use() {
         if (TCODRandom::getInstance()->getInt(0, 2) == 0) {
           gameEngine->gui.log.info("You kick %s.", theName());
           gameEngine->gui.log.warn("You feel a sharp pain in the foot.");
-          Condition* cond = new Condition(CRIPPLED, 10.0f, 0.5f);
+          mob::Condition* cond = new mob::Condition(mob::CRIPPLED, 10.0f, 0.5f);
           gameEngine->hitFlash();
           gameEngine->player.addCondition(cond);
         } else {
@@ -1545,7 +1545,7 @@ void Item::use() {
   }
 }
 
-Item* Item::putInInventory(Creature* owner, int putCount, const char* verb) {
+Item* Item::putInInventory(mob::Creature* owner, int putCount, const char* verb) {
   if (putCount == 0) putCount = count_;
   Item* it = gameEngine->dungeon->removeItem(this, putCount, false);
   it->owner_ = owner;
@@ -1576,7 +1576,7 @@ Item* Item::putInInventory(Creature* owner, int putCount, const char* verb) {
 Item* Item::drop(int dropCount) {
   if (!owner_) return this;
   if (dropCount == 0) dropCount = count_;
-  Creature* ownerBackup = owner_;  // keep the owner for once the item is removed from inventory
+  mob::Creature* ownerBackup = owner_;  // keep the owner for once the item is removed from inventory
   Item* newItem = owner_->removeFromInventory(this, dropCount);
   newItem->x = ownerBackup->x;
   newItem->y = ownerBackup->y;

@@ -35,7 +35,7 @@
 #include "mob/friend.hpp"
 #include "mob/minion.hpp"
 
-
+namespace mob {
 TCODList<Creature*> Creature::creatureByType[NB_CREATURE_TYPES];
 
 TCODList<ConditionType*> ConditionType::list;
@@ -648,3 +648,4 @@ bool Creature::loadData(uint32_t chunkId, uint32_t chunkVersion, TCODZip* zip) {
   }
   return true;
 }
+}  // namespace mob

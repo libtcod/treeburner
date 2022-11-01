@@ -29,6 +29,7 @@
 #include "mob/creature.hpp"
 #include "util_textgen.hpp"
 
+namespace mob {
 enum FriendAiMode {
   AI_CATCH_ME,
   AI_HIDE_AND_SEEK,
@@ -67,3 +68,4 @@ class Friend : public Creature {
   float getWalkCostHideAndSeek(int xFrom, int yFrom, int xTo, int yTo, void* userData) const;
   float getWalkCostFollow(int xFrom, int yFrom, int xTo, int yTo, void* userData) const;
 };
+}  // namespace mob

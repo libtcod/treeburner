@@ -32,8 +32,12 @@
 #include "map/lightmap.hpp"
 #include "modifier.hpp"
 
+namespace mob {
 class Creature;
+}
+namespace map {
 class Dungeon;
+}
 
 namespace item {
 class Item;
@@ -272,7 +276,9 @@ class Item : public base::DynamicEntity {
   bool hasFeature(ItemFeatureId featureId) { return typeData->hasFeature(featureId); }
 
   virtual Item* putInInventory(
-      Creature* owner, int count = 0, const char* verb = "pick up");  // move the item from ground to owner's inventory
+      mob::Creature* owner,
+      int count = 0,
+      const char* verb = "pick up");  // move the item from ground to owner's inventory
   virtual void use();  // use the item (depends on the type)
   virtual void use([[maybe_unused]] int dx_, [[maybe_unused]] int dy_) {}  // use the item in place (static items)
   virtual Item* drop(int count = 0);  // move the item from it's owner inventory to the ground
@@ -343,9 +349,9 @@ class Item : public base::DynamicEntity {
   bool an_{};  //  If the name begins with a vowel sound.
   int count_{1};
   TCODList<modifier::ItemModifier*> modifiers_{};
-  Creature* owner_{};  // this is in owner's inventory
+  mob::Creature* owner_{};  // this is in owner's inventory
   Item* container_{};  // this is inside container
-  Creature* as_creature_{};  // a creature corresponding to this item
+  mob::Creature* as_creature_{};  // a creature corresponding to this item
   float fire_resistance_{};
   int to_delete_{};
   int ch_{};

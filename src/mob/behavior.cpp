@@ -30,6 +30,7 @@
 #include "main.hpp"
 #include "map/dungeon.hpp"
 
+namespace mob {
 TCODList<ScarePoint*> HerdBehavior::scare;
 
 #define FOLLOW_DIST 5
@@ -154,3 +155,4 @@ bool HerdBehavior::update(Creature* crea1, float elapsed) {
 }
 
 void HerdBehavior::addScarePoint(int x, int y, float life) { scare.push(new ScarePoint(x, y, life)); }
+}  // namespace mob

@@ -49,7 +49,7 @@ Craft::Craft() {
   clear.addListener(this);
 }
 
-void Craft::initialize(Creature* owner, bool soft) {
+void Craft::initialize(mob::Creature* owner, bool soft) {
   items.clear();
   this->owner = owner;
   if (!soft) {

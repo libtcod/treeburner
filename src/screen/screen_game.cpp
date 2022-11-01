@@ -357,7 +357,7 @@ bool Game::update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse) {
     }
     if (k.c == 'b' && k.lalt && !k.pressed) {
       // debug mode : Alt-b = burn
-      for (Creature** cr = dungeon->creatures.begin(); cr != dungeon->creatures.end(); cr++) {
+      for (mob::Creature** cr = dungeon->creatures.begin(); cr != dungeon->creatures.end(); cr++) {
         (*cr)->burn = true;
       }
     }
@@ -477,7 +477,7 @@ void Game::initLevel() {
   dungeon = new map::Dungeon(level, &caveGen);
   if (level == nbLevels - 1) {
     // boss
-    boss = (Boss*)Creature::getCreature(CREATURE_ZEEPOH);
+    boss = (mob::Boss*)mob::Creature::getCreature(mob::CREATURE_ZEEPOH);
     int bx = dungeon->stairx;
     int by = dungeon->stairy;
     dungeon->getClosestWalkable(&bx, &by, false);

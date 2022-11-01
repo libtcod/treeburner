@@ -31,6 +31,7 @@
 #include "mob/creature.hpp"
 #include "util_ripples.hpp"
 
+namespace mob {
 class Fish;
 
 class Shoal {
@@ -54,3 +55,4 @@ class Fish : public Creature {
  protected:
   WaterZone* zone = nullptr;
 };
+}  // namespace mob

@@ -435,7 +435,7 @@ void Building::buildCityWalls(int x, map::Dungeon* dungeon) {
       tower->map[1 * 3] = BUILDING_WINDOW_V;
       tower->applyTo(dungeon, x + 1, y, true);
 
-      Creature* archer = Creature::getCreature(CREATURE_ARCHER);
+      mob::Creature* archer = mob::Creature::getCreature(mob::CREATURE_ARCHER);
       archer->setPos(x, y);
       dungeon->addCreature(archer);
 
@@ -446,7 +446,7 @@ void Building::buildCityWalls(int x, map::Dungeon* dungeon) {
       tower->doory = 1;
       tower->applyTo(dungeon, x + 1, 2 * ysym - y, true);
       if ((unsigned)(2 * ysym - y) < (unsigned)dungeon->height) {
-        archer = Creature::getCreature(CREATURE_ARCHER);
+        archer = mob::Creature::getCreature(mob::CREATURE_ARCHER);
         archer->setPos(x, 2 * ysym - y);
         dungeon->addCreature(archer);
       }

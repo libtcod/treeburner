@@ -29,6 +29,7 @@
 
 #include "main.hpp"
 
+namespace mob {
 float Villager::talkDelay = 0.0f;
 
 Archer::Archer() {
@@ -149,3 +150,4 @@ bool Minion::update(float elapsed) {
   }
   return true;
 }
+}  // namespace mob

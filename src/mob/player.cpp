@@ -32,6 +32,7 @@
 #include "main.hpp"
 #include "util_subcell.hpp"
 
+namespace mob {
 // maximum sprint : 2 times faster
 #define MIN_SPRINT_COEF 0.5f
 
@@ -747,3 +748,4 @@ bool Player::loadData(uint32_t chunkId, uint32_t chunkVersion, TCODZip* zip) {
   }
   return ret;
 }
+}  // namespace mob

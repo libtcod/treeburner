@@ -30,6 +30,7 @@
 
 #include "main.hpp"
 
+namespace mob {
 Fish::Fish(WaterZone* zone) : Creature(), zone(zone) {
   strcpy(name, "fish");
   ch = 0;
@@ -158,3 +159,4 @@ bool Fish::update(float elapsed) {
   updated = true;
   return true;
 }
+}  // namespace mob

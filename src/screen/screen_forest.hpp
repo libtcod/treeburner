@@ -33,7 +33,7 @@
 
 class ForestScreen : public base::GameEngine, public base::SaveListener {
  public:
-  Friend* fr;
+  mob::Friend* fr;
 
   ForestScreen();
 

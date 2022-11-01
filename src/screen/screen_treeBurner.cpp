@@ -392,7 +392,7 @@ bool TreeBurner::update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse) {
   }
   dungeon->updateClouds(elapsed);
 
-  HerdBehavior::updateScarePoints(elapsed);
+  mob::HerdBehavior::updateScarePoints(elapsed);
 
   // update fireballs
   updateFireballs(elapsed);
@@ -459,7 +459,7 @@ void TreeBurner::generateMap(uint32_t seed) {
     building->applyTo(dungeon, (int)(house.x + building->doorx), (int)(house.y + building->doory));
   }
   // the village head
-  boss = Creature::getCreature(CREATURE_VILLAGE_HEAD);
+  boss = mob::Creature::getCreature(mob::CREATURE_VILLAGE_HEAD);
   housex = (int)(house.x + house.w / 2);
   housey = (int)(house.y + house.h / 2);
   dungeon->getClosestWalkable(&housex, &housey, true, true, false);
@@ -587,7 +587,7 @@ else if ( swimmable2 ) waterCoef2=layer2Height;
                   dungeon->addItem(item::Item::getItem(type, x / 2, y / 2));
               }
             } else {
-              Creature* cr = Creature::getCreature((CreatureTypeId)itemData->creatureType);
+              mob::Creature* cr = mob::Creature::getCreature((mob::CreatureTypeId)itemData->creatureType);
               cr->setPos(x / 2, y / 2);
               dungeon->addCreature(cr);
             }
@@ -663,7 +663,7 @@ void TreeBurner::onActivate() {
   lookOn = false;
   rippleManager = new RippleManager(dungeon);
   fireManager = new FireManager(dungeon);
-  aiDirector.setBaseCreature(CREATURE_VILLAGER);
+  aiDirector.setBaseCreature(mob::CREATURE_VILLAGER);
 
   Objective* obj = new Objective(
       "Find the village",

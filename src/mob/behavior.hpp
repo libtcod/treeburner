@@ -28,6 +28,7 @@
 
 #include "base/entity.hpp"
 
+namespace mob {
 class WalkPattern : public ITCODPathCallback {
   float getWalkCost(int, int, int, int, void*) const { return 1.0f; }
 };
@@ -84,3 +85,4 @@ class HerdBehavior : public Behavior {
   static TCODList<ScarePoint*> scare;
   TCODList<Creature*> herd;  // current herd for this creature
 };
+}  // namespace mob

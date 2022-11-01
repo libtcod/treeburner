@@ -49,7 +49,7 @@ class TreeBurner : public base::GameEngine {
   void placeHouse(map::Dungeon* dungeon, int doorx, int doory, base::Entity::Direction dir);
   int debugMap;
   base::AiDirector aiDirector;
-  Creature* boss;
+  mob::Creature* boss;
   int cityWallX;
   float endTimer;
 };

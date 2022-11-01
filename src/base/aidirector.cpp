@@ -87,7 +87,7 @@ void AiDirector::update(float elapsed) {
     status = STATUS_MED;
   else
     status = STATUS_HIGH;
-  const int nbCreatures = Creature::creatureByType[baseCreature].size();
+  const int nbCreatures = mob::Creature::creatureByType[baseCreature].size();
   if (nbCreatures >= maxCreatures) return;
   if (spawnTimer > 60.0f) {
     spawnTimer -= 60.0f;
@@ -137,7 +137,7 @@ void AiDirector::spawnMinion(bool chase, int x, int y) {
   GameEngine& game = *gameEngine;
 
   ++spawnCount;
-  Minion* cr = static_cast<Minion*>(Creature::getCreature(baseCreature));
+  mob::Minion* cr = static_cast<mob::Minion*>(mob::Creature::getCreature(baseCreature));
   game.dungeon->getClosestWalkable(&x, &y, true, false);
   cr->setPos(x, y);
   if (chase) cr->setSeen();
@@ -145,7 +145,7 @@ void AiDirector::spawnMinion(bool chase, int x, int y) {
 }
 
 // remove a creature that is too far from player
-void AiDirector::replace(Creature* cr) {
+void AiDirector::replace(mob::Creature* cr) {
   const int old_x = (int)cr->x;
   const int old_y = (int)cr->y;
   cr->burn = false;
@@ -157,7 +157,7 @@ void AiDirector::replace(Creature* cr) {
   cr->onReplace();
 }
 
-void AiDirector::killCreature(Creature* cr) {
+void AiDirector::killCreature(mob::Creature* cr) {
   static const int itemKillCount = config.getIntProperty("config.aidirector.itemKillCount");
   static const bool debug = config.getBoolProperty("config.debug");
 

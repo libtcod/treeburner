@@ -242,7 +242,7 @@ bool FireBall::updateMove(float elapsed) {
           dungeon->hasCreature(oldx, oldy - 1)) {
         // creature hit
         for (int i = 0; i < 5; i++) {
-          Creature* cr = dungeon->getCreature(oldx + deltax[i], oldy + deltay[i]);
+          mob::Creature* cr = dungeon->getCreature(oldx + deltax[i], oldy + deltay[i]);
           if (cr) {
             float dmg = TCODRandom::getInstance()->getFloat(damage / 2, damage);
             if (type == FB_BURST) dmg *= 4;
@@ -354,7 +354,7 @@ bool FireBall::updateTorch(float elapsed) {
   current_range_ = incanRange * (2.0 - fx_life_) * var;
   light.range = 2 * current_range_;
   /*
-  for (Creature **cr=dungeon->creatures.begin(); cr != dungeon->creatures.end(); cr++) {
+  for (mob::Creature **cr=dungeon->creatures.begin(); cr != dungeon->creatures.end(); cr++) {
           if ( ABS((*cr)->x-x)<curRange && ABS((*cr)->y-y)< curRange ) {
                   // do not set fire through walls
                   if ( dungeon->hasLos((int)((*cr)->x),(int)((*cr)->y),(int)x,(int)y,true) ) (*cr)->burn=true;
@@ -380,7 +380,7 @@ bool FireBall::updateTorch(float elapsed) {
                 it->fire_resistance_ -= damage / 4;
               }
             }
-            Creature* cr = dungeon->getCreature((int)(x) + tx, (int)(y) + ty);
+            mob::Creature* cr = dungeon->getCreature((int)(x) + tx, (int)(y) + ty);
             if (cr) {
               cr->burn = true;
               cr->takeDamage(damage / 4);
@@ -420,7 +420,7 @@ bool FireBall::updateSparkle(float elapsed) {
     sparkle->y += sparkle->dy * speed;
     int dungeonx = (int)(sparkle->x) / 2;
     int dungeony = (int)(sparkle->y) / 2;
-    Creature* cr = NULL;
+    mob::Creature* cr = NULL;
     bool del = false;
     for (FireBall** fb = incandescences.begin(); fb != incandescences.end(); fb++) {
       if (ABS((*fb)->x - sparkle->x / 2) < (*fb)->current_range_ &&

@@ -27,6 +27,7 @@
 #include "map/light.hpp"
 #include "mob/creature.hpp"
 
+namespace mob {
 class Boss : public Creature {
  public:
   Boss();
@@ -49,3 +50,4 @@ class VillageHead : public Boss {
  public:
   VillageHead();
 };
+}  // namespace mob
