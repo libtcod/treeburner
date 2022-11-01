@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#include "ui_messages.hpp"
+#include "ui/messages.hpp"
 
 #include <fmt/core.h>
 #include <stdio.h>
@@ -32,6 +32,7 @@
 #include "main.hpp"
 #include "util/subcell.hpp"
 
+namespace ui {
 #define NB_LINES 10
 #define HISTORY_SIZE 256
 #define LOG_WIDTH (CON_W - 12)
@@ -40,14 +41,14 @@ static TCODColor sevColor[NB_SEVERITIES];
 
 Logger::Logger() {
   con = new TCODConsole(CON_W - 12, CON_H);
-  con->setDefaultBackground(guiBackground);
+  con->setDefaultBackground(ui::guiBackground);
   con->clear();
   sevColor[DEBUG] = config.getColorProperty("config.display.debugColor");
   sevColor[INFO] = config.getColorProperty("config.display.infoColor");
   sevColor[WARN] = config.getColorProperty("config.display.warnColor");
   sevColor[CRITICAL] = config.getColorProperty("config.display.criticalColor");
   nbActive = 0;
-  flags = DIALOG_MAXIMIZABLE | DIALOG_MULTIPOS | DIALOG_DRAGGABLE;
+  flags = ui::DIALOG_MAXIMIZABLE | ui::DIALOG_MULTIPOS | ui::DIALOG_DRAGGABLE;
   // focus=drag=false;
   // offset=0;
   possiblePos.push(new UmbraRect(0, CON_H - NB_LINES - 1, LOG_WIDTH, NB_LINES + 1));
@@ -76,7 +77,7 @@ Logger::Logger() {
   titleBarAlpha = 0.0f;
   lookOn = false;
   saveGame.registerListener(HIST_CHUNK_ID, base::PHASE_START, this);
-  scroller = new Scroller(this, LOG_WIDTH, CON_H - 1, true);
+  scroller = new ui::Scroller(this, LOG_WIDTH, CON_H - 1, true);
 }
 
 int Logger::getScrollTotalSize() { return messages.size(); }
@@ -85,7 +86,7 @@ const std::string& Logger::getScrollText(int idx) { return messages.at(idx).txt;
 
 void Logger::getScrollColor(int idx, TCODColor* fore, TCODColor* back) {
   *fore = sevColor[messages.at(idx).severity];
-  *back = guiBackground;
+  *back = ui::guiBackground;
 }
 
 void Logger::render() {
@@ -274,10 +275,11 @@ bool Logger::loadData(uint32_t chunkId, uint32_t chunkVersion, TCODZip* zip) {
 }
 
 void Logger::setPos(int x, int y) {
-  MultiPosDialog::setPos(x, y);
+  ui::MultiPosDialog::setPos(x, y);
   userPref.logx = x;
   userPref.logy = y;
   maximizedRect = minimizedRect;
   maximizedRect.y = 0;
   maximizedRect.h = CON_H;
 }
+}  // namespace ui

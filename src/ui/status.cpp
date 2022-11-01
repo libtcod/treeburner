@@ -23,21 +23,22 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#include "ui_status.hpp"
+#include "ui/status.hpp"
 
 #include "constants.hpp"
 #include "main.hpp"
-#include "ui_inventory.hpp"
+#include "ui/inventory.hpp"
 #include "util/subcell.hpp"
 
+namespace ui {
 #define PANEL_HEIGHT 11
 
 StatusPanel::StatusPanel() {
   con = new TCODConsole(12, PANEL_HEIGHT);
-  con->setDefaultBackground(guiBackground);
-  con->setDefaultForeground(guiText);
+  con->setDefaultBackground(ui::guiBackground);
+  con->setDefaultForeground(ui::guiText);
   con->clear();
-  flags = DIALOG_MULTIPOS | DIALOG_DRAGGABLE;
+  flags = ui::DIALOG_MULTIPOS | ui::DIALOG_DRAGGABLE;
   possiblePos.push(new UmbraRect(CON_W - 12, 0, 12, PANEL_HEIGHT));
   possiblePos.push(new UmbraRect(CON_W - 12, 0, 12, PANEL_HEIGHT));
   possiblePos.push(new UmbraRect(CON_W - 12, 0, 12, PANEL_HEIGHT));
@@ -127,7 +128,7 @@ void StatusPanel::render() {
       img.putPixel(x, 1, x < coef * 20 ? TCODColor::azure : TCODColor::black);
     }
     img.blit2x(TCODConsole::root, rect.x + 1, rect.y + y, 0, 0, 20, 2);
-    TCODConsole::root->setDefaultForeground(guiText);
+    TCODConsole::root->setDefaultForeground(ui::guiText);
     TCODConsole::root->printEx(
         rect.x + rect.w / 2, rect.y + y, TCOD_BKGND_NONE, TCOD_CENTER, (*it)->alias ? (*it)->alias : (*it)->type->name);
     y += dy;
@@ -148,7 +149,8 @@ bool StatusPanel::update(float elapsed, TCOD_key_t& k, TCOD_mouse_t& mouse) {
 }
 
 void StatusPanel::setPos(int x, int y) {
-  MultiPosDialog::setPos(x, y);
+  ui::MultiPosDialog::setPos(x, y);
   userPref.statusx = x;
   userPref.statusy = y;
 }
+}  // namespace ui

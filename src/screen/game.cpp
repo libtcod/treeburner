@@ -275,7 +275,7 @@ bool Game::update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse) {
     resumeGame();
     return true;
   }
-  if (k.c == ' ' && !k.pressed && gui.mode == GUI_NONE) {
+  if (k.c == ' ' && !k.pressed && gui.mode == ui::GUI_NONE) {
     if (isGamePaused())
       resumeGame();
     else

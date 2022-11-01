@@ -23,12 +23,13 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#include "ui_objectives.hpp"
+#include "ui/objectives.hpp"
 
 #include "constants.hpp"
 #include "main.hpp"
 #include "util/subcell.hpp"
 
+namespace ui {
 #define OBJ_WIDTH (CON_W - 4)
 #define OBJ_HEIGHT 40
 
@@ -55,13 +56,13 @@ Objectives::Objectives() : timer(0.0f), showWindow(false), firstObj(true) {
   saveGame.registerListener(OBJE_CHUNK_ID, base::PHASE_START, this);
   rect = UmbraRect(2, 5, OBJ_WIDTH, OBJ_HEIGHT);
   con = new TCODConsole(OBJ_WIDTH, OBJ_HEIGHT);
-  con->setDefaultBackground(guiBackground);
+  con->setDefaultBackground(ui::guiBackground);
   guiTabs.addTab("Active");
   guiTabs.addTab("Success");
   guiTabs.addTab("Failure");
-  flags = DIALOG_CLOSABLE_NODISABLE;
+  flags = ui::DIALOG_CLOSABLE_NODISABLE;
   currentList = &active;
-  scroller = new Scroller(this, OBJ_WIDTH / 2 - 1, OBJ_HEIGHT - 2);
+  scroller = new ui::Scroller(this, OBJ_WIDTH / 2 - 1, OBJ_HEIGHT - 2);
   selected = 0;
 }
 
@@ -108,13 +109,13 @@ void Objectives::addStep(const char* msg, Objective* obj) {
 void Objectives::render() {
   if (!showWindow) return;
   con->clear();
-  con->setDefaultForeground(guiText);
+  con->setDefaultForeground(ui::guiText);
   con->vline(OBJ_WIDTH / 2, 2, OBJ_HEIGHT - 3);
   guiTabs.render(con, 0, 0);
   scroller->render(con, 0, 2);
   scroller->renderScrollbar(con, 0, 2);
   if (currentList && selected < currentList->size()) {
-    con->setDefaultForeground(guiText);
+    con->setDefaultForeground(ui::guiText);
     int y = 2;
     Objective* objective = currentList->get(selected);
     y += con->printRect(OBJ_WIDTH / 2 + 2, y, OBJ_WIDTH / 2 - 3, 0, objective->description);
@@ -132,13 +133,13 @@ int Objectives::getScrollTotalSize() { return currentList->size(); }
 const std::string& Objectives::getScrollText(int idx) { return currentList->get(idx)->title; }
 
 void Objectives::getScrollColor(int idx, TCODColor* fore, TCODColor* back) {
-  *fore = idx == selected ? guiHighlightedText : guiText;
-  *back = guiBackground;
+  *fore = idx == selected ? ui::guiHighlightedText : ui::guiText;
+  *back = ui::guiBackground;
 }
 
 bool Objectives::update(float elapsed, TCOD_key_t& k, TCOD_mouse_t& mouse) {
   if (showWindow) {
-    flags |= DIALOG_MODAL;
+    flags |= ui::DIALOG_MODAL;
     guiTabs.update(elapsed, k, mouse, rect.x, rect.y);
     scroller->update(elapsed, k, mouse, rect.x, rect.y + 2);
     if (mouse.cx >= rect.x && mouse.cx < rect.x + rect.w / 2 && mouse.cy >= rect.y + 2 && mouse.cy < rect.y + rect.h) {
@@ -157,14 +158,14 @@ bool Objectives::update(float elapsed, TCOD_key_t& k, TCOD_mouse_t& mouse) {
         break;
     }
     if (closeButton.mouseHover && mouse.lbutton_pressed) {
-      gameEngine->gui.setMode(GUI_NONE);
+      gameEngine->gui.setMode(ui::GUI_NONE);
     }
     if ((k.vk == TCODK_ESCAPE && !k.pressed)) {
-      gameEngine->gui.setMode(GUI_NONE);
+      gameEngine->gui.setMode(ui::GUI_NONE);
     }
   } else if (wasShowingWindow) {
-    flags &= ~DIALOG_MODAL;
-    if (gameEngine->gui.mode == GUI_NONE && gameEngine->isGamePaused()) {
+    flags &= ~ui::DIALOG_MODAL;
+    if (gameEngine->gui.mode == ui::GUI_NONE && gameEngine->isGamePaused()) {
       gameEngine->resumeGame();
     }
   }
@@ -295,3 +296,4 @@ void Objectives::saveData(uint32_t chunkId, TCODZip* zip) {
     zip->putString((*it)->description);
   }
 }
+}  // namespace ui

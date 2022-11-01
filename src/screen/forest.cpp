@@ -322,7 +322,7 @@ bool ForestScreen::update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse) {
     gui.log.warn(userPref.mouseOnly ? "Mouse only" : "Mouse + keyboard");
     k.c = 0;
     k.vk = TCODK_NONE;
-  } else if (k.c == ' ' && !k.pressed && gui.mode == GUI_NONE) {
+  } else if (k.c == ' ' && !k.pressed && gui.mode == ui::GUI_NONE) {
     if (isGamePaused())
       resumeGame();
     else
@@ -353,7 +353,7 @@ bool ForestScreen::update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse) {
   // log.update(k,mouse,elapsed);
 
   if (isGamePaused()) {
-    if (gui.mode == GUI_NONE) gui.descriptor.setFocus(mousex, mousey, mousex + xOffset, mousey + yOffset, lookOn);
+    if (gui.mode == ui::GUI_NONE) gui.descriptor.setFocus(mousex, mousey, mousex + xOffset, mousey + yOffset, lookOn);
     return true;
   }
 
@@ -654,7 +654,7 @@ void ForestScreen::onActivate() {
   // disable fading (to see the progress bar)
   TCODConsole::setFade(255, TCODColor::black);
   TCODConsole::setColorControl(TCOD_COLCTRL_1, TCODColor(255, 255, 240), TCODColor::black);
-  TCODConsole::setColorControl(TCOD_COLCTRL_2, guiHighlightedText, TCODColor::black);
+  TCODConsole::setColorControl(TCOD_COLCTRL_2, ui::guiHighlightedText, TCODColor::black);
   GameEngine::onActivate();
   init();
   MainMenu::instance->waitForForestGen();

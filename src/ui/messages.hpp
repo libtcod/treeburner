@@ -24,22 +24,44 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 #pragma once
+#include <fmt/printf.h>
+#include <stdarg.h>
+
+#include <deque>
 #include <libtcod.hpp>
-#include <vector>
 
-#include "item.hpp"
-#include "mob/creature.hpp"
-#include "ui_dialog.hpp"
+#include "base/savegame.hpp"
+#include "ui/dialog.hpp"
 
-class Craft : public Dialog, public UIListener, public Scrollable {
+namespace ui {
+enum MessageSeverity { DEBUG, INFO, WARN, CRITICAL, NB_SEVERITIES };
+
+class Logger : public ui::MultiPosDialog, public base::SaveListener, public ui::Scrollable {
  public:
-  Craft();
-  void initialize(mob::Creature* owner, bool soft = false);
+  Logger();
+  template <typename S, typename... Ts>
+  void debug(const S& fmt, const Ts&... args) {
+    addMessage(DEBUG, fmt::sprintf(fmt, args...));
+  }
+  template <typename S, typename... Ts>
+  void info(const S& fmt, const Ts&... args) {
+    addMessage(INFO, fmt::sprintf(fmt, args...));
+  }
+  template <typename S, typename... Ts>
+  void warn(const S& fmt, const Ts&... args) {
+    addMessage(WARN, fmt::sprintf(fmt, args...));
+  }
+  template <typename S, typename... Ts>
+  void critical(const S& fmt, const Ts&... args) {
+    addMessage(CRITICAL, fmt::sprintf(fmt, args...));
+  }
   void render() override;
   bool update(float elapsed, TCOD_key_t& k, TCOD_mouse_t& mouse) override;
+  void setPos(int x, int y) override;
 
-  // UIListener
-  bool onWidgetEvent(Widget* widget, EWidgetEvent event) override;
+  // SaveListener
+  bool loadData(uint32_t chunkId, uint32_t chunkVersion, TCODZip* zip) override;
+  void saveData(uint32_t chunkId, TCODZip* zip) override;
 
   // scrollable
   int getScrollTotalSize() override;
@@ -47,24 +69,18 @@ class Craft : public Dialog, public UIListener, public Scrollable {
   void getScrollColor(int idx, TCODColor* fore, TCODColor* back) override;
 
  protected:
-  std::vector<item::Item*> items;
-  int selectedItem;
-  int selectedIngredient;
-  bool selectedTool;
-  Scroller* scroller;
-  Button clear;
-  Button create;
-  mob::Creature* owner;
-  bool isDragging, isDraggingStart;
-  int dragx, dragy, dragStartX, dragStartY;
-  item::Item* dragItem;
-  item::Item* tool;
-  std::vector<item::Item*> ingredients;
-  TCODList<item::ItemCombination*> recipes;
-  item::Item* result;
-  item::ItemCombination* recipe;
+  struct Message {
+    float timer{};
+    std::string txt{};
+    MessageSeverity severity{};
+  };
 
-  void detectItem(TCOD_mouse_t& mouse);
-  void computeResult();
-  void computeRecipes();
+  int nbActive;
+  ui::Scroller* scroller;
+  bool lookOn;
+  float titleBarAlpha;
+
+  void addMessage(MessageSeverity severity, std::string msg);
+  std::deque<Message> messages{};
 };
+}  // namespace ui

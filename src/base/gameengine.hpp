@@ -35,8 +35,8 @@
 #include "mob/player.hpp"
 #include "screen.hpp"
 #include "spell_fireball.hpp"
-#include "ui_dialog.hpp"
-#include "ui_gui.hpp"
+#include "ui/dialog.hpp"
+#include "ui/gui.hpp"
 #include "util/fire.hpp"
 #include "util/packer.hpp"
 #include "util/ripples.hpp"
@@ -100,7 +100,7 @@ class GameEngine : public screen::Screen {
   static TCODColor setSepia(const TCODColor& col, float coef);
   void displayProgress(float prog);  // renders a progress bar and flush
 
-  Gui gui{};
+  ui::Gui gui{};
   float aspectRatio{};  // font char width / font char height
   bool bossSeen{};
   bool bossIsDead{};

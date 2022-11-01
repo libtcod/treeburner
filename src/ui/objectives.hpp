@@ -27,9 +27,10 @@
 #include <libtcod.hpp>
 
 #include "base/savegame.hpp"
-#include "ui_dialog.hpp"
+#include "ui/dialog.hpp"
 #include "util/script.hpp"
 
+namespace ui {
 class Objective {
  public:
   const char* title;
@@ -47,7 +48,7 @@ class Objective {
   util::Script* onSuccess;
 };
 
-class Objectives : public Dialog, public base::SaveListener, public Scrollable {
+class Objectives : public ui::Dialog, public base::SaveListener, public ui::Scrollable {
  public:
   Objectives();
   TCODList<Objective*> sleeping;
@@ -86,8 +87,9 @@ class Objectives : public Dialog, public base::SaveListener, public Scrollable {
   float timer;
   bool showWindow, firstObj, wasShowingWindow;
   int selected;
-  Tabs guiTabs;
+  ui::Tabs guiTabs;
   TCODList<Objective*>* currentList;
-  Scroller* scroller = nullptr;
+  ui::Scroller* scroller = nullptr;
   bool executeObjScript(Objective* obj, util::Script* script);
 };
+}  // namespace ui

@@ -24,11 +24,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#include "ui_dialog.hpp"
+#include "ui/dialog.hpp"
 
 #include "main.hpp"
 #include "util/subcell.hpp"
 
+namespace ui {
 void Widget::sendEvent(EWidgetEvent event) {
   for (UIListener** it = listeners.begin(); it != listeners.end(); it++) {
     if ((*it)->onWidgetEvent(this, event)) break;
@@ -59,8 +60,8 @@ void Button::setLabel(const char* label) {
 }
 
 void Button::render(TCODConsole* con) {
-  con->setDefaultBackground(mouseHover && !pressed ? guiHighlightedBackground : guiBackground);
-  con->setDefaultForeground(pressed ? guiHighlightedText : guiText);
+  con->setDefaultBackground(mouseHover && !pressed ? ui::guiHighlightedBackground : ui::guiBackground);
+  con->setDefaultForeground(pressed ? ui::guiHighlightedText : ui::guiText);
   con->printEx(x_, y_, TCOD_BKGND_SET, TCOD_LEFT, label);
 }
 
@@ -107,15 +108,15 @@ void Tabs::render(TCODConsole* con, int rectx, int recty) {
   int tx = 2 + rectx;
   for (int i = 0; i < labels.size(); i++) {
     if (i > 0) {
-      con->setDefaultForeground(guiText);
+      con->setDefaultForeground(ui::guiText);
       con->print(tx++, recty + 1, "\xB3");
     }
     tabpos.set(tx, i);
-    con->setDefaultBackground(mouseTab == i && curTab != i ? guiHighlightedBackground : guiBackground);
+    con->setDefaultBackground(mouseTab == i && curTab != i ? ui::guiHighlightedBackground : ui::guiBackground);
     con->setDefaultForeground(TCODColor::white);
     const char* label = labels.get(i);
     con->printEx(tx++, recty + 1, TCOD_BKGND_SET, TCOD_LEFT, "%c", label[0]);
-    con->setDefaultForeground(curTab == i ? guiHighlightedText : guiText);
+    con->setDefaultForeground(curTab == i ? ui::guiHighlightedText : ui::guiText);
     con->printEx(tx, recty + 1, TCOD_BKGND_SET, TCOD_LEFT, &label[1]);
     tx += tablen.get(i) - 1;
   }
@@ -163,7 +164,7 @@ void Scroller::renderScrollbar(TCODConsole* con, int x, int y) {
     int start = ((height - 1) * firstDisplayed) / nbMessages;
     int end = ((height - 1) * (firstDisplayed + nbDisplayed)) / nbMessages;
     end = MIN(height - 1, end);
-    con->setDefaultBackground(scrollFocus || scrollDrag ? guiText : guiText * 0.8f);
+    con->setDefaultBackground(scrollFocus || scrollDrag ? ui::guiText : ui::guiText * 0.8f);
     con->rect(x + width - 2, y + start, 2, end - start + 1, true, TCOD_BKGND_SET);
   }
 }
@@ -248,7 +249,7 @@ void Dialog::setMaximized() {
   isMinimized = false;
   canDrag = false;
   if (gameEngine && !gameEngine->isGamePaused()) gameEngine->pauseGame();
-  if (gameEngine) gameEngine->gui.setMode(GUI_MAXIMIZED);
+  if (gameEngine) gameEngine->gui.setMode(ui::GUI_MAXIMIZED);
 }
 
 void Dialog::setMinimized() {
@@ -260,12 +261,12 @@ void Dialog::setMinimized() {
     setDragZone(0, 0, minimizedRect.w - 3, 1);
   }
   if (gameEngine && gameEngine->isGamePaused()) gameEngine->resumeGame();
-  if (gameEngine) gameEngine->gui.mode = GUI_NONE;
+  if (gameEngine) gameEngine->gui.mode = ui::GUI_NONE;
 }
 
 void Dialog::renderFrame(float alpha, const char* title) {
-  con->setDefaultBackground(guiBackground);
-  con->setDefaultForeground(guiText);
+  con->setDefaultBackground(ui::guiBackground);
+  con->setDefaultForeground(ui::guiText);
   con->rect(0, 0, rect.w, 1, true, TCOD_BKGND_SET);
   con->printEx(rect.w / 2, 0, TCOD_BKGND_NONE, TCOD_CENTER, title);
   if (isMinimized && (isDraggable() || isMultiPos())) {
@@ -276,11 +277,11 @@ void Dialog::renderFrame(float alpha, const char* title) {
       con->putChar(x, 0, TCOD_CHAR_BLOCK2, TCOD_BKGND_NONE);
   }
   if (isAnyClosable()) {
-    con->setDefaultForeground(closeButton.mouseHover ? guiHighlightedText : guiText);
+    con->setDefaultForeground(closeButton.mouseHover ? ui::guiHighlightedText : ui::guiText);
     con->putChar(closeButton.x, closeButton.y, 'x', TCOD_BKGND_NONE);
   }
   if (isMaximizable()) {
-    con->setDefaultForeground(minimiseButton.mouseHover ? guiHighlightedText : guiText);
+    con->setDefaultForeground(minimiseButton.mouseHover ? ui::guiHighlightedText : ui::guiText);
     con->putChar(
         minimiseButton.x, minimiseButton.y, isMinimized ? TCOD_CHAR_ARROW2_N : TCOD_CHAR_ARROW2_S, TCOD_BKGND_NONE);
   }
@@ -366,6 +367,7 @@ void MultiPosDialog::onDragEnd() {
 }
 
 void MultiPosDialog::renderTargetFrame() {
-  TCODConsole::root->setDefaultForeground(guiText);
+  TCODConsole::root->setDefaultForeground(ui::guiText);
   TCODConsole::root->printFrame(targetx, targety, rect.w, rect.h, false, TCOD_BKGND_NONE, NULL);
 }
+}  // namespace ui

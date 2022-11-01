@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#include "ui_tuto.hpp"
+#include "ui/tuto.hpp"
 
 #include <stdio.h>
 
@@ -31,6 +31,7 @@
 #include "main.hpp"
 #include "util/subcell.hpp"
 
+namespace ui {
 #define FADE_TIME 0.5f
 #define BLINK_TIME 3.0f
 Tutorial::Tutorial() : screen::Screen(255) {
@@ -90,8 +91,8 @@ void Tutorial::createPage(TutorialPageId id) {
 
 TCODConsole* Tutorial::createBasePage(const char* name, int w, int h) {
   TCODConsole* con = new TCODConsole(w, h);
-  con->setDefaultForeground(guiText);
-  con->setDefaultBackground(guiBackground);
+  con->setDefaultForeground(ui::guiText);
+  con->setDefaultBackground(ui::guiBackground);
   con->printFrame(0, 0, w, h, true, TCOD_BKGND_SET, name);
   con->setChar(w - 1, 0, 'x');
   return con;
@@ -215,7 +216,7 @@ TCODConsole* Tutorial::createSprintPage() {
 
 TCODConsole* Tutorial::createInventoryPage() {
   pages[TUTO_INVENTORY].delay = 20.0f;
-  pages[TUTO_INVENTORY].name = "Inventory";
+  pages[TUTO_INVENTORY].name = "ui::Inventory";
   TCODConsole* con = createBasePage(pages[TUTO_INVENTORY].name, 39, 20);
   con->print(
       2,
@@ -256,7 +257,7 @@ TCODConsole* Tutorial::createPage(TutorialPageId id, const char* title, const ch
 TCODConsole* Tutorial::createInventory2Page() {
   return createPage(
       TUTO_INVENTORY2,
-      "Inventory",
+      "ui::Inventory",
       "Press %ci%c to open your inventory. You can examine your belongings by hovering the mouse over them.\n\n"
       "Hold the %cright mouse button%c on an item to display a %ccontext menu%c with available actions for this item."
       "The first action of the context menu is the %cdefault action%c, triggered when you %cleft click%c on the "
@@ -374,25 +375,25 @@ void Tutorial::closeMenu() {
 }
 
 void Tutorial::render() {
-  TCODColor fore = guiText;
-  if (blinkDelay > 0.0 && ((int)(blinkDelay * 10) & 1) == 1) fore = guiDisabledText;
+  TCODColor fore = ui::guiText;
+  if (blinkDelay > 0.0 && ((int)(blinkDelay * 10) & 1) == 1) fore = ui::guiDisabledText;
   TCODConsole::root->setDefaultForeground(fore);
   TCODConsole::root->print(CON_W - 10, CON_H - 3, "? Help");
 
   if (renderMenu) {
     static TCODConsole menuCon(20, 20);
     int nbItems = menu.size();
-    menuCon.setDefaultBackground(guiBackground);
-    menuCon.setDefaultForeground(guiText);
+    menuCon.setDefaultBackground(ui::guiBackground);
+    menuCon.setDefaultForeground(ui::guiText);
     menuCon.printFrame(0, 0, 20, nbItems + 4, true, TCOD_BKGND_SET, "Help menu");
     int y = 2, itemNum = 0;
     for (TutorialPageId* it = menu.begin(); it != menu.end(); it++, itemNum++) {
       if (*it == id) {
         menuCon.setDefaultForeground(TCODColor::white);
-        menuCon.setDefaultBackground(guiHighlightedBackground);
+        menuCon.setDefaultBackground(ui::guiHighlightedBackground);
       } else {
-        menuCon.setDefaultForeground(guiText);
-        menuCon.setDefaultBackground(guiBackground);
+        menuCon.setDefaultForeground(ui::guiText);
+        menuCon.setDefaultBackground(ui::guiBackground);
       }
       menuCon.rect(2, y, 16, 1, false, TCOD_BKGND_SET);
       menuCon.print(2, y++, pages[*it].name);
@@ -411,7 +412,7 @@ void Tutorial::render() {
       int cury = (int)(y + (CON_H - 3 - y) * coef);
       int curw = (int)(w + (10 - w) * coef);
       int curh = (int)(h + (1 - h) * coef);
-      TCODConsole::root->setDefaultForeground(guiText);
+      TCODConsole::root->setDefaultForeground(ui::guiText);
       TCODConsole::root->printFrame(curx, cury, curw, curh, false, TCOD_BKGND_NONE, NULL);
     } else {
       if (pages[id].x == -1 || renderMenu)
@@ -449,11 +450,11 @@ bool Tutorial::update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse) {
       if ((mouse.lbutton_pressed && mouse.cx == x + w - 1 && mouse.cy == y) ||
           (!k.pressed && (k.c == '?' || k.c == ' ' || k.vk == TCODK_ESCAPE)) || tutoElapsed > pages[id].delay) {
         if (renderMenu)
-          gameEngine->gui.setMode(GUI_NONE);
+          gameEngine->gui.setMode(ui::GUI_NONE);
         else if (k.c != '?')
           closeLiveTuto();
         else
-          gameEngine->gui.setMode(GUI_TUTORIAL);
+          gameEngine->gui.setMode(ui::GUI_TUTORIAL);
       }
       if (renderMenu && menu.size() > 1 && fadeOutDelay == 0.0f) {
         bool up = false, down = false, left = false, right = false;
@@ -473,7 +474,7 @@ bool Tutorial::update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse) {
       }
     }
   } else if (k.c == '?' && !k.pressed) {
-    gameEngine->gui.setMode(GUI_TUTORIAL);
+    gameEngine->gui.setMode(ui::GUI_TUTORIAL);
   }
   return true;
 }
@@ -542,3 +543,4 @@ bool Tutorial::loadData(uint32_t chunkId, uint32_t chunkVersion, TCODZip* zip) {
   selectedItem = zip->getInt();
   return true;
 }
+}  // namespace ui

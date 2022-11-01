@@ -29,6 +29,7 @@
 #include "base/savegame.hpp"
 #include "screen.hpp"
 
+namespace ui {
 typedef enum {
   TUTO_NONE,
   TUTO_FOOD,
@@ -99,3 +100,4 @@ class Tutorial : public screen::Screen, public base::SaveListener {
   TCODConsole* createBasePage(const char* name, int w, int h);
   TCODConsole* createPage(TutorialPageId id, const char* title, const char* content, ...);
 };
+}  // namespace ui

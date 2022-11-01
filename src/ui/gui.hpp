@@ -24,40 +24,42 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 #pragma once
-#include <libtcod.hpp>
+#include "ui/craft.hpp"
+#include "ui/descriptor.hpp"
+#include "ui/inventory.hpp"
+#include "ui/messages.hpp"
+#include "ui/objectives.hpp"
+#include "ui/status.hpp"
+#include "ui/tuto.hpp"
 
-#include "base/gameengine.hpp"
-#include "base/savegame.hpp"
-#include "mob/friend.hpp"
-#include "ui/input.hpp"
-
-namespace screen {
-class ForestScreen : public base::GameEngine, public base::SaveListener {
- public:
-  mob::Friend* fr;
-
-  ForestScreen();
-
-  void render() override;
-  bool update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse) override;
-  void onEvent(const SDL_Event&) override{};
-  void generateMap(uint32_t seed);  // generate a new random map
-  void loadMap(uint32_t seed);  // load map from savegame
-
-  void onFontChange();
-
-  // SaveListener
-  bool loadData(uint32_t chunkId, uint32_t chunkVersion, TCODZip* zip) override;
-  void saveData(uint32_t chunkId, TCODZip* zip) override;
-
- protected:
-  TCODRandom* forestRng;
-
-  void onActivate() override;
-  void onDeactivate() override;
-  void placeTree(map::Dungeon* dungeon, int x, int y, const item::ItemType* treeType);
-  void placeHouse(map::Dungeon* dungeon, int doorx, int doory, base::Entity::Direction dir);
-  int debugMap;
-  ui::TextInput textInput;
+namespace ui {
+enum EGuiMode {
+  GUI_NONE,  // no dialog displayed
+  GUI_INVENTORY,  // inventory alone
+  GUI_LOOT,  // loot alone
+  GUI_INVLOOT,  // inventory + loot
+  GUI_OBJECTIVES,
+  GUI_MAXIMIZED,  // any maximized dialog (currently only messages)
+  GUI_CRAFT,  // crafting screen
+  GUI_TUTORIAL,  // tutorial with menu
 };
-}  // namespace screen
+
+class Gui {
+ public:
+  EGuiMode mode;
+  ui::Inventory inventory;
+  ui::Inventory loot;
+  ui::Descriptor descriptor;
+  ui::StatusPanel statusPanel;
+  ui::Logger log;
+  ui::Tutorial tutorial;
+  ui::Objectives objectives;
+  ui::Craft craft;
+
+  void initialize();
+  void activate();
+  void deactivate();
+  void setMode(EGuiMode mode);
+  void closeDialogs();
+};
+}  // namespace ui

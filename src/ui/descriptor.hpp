@@ -24,40 +24,22 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 #pragma once
-#include "ui_craft.hpp"
-#include "ui_descriptor.hpp"
-#include "ui_inventory.hpp"
-#include "ui_messages.hpp"
-#include "ui_objectives.hpp"
-#include "ui_status.hpp"
-#include "ui_tuto.hpp"
+#include "item.hpp"
+#include "mob/creature.hpp"
 
-enum EGuiMode {
-  GUI_NONE,  // no dialog displayed
-  GUI_INVENTORY,  // inventory alone
-  GUI_LOOT,  // loot alone
-  GUI_INVLOOT,  // inventory + loot
-  GUI_OBJECTIVES,
-  GUI_MAXIMIZED,  // any maximized dialog (currently only messages)
-  GUI_CRAFT,  // crafting screen
-  GUI_TUTORIAL,  // tutorial with menu
-};
-
-class Gui {
+namespace ui {
+// displays a description of an item/creature/...
+class Descriptor {
  public:
-  EGuiMode mode;
-  Inventory inventory;
-  Inventory loot;
-  Descriptor descriptor;
-  StatusPanel statusPanel;
-  Logger log;
-  Tutorial tutorial;
-  Objectives objectives;
-  Craft craft;
+  Descriptor();
+  void render();
+  void setFocus(int mousex, int mousey, int x, int y, bool lookOn);
 
-  void initialize();
-  void activate();
-  void deactivate();
-  void setMode(EGuiMode mode);
-  void closeDialogs();
+ protected:
+  int x, y, mousex, mousey;
+  item::Item* item;
+  mob::Creature* creature;
+  char tooltip[32];
+  bool lookOn;
 };
+}  // namespace ui

@@ -23,44 +23,50 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#include "ui_input.hpp"
+#pragma once
+#include <libtcod.hpp>
+#include <vector>
 
-#include "constants.hpp"
-#include "util/subcell.hpp"
+#include "item.hpp"
+#include "mob/creature.hpp"
+#include "ui/dialog.hpp"
 
-void TextInput::init(const char* title, const char* text, int maxSize) {
-  this->title = title;
-  this->text = text;
-  this->maxSize = maxSize;
-  width = strlen(title) + 8;
-  width = MAX(30, width);
-  height = TCODConsole::root->getHeightRect(CON_W / 2 - width / 2 + 2, 0, width - 4, 0, text) + 6;
-  if (con) delete con;
-  if (txt) delete txt;
-  txt = NULL;
-  con = new TCODConsole(width, height);
-  con->setDefaultForeground(TCODColor::lightGrey);
-  con->setDefaultBackground(TCODColor::lightYellow);
-  con->printFrame(0, 0, width, height, false, TCOD_BKGND_SET, title);
-  con->setDefaultBackground(TCODColor::grey);
-  con->setDefaultForeground(TCODColor::lightYellow);
-  con->rect(0, 0, width, height, false, TCOD_BKGND_SET);
-  con->rect(1, 1, width - 2, height - 2, true, TCOD_BKGND_NONE);
-  con->printRect(2, 2, width - 4, 0, text);
-}
+namespace ui {
+class Craft : public ui::Dialog, public ui::UIListener, public ui::Scrollable {
+ public:
+  Craft();
+  void initialize(mob::Creature* owner, bool soft = false);
+  void render() override;
+  bool update(float elapsed, TCOD_key_t& k, TCOD_mouse_t& mouse) override;
 
-TextInput::~TextInput() {
-  if (txt) delete txt;
-  if (con) delete con;
-}
+  // ui::UIListener
+  bool onWidgetEvent(ui::Widget* widget, ui::EWidgetEvent event) override;
 
-void TextInput::render(int x, int y) {
-  if (!txt) txt = new TCODText(x - width / 2 + 2, y + height - 3, MIN(maxSize, width - 4), 1, maxSize);
-  util::blitTransparent(con, 0, 0, 0, 0, TCODConsole::root, x - width / 2, y);
-  txt->render(TCODConsole::root);
-}
+  // scrollable
+  int getScrollTotalSize() override;
+  const std::string& getScrollText(int idx) override;
+  void getScrollColor(int idx, TCODColor* fore, TCODColor* back) override;
 
-bool TextInput::update(float elapsed, TCOD_key_t k) {
-  if (txt) return txt->update(k);
-  return true;
-}
+ protected:
+  std::vector<item::Item*> items;
+  int selectedItem;
+  int selectedIngredient;
+  bool selectedTool;
+  ui::Scroller* scroller;
+  Button clear;
+  Button create;
+  mob::Creature* owner;
+  bool isDragging, isDraggingStart;
+  int dragx, dragy, dragStartX, dragStartY;
+  item::Item* dragItem;
+  item::Item* tool;
+  std::vector<item::Item*> ingredients;
+  TCODList<item::ItemCombination*> recipes;
+  item::Item* result;
+  item::ItemCombination* recipe;
+
+  void detectItem(TCOD_mouse_t& mouse);
+  void computeResult();
+  void computeRecipes();
+};
+}  // namespace ui

@@ -23,12 +23,13 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#include "ui_descriptor.hpp"
+#include "ui/descriptor.hpp"
 
 #include <stdio.h>
 
 #include "main.hpp"
 
+namespace ui {
 #define POSX CON_W - 1
 #define POSY CON_H - 10
 
@@ -62,7 +63,7 @@ void Descriptor::setFocus(int mousex, int mousey, int x, int y, bool lookOn) {
 }
 
 void Descriptor::render() {
-  TCODConsole::root->setDefaultForeground(guiText);
+  TCODConsole::root->setDefaultForeground(ui::guiText);
   // descriptor
   if (creature) {
     TCODConsole::root->printEx(POSX, POSY, TCOD_BKGND_NONE, TCOD_RIGHT, creature->name);
@@ -79,3 +80,4 @@ void Descriptor::render() {
     }
   }
 }
+}  // namespace ui

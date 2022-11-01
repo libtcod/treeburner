@@ -26,15 +26,21 @@
 #pragma once
 #include <libtcod.hpp>
 
-#include "ui_dialog.hpp"
-
-class StatusPanel : public MultiPosDialog {
+namespace ui {
+class TextInput {
  public:
-  StatusPanel();
-  void render() override;
-  bool update(float elapsed, TCOD_key_t& k, TCOD_mouse_t& mouse) override;
-  void setPos(int x, int y) override;
+  TextInput() : con(NULL), txt(NULL) {}
+  ~TextInput();
+  void init(const char* title, const char* text, int maxSize);
+  void render(int x, int y);
+  bool update(float elapsed, TCOD_key_t k);
+  const char* getText() { return txt->getText(); }
 
  protected:
-  float titleBarAlpha;
+  const char* title;
+  const char* text;
+  int maxSize, width, height;
+  TCODConsole* con;
+  TCODText* txt;
 };
+}  // namespace ui

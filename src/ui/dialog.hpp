@@ -27,6 +27,7 @@
 #include <libtcod.hpp>
 #include <umbra/umbra.hpp>
 
+namespace ui {
 enum EDialogFlag {
   DIALOG_MAXIMIZABLE = 1,  // can be minimized/maximized
   DIALOG_DRAGGABLE = 2,  // can be dragged at any position
@@ -186,3 +187,4 @@ class MultiPosDialog : public Dialog {
   void renderFrame(float alpha, const char* title);
   void onDragEnd();
 };
+}  // namespace ui

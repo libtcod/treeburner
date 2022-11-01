@@ -90,7 +90,7 @@ int scGetBestCreatureFoodHP(lua_State* L) {
   return 1;
 }
 
-int scLog(MessageSeverity sev, lua_State* L) {
+int scLog(ui::MessageSeverity sev, lua_State* L) {
   const char* msg = lua_tostring(L, 1);
   switch (sev) {
     case DEBUG:

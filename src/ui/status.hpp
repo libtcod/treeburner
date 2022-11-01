@@ -24,20 +24,19 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 #pragma once
-#include "item.hpp"
-#include "mob/creature.hpp"
+#include <libtcod.hpp>
 
-// displays a description of an item/creature/...
-class Descriptor {
+#include "ui/dialog.hpp"
+
+namespace ui {
+class StatusPanel : public ui::MultiPosDialog {
  public:
-  Descriptor();
-  void render();
-  void setFocus(int mousex, int mousey, int x, int y, bool lookOn);
+  StatusPanel();
+  void render() override;
+  bool update(float elapsed, TCOD_key_t& k, TCOD_mouse_t& mouse) override;
+  void setPos(int x, int y) override;
 
  protected:
-  int x, y, mousex, mousey;
-  item::Item* item;
-  mob::Creature* creature;
-  char tooltip[32];
-  bool lookOn;
+  float titleBarAlpha;
 };
+}  // namespace ui

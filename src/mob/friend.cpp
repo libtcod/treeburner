@@ -62,7 +62,7 @@ bool Friend::update(float elapsed) {
   if (!foodTuto && timer > 3.0f) {
     foodTuto = true;
     if (userPref.nbLaunches == 1) {
-      gameEngine->gui.tutorial.startLiveTuto(TUTO_FOOD);
+      gameEngine->gui.tutorial.startLiveTuto(ui::TUTO_FOOD);
       timer = -30.0f;
     } else
       timer = 0.0f;
@@ -74,7 +74,7 @@ bool Friend::update(float elapsed) {
     timer = 0.0f;
   } else if (startPhrase && foodTuto && timer > 5.0f && !foodObj) {
     foodObj = true;
-    Objective* obj = new Objective(
+    ui::Objective* obj = new ui::Objective(
         "Find some food",
         "You have been playing with your friend the whole afternoon and you're quite hungry. Try to find some food.",
         NULL,
@@ -109,7 +109,7 @@ bool Friend::updateHideAndSeek(float elapsed) {
                 if ( counter == 3 ) {
                         tutoPause=true;
                         gameEngine->pauseGame();
-                        gameEngine->gui.tutorial->startLiveTuto(TUTO_HIDE_SEEK);
+                        gameEngine->gui.tutorial->startLiveTuto(ui::TUTO_HIDE_SEEK);
                 }
         } else if ( timer > 10.0f ) {
                 Player *player=&gameEngine->player;

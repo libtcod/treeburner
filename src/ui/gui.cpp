@@ -23,10 +23,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#include "ui_gui.hpp"
+#include "ui/gui.hpp"
 
 #include "main.hpp"
 
+namespace ui {
 void Gui::initialize() {
   engine.registerModule(&log);
   engine.registerModule(&statusPanel);
@@ -119,3 +120,4 @@ void Gui::closeDialogs() {
       break;
   }
 }
+}  // namespace ui
