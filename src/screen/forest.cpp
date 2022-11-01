@@ -310,7 +310,7 @@ bool ForestScreen::update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse) {
   if (player.name[0] == 0) {
     if (!textInput.update(elapsed, k)) {
       strcpy(player.name, textInput.getText());
-      TextGenerator::addGlobalValue("PLAYER_NAME", player.name);
+      util::TextGenerator::addGlobalValue("PLAYER_NAME", player.name);
       resumeGame();
     } else
       return true;
@@ -694,7 +694,7 @@ void ForestScreen::onActivate() {
   if (newGame)
     gui.log.critical("Welcome to the Cave v" VERSION " ! %c?%c for help.", TCOD_COLCTRL_2, TCOD_COLCTRL_STOP);
   lookOn = false;
-  rippleManager = new RippleManager(dungeon);
+  rippleManager = new util::RippleManager(dungeon);
   if (player.name[0] == 0) {
     if (userPref.nbLaunches == 1) {
       textInput.init("Welcome to The Cave !", "PageUp/PageDown to change font size\nPlease enter your name :", 60);

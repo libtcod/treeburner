@@ -56,7 +56,7 @@ class SchoolScreen : public Screen {
 
  protected:
   School school[NB_SCHOOLS];
-  WorldGenerator worldGen;
+  util::WorldGenerator worldGen;
   // world map current offset and destination offset
   float offx, offy, dx, dy;
   // rendered world
@@ -71,7 +71,7 @@ class SchoolScreen : public Screen {
   float fisheyex[MAP_WIDTH][MAP_HEIGHT];
   float fisheyey[MAP_WIDTH][MAP_HEIGHT];
   bool worldGenerated;
-  TextGenerator* textGen;
+  util::TextGenerator* textGen;
   TCODRandom* schoolRng;
 
   bool isPosOk(int schoolNum) const;

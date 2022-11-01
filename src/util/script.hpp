@@ -26,6 +26,7 @@
 #pragma once
 #include <libtcod.hpp>
 
+namespace util {
 class Script {
  public:
   Script();
@@ -42,3 +43,4 @@ class Script {
   int ref;  // reference to precompiled chunk
   void* data = nullptr;
 };
+}  // namespace util

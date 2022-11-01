@@ -26,6 +26,7 @@
 #pragma once
 #include <libtcod.hpp>
 
+namespace util {
 class NameGenerator {
  public:
   static const char* generateName(TCODRandom* ngRng, const char* pre[], const char* mid[], const char* post[]);
@@ -41,3 +42,4 @@ class NameGenerator {
   static int count(const char** list);
   static void concatSyllable(char* dest, const char* syl1, const char* syl2);
 };
+}  // namespace util

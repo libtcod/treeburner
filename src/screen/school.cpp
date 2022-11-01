@@ -104,7 +104,7 @@ void SchoolScreen::generateWorld(uint32_t seed) {
   static bool firstActivation = true;
   if (config.getBoolProperty("config.debug") && firstActivation) {
     firstActivation = false;
-    TCODImage worldimg(HM_WIDTH, HM_HEIGHT);
+    TCODImage worldimg(util::HM_WIDTH, util::HM_HEIGHT);
     // altitude map
     worldGen.saveAltitudeMap();
     // temperature map of the world
@@ -116,16 +116,16 @@ void SchoolScreen::generateWorld(uint32_t seed) {
     // generate the biome map
     worldGen.saveBiomeMap();
     // and the shaded version
-    for (int x = 0; x < HM_WIDTH; x++) {
-      for (int y = 0; y < HM_HEIGHT; y++) {
+    for (int x = 0; x < util::HM_WIDTH; x++) {
+      for (int y = 0; y < util::HM_HEIGHT; y++) {
         worldimg.putPixel(x, y, getMapShadedColor(x + 0.5f, y + 0.5f, false));
       }
     }
     worldimg.save("world_shaded.png");
   }
-  textGen = new TextGenerator("data/cfg/school.txg", schoolRng);
-  textGen->setLocalFunction("RANDOM_INT", new RandomIntFunc(schoolRng));
-  textGen->setLocalFunction("RANDOM_NAME", new RandomNameFunc(schoolRng));
+  textGen = new util::TextGenerator("data/cfg/school.txg", schoolRng);
+  textGen->setLocalFunction("RANDOM_INT", new util::RandomIntFunc(schoolRng));
+  textGen->setLocalFunction("RANDOM_NAME", new util::RandomNameFunc(schoolRng));
 
   // find suitable position for schools
   for (int i = 0; i < NB_SCHOOLS; i++) {
@@ -144,7 +144,7 @@ void SchoolScreen::generateWorld(uint32_t seed) {
       }
     }
     // generate school name
-    strcpy(sch->name, NameGenerator::generateRandomName(schoolRng));
+    strcpy(sch->name, util::NameGenerator::generateRandomName(schoolRng));
     // determin terrain type
     int terrain1 = getTerrainType(sch->x, sch->y, 16);
     int terrain2 = getTerrainType(sch->x, sch->y, 4);
@@ -169,10 +169,10 @@ void SchoolScreen::onActivate() {
   engine.setKeyboardMode(UMBRA_KEYBOARD_RELEASED);
   if (!worldGenerated) MainMenu::instance->waitForWorldGen();
   selectSchool(0);
-  offx = rng->getFloat(MAP_WIDTH, HM_WIDTH - MAP_WIDTH - 1);
-  offy = rng->getFloat(MAP_WIDTH, HM_HEIGHT - MAP_HEIGHT - 1);
-  offx = rng->getFloat(MAP_WIDTH, HM_WIDTH - MAP_WIDTH - 1);
-  offy = rng->getFloat(MAP_WIDTH, HM_HEIGHT - MAP_HEIGHT - 1);
+  offx = rng->getFloat(MAP_WIDTH, util::HM_WIDTH - MAP_WIDTH - 1);
+  offy = rng->getFloat(MAP_WIDTH, util::HM_HEIGHT - MAP_HEIGHT - 1);
+  offx = rng->getFloat(MAP_WIDTH, util::HM_WIDTH - MAP_WIDTH - 1);
+  offy = rng->getFloat(MAP_WIDTH, util::HM_HEIGHT - MAP_HEIGHT - 1);
   Screen::onActivate();
 }
 
@@ -295,7 +295,7 @@ void SchoolScreen::render() {
       (CON_H * 2 - MAP_HEIGHT) / 4);
 
   // render the menu
-  darken(1, MENUY + 3 + selectedSchool, MENU_WIDTH - 10, 1, 0.5);
+  util::darken(1, MENUY + 3 + selectedSchool, MENU_WIDTH - 10, 1, 0.5);
   TCODConsole::root->setDefaultForeground(TEXT_COLOR);
   TCODConsole::root->print(1, MENUY + 1, "Select a school");
   for (int i = 0; i < NB_SCHOOLS; i++) {
@@ -316,16 +316,16 @@ void SchoolScreen::render() {
 
 void SchoolScreen::setContextSchool(School* sch) {
   gameEngine->player.school = *sch;
-  TextGenerator::deleteGlobalValue("SCHOOL_NAME");
-  TextGenerator::deleteGlobalValue("SCHOOL_TYPE");
-  TextGenerator::deleteGlobalValue("PLAYER_CLASS");
-  TextGenerator::addGlobalValue("SCHOOL_NAME", sch->name);
-  TextGenerator::addGlobalValue("SCHOOL_TYPE", schoolTypeName[sch->type]);
+  util::TextGenerator::deleteGlobalValue("SCHOOL_NAME");
+  util::TextGenerator::deleteGlobalValue("SCHOOL_TYPE");
+  util::TextGenerator::deleteGlobalValue("PLAYER_CLASS");
+  util::TextGenerator::addGlobalValue("SCHOOL_NAME", sch->name);
+  util::TextGenerator::addGlobalValue("SCHOOL_TYPE", schoolTypeName[sch->type]);
   // convert pyromancy to pyromancer
   char tmp[128];
   strcpy(tmp, schoolTypeName[sch->type]);
   tmp[strlen(tmp) - 1] = 0;
-  TextGenerator::addGlobalValue("PLAYER_CLASS", "%ser", tmp);
+  util::TextGenerator::addGlobalValue("PLAYER_CLASS", "%ser", tmp);
 }
 
 bool SchoolScreen::update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse) {
@@ -351,8 +351,8 @@ bool SchoolScreen::update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse) {
       mouse.cx < (CON_H * 2 - MAP_HEIGHT) / 4 + MAP_HEIGHT) {
     dx = 2 * (mouse.cx - (CON_W - 1 - MAP_WIDTH / 2)) + offx - MAP_WIDTH / 2;
     dy = 2 * (mouse.cy - (CON_H * 2 - MAP_HEIGHT) / 4) + offy - MAP_HEIGHT / 2;
-    dx = CLAMP(0, HM_WIDTH - MAP_WIDTH - 1, dx);
-    dy = CLAMP(0, HM_HEIGHT - MAP_HEIGHT - 1, dy);
+    dx = CLAMP(0, util::HM_WIDTH - MAP_WIDTH - 1, dx);
+    dy = CLAMP(0, util::HM_HEIGHT - MAP_HEIGHT - 1, dy);
   }
   // update current offset
   elapsed = MIN(0.1f, elapsed);

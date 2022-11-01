@@ -30,6 +30,7 @@
 #include "constants.hpp"
 #include "main.hpp"
 
+namespace util {
 TCODList<Powerup*> Powerup::list;
 TCODImage* PowerupGraph::img_[PW_NB] = {NULL};
 const char* PowerupGraph::img_name_[PW_NB] = {
@@ -417,3 +418,4 @@ bool PowerupGraph::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
   }
   return true;
 }
+}  // namespace util

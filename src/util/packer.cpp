@@ -27,6 +27,7 @@
 
 #include <stdio.h>
 
+namespace util {
 // #define PACKER_DBG
 
 Packer::Packer(int x, int y, int w, int h)
@@ -250,3 +251,4 @@ void Packer::pack() {
 #endif
 }
 */
+}  // namespace util

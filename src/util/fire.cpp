@@ -35,6 +35,7 @@
 
 // old school fire routines
 
+namespace util {
 TCODColor fireColor[256];
 static bool col_init = false;
 
@@ -284,3 +285,4 @@ void FireManager::renderFire(TCODImage& ground) {
     }
   }
 }
+}  // namespace util

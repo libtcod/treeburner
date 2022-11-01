@@ -40,11 +40,11 @@ Objective::Objective(const char* title, const char* description, const char* ena
       onEnable(NULL),
       onSuccess(NULL) {
   if (enableScript) {
-    onEnable = new Script();
+    onEnable = new util::Script();
     onEnable->parse(enableScript);
   }
   if (successScript) {
-    onSuccess = new Script();
+    onSuccess = new util::Script();
     onSuccess->parse(successScript);
   }
 }
@@ -65,7 +65,7 @@ Objectives::Objectives() : timer(0.0f), showWindow(false), firstObj(true) {
   selected = 0;
 }
 
-bool Objectives::executeObjScript(Objective* obj, Script* script) {
+bool Objectives::executeObjScript(Objective* obj, util::Script* script) {
   currentObjective = obj;
   bool ret = script->execute();
   currentObjective = NULL;
@@ -123,7 +123,7 @@ void Objectives::render() {
       y += con->printRect(OBJ_WIDTH / 2 + 2, y, OBJ_WIDTH / 2 - 3, 0, *step);
     }
   }
-  blitSemiTransparent(con, 0, 0, OBJ_WIDTH, OBJ_HEIGHT, TCODConsole::root, rect.x, rect.y, 0.8f, 1.0f);
+  util::blitSemiTransparent(con, 0, 0, OBJ_WIDTH, OBJ_HEIGHT, TCODConsole::root, rect.x, rect.y, 0.8f, 1.0f);
   renderFrame(1.0f, "Objectives");
 }
 

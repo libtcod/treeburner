@@ -223,9 +223,9 @@ int PaperScreen::paperHeight = 0;
 void PaperScreen::onInitialise() {
   tcodpix = loadChapterPicture(false);
   TCODRandom tmpRng(saveGame.seed);
-  TextGenerator txtgen(txgfile, &tmpRng);
-  txtgen.setLocalFunction("RANDOM_INT", new RandomIntFunc(&tmpRng));
-  txtgen.setLocalFunction("RANDOM_NAME", new RandomNameFunc(&tmpRng));
+  util::TextGenerator txtgen(txgfile, &tmpRng);
+  txtgen.setLocalFunction("RANDOM_INT", new util::RandomIntFunc(&tmpRng));
+  txtgen.setLocalFunction("RANDOM_NAME", new util::RandomNameFunc(&tmpRng));
   title = (const char*)strdup(txtgen.generate(titlegen, "${OUTPUT}"));
   txt = (const char*)strdup(txtgen.generate(textgen, "${OUTPUT}"));
   if (!paper) {

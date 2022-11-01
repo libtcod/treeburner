@@ -48,7 +48,7 @@ namespace map {
 class Dungeon : public base::SaveListener {
  public:
   Dungeon(int width, int height);  // empty dungeon
-  Dungeon(int level, CaveGenerator* caveGen);  // bsp / cellular automate dungeon
+  Dungeon(int level, util::CaveGenerator* caveGen);  // bsp / cellular automate dungeon
   virtual ~Dungeon();
 
   // the final dungeon map
@@ -198,9 +198,9 @@ class Dungeon : public base::SaveListener {
   TCODList<mob::Creature*> creaturesToAdd;
   bool isUpdatingCreatures;
   TCODColor ambient;  // ambient light
-  CloudBox* clouds = nullptr;  // for outdoors
+  util::CloudBox* clouds = nullptr;  // for outdoors
 
-  void initData(CaveGenerator* caveGen);
+  void initData(util::CaveGenerator* caveGen);
   void cleanData();
   void getRandomPositionInCorner(int cornerx, int cornery, int* x, int* y);
   void saveMap(int playerX, int playerY);

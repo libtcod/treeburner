@@ -26,6 +26,7 @@
 #pragma once
 #include <libtcod.hpp>
 
+namespace util {
 // some utilities to dig in TCODMaps
 class MapCarver {
  public:
@@ -43,3 +44,4 @@ class MapCarver {
   // draw a vertical line
   static void vline(TCODMap* map, int x, int y1, int y2);
 };
+}  // namespace util

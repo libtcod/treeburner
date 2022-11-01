@@ -26,6 +26,7 @@
 #pragma once
 #include <libtcod.hpp>
 
+namespace util {
 class CloudBox {
  public:
   CloudBox(int width, int height);
@@ -44,3 +45,4 @@ class CloudBox {
   float getData(float* data, int x, int y);
   float getInterpolatedData(float* data, int x, int y);
 };
+}  // namespace util

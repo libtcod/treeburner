@@ -29,6 +29,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 
+namespace util {
 TCODList<Rule*> TextGenerator::globalRules;
 TCODList<TextGenFunc*> TextGenerator::globalFuncs;
 
@@ -306,3 +307,4 @@ const char* TextGenerator::generate(const char* generator, const char* source, .
   goatSoup2(generator, tmp, buf);
   return buf;
 }
+}  // namespace util

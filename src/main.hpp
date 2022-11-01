@@ -77,6 +77,6 @@ extern base::UserPref userPref;
 extern UmbraEngine engine;
 extern base::GameEngine* gameEngine;
 extern TCODImage background;
-extern Sound sound;
-extern ThreadPool* threadPool;
+extern util::Sound sound;
+extern util::ThreadPool* threadPool;
 extern TCODParser config;

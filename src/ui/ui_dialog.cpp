@@ -286,7 +286,7 @@ void Dialog::renderFrame(float alpha, const char* title) {
   }
 
   if (alpha < 1.0f)
-    blitSemiTransparent(con, 0, 0, rect.w, 1, TCODConsole::root, rect.x, rect.y, alpha, alpha);
+    util::blitSemiTransparent(con, 0, 0, rect.w, 1, TCODConsole::root, rect.x, rect.y, alpha, alpha);
   else
     TCODConsole::blit(con, 0, 0, rect.w, 1, TCODConsole::root, rect.x, rect.y);
 }

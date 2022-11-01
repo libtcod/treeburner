@@ -26,6 +26,7 @@
 #pragma once
 #include <libtcod.hpp>
 
+namespace util {
 class CaveGenerator : public ITCODBspCallback {
  public:
   CaveGenerator(int level);  // bsp / cellular automate dungeon
@@ -52,3 +53,4 @@ class CaveGenerator : public ITCODBspCallback {
 
   void initData(int size);
 };
+}  // namespace util

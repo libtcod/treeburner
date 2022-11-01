@@ -25,6 +25,7 @@
  */
 #include "util/carver.hpp"
 
+namespace util {
 // dig a rectangular room
 void MapCarver::room(TCODMap* map, int x, int y, int w, int h) {
   for (int cx = x; cx < x + w; cx++) {
@@ -117,3 +118,4 @@ void MapCarver::hlineRight(TCODMap* map, int x, int y) {
     x++;
   }
 }
+}  // namespace util

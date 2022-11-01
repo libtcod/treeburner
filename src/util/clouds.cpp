@@ -29,6 +29,7 @@
 
 #include "main.hpp"
 
+namespace util {
 // returns a value between 0.5 and 1.2
 // 50% chances between 0.5 and 1.0 (clouds), 50% chances between 1.0 and 1.2 (clear sky)
 static inline float noiseFunc(float* f) {
@@ -143,3 +144,4 @@ void CloudBox::update(float elapsed) {
     }
   }
 }
+}  // namespace util

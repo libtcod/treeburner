@@ -26,6 +26,7 @@
 #pragma once
 #include <libtcod.hpp>
 
+namespace util {
 typedef enum { PW_FIRST = 0, PW_FB = 0, PW_BURST, PW_SPARKLE_THROUGH, PW_SPARKLE_BOUNCE, PW_INCAN, PW_NB } PowerupId;
 
 class Powerup {
@@ -75,3 +76,4 @@ class PowerupGraph {
   int mouse_cx_{}, mouse_cy_{};
   Powerup* selected{};
 };
+}  // namespace util

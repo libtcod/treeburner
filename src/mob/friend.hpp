@@ -46,7 +46,7 @@ class Friend : public Creature {
   void saveData(uint32_t chunkId, TCODZip* zip) override;
 
  private:
-  TextGenerator* talkGenerator = nullptr;
+  util::TextGenerator* talkGenerator = nullptr;
   float timer;
   bool startPhrase, foodTuto, foodObj;
 

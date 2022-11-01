@@ -28,6 +28,7 @@
 
 #include "util/namegen.hpp"
 
+namespace util {
 struct Rule {
   const char* name = nullptr;
   TCODList<const char*> values;
@@ -114,3 +115,4 @@ class NumberToLetterFunc : public ITextGeneratorFunc {
  public:
   const char* execute(const char* params) override;
 };
+}  // namespace util

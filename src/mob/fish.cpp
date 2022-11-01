@@ -31,7 +31,7 @@
 #include "main.hpp"
 
 namespace mob {
-Fish::Fish(WaterZone* zone) : Creature(), zone(zone) {
+Fish::Fish(util::WaterZone* zone) : Creature(), zone(zone) {
   strcpy(name, "fish");
   ch = 0;
   color_ = TCODColor::desaturatedSky;

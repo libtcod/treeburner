@@ -216,7 +216,7 @@ void Inventory::render() {
     else
       craft.render(con);
 
-    blitSemiTransparent(con, 0, 0, INV_WIDTH / 2, INV_HEIGHT, TCODConsole::root, rect.x, rect.y, 0.8f, 1.0f);
+    util::blitSemiTransparent(con, 0, 0, INV_WIDTH / 2, INV_HEIGHT, TCODConsole::root, rect.x, rect.y, 0.8f, 1.0f);
   }
   if (cmenuon) {
     // render the context menu

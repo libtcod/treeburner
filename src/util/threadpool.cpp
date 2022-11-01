@@ -29,6 +29,7 @@
 
 #include "main.hpp"
 
+namespace util {
 static TCOD_semaphore_t sem = NULL;
 static TCOD_mutex_t todoMutex = NULL;
 static TCOD_mutex_t finishedMutex = NULL;
@@ -149,3 +150,4 @@ void ThreadPool::waitUntilFinished(int jobId) {
   }
   TCODSystem::mutexOut(todoMutex);
 }
+}  // namespace util

@@ -56,7 +56,7 @@ TextInput::~TextInput() {
 
 void TextInput::render(int x, int y) {
   if (!txt) txt = new TCODText(x - width / 2 + 2, y + height - 3, MIN(maxSize, width - 4), 1, maxSize);
-  blitTransparent(con, 0, 0, 0, 0, TCODConsole::root, x - width / 2, y);
+  util::blitTransparent(con, 0, 0, 0, 0, TCODConsole::root, x - width / 2, y);
   txt->render(TCODConsole::root);
 }
 

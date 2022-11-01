@@ -63,7 +63,7 @@ class GameEngine : public screen::Screen {
   TCODImage ground{CON_W * 2, CON_H * 2};  // visible part of the ground
 
   map::LightMap lightMap{CON_W * 2, CON_H * 2};  // store light reaching each cell
-  Packer packer{0, 0, CON_W, CON_H};
+  util::Packer packer{0, 0, CON_W, CON_H};
 
   inline float getFog(int x, int y) { return lightMap.getFog(x, y); }
   void hitFlash();  // when player is hit
@@ -113,8 +113,8 @@ class GameEngine : public screen::Screen {
   int nbPause{};
   bool lookOn{};  // shit pressed
   bool firstFrame{true};
-  RippleManager* rippleManager{};
-  FireManager* fireManager{};
+  util::RippleManager* rippleManager{};
+  util::FireManager* fireManager{};
   float hitFlashAmount{};
 
   void onInitialise() override;

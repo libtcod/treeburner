@@ -26,6 +26,7 @@
 #pragma once
 #include <libtcod.hpp>
 
+namespace util {
 // sub-cell image & console blitting functions
 
 // background with MULTIPLY op, opaque foreground
@@ -46,3 +47,4 @@ void transpBlit2x(
 // transparent rectangle blit2x with color key
 void transpRect2x(
     TCODConsole* con, int x, int y, int w2, int h2, const TCODColor& col, const TCODColor& keyCol, float alpha);
+}  // namespace util

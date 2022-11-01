@@ -27,6 +27,7 @@
 #include <libtcod.hpp>
 #include <vector>
 
+namespace util {
 class CellularAutomata {
  public:
   typedef bool (CellularAutomata::*CAFunc)(int x, int y, void* userData);
@@ -59,3 +60,4 @@ class CellularAutomata {
   int min_x_{}, min_y_{}, max_x_{}, max_y_{};
   std::vector<uint8_t> data_{};
 };
+}  // namespace util

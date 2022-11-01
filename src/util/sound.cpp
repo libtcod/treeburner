@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 
+namespace util {
 Sound sound;
 
 Sound::Sound() : on(false), possible(true), updateCalled(false) {}
@@ -102,3 +103,4 @@ void Sound::togglePause(void) {
   }
 #endif
 }
+}  // namespace util

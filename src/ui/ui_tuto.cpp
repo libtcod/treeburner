@@ -399,9 +399,9 @@ void Tutorial::render() {
     }
     if (fadeOutDelay > 0.0f) {
       float coef = fadeOutDelay / FADE_TIME;
-      blitSemiTransparent(&menuCon, 0, 0, 0, nbItems + 4, TCODConsole::root, 0, 2, coef * 0.8f, coef);
+      util::blitSemiTransparent(&menuCon, 0, 0, 0, nbItems + 4, TCODConsole::root, 0, 2, coef * 0.8f, coef);
     } else {
-      blitSemiTransparent(&menuCon, 0, 0, 0, nbItems + 4, TCODConsole::root, 0, 2, 0.8f, 1.0f);
+      util::blitSemiTransparent(&menuCon, 0, 0, 0, nbItems + 4, TCODConsole::root, 0, 2, 0.8f, 1.0f);
     }
   }
   if (id != TUTO_NONE) {
@@ -415,10 +415,10 @@ void Tutorial::render() {
       TCODConsole::root->printFrame(curx, cury, curw, curh, false, TCOD_BKGND_NONE, NULL);
     } else {
       if (pages[id].x == -1 || renderMenu)
-        blitSemiTransparent(
+        util::blitSemiTransparent(
             pages[id].con, 0, 0, 0, 0, TCODConsole::root, CON_W - 10 - pages[id].con->getWidth(), 2, 0.8f, 1.0f);
       else
-        blitSemiTransparent(pages[id].con, 0, 0, 0, 0, TCODConsole::root, pages[id].x, pages[id].y, 0.8f, 1.0f);
+        util::blitSemiTransparent(pages[id].con, 0, 0, 0, 0, TCODConsole::root, pages[id].x, pages[id].y, 0.8f, 1.0f);
     }
   }
 }

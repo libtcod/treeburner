@@ -1,4 +1,6 @@
 #pragma once
+
+namespace util {
 class Sound {
  private:
   bool on;
@@ -30,3 +32,4 @@ class Sound {
   // toggles
   void togglePause(void);
 };
+}  // namespace util

@@ -43,8 +43,8 @@ class Objective {
       const char* description,
       const char* enableScript = nullptr,
       const char* successScript = nullptr);
-  Script* onEnable;
-  Script* onSuccess;
+  util::Script* onEnable;
+  util::Script* onSuccess;
 };
 
 class Objectives : public Dialog, public base::SaveListener, public Scrollable {
@@ -89,5 +89,5 @@ class Objectives : public Dialog, public base::SaveListener, public Scrollable {
   Tabs guiTabs;
   TCODList<Objective*>* currentList;
   Scroller* scroller = nullptr;
-  bool executeObjScript(Objective* obj, Script* script);
+  bool executeObjScript(Objective* obj, util::Script* script);
 };

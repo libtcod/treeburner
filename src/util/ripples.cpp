@@ -34,6 +34,7 @@
 #include "map/dungeon.hpp"
 #include "mob/fish.hpp"
 
+namespace util {
 // range below which fishes try to get away from each other
 #define SHOAL_CLOSE_RANGE 2.0f
 // range below which fishes try to get closer from each other
@@ -335,3 +336,4 @@ void RippleManager::renderRipples(TCODImage& ground) {
     }
   }
 }
+}  // namespace util

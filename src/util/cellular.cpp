@@ -34,6 +34,7 @@
 // 1 : wall
 // 0 : ground
 
+namespace util {
 CellularAutomata::CellularAutomata(TCODMap* map) : CellularAutomata{map->getWidth(), map->getHeight()} {
   for (int py = 0; py < h_; ++py) {
     for (int px = 0; px < w_; ++px) {
@@ -237,3 +238,4 @@ CellularAutomata::CellularAutomata(CellularAutomata& c1, CellularAutomata& c2, f
   }
   data_ = std::move(data2);
 }
+}  // namespace util

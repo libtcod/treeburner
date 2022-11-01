@@ -165,8 +165,8 @@ void AiDirector::killCreature(mob::Creature* cr) {
   if (debug) gameEngine->gui.log.debug("%d kills", gameEngine->stats.nbCreatureKilled);
   --killCount;
   if (killCount == 0) {
-    TCODList<Powerup*> list;
-    Powerup::getAvailable(&list);
+    TCODList<util::Powerup*> list;
+    util::Powerup::getAvailable(&list);
 
     killCount = TCODRandom::getInstance()->getInt((int)(itemKillCount * 0.75), (int)(itemKillCount * 1.25));
     if (list.size() - nbScrolls <= 0 ||

@@ -59,6 +59,6 @@ class MainMenu : public Screen {
   TCOD_semaphore_t worldDone;
   // title position & size
   int titlex, titley, titlew, titleh;
-  Fire* fire;
+  util::Fire* fire;
 };
 }  // namespace screen

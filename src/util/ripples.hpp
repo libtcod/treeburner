@@ -37,6 +37,7 @@ namespace mob {
 class Shoal;
 }
 
+namespace util {
 struct WaterZone {
   base::Rect rect;  // water zone
   float cumulatedElapsed;
@@ -59,3 +60,4 @@ class RippleManager {
   void init();
   float getData(const WaterZone& wz, int x2, int y2) const { return wz.data[x2 + y2 * wz.rect.w * 2]; }
 };
+}  // namespace util

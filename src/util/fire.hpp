@@ -28,6 +28,7 @@
 
 #include "map/dungeon.hpp"
 
+namespace util {
 extern TCODColor fireColor[256];
 
 class Fire {
@@ -73,3 +74,4 @@ class FireManager {
   float el;
   base::Rect screenFireZone;
 };
+}  // namespace util

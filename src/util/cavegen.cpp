@@ -30,6 +30,7 @@
 #include "main.hpp"
 #include "util/carver.hpp"
 
+namespace util {
 // allocate all data
 void CaveGenerator::initData(int size) {
   this->size = size;
@@ -218,3 +219,4 @@ bool CaveGenerator::visitNode(TCODBsp* node, void* userData) {
   }
   return true;
 }
+}  // namespace util

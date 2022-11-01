@@ -26,6 +26,7 @@
 #pragma once
 #include <libtcod.hpp>
 
+namespace util {
 typedef int (*thread_job_t)(void* dat);
 
 struct ThreadData {
@@ -48,3 +49,4 @@ class ThreadPool {
   TCODList<TCOD_thread_t> threads;
   int nbCores;
 };
+}  // namespace util

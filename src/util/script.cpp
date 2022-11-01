@@ -24,6 +24,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 #include "util/script.hpp"
+
+namespace util {
 #ifndef NO_LUA
 #include <lua.hpp>
 
@@ -271,3 +273,4 @@ void Script::setFloatVariable(const char* name, float val) {
   lua_setglobal(L, name);
 #endif
 }
+}  // namespace util
