@@ -28,11 +28,11 @@
 #include <stdio.h>
 #include <time.h>
 
-#include "screen_end.hpp"
-#include "screen_forest.hpp"
-#include "screen_game.hpp"
-#include "screen_mainmenu.hpp"
-#include "screen_treeBurner.hpp"
+#include "screen/end.hpp"
+#include "screen/forest.hpp"
+#include "screen/game.hpp"
+#include "screen/mainmenu.hpp"
+#include "screen/treeBurner.hpp"
 #include "util_powerup.hpp"
 
 TCODNoise noise1d(1);

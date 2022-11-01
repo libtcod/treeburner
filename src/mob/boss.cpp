@@ -28,7 +28,7 @@
 #include "base/aidirector.hpp"
 #include "base/gameengine.hpp"
 #include "main.hpp"
-#include "screen_game.hpp"
+#include "screen/game.hpp"
 
 namespace mob {
 VillageHead::VillageHead() {

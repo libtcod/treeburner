@@ -36,7 +36,7 @@
 #include "item.hpp"
 #include "main.hpp"
 #include "map/building.hpp"
-#include "screen_game.hpp"
+#include "screen/game.hpp"
 #include "ui_inventory.hpp"
 #include "util_cellular.hpp"
 #include "util_textgen.hpp"

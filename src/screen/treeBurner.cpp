@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#include "screen_forest.hpp"
+#include "screen/treeBurner.hpp"
 
 #include <math.h>
 #include <stdio.h>
@@ -32,10 +32,10 @@
 #include "main.hpp"
 #include "map/building.hpp"
 #include "map/cell.hpp"
-#include "screen_mainmenu.hpp"
+#include "util_powerup.hpp"
 
 #define FOREST_W 400
-#define FOREST_H 400
+#define FOREST_H 100
 #define WATER_START -0.87f
 
 #define MAX_ENTITY_PROB 15
@@ -67,28 +67,9 @@ enum ForestId { FOREST_PINE, FOREST_NORTHERN, FOREST_OAK, NB_FORESTS };
 static LayeredTerrain forestTypes[NB_FORESTS] = {
     {"pine forest",
      {
-         {map::TERRAIN_GRASS_LUSH,
-          0.5f,
-          {{"pine tree", -1, 0.36f, 0.0f, 1.0f},
-           {NULL, mob::CREATURE_DEER, 0.01f, 0.0f, 1.0f},
-           {"wolfsbane", -1, 0.001f, 0.5f, 1.0f},
-           {"ginko", -1, 0.001f, 0.5f, 1.0f},
-           {"klamath", -1, 0.001f, 0.0f, 1.0f},
-           {"yarrow", -1, 0.001f, 0.0f, 1.0f},
-           {"chamomile", -1, 0.001f, 0.0f, 1.0f},
-           {NULL, -1}}},
-         {map::TERRAIN_GRASS_NORMAL,
-          0.0f,
-          {{"pine tree", -1, 0.28f, 0.0f, 1.0f},
-           {"klamath", -1, 0.001f, 0.0f, 1.0f},
-           {"ephedra", -1, 0.001f, 0.0f, 1.0f},
-           {"yarrow", -1, 0.001f, 0.0f, 1.0f},
-           {"chamomile", -1, 0.001f, 0.0f, 1.0f},
-           {"passiflora", -1, 0.001f, 0.0f, 1.0f},
-           {NULL, -1}}},
-         {map::TERRAIN_GRASS_SPARSE,
-          -0.9f,
-          {{"pine tree", -1, 0.1f, 0.17f, 1.0f}, {"ephedra", -1, 0.001f, 0.8f, 1.0f}, {NULL, -1}}},
+         {map::TERRAIN_GRASS_LUSH, 0.5f, {{"pine tree", -1, 0.36f, 0.0f, 1.0f}, {NULL, -1}}},
+         {map::TERRAIN_GRASS_NORMAL, 0.0f, {{"pine tree", -1, 0.28f, 0.0f, 1.0f}, {NULL, -1}}},
+         {map::TERRAIN_GRASS_SPARSE, -0.9f, {{"pine tree", -1, 0.1f, 0.17f, 1.0f}, {NULL, -1}}},
          {map::TERRAIN_GROUND, -1.25f, {{NULL, -1}}},
          {map::TERRAIN_GROUND, -1.5f, {{NULL, -1}}},
      }},
@@ -96,24 +77,10 @@ static LayeredTerrain forestTypes[NB_FORESTS] = {
      {
          {map::TERRAIN_GRASS_NORMAL,
           0.66f,
-          {{"oak tree", -1, 0.2f, 0.0f, 1.0f},
-           {"apple tree", -1, 0.05f, 0.0f, 1.0f},
-           {"klamath", -1, 0.001f, 0.0f, 1.0f},
-           {"ephedra", -1, 0.001f, 0.0f, 1.0f},
-           {"acanthopax", -1, 0.001f, 0.0f, 1.0f},
-           {"yarrow", -1, 0.001f, 0.0f, 1.0f},
-           {"chamomile", -1, 0.001f, 0.0f, 1.0f},
-           {"passiflora", -1, 0.001f, 0.0f, 1.0f},
-           {"psyllium", -1, 0.001f, 0.5f, 1.0f},
-           {"wolfsbane", -1, 0.001f, 0.5f, 1.0f},
-           {NULL, -1}}},
+          {{"oak tree", -1, 0.2f, 0.0f, 1.0f}, {"apple tree", -1, 0.05f, 0.0f, 1.0f}, {NULL, -1}}},
          {map::TERRAIN_GRASS_SPARSE,
           0.33f,
-          {{"oak tree", -1, 0.11f, 0.0f, 1.0f},
-           {"apple tree", -1, 0.05f, 0.0f, 1.0f},
-           {"ephedra", -1, 0.001f, 0.8f, 1.0f},
-           {"chamomile", -1, 0.001f, 0.8f, 1.0f},
-           {NULL, -1}}},
+          {{"oak tree", -1, 0.11f, 0.0f, 1.0f}, {"apple tree", -1, 0.05f, 0.0f, 1.0f}, {NULL, -1}}},
          {map::TERRAIN_GRASS_WITHERED,
           0.0f,
           {{"oak tree", -1, 0.07f, 0.0f, 1.0f}, {"apple tree", -1, 0.03f, 0.0f, 1.0f}, {NULL, -1}}},
@@ -122,57 +89,38 @@ static LayeredTerrain forestTypes[NB_FORESTS] = {
      }},
     {"oak forest",
      {
-         {map::TERRAIN_GRASS_LUSH,
-          0.1f,
-          {{"oak tree", -1, 0.36f, 0.0f, 1.0f},
-           {"ginko", -1, 0.001f, 0.5f, 1.0f},
-           {"klamath", -1, 0.001f, 0.0f, 1.0f},
-           {"yarrow", -1, 0.001f, 0.0f, 1.0f},
-           {"chamomile", -1, 0.001f, 0.0f, 1.0f},
-           {NULL, -1}}},
-         {map::TERRAIN_GRASS_NORMAL,
-          -0.4f,
-          {{"oak tree", -1, 0.14f, 0.0f, 1.0f},
-           {"klamath", -1, 0.001f, 0.0f, 1.0f},
-           {"ephedra", -1, 0.001f, 0.0f, 1.0f},
-           {"acanthopax", -1, 0.001f, 0.0f, 1.0f},
-           {"yarrow", -1, 0.001f, 0.0f, 1.0f},
-           {"chamomile", -1, 0.001f, 0.0f, 1.0f},
-           {"passiflora", -1, 0.001f, 0.0f, 1.0f},
-           {NULL, -1}}},
-         {map::TERRAIN_GRASS_SPARSE,
-          -0.8f,
-          {{"oak tree", -1, 0.06f, 0.12f, 1.0f},
-           {"stone", -1, 0.1f, 0.0f, 0.1f},
-           {"broom", -1, 0.001f, 0.0f, 0.5f},
-           {"chaparral", -1, 0.001f, 0.0f, 0.5f},
-           {"dill", -1, 0.001f, 0.0f, 0.5f},
-           {"ephedra", -1, 0.001f, 0.8f, 1.0f},
-           {"chamomile", -1, 0.001f, 0.8f, 1.0f},
-           {NULL, -1}}},
-         {map::TERRAIN_SHALLOW_WATER,
-          WATER_START,
-          {{"stone", -1, 0.25f, 0.2f, 1.0f},
-           {"broom", -1, 0.001f, 0.2f, 1.0f},
-           {"chaparral", -1, 0.001f, 0.2f, 1.0f},
-           {"dill", -1, 0.001f, 0.2f, 1.0f},
-           {NULL, -1}}},
+         {map::TERRAIN_GRASS_LUSH, 0.1f, {{"oak tree", -1, 0.36f, 0.0f, 1.0f}, {NULL, -1}}},
+         {map::TERRAIN_GRASS_NORMAL, -0.4f, {{"oak tree", -1, 0.14f, 0.0f, 1.0f}, {NULL, -1}}},
+         {map::TERRAIN_GRASS_SPARSE, -0.8f, {{"oak tree", -1, 0.06f, 0.12f, 1.0f}, {NULL, -1}}},
+         {map::TERRAIN_SHALLOW_WATER, WATER_START, {{NULL, -1}}},
          {map::TERRAIN_DEEP_WATER, -1.0f, {{NULL, -1}}},
          //    {TERRAIN_DIRT,0,-1.0f,-0.75f},
          //    {TERRAIN_GRASS_SPARSE,0,-1.25f,-0.75f},
      }},
 };
 
-enum { DBG_HEIGHTMAP, DBG_SHADOWHEIGHT, DBG_FOV, DBG_NORMALMAP, DBG_CLOUDS, DBG_WATERCOEF, NB_DEBUGMAPS };
-static const char* debugMapNames[] = {"heightmap", "shadowheight", "fov", "normalmap", "clouds", "waterCoef"};
+enum {
+  DBG_LIGHTMAP,
+  DBG_HEIGHTMAP,
+  DBG_SHADOWHEIGHT,
+  DBG_SHADOWMAP,
+  DBG_FOV,
+  DBG_NORMALMAP,
+  DBG_CLOUDS,
+  DBG_WATERCOEF,
+  NB_DEBUGMAPS
+};
+static const char* debugMapNames[] = {
+    "lightmap", "heightmap", "shadowheight", "shadowmap", "fov", "normalmap", "clouds", "waterCoef"};
 
-ForestScreen::ForestScreen() {
+TreeBurner::TreeBurner() {
   forestRng = NULL;
   debugMap = 0;
   fadeInLength = fadeOutLength = (int)(config.getFloatProperty("config.display.fadeTime") * 1000);
+  endTimer = 0.0f;
 }
 
-void ForestScreen::render() {
+void TreeBurner::render() {
   static bool debug = config.getBoolProperty("config.debug");
   // draw subcell ground
   int squaredFov = (int)(player.fovRange * player.fovRange * 4);
@@ -191,32 +139,53 @@ void ForestScreen::render() {
     for (int y = miny; y < maxy; y++) {
       int dungeon2x = x + xOffset * 2;
       int dungeon2y = y + yOffset * 2;
-      TCODColor col;
-      int dx = (int)(dungeon2x - player.x * 2);
-      int dy = (int)(dungeon2y - player.y * 2);
-      /*
-                              // in fov range, you see under the tree tops
-                              // out of range, you see the tree tops
-                              if ( dx*dx+dy*dy <= squaredFov ) {
-                                      col=dungeon->getShadedGroundColor(dungeon2x,dungeon2y);
-                                      if ( ! dungeon->map2x->isInFov(dungeon2x,dungeon2y) ) col = col * 0.8;
-      */
-      if (dx * dx + dy * dy * fovRatio <= squaredFov && dungeon->map2x->isInFov(dungeon2x, dungeon2y)) {
-        col = dungeon->getShadedGroundColor(dungeon2x, dungeon2y);
-      } else {
-        col = dungeon->canopy->getPixel(dungeon2x, dungeon2y);
-        if (col.r == 0) {
-          col = dungeon->getShadedGroundColor(dungeon2x, dungeon2y);
-        } else {
-          col = col * dungeon->getInterpolatedCloudCoef(dungeon2x, dungeon2y);
-        }
-      }
+      TCODColor col = dungeon->getGroundColor(dungeon2x, dungeon2y);
 
+      ground.putPixel(x, y, col);
+      float intensity = dungeon->getShadow(dungeon2x, dungeon2y);
+      float cloudIntensity = dungeon->getInterpolatedCloudCoef(dungeon2x, dungeon2y);
+      intensity = MIN(intensity, cloudIntensity);
+      TCODColor lightCol = dungeon->getAmbient();
+      if (intensity < 1.0f) {
+        lightCol = lightCol * intensity;
+      }
+      lightMap.setColor2x(x, y, lightCol);
+    }
+  }
+  // render the subcell creatures
+  dungeon->renderSubcellCreatures(lightMap);
+  // draw ripples
+  rippleManager->renderRipples(ground);
+
+  // render the lights
+  dungeon->renderLightsToLightMap(lightMap);
+
+  // render the fireballs
+  for (FireBall** it = fireballs.begin(); it != fireballs.end(); it++) {
+    (*it)->render(lightMap);
+  }
+  // apply light map
+  lightMap.applyToImageOutdoor(ground);
+
+  // render canopy
+  map::Building* playerBuilding = dungeon->getCell(player.x, player.y)->building;
+  for (int x = minx; x < maxx; x++) {
+    for (int y = miny; y < maxy; y++) {
+      int dungeon2x = x + xOffset * 2;
+      int dungeon2y = y + yOffset * 2;
+      TCODColor col;
       // debug maps
       if (debug && TCODConsole::isKeyPressed(TCODK_TAB) && TCODConsole::isKeyPressed(TCODK_SHIFT)) {
         switch (debugMap) {
+          case DBG_LIGHTMAP: {
+            col = lightMap.getColor2x(x, y);
+          } break;
           case DBG_HEIGHTMAP: {
             float h = dungeon->hmap->getValue(dungeon2x, dungeon2y);
+            col = h * TCODColor::white;
+          } break;
+          case DBG_SHADOWMAP: {
+            float h = dungeon->getShadow(dungeon2x, dungeon2y);
             col = h * TCODColor::white;
           } break;
           case DBG_SHADOWHEIGHT: {
@@ -241,31 +210,55 @@ void ForestScreen::render() {
             col = h * TCODColor::white;
           } break;
         }
+        ground.putPixel(x, y, col);
         showDebugMap = true;
       }
 
-      ground.putPixel(x, y, col);
+      int dx = (int)(dungeon2x - player.x * 2);
+      int dy = (int)(dungeon2y - player.y * 2);
+      if (!showDebugMap &&
+          (((!playerBuilding || dungeon->getCell(dungeon2x / 2, dungeon2y / 2)->building != playerBuilding) &&
+            dx * dx + dy * dy * fovRatio > squaredFov) ||
+           !dungeon->map2x->isInFov(dungeon2x, dungeon2y))) {
+        col = dungeon->canopy->getPixel(dungeon2x, dungeon2y);
+        if (col.r != 0) {
+          col = col * dungeon->getInterpolatedCloudCoef(dungeon2x, dungeon2y);
+          col = col * dungeon->getAmbient();
+          ground.putPixel(x, y, col);
+        }
+      }
     }
   }
-  // render the subcell creatures
-  dungeon->renderSubcellCreatures(lightMap);
-  // draw ripples
-  if (!showDebugMap) rippleManager->renderRipples(ground);
-  // render the fireballs
-  for (FireBall** it = fireballs.begin(); it != fireballs.end(); it++) {
-    (*it)->render(ground);
+
+  if (!showDebugMap) {
+    fireManager->renderFire(ground);
+  }
+  // render boss health bar
+  static int bossLife = config.getIntProperty("config.creatures.villageHead.life");
+  if (bossSeen && !bossIsDead) {
+    float lifeper = (float)(boss->life) / bossLife;
+    for (int x = 70; x < 90; x++) {
+      TCODColor col = (x - 70) < (int)(lifeper * 20) ? TCODColor::red : TCODColor::darkerRed;
+      ground.putPixel(x, 5, col);
+      ground.putPixel(x, 4, col);
+    }
   }
 
   // blit it on console
   ground.blit2x(TCODConsole::root, 0, 0);
+  // render the corpses
+  dungeon->renderCorpses(lightMap);
   // render the items
-  dungeon->renderItems(lightMap);
+  dungeon->renderItems(lightMap, &ground);
   // render the creatures
   dungeon->renderCreatures(lightMap);
   // render the player
   player.render(lightMap);
 
   gui.descriptor.render();
+  if (bossSeen && !bossIsDead) {
+    TCODConsole::root->printEx(40, 1, TCOD_BKGND_NONE, TCOD_CENTER, boss->name);
+  }
 
   if (isGamePaused()) {
     TCODConsole::root->setDefaultForeground(TCODColor::lightestGrey);
@@ -292,12 +285,16 @@ void ForestScreen::render() {
     TCODConsole::root->printEx(CON_W / 2, 0, TCOD_BKGND_MULTIPLY, TCOD_CENTER, debugMapNames[debugMap]);
   }
 
-  // TCODConsole::root->print(0,2,"player pos %d %d\nfriend pos %d %d\n",player.x,player.y,fr->x,fr->y);
-  if (player.name[0] == 0) textInput.render(CON_W / 2, 2);
+  if (bossIsDead && player.life > 0) {
+    TCODConsole::root->setDefaultForeground(TCODColor::lightRed);
+    TCODConsole::root->printEx(40, 2, TCOD_BKGND_NONE, TCOD_CENTER, "VICTORY");
+  }
 }
 
-bool ForestScreen::update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse) {
+bool TreeBurner::update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse) {
   static bool debug = config.getBoolProperty("config.debug");
+  static TCODColor sunColor = config.getColorProperty("config.display.sunColor");
+  static TCODColor dawnColor = config.getColorProperty("config.display.dawnColor");
 
   mousex = mouse.cx;
   mousey = mouse.cy;
@@ -306,31 +303,16 @@ bool ForestScreen::update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse) {
 
   GameEngine::update(elapsed, k, mouse);
 
-  if (player.name[0] == 0) {
-    if (!textInput.update(elapsed, k)) {
-      strcpy(player.name, textInput.getText());
-      TextGenerator::addGlobalValue("PLAYER_NAME", player.name);
-      resumeGame();
-    } else
-      return true;
-  }
-
-  if ((k.c == 'm' || k.c == 'M') && !k.pressed && k.lalt) {
-    // ALT-M : switch control type
-    userPref.mouseOnly = !userPref.mouseOnly;
-    gui.log.warn(userPref.mouseOnly ? "Mouse only" : "Mouse + keyboard");
-    k.c = 0;
-    k.vk = TCODK_NONE;
-  } else if (k.c == ' ' && !k.pressed && gui.mode == GUI_NONE) {
+  if (k.c == ' ' && !k.pressed && gui.mode == GUI_NONE) {
     if (isGamePaused())
       resumeGame();
     else
       pauseGame();
-  } else if (!k.pressed && (k.c == 'i' || k.c == 'I')) {
-    openCloseInventory();
   } else if (!k.pressed && (k.c == 'o' || k.c == 'O')) {
     openCloseObjectives();
-  } else if (!k.pressed && (k.c == 'c' || k.c == 'C')) {
+  } else if (!k.pressed && (k.c == 'i') || k.c == 'O') {
+    openCloseInventory();
+  } else if (!k.pressed && (k.c == 'c') || k.c == 'C') {
     openCloseCraft();
   }
   // non player related keyboard handling
@@ -341,9 +323,18 @@ bool ForestScreen::update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse) {
       player.takeDamage(20);
     } else if (k.vk == TCODK_TAB && !k.pressed) {
       debugMap = (debugMap + 1) % NB_DEBUGMAPS;
-    } else if (k.c == 'i' && k.lalt && !k.pressed) {
-      // debug mode : Alt-i = item
-      dungeon->addItem(item::Item::getItem("short bronze blade", player.x, player.y - 1));
+    } else if (k.c == 'v' && k.lalt && !k.pressed) {
+      // debug mode : Alt-v = go to village
+      if (player.x < cityWallX - 40)
+        player.x = cityWallX - 15;
+      else
+        player.x = FOREST_W - 20;
+      player.y = FOREST_H / 2;
+    } else if (k.c == 'w' && k.lalt && !k.pressed) {
+      // debug mode : Alt-w = instawin
+      boss->life = 0;
+      bossSeen = true;
+      bossIsDead = true;
     }
   }
   if (k.vk == TCODK_ALT || k.lalt) lookOn = k.pressed;
@@ -361,6 +352,30 @@ bool ForestScreen::update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse) {
   xOffset = (int)(player.x - CON_W / 2);
   yOffset = (int)(player.y - CON_H / 2);
 
+  if (player.life <= 0 && fade != FADE_DOWN) {
+    setFadeOut(fadeOutLength, TCODColor::darkRed);
+    fade = FADE_DOWN;
+  }
+  if (bossIsDead) {
+    endTimer += elapsed;
+    if (endTimer < 30.0f) dungeon->setAmbient(TCODColor::lerp(sunColor, dawnColor, endTimer / 30.0f));
+  }
+  if (fade != FADE_DOWN && gui.objectives.sleeping.size() == 0 && gui.objectives.active.size() == 0 &&
+      endTimer > 30.0f) {
+    setFadeOut(fadeOutLength, TCODColor::darkRed);
+    fade = FADE_DOWN;
+  }
+  if (fade == FADE_DOWN && fadeLvl <= 0.0f) {
+    if (player.life <= 0) {
+      // death
+      engine.activateModule("treeBurnerGameOver");
+      return false;
+    } else {
+      // victory
+      engine.activateModule("treeBurnerVictory");
+      return false;
+    }
+  }
   // update items
   dungeon->updateItems(elapsed, k, &mouse);
 
@@ -370,35 +385,24 @@ bool ForestScreen::update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse) {
   // update monsters
   if (fade != FADE_DOWN) {
     dungeon->updateCreatures(elapsed);
-    // ripples must be after creatures because of shoal updates
+    // ripples must be updated after creatures because of shoal updates
     rippleManager->updateRipples(elapsed);
+    fireManager->update(elapsed);
+    if (!bossIsDead) aiDirector.update(elapsed);
   }
   dungeon->updateClouds(elapsed);
 
   mob::HerdBehavior::updateScarePoints(elapsed);
 
   // update fireballs
-  TCODList<FireBall*> fireballsToRemove;
-  for (FireBall** it = fireballs.begin(); it != fireballs.end(); it++) {
-    if (!(*it)->update(elapsed)) {
-      fireballsToRemove.push(*it);
-      it = fireballs.removeFast(it);
-    }
-  }
-  fireballsToRemove.clearAndDelete();
+  updateFireballs(elapsed);
 
   gui.descriptor.setFocus(mousex, mousey, mousex + xOffset, mousey + yOffset, lookOn);
 
   return true;
 }
 
-void ForestScreen::placeHouse(map::Dungeon* dungeon, int doorx, int doory, base::Entity::Direction dir) {
-  map::Building* building = map::Building::generate(9, 7, 2, forestRng);
-  building->applyTo(dungeon, doorx, doory);
-  building->setHuntingHide(dungeon);
-}
-
-void ForestScreen::placeTree(map::Dungeon* dungeon, int x, int y, const item::ItemType* treeType) {
+void TreeBurner::placeTree(map::Dungeon* dungeon, int x, int y, const item::ItemType* treeType) {
   // trunk
   int dx = x / 2;
   int dy = y / 2;
@@ -412,34 +416,13 @@ void ForestScreen::placeTree(map::Dungeon* dungeon, int x, int y, const item::It
   dungeon->addItem(item::Item::getItem(treeType, x / 2, y / 2));
   // folliage
   setCanopy(x, y, treeType);
-  if (treeType->hasFeature(item::ITEM_FEAT_PRODUCES)) {
-    float odds = forestRng->getFloat(0.0, 30.0);
-    if (odds <= 1.0) {
-      // drop some fruit/twig
-      int dx = x / 2;
-      int dy = y / 2;
-      dungeon->getClosestWalkable(&dx, &dy);
-      item::Item* it = treeType->produce(odds);
-      if (it) {
-        it->setPos(dx, dy);
-        dungeon->addItem(it);
-      }
-    }
-  }
 }
 
-int housex, housey;
-void ForestScreen::generateMap(uint32_t seed) {
-  static TCODColor sunColor = TCODColor(250, 250, 255);
+void TreeBurner::generateMap(uint32_t seed) {
   DBG(("Forest generation start\n"));
   forestRng = new TCODRandom(seed);
   dungeon = new map::Dungeon(FOREST_W, FOREST_H);
 
-  saveGame.registerListener(CHA1_CHUNK_ID, base::PHASE_START, this);
-  saveGame.registerListener(DUNG_CHUNK_ID, base::PHASE_START, dungeon);
-  saveGame.registerListener(PLAY_CHUNK_ID, base::PHASE_START, &player);
-
-  lightMap.clear(sunColor);
   for (int x = 1; x < FOREST_W - 1; x++) {
     if (x % 40 == 0) displayProgress(0.4f + (float)(x) / FOREST_W * 0.1f);
     for (int y = 1; y < FOREST_H - 1; y++) {
@@ -460,18 +443,41 @@ void ForestScreen::generateMap(uint32_t seed) {
 #ifndef NDEBUG
   float t0 = TCODSystem::getElapsedSeconds();
 #endif
-  housex = forestRng->getInt(20, dungeon->width - 20);
-  housey = forestRng->getInt(20, dungeon->height - 20);
-  // don't put the house on water
-  while (dungeon->hasWater(housex, housey)) {
-    housex += 4;
-    if (housex > dungeon->width - 20) {
-      housex = 20;
-      housey += 4;
-      if (housey > dungeon->height - 20) housey = 20;
+  Packer packer(FOREST_W - 100, 20, 80, FOREST_H - 40);
+  // set water as non buildable
+  for (int x = FOREST_W - 100; x < FOREST_W - 20; x++) {
+    for (int y = 20; y < FOREST_H; y++) {
+      if (dungeon->hasRipples(x, y)) packer.addForbiddenZone(base::Rect(x, y, 1, 1));
     }
   }
-  placeHouse(dungeon, housex, housey, base::Entity::NORTH);
+  // boss house
+  int housex = forestRng->getInt(FOREST_W - 50, FOREST_W - 20);
+  int housey = forestRng->getInt(20, FOREST_H - 20);
+  base::Rect house(housex, housey, forestRng->getInt(20, 30), forestRng->getInt(20, 30));
+  if (packer.addRect(&house)) {
+    map::Building* building = map::Building::generate(house.w, house.h, house.w * house.h / 20, forestRng);
+    building->applyTo(dungeon, (int)(house.x + building->doorx), (int)(house.y + building->doory));
+  }
+  // the village head
+  boss = mob::Creature::getCreature(mob::CREATURE_VILLAGE_HEAD);
+  housex = (int)(house.x + house.w / 2);
+  housey = (int)(house.y + house.h / 2);
+  dungeon->getClosestWalkable(&housex, &housey, true, true, false);
+  boss->setPos(housex, housey);
+  dungeon->addCreature(boss);
+  for (int i = 0; i < 20; i++) {
+    int housex = forestRng->getInt(FOREST_W - 100, FOREST_W - 20);
+    int housey = forestRng->getInt(20, FOREST_H - 20);
+    base::Rect house(housex, housey, forestRng->getInt(6, 12), forestRng->getInt(6, 12));
+    if (packer.addRect(&house)) {
+      map::Building* building = map::Building::generate(house.w, house.h, house.w * house.h / 30, forestRng);
+      building->applyTo(dungeon, (int)(house.x + building->doorx), (int)(house.y + building->doory));
+    }
+    // building->setHuntingHide(dungeon);
+  }
+  cityWallX = FOREST_W - 130;
+  map::Building::buildCityWalls(cityWallX, dungeon);
+
   dungeon->saveShadowBeforeTree();
 
   for (int x = 2 * FOREST_W - 1; x >= 0; x--) {
@@ -604,50 +610,7 @@ else if ( swimmable2 ) waterCoef2=layer2Height;
 #endif
 }
 
-// SaveListener
-#define CHA1_CHUNK_VERSION 1
-bool ForestScreen::loadData(uint32_t chunkId, uint32_t chunkVersion, TCODZip* zip) {
-  if (chunkVersion != CHA1_CHUNK_VERSION) return false;
-  return true;
-}
-
-void ForestScreen::saveData(uint32_t chunkId, TCODZip* zip) { saveGame.saveChunk(CHA1_CHUNK_ID, CHA1_CHUNK_VERSION); }
-
-void ForestScreen::loadMap(uint32_t seed) {
-  DBG(("Forest loading start\n"));
-  static TCODColor sunColor = TCODColor(250, 250, 255);
-  lightMap.clear(sunColor);
-  forestRng = new TCODRandom(seed);
-  dungeon = new map::Dungeon(FOREST_W, FOREST_H);
-
-  saveGame.registerListener(CHA1_CHUNK_ID, base::PHASE_START, this);
-  saveGame.registerListener(DUNG_CHUNK_ID, base::PHASE_START, dungeon);
-  saveGame.registerListener(PLAY_CHUNK_ID, base::PHASE_START, &player);
-
-  for (int x = 1; x < FOREST_W - 1; x++) {
-    for (int y = 1; y < FOREST_H - 1; y++) {
-      dungeon->map->setProperties(x, y, true, true);
-    }
-  }
-  for (int x = 2; x < 2 * FOREST_W - 2; x++) {
-    for (int y = 2; y < 2 * FOREST_H - 2; y++) {
-      dungeon->map2x->setProperties(x, y, true, true);
-    }
-  }
-#ifndef NDEBUG
-  float t0 = TCODSystem::getElapsedSeconds();
-#endif
-  saveGame.load(base::PHASE_START);
-
-  dungeon->computeSpawnSources();
-  fr = (mob::Friend*)dungeon->getCreature(mob::CREATURE_FRIEND);
-#ifndef NDEBUG
-  float t1 = TCODSystem::getElapsedSeconds();
-  DBG(("Forest loading end. %g sec\n", t1 - t0));
-#endif
-}
-
-void ForestScreen::onActivate() {
+void TreeBurner::onActivate() {
   TCODConsole::root->setDefaultBackground(TCODColor::black);
   TCODConsole::root->clear();
   // disable fading (to see the progress bar)
@@ -656,58 +619,86 @@ void ForestScreen::onActivate() {
   TCODConsole::setColorControl(TCOD_COLCTRL_2, guiHighlightedText, TCODColor::black);
   GameEngine::onActivate();
   init();
-  MainMenu::instance->waitForForestGen();
 
-  if (newGame) {
-    generateMap(saveGame.seed);
-    dungeon->setPlayerStartingPosition();
-    int fx, fy;
-    fr = new mob::Friend();
-    item::Item* knife = item::Item::getRandomWeapon("knife", item::ITEM_CLASS_STANDARD);
-    knife->addComponent(item::Item::getItem("emerald", 0, 0, false));
-    knife->name_ = strdup("emerald pocketknife");
-    knife->an_ = true;
-    player.addToInventory(knife);
-    player.x = housex;
-    player.y = housey + 10;
-    int px, py;
-    px = (int)player.x;
-    py = (int)player.y;
-    dungeon->getClosestWalkable(&px, &py, true, false);
-    player.x = px;
-    player.y = py;
-    dungeon->getClosestSpawnSource(player.x, player.y, &fx, &fy);
-    dungeon->getClosestWalkable(&fx, &fy, true, false);
-    fr->setPos(fx, fy);
-    dungeon->addCreature(fr);
-  } else {
-    displayProgress(0.02f);
-    loadMap(saveGame.seed);
-  }
+  generateMap(TCODRandom::getInstance()->getInt(0, 0xFFFFFFFF));
+
+  /*
+  Item *staff=Item::getRandomWeapon("staff",ITEM_CLASS_STANDARD);
+  staff->name=strdup("pyromancer staff");
+  player.addToInventory(staff);
+  player.equip(staff);
+  */
+  player.x = 20;
+  player.y = FOREST_H / 2;
+  dungeon->setAmbient(config.getColorProperty("config.display.sunColor"));
+  int px, py;
+  px = (int)player.x;
+  py = (int)player.y;
+  dungeon->getClosestWalkable(&px, &py, true, false);
+  player.x = px;
+  player.y = py;
+  strcpy(player.name, "You");
+  // make player uber powerful
+  Powerup::init();
+  TCODList<Powerup*> list;
+  bool again = true;
+  do {
+    Powerup::getAvailable(&list);
+    again = false;
+    while (!list.isEmpty()) {
+      Powerup* sel = list.pop();
+      sel->apply();
+      again = true;
+    }
+  } while (again);
+
   // re-enable fading
   TCODConsole::setFade(0, TCODColor::black);
   fade = FADE_UP;
   fadeLvl = 0.0f;
   player.maxFovRange = player.fovRange = 8;
   timefix = 1.0f;
-  if (newGame)
-    gui.log.critical("Welcome to the Cave v" VERSION " ! %c?%c for help.", TCOD_COLCTRL_2, TCOD_COLCTRL_STOP);
+  gui.log.critical(
+      "Welcome to TreeBurner v%s ! %c?%c for help.", getStringParam("version"), TCOD_COLCTRL_2, TCOD_COLCTRL_STOP);
   lookOn = false;
   rippleManager = new RippleManager(dungeon);
-  if (player.name[0] == 0) {
-    if (userPref.nbLaunches == 1) {
-      textInput.init("Welcome to The Cave !", "PageUp/PageDown to change font size\nPlease enter your name :", 60);
-    } else {
-      textInput.init("Welcome to The Cave !", "Please enter your name :", 60);
-    }
+  fireManager = new FireManager(dungeon);
+  aiDirector.setBaseCreature(mob::CREATURE_VILLAGER);
 
-    pauseGame();
-  }
+  Objective* obj = new Objective(
+      "Find the village",
+      "They must be hiding in this forest. Find the village. It must be destroyed!",
+      NULL,
+      "local x=creaturePos('player')"
+      "if x > cityWallX then "
+      "   addObjectiveStep('As expected, their laughable village was hidden deep in the woods. Now there\\'s only one "
+      "thing to do... Burn them all!')"
+      "   closeObjective(true)"
+      "	activateObjective('Kill the village head')"
+      "end ");
+  obj->onSuccess->setFloatVariable("cityWallX", cityWallX);
+  gui.objectives.addObjective(obj);
+
+  obj = new Objective(
+      "Kill the village head",
+      "The old man is probably in the village! Find him and turn him into ashes.",
+      "",
+      "local l=creatureLife('village head')"
+      "if l == nil or l <= 0 then "
+      "   addObjectiveStep('The old fool! His weak powers were not match...')"
+      "   closeObjective(true)"
+      "end ");
+  gui.objectives.addObjective(obj);
+
+  gui.tutorial.disableMenuPage(TUTO_ITEMS);
+  gui.tutorial.disableMenuPage(TUTO_INVENTORY2);
+  gui.tutorial.enableMenuPage(TUTO_FIREBALL);
+  gui.tutorial.startLiveTuto(TUTO_FOOD);
 }
 
-void ForestScreen::onDeactivate() { GameEngine::onDeactivate(); }
+void TreeBurner::onDeactivate() { GameEngine::onDeactivate(); }
 
-void ForestScreen::onFontChange() {
+void TreeBurner::onFontChange() {
   float oldAspectRatio = aspectRatio;
   GameEngine::onFontChange();
   // recompute canopy if aspect ratio has changed (we want round trees!)

@@ -28,7 +28,7 @@
 
 #include "map/lightmap.hpp"
 #include "mob/creature.hpp"
-#include "screen_school.hpp"
+#include "screen/school.hpp"
 
 namespace map {
 class Dungeon;
