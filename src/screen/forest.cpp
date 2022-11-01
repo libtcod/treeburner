@@ -34,6 +34,7 @@
 #include "map/cell.hpp"
 #include "screen/mainmenu.hpp"
 
+namespace screen {
 #define FOREST_W 400
 #define FOREST_H 400
 #define WATER_START -0.87f
@@ -715,3 +716,4 @@ void ForestScreen::onFontChange() {
     recomputeCanopy();
   }
 }
+}  // namespace screen

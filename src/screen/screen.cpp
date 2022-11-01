@@ -28,6 +28,7 @@
 #include "constants.hpp"
 #include "main.hpp"
 
+namespace screen {
 int SCREEN_MAIN_MENU;
 int SCREEN_STORY;
 int SCREEN_CHAPTER_1;
@@ -145,3 +146,4 @@ void Screen::setFadeOut(int lengthInMilli, TCODColor col) {
   fadeOutLength = lengthInMilli;
   fadeOutColor = col;
 }
+}  // namespace screen

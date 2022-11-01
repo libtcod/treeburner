@@ -33,6 +33,7 @@
 #include "main.hpp"
 #include "util_powerup.hpp"
 
+namespace screen {
 Game::Game() : level(0), helpOn(false) {}
 
 void Game::onInitialise() {
@@ -492,3 +493,4 @@ void Game::termLevel() {
   fireballs.clearAndDelete();
   base::AiDirector::instance->termLevel();
 }
+}  // namespace screen

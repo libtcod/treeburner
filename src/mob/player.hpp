@@ -59,7 +59,7 @@ class Player : public Creature {
   void saveData(uint32_t chunkId, TCODZip* zip) override;
 
   float maxFovRange;
-  School school;
+  screen::School school;
   float stealth;
   bool crouch;
 

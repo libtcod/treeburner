@@ -34,6 +34,7 @@
 #include "map/cell.hpp"
 #include "util_powerup.hpp"
 
+namespace screen {
 #define FOREST_W 400
 #define FOREST_H 100
 #define WATER_START -0.87f
@@ -706,3 +707,4 @@ void TreeBurner::onFontChange() {
     recomputeCanopy();
   }
 }
+}  // namespace screen

@@ -31,6 +31,7 @@
 #include "util_textgen.hpp"
 #include "util_worldgen.hpp"
 
+namespace screen {
 enum ESchool { SCHOOL_FIRE, SCHOOL_WATER, NB_SCHOOLS };
 extern const char* schoolTypeName[NB_SCHOOLS];
 #define MAP_WIDTH CON_W * 4 / 3
@@ -83,3 +84,4 @@ class SchoolScreen : public Screen {
   // apply sun light & cloud shadow to interpolated color
   TCODColor getMapShadedColor(float worldX, float worldY, bool clouds);
 };
+}  // namespace screen

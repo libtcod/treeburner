@@ -872,10 +872,10 @@ Item* Item::getRandomWeapon(const char* typeName, ItemClass itemClass) {
       case MOD_MODIFIER:
         modifier::ItemModifierId id = (modifier::ItemModifierId)0;
         switch (gameEngine->player.school.type) {
-          case SCHOOL_FIRE:
+          case screen::SCHOOL_FIRE:
             id = (modifier::ItemModifierId)rng->getInt(modifier::ITEM_MOD_FIRE_BEGIN, modifier::ITEM_MOD_FIRE_END);
             break;
-          case SCHOOL_WATER:
+          case screen::SCHOOL_WATER:
             id = (modifier::ItemModifierId)rng->getInt(modifier::ITEM_MOD_WATER_BEGIN, modifier::ITEM_MOD_WATER_END);
             break;
           default:
@@ -1347,7 +1347,7 @@ bool Item::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
               phase_ = IDLE;
             FireBall* fb =
                 new FireBall(owner_->x, owner_->y, target_x_, target_y_, FB_STANDARD, feat->attack.spellCasted);
-            ((Game*)gameEngine)->addFireball(fb);
+            ((screen::Game*)gameEngine)->addFireball(fb);
             gameEngine->stats.nbSpellStandard++;
           } else {
             if (feat->attack.flags & WEAPON_PROJECTILE) {

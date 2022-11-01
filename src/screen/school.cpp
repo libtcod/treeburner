@@ -36,6 +36,7 @@
 #include "screen/mainmenu.hpp"
 #include "util_subcell.hpp"
 
+namespace screen {
 #define SQR(x) ((x) * (x))
 #define MENUY 5
 
@@ -404,3 +405,4 @@ const char* SchoolScreen::genSchoolDescription(School* sch) {
       break;
   }
 }
+}  // namespace screen

@@ -30,6 +30,7 @@
 #include "constants.hpp"
 #include "main.hpp"
 
+namespace screen {
 EndScreen::EndScreen(const char* txt, float fadeLvl, bool stats)
     : Screen(fadeLvl), txt(strdup(txt)), noiseZ(0.0f), stats(stats) {
   fadeInLength = fadeOutLength = (int)(config.getFloatProperty("config.display.fadeTime") * 1000);
@@ -339,3 +340,4 @@ void PaperScreen::onDeactivate() {
   TCODSystem::registerSDLRenderer(NULL);
   TCODConsole::root->setDirty(0, 0, CON_W, CON_H);
 }
+}  // namespace screen

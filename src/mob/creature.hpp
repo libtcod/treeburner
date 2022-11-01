@@ -32,7 +32,10 @@
 #include "item.hpp"
 #include "mob/behavior.hpp"
 
+namespace screen {
 class Game;
+}
+
 namespace mob {
 class Creature;
 }
@@ -46,7 +49,7 @@ enum CreatureTypeId {
   // pyromancer
   CREATURE_MINION,
   CREATURE_ZEEPOH,
-  // TreeBurner
+  // screen::TreeBurner
   CREATURE_VILLAGER,
   CREATURE_VILLAGE_HEAD,
   CREATURE_ARCHER,

@@ -29,6 +29,7 @@
 #include "base/gameengine.hpp"
 #include "mob/boss.hpp"
 
+namespace screen {
 class Game : public base::GameEngine {
  public:
   Game();
@@ -49,3 +50,4 @@ class Game : public base::GameEngine {
   void onInitialise() override;
   void onActivate() override;
 };
+}  // namespace screen

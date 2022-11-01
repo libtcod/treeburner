@@ -29,6 +29,7 @@
 #include "base/aidirector.hpp"
 #include "base/gameengine.hpp"
 
+namespace screen {
 class TreeBurner : public base::GameEngine {
  public:
   TreeBurner();
@@ -53,3 +54,4 @@ class TreeBurner : public base::GameEngine {
   int cityWallX;
   float endTimer;
 };
+}  // namespace screen

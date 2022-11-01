@@ -31,6 +31,7 @@
 #include "mob/friend.hpp"
 #include "ui_input.hpp"
 
+namespace screen {
 class ForestScreen : public base::GameEngine, public base::SaveListener {
  public:
   mob::Friend* fr;
@@ -59,3 +60,4 @@ class ForestScreen : public base::GameEngine, public base::SaveListener {
   int debugMap;
   TextInput textInput;
 };
+}  // namespace screen

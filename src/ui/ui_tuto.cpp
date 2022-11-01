@@ -33,7 +33,7 @@
 
 #define FADE_TIME 0.5f
 #define BLINK_TIME 3.0f
-Tutorial::Tutorial() : Screen(255) {
+Tutorial::Tutorial() : screen::Screen(255) {
   blinkDelay = BLINK_TIME;
   id = TUTO_NONE;
   memset(alreadyStarted, 0, sizeof(alreadyStarted));

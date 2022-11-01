@@ -30,6 +30,7 @@
 
 #include "screen.hpp"
 
+namespace screen {
 class EndScreen : public Screen {
  public:
   EndScreen(const char* txt, float fadeLvl = 0.0f, bool stats = false);
@@ -77,3 +78,4 @@ class PaperScreen : public EndScreen, public ITCODSDLRenderer {
   void onActivate() override;
   void onDeactivate() override;
 };
+}  // namespace screen
