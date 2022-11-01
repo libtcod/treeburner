@@ -170,8 +170,8 @@ void Player::render(map::LightMap& lightMap) {
   static bool blink = false;
 
   Creature::render(lightMap);
-  if ((FireBall::incandescence && lbuttonDelay > longButtonDelay) ||
-      (FireBall::sparkle && rbuttonDelay > longButtonDelay)) {
+  if ((spell::FireBall::incandescence && lbuttonDelay > longButtonDelay) ||
+      (spell::FireBall::sparkle && rbuttonDelay > longButtonDelay)) {
     // spell charging progress bar
     int barLength = 0;
     float delay = MAX(rbuttonDelay, lbuttonDelay);
@@ -403,19 +403,19 @@ bool Player::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
 
   // right mouse button
   if (mouse->rbutton_pressed) {
-    if (!FireBall::sparkle || rbuttonDelay < longSpellDelay) {
+    if (!spell::FireBall::sparkle || rbuttonDelay < longSpellDelay) {
       // quick click : standard fireball
       if (dungeonx != x || dungeony != y) {
-        FireBall* fb = new FireBall(x, y, dungeonx, dungeony, FB_STANDARD);
+        spell::FireBall* fb = new spell::FireBall(x, y, dungeonx, dungeony, spell::FB_STANDARD);
         gameEngine->addFireball(fb);
         gameEngine->stats.nbSpellStandard++;
         stealth = MIN(3.0f, stealth + 0.5f);
       }
     }
-    if (FireBall::sparkle && rbuttonDelay >= longSpellDelay) {
+    if (spell::FireBall::sparkle && rbuttonDelay >= longSpellDelay) {
       // long right click : sparkle
       if (dungeonx != x || dungeony != y) {
-        FireBall* fb = new FireBall(x, y, dungeonx, dungeony, FB_BURST);
+        spell::FireBall* fb = new spell::FireBall(x, y, dungeonx, dungeony, spell::FB_BURST);
         gameEngine->addFireball(fb);
         gameEngine->stats.nbSpellBurst++;
         stealth = MIN(3.0f, stealth + 0.5f);
@@ -426,7 +426,7 @@ bool Player::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
 
   // left mouse button
   if (mouse->lbutton_pressed) {
-    FireBallType type = FB_STANDARD;
+    spell::FireBallType type = spell::FB_STANDARD;
     bool cast = false;
     const char* subtype = "fireball";
     if (lbuttonDelay < longSpellDelay) {
@@ -436,7 +436,7 @@ bool Player::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
       stealth = MIN(3.0f, stealth + 0.5f);
     } else {
       // long click : incandescence
-      type = FB_INCANDESCENCE;
+      type = spell::FB_INCANDESCENCE;
       gameEngine->stats.nbSpellIncandescence++;
       stealth = MIN(3.0f, stealth + 0.5f);
       subtype = "fireball2";
@@ -447,7 +447,7 @@ bool Player::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
     lbuttonDelay = 0.0f;
     if (cast) {
       if (dungeonx != x || dungeony != y) {
-        FireBall* fb = new FireBall(x, y, dungeonx, dungeony, type, subtype);
+        spell::FireBall* fb = new spell::FireBall(x, y, dungeonx, dungeony, type, subtype);
         gameEngine->addFireball(fb);
         gameEngine->stats.nbSpellStandard++;
       }
@@ -457,8 +457,8 @@ bool Player::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
   if (!key.pressed && key.c == quickslot1Key) {
     // cast fireball
     if (dungeonx != x || dungeony != y) {
-      FireBallType type = FB_SPARK;
-      FireBall* fb = new FireBall(x, y, dungeonx, dungeony, type);
+      spell::FireBallType type = spell::FB_SPARK;
+      spell::FireBall* fb = new spell::FireBall(x, y, dungeonx, dungeony, type);
       gameEngine->addFireball(fb);
       gameEngine->stats.nbSpellStandard++;
     } else {

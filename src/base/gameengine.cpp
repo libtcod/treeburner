@@ -33,7 +33,7 @@
 #include "base/entity.hpp"
 #include "item.hpp"
 #include "main.hpp"
-#include "spell_fireball.hpp"
+#include "spell/fireball.hpp"
 
 base::GameEngine* gameEngine = nullptr;
 
@@ -243,7 +243,7 @@ void GameEngine::openCloseLoot(item::Item* toLoot) {
   }
 }
 
-void GameEngine::addFireball(FireBall* fb) {
+void GameEngine::addFireball(spell::FireBall* fb) {
   if (isUpdatingFireballs)
     fireballsToAdd.push(fb);
   else
@@ -251,13 +251,13 @@ void GameEngine::addFireball(FireBall* fb) {
 }
 
 void GameEngine::updateFireballs(float elapsed) {
-  TCODList<FireBall*> fireballsToRemove;
+  TCODList<spell::FireBall*> fireballsToRemove;
   if (!fireballsToAdd.isEmpty()) {
     fireballs.addAll(fireballsToAdd);
     fireballsToAdd.clear();
   }
   isUpdatingFireballs = true;
-  for (FireBall** it = fireballs.begin(); it != fireballs.end(); it++) {
+  for (spell::FireBall** it = fireballs.begin(); it != fireballs.end(); it++) {
     if (!(*it)->update(elapsed)) {
       fireballsToRemove.push(*it);
       it = fireballs.removeFast(it);

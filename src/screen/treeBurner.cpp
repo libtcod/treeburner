@@ -162,7 +162,7 @@ void TreeBurner::render() {
   dungeon->renderLightsToLightMap(lightMap);
 
   // render the fireballs
-  for (FireBall** it = fireballs.begin(); it != fireballs.end(); it++) {
+  for (spell::FireBall** it = fireballs.begin(); it != fireballs.end(); it++) {
     (*it)->render(lightMap);
   }
   // apply light map

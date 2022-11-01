@@ -253,7 +253,7 @@ void ForestScreen::render() {
   // draw ripples
   if (!showDebugMap) rippleManager->renderRipples(ground);
   // render the fireballs
-  for (FireBall** it = fireballs.begin(); it != fireballs.end(); it++) {
+  for (spell::FireBall** it = fireballs.begin(); it != fireballs.end(); it++) {
     (*it)->render(ground);
   }
 
@@ -379,8 +379,8 @@ bool ForestScreen::update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse) {
   mob::HerdBehavior::updateScarePoints(elapsed);
 
   // update fireballs
-  TCODList<FireBall*> fireballsToRemove;
-  for (FireBall** it = fireballs.begin(); it != fireballs.end(); it++) {
+  TCODList<spell::FireBall*> fireballsToRemove;
+  for (spell::FireBall** it = fireballs.begin(); it != fireballs.end(); it++) {
     if (!(*it)->update(elapsed)) {
       fireballsToRemove.push(*it);
       it = fireballs.removeFast(it);

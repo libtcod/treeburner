@@ -44,21 +44,21 @@ PowerupGraph* PowerupGraph::instance = NULL;
 
 // cheap data initialization, but well.. 7DRL style...
 void Powerup::init() {
-  Powerup* fb_lvl1 =
-      new Powerup(PW_FB, 1, "Fireball 1", "Spell powerup", "Fireball damages increased to 10 and range 1");
+  Powerup* fb_lvl1 = new Powerup(
+      PW_FB, 1, "spell::Fireball 1", "Spell powerup", "spell::Fireball damages increased to 10 and range 1");
   list.push(fb_lvl1);
   fb_lvl1->enabled_ = true;
-  Powerup* fb_lvl2 =
-      new Powerup(PW_FB, 2, "Fireball 2", "Spell powerup", "Fireball damages increased to 15 and range 2", fb_lvl1);
+  Powerup* fb_lvl2 = new Powerup(
+      PW_FB, 2, "spell::Fireball 2", "Spell powerup", "spell::Fireball damages increased to 15 and range 2", fb_lvl1);
   list.push(fb_lvl2);
-  Powerup* fb_lvl3 =
-      new Powerup(PW_FB, 3, "Fireball 3", "Spell powerup", "Fireball damages increased to 20 and range 3", fb_lvl2);
+  Powerup* fb_lvl3 = new Powerup(
+      PW_FB, 3, "spell::Fireball 3", "Spell powerup", "spell::Fireball damages increased to 20 and range 3", fb_lvl2);
   list.push(fb_lvl3);
-  Powerup* fb_lvl4 =
-      new Powerup(PW_FB, 4, "Fireball 4", "Spell powerup", "Fireball damages increased to 25 and range 4", fb_lvl3);
+  Powerup* fb_lvl4 = new Powerup(
+      PW_FB, 4, "spell::Fireball 4", "Spell powerup", "spell::Fireball damages increased to 25 and range 4", fb_lvl3);
   list.push(fb_lvl4);
-  Powerup* fb_lvl5 =
-      new Powerup(PW_FB, 5, "Fireball 5", "Spell powerup", "Fireball damages increased to 30 and range 5", fb_lvl4);
+  Powerup* fb_lvl5 = new Powerup(
+      PW_FB, 5, "spell::Fireball 5", "Spell powerup", "spell::Fireball damages increased to 30 and range 5", fb_lvl4);
   list.push(fb_lvl5);
   Powerup* fb_burst1 = new Powerup(
       PW_BURST,
@@ -119,30 +119,30 @@ Powerup::Powerup(
 void Powerup::apply() {
   enabled_ = true;
   if (id_ == PW_FB) {
-    FireBall::damage += 3;
-    FireBall::range += 0.7f;
+    spell::FireBall::damage += 3;
+    spell::FireBall::range += 0.7f;
   } else if (id_ == PW_BURST) {
     if (level_ == 1) {
-      FireBall::sparkle = true;
-      FireBall::sparkleSpeed = 1.0f;
-      FireBall::nbSparkles = 4;
+      spell::FireBall::sparkle = true;
+      spell::FireBall::sparkleSpeed = 1.0f;
+      spell::FireBall::nbSparkles = 4;
     } else {
-      FireBall::sparkleSpeed += 0.8f;
-      FireBall::nbSparkles += 2;
+      spell::FireBall::sparkleSpeed += 0.8f;
+      spell::FireBall::nbSparkles += 2;
     }
   } else if (id_ == PW_INCAN) {
     if (level_ == 1) {
-      FireBall::incandescence = true;
-      FireBall::incanRange = 2.0f;
-      FireBall::incanLife = 2.0f;
+      spell::FireBall::incandescence = true;
+      spell::FireBall::incanRange = 2.0f;
+      spell::FireBall::incanLife = 2.0f;
     } else {
-      FireBall::incanRange += 0.8f;
-      FireBall::incanLife += 2.0f;
+      spell::FireBall::incanRange += 0.8f;
+      spell::FireBall::incanLife += 2.0f;
     }
   } else if (id_ == PW_SPARKLE_THROUGH) {
-    FireBall::sparkleThrough = true;
+    spell::FireBall::sparkleThrough = true;
   } else if (id_ == PW_SPARKLE_BOUNCE) {
-    FireBall::sparkleBounce = true;
+    spell::FireBall::sparkleBounce = true;
   }
 }
 

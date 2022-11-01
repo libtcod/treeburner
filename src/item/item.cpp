@@ -1345,8 +1345,8 @@ bool Item::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
               phase_ = RELOAD;
             else
               phase_ = IDLE;
-            FireBall* fb =
-                new FireBall(owner_->x, owner_->y, target_x_, target_y_, FB_STANDARD, feat->attack.spellCasted);
+            spell::FireBall* fb = new spell::FireBall(
+                owner_->x, owner_->y, target_x_, target_y_, spell::FB_STANDARD, feat->attack.spellCasted);
             ((screen::Game*)gameEngine)->addFireball(fb);
             gameEngine->stats.nbSpellStandard++;
           } else {

@@ -98,7 +98,7 @@ void Game::render() {
   dungeon->renderLightsToLightMap(lightMap, &minx2x, &miny2x, &maxx2x, &maxy2x, true);
 
   // render the fireballs
-  for (FireBall** it = fireballs.begin(); it != fireballs.end(); it++) {
+  for (spell::FireBall** it = fireballs.begin(); it != fireballs.end(); it++) {
     (*it)->render(lightMap);
   }
 

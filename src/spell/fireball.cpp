@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#include "spell_fireball.hpp"
+#include "spell/fireball.hpp"
 
 #include <fmt/core.h>
 #include <math.h>
@@ -31,6 +31,7 @@
 
 #include "main.hpp"
 
+namespace spell {
 float FireBall::incanRange = 0.0f;
 float FireBall::incanLife = 0.0f;
 float FireBall::sparkleSpeed = 0.0f;
@@ -510,3 +511,4 @@ bool FireBall::update(float elapsed) {
   }
   return true;
 }
+}  // namespace spell
