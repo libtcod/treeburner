@@ -325,7 +325,7 @@ void Creature::renderTalk() {
   TCODConsole::root->printEx((int)talkText.x, (int)talkText.y, TCOD_BKGND_SET, TCOD_CENTER, talkText.text);
 }
 
-void Creature::render(LightMap& lightMap) {
+void Creature::render(map::LightMap& lightMap) {
   static int penumbraLevel = config.getIntProperty("config.gameplay.penumbraLevel");
   static int darknessLevel = config.getIntProperty("config.gameplay.darknessLevel");
   static float fireSpeed = config.getFloatProperty("config.display.fireSpeed");
@@ -357,7 +357,7 @@ void Creature::render(LightMap& lightMap) {
   TCODColor c;
   int displayChar = ch;
   TCODColor lightColor = lightMap.getColor(conx, cony) * 1.5f;
-  Dungeon* dungeon = gameEngine->dungeon;
+  map::Dungeon* dungeon = gameEngine->dungeon;
   float shadow = dungeon->getShadow(x * 2, y * 2);
   float clouds = dungeon->getCloudCoef(x * 2, y * 2);
   shadow = MIN(shadow, clouds);
@@ -390,8 +390,8 @@ void Creature::stun(float delay) { walkTimer = MIN(-delay, walkTimer); }
 
 bool Creature::walk(float elapsed) {
   walkTimer += elapsed;
-  TerrainId terrainId = gameEngine->dungeon->getTerrainType((int)x, (int)y);
-  float walkTime = terrainTypes[terrainId].walkCost / speed;
+  map::TerrainId terrainId = gameEngine->dungeon->getTerrainType((int)x, (int)y);
+  float walkTime = map::terrainTypes[terrainId].walkCost / speed;
   if (walkTimer >= 0) {
     walkTimer = -walkTime;
     if (path && !path->isEmpty()) {

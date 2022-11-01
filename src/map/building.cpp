@@ -23,13 +23,14 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#include "map_building.hpp"
+#include "map/building.hpp"
 
 #include <math.h>
 #include <stdio.h>
 
 #include "main.hpp"
 
+namespace map {
 Building* Building::generate(int width, int height, int nbRooms, TCODRandom* rng) {
   Building* ret = generateWallsOnly(width, height, nbRooms, rng);
   ret->placeRandomDoor(rng);
@@ -223,7 +224,7 @@ bool Building::getFreeFloor(int* fx, int* fy) {
   return true;
 }
 
-void Building::setHuntingHide(Dungeon* dungeon) {
+void Building::setHuntingHide(map::Dungeon* dungeon) {
   int ix, iy;
   /*
   if (getFreeFloor(&ix,&iy)) {
@@ -259,7 +260,7 @@ void Building::setHuntingHide(Dungeon* dungeon) {
   }
 }
 
-void Building::applyTo(Dungeon* dungeon, int dungeonDoorx, int dungeonDoory, bool cityWalls) {
+void Building::applyTo(map::Dungeon* dungeon, int dungeonDoorx, int dungeonDoory, bool cityWalls) {
   static TCODColor roofcol = TCODColor::darkOrange;
   x = dungeonDoorx - doorx;
   y = dungeonDoory - doory;
@@ -301,7 +302,7 @@ void Building::applyTo(Dungeon* dungeon, int dungeonDoorx, int dungeonDoory, boo
         case BUILDING_WINDOW_V:
         case BUILDING_DOOR:
           // floor
-          Cell* cell = dungeon->getCell(x + cx, y + cy);
+          map::Cell* cell = dungeon->getCell(x + cx, y + cy);
           cell->terrain = TERRAIN_WOODEN_FLOOR;
           cell->building = this;
           static int subcx[] = {0, 1, 0, 1};
@@ -337,7 +338,7 @@ void Building::applyTo(Dungeon* dungeon, int dungeonDoorx, int dungeonDoory, boo
 // break roof too far away from a wall
 void Building::collapseRoof() {
   item::ItemType* wall = item::Item::getType("wall");
-  Dungeon* dungeon = gameEngine->dungeon;
+  map::Dungeon* dungeon = gameEngine->dungeon;
   for (int cy = 0; cy < h; cy++) {
     for (int cx = 0; cx < w; cx++) {
       if (!IN_RECTANGLE(x + cx, y + cy, dungeon->width, dungeon->height)) continue;
@@ -363,7 +364,7 @@ void Building::collapseRoof() {
   }
 }
 
-void Building::setBuildingWallCell(int x, int y, int ysym, int ch, Dungeon* dungeon) {
+void Building::setBuildingWallCell(int x, int y, int ysym, int ch, map::Dungeon* dungeon) {
   static int subcx[] = {0, 1, 0, 1};
   static int subcy[] = {0, 0, 1, 1};
   item::Item* wall = item::Item::getItem("city wall", x, y);
@@ -407,7 +408,7 @@ void Building::setBuildingWallCell(int x, int y, int ysym, int ch, Dungeon* dung
   }
 }
 
-void Building::buildCityWalls(int x, Dungeon* dungeon) {
+void Building::buildCityWalls(int x, map::Dungeon* dungeon) {
   int ysym = TCODRandom::getInstance()->getInt(20, dungeon->height - 20);
   int miny = 0;
   int maxy = ysym;
@@ -454,3 +455,4 @@ void Building::buildCityWalls(int x, Dungeon* dungeon) {
       setBuildingWallCell(x, y, ysym, TCOD_CHAR_VLINE, dungeon);
   }
 }
+}  // namespace map

@@ -39,7 +39,7 @@ void Descriptor::setFocus(int mousex, int mousey, int x, int y, bool lookOn) {
   this->y = y;
   this->mousex = mousex;
   this->mousey = mousey;
-  Dungeon* dungeon = gameEngine->dungeon;
+  map::Dungeon* dungeon = gameEngine->dungeon;
   Player* player = &gameEngine->player;
   tooltip[0] = 0;
   item = NULL;
@@ -52,12 +52,12 @@ void Descriptor::setFocus(int mousex, int mousey, int x, int y, bool lookOn) {
       creature = dungeon->getCreature(x, y);
     if (!creature) item = dungeon->getFirstItem(x, y);
     if (lookOn && !creature && !item) {
-      TerrainId id = dungeon->getTerrainType(x, y);
-      strcpy(tooltip, terrainTypes[id].name);
+      map::TerrainId id = dungeon->getTerrainType(x, y);
+      strcpy(tooltip, map::terrainTypes[id].name);
     }
   } else if (lookOn) {
-    TerrainId id = dungeon->getTerrainType(x, y);
-    strcpy(tooltip, terrainTypes[id].name);
+    map::TerrainId id = dungeon->getTerrainType(x, y);
+    strcpy(tooltip, map::terrainTypes[id].name);
   }
 }
 

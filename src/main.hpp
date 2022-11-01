@@ -31,8 +31,8 @@
 #include "base/gameengine.hpp"
 #include "base/savegame.hpp"
 #include "base/userpref.hpp"
-#include "map_cell.hpp"
-#include "map_lightmap.hpp"
+#include "map/cell.hpp"
+#include "map/lightmap.hpp"
 #include "util_sound.hpp"
 #include "util_threadpool.hpp"
 
@@ -64,7 +64,7 @@ static constexpr auto SQRDIST(T x1, T y1, T x2, T y2) -> T {
 #define DBG(x)
 #endif
 
-HDRColor getHDRColorProperty(const TCODParser& parser, const char* name);
+map::HDRColor getHDRColorProperty(const TCODParser& parser, const char* name);
 
 extern TCODNoise noise1d;
 extern TCODNoise noise2d;

@@ -47,9 +47,9 @@ UmbraEngine engine("./data/cfg/umbra.txt", UMBRA_REGISTER_ALL);
 TCODImage background("./data/img/background.png");
 TCODParser config;
 
-HDRColor getHDRColorProperty(const TCODParser& parser, const char* name) {
+map::HDRColor getHDRColorProperty(const TCODParser& parser, const char* name) {
   TCODList<float> l(parser.getListProperty(name, TCOD_TYPE_FLOAT));
-  return HDRColor(l.get(0), l.get(1), l.get(2));
+  return map::HDRColor(l.get(0), l.get(1), l.get(2));
 }
 
 class ModuleFactory : public UmbraModuleFactory {

@@ -28,8 +28,8 @@
 #include <string>
 
 #include "base/entity.hpp"
-#include "map_light.hpp"
-#include "map_lightmap.hpp"
+#include "map/light.hpp"
+#include "map/lightmap.hpp"
 #include "modifier.hpp"
 
 class Creature;
@@ -263,7 +263,7 @@ class Item : public base::DynamicEntity {
   void destroy(int count = 1);
 
   virtual ~Item();
-  virtual void render(LightMap& lightMap, TCODImage* ground = NULL);
+  virtual void render(map::LightMap& lightMap, TCODImage* ground = NULL);
   virtual void renderDescription(int x, int y, bool below = true);
   virtual void renderGenericDescription(int x, int y, bool below = true, bool frame = true);
   virtual bool age(float elapsed, ItemFeature* feat = NULL);  // the item gets older
@@ -330,7 +330,7 @@ class Item : public base::DynamicEntity {
   bool hasComponents() const;
   void addComponent(Item* component);
   ItemCombination* getCombination() const;
-  ExtendedLight* getLight() { return light_; };
+  map::ExtendedLight* getLight() { return light_; };
 
   const ItemType* typeData{};
   ItemClass item_class_{};
@@ -369,7 +369,7 @@ class Item : public base::DynamicEntity {
   float heat_timer_{};  // time before next heat update (1 per second)
   bool toggle_{};  // for doors, torchs, ... on = open/turned on, off = closed/turned off
 
-  ExtendedLight* light_{};
+  map::ExtendedLight* light_{};
   static TCODConsole* descCon;  // offscreen console for item description
 
   void initLight();

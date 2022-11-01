@@ -23,8 +23,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#include "map_cell.hpp"
+#include "map/cell.hpp"
 
+namespace map {
 std::array<TerrainType, NB_TERRAINS> terrainTypes = {{
     {"deep swamp water", TCODColor(44, 74, 62), false, true, true, 5.0f},
     {"shallow swamp water", TCODColor(49, 82, 68), true, false, true, 3.0f},
@@ -77,3 +78,4 @@ void SubCell::saveData(TCODZip* zip) {
   zip->putFloat(shadow);
   zip->putFloat(waterCoef);
 }
+}  // namespace map

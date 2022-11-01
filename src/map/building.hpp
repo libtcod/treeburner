@@ -25,47 +25,47 @@
  */
 #pragma once
 #include <libtcod.hpp>
+#include <vector>
 
 #include "base/entity.hpp"
-#include "base/noisything.hpp"
-#include "map_lightmap.hpp"
+#include "map/dungeon.hpp"
 
-class Light : public base::Entity, public base::NoisyThing {
- public:
-  Light() : randomRad(false), range(0.0f), color{tcod::ColorRGB{255, 255, 255}} {}
-  Light(float range, TCODColor color = TCODColor::white, bool randomRad = false)
-      : randomRad(randomRad), range(range), color(color) {}
-  void addToLightMap(LightMap& map);
-  void addToImage(TCODImage& img);
-  void getDungeonPart(int* minx, int* miny, int* maxx, int* maxy);
-  virtual void update([[maybe_unused]] float elapsed) {}
-
-  bool randomRad;
-  float range;
-  HDRColor color;
-
- protected:
-  void add(LightMap* l, TCODImage* i);
-  virtual float getIntensity() { return 1.0f; }
-  virtual HDRColor getColor([[maybe_unused]] float rad) { return color; }
-  float getFog(int x, int y);
+namespace map {
+enum BuildingMapId {
+  BUILDING_NONE,
+  BUILDING_FLOOR,
+  BUILDING_WALL_N,
+  BUILDING_WALL_E,
+  BUILDING_WALL_S,
+  BUILDING_WALL_W,
+  BUILDING_WALL_NW,
+  BUILDING_WALL_NE,
+  BUILDING_WALL_SE,
+  BUILDING_WALL_SW,
+  BUILDING_DOOR,
+  BUILDING_WINDOW_H,
+  BUILDING_WINDOW_V,
+  BUILDING_ITEM,
 };
 
-class ExtendedLight : public Light {
+class Building : public base::Rect {
  public:
-  void setup(HDRColor outColor, float intensityPatternDelay, const char* intensityPattern, const char* colorPattern);
-  void update(float elapsed) override;
+  int doorx{}, doory{};  // in building local coordinates
+  std::vector<int> map{};  // a map of BuildingMapId representing the building
+
+  static Building* generate(int width, int height, int nbRooms, TCODRandom* rng);
+  static Building* generateWallsOnly(int width, int height, int nbRooms, TCODRandom* rng);
+  void applyTo(map::Dungeon* dungeon, int dungeonDoorx, int dungeonDoory, bool cityWalls = false);
+  void setHuntingHide(map::Dungeon* dungeon);
+  static void buildCityWalls(int x, map::Dungeon* dungeon);
+  void collapseRoof();
 
  protected:
-  HDRColor outColor;
-  const char* intensityPattern = nullptr;
-  const char* colorPattern = nullptr;
-  float intensityPatternDelay;
-  int intensityPatternLen;
-  int colorPatternLen;
-  float intensityTimer;
-  bool noiseIntensity;
-
-  float getIntensity() override;
-  HDRColor getColor(float rad) override;
+  Building(int w, int h) : base::Rect{0, 0, w, h}, map(w * h, 0) {}
+  void buildExternalWalls();
+  void placeRandomDoor(TCODRandom* rng);
+  void placeRandomWindow(TCODRandom* rng);
+  bool getFreeFloor(int* fx, int* fy);
+  static void setBuildingWallCell(int x, int y, int ysym, int ch, map::Dungeon* dungeon);
 };
+}  // namespace map

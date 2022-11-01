@@ -28,30 +28,30 @@
 #include <math.h>
 
 #include "main.hpp"
-#include "map_dungeon.hpp"
+#include "map/dungeon.hpp"
 
 TCODList<ScarePoint*> HerdBehavior::scare;
 
 #define FOLLOW_DIST 5
 
 float WaterOnlyWalkPattern::getWalkCost(int xFrom, int yFrom, int xTo, int yTo, void* userData) const {
-  Dungeon* dungeon = gameEngine->dungeon;
+  map::Dungeon* dungeon = gameEngine->dungeon;
   if (!dungeon->map->isWalkable(xTo, yTo)) return 0.0f;
   if (!dungeon->hasRipples(xTo, yTo)) return 0.0f;
   return 1.0f;
 }
 
 float AvoidWaterWalkPattern::getWalkCost(int xFrom, int yFrom, int xTo, int yTo, void* userData) const {
-  Dungeon* dungeon = gameEngine->dungeon;
+  map::Dungeon* dungeon = gameEngine->dungeon;
   if (!dungeon->map->isWalkable(xTo, yTo)) return 0.0f;
-  float cost = terrainTypes[dungeon->getTerrainType(xTo, yTo)].walkCost;
+  float cost = map::terrainTypes[dungeon->getTerrainType(xTo, yTo)].walkCost;
   if (dungeon->hasRipples(xTo, yTo)) cost *= 3;  // try to avoid getting wet!
   return cost;
 }
 
 bool FollowBehavior::update(Creature* crea, float elapsed) {
   int pdist = (int)crea->distance(*leader_);
-  Dungeon* dungeon = gameEngine->dungeon;
+  map::Dungeon* dungeon = gameEngine->dungeon;
   standDelay += elapsed;
   if ((pdist > FOLLOW_DIST || standDelay > 10.0f) && (!crea->path || crea->path->isEmpty())) {
     // go near the leader
@@ -134,14 +134,14 @@ bool HerdBehavior::update(Creature* crea1, float elapsed) {
 
   float newx = crea1->x + crea1->dx;
   float newy = crea1->y + crea1->dy;
-  Dungeon* dungeon = gameEngine->dungeon;
+  map::Dungeon* dungeon = gameEngine->dungeon;
   newx = CLAMP(0.0, dungeon->width - 1, newx);
   newy = CLAMP(0.0, dungeon->height - 1, newy);
   crea1->walkTimer += elapsed;
   if ((int)crea1->x != (int)newx || (int)crea1->y != (int)newy) {
     if (dungeon->isCellWalkable(newx, newy)) {
-      TerrainId terrainId = gameEngine->dungeon->getTerrainType((int)newx, (int)newy);
-      float walkTime = terrainTypes[terrainId].walkCost / crea1->speed;
+      map::TerrainId terrainId = gameEngine->dungeon->getTerrainType((int)newx, (int)newy);
+      float walkTime = map::terrainTypes[terrainId].walkCost / crea1->speed;
       if (crea1->walkTimer >= walkTime) {
         crea1->walkTimer = 0;
         dungeon->moveCreature(crea1, (int)crea1->x, (int)crea1->y, (int)newx, (int)newy);

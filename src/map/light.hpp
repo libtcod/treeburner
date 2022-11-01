@@ -25,45 +25,50 @@
  */
 #pragma once
 #include <libtcod.hpp>
-#include <vector>
 
 #include "base/entity.hpp"
-#include "map_dungeon.hpp"
+#include "base/noisything.hpp"
+#include "map/lightmap.hpp"
 
-enum BuildingMapId {
-  BUILDING_NONE,
-  BUILDING_FLOOR,
-  BUILDING_WALL_N,
-  BUILDING_WALL_E,
-  BUILDING_WALL_S,
-  BUILDING_WALL_W,
-  BUILDING_WALL_NW,
-  BUILDING_WALL_NE,
-  BUILDING_WALL_SE,
-  BUILDING_WALL_SW,
-  BUILDING_DOOR,
-  BUILDING_WINDOW_H,
-  BUILDING_WINDOW_V,
-  BUILDING_ITEM,
-};
-
-class Building : public base::Rect {
+namespace map {
+class Light : public base::Entity, public base::NoisyThing {
  public:
-  int doorx{}, doory{};  // in building local coordinates
-  std::vector<int> map{};  // a map of BuildingMapId representing the building
+  Light() : randomRad(false), range(0.0f), color{tcod::ColorRGB{255, 255, 255}} {}
+  Light(float range, TCODColor color = TCODColor::white, bool randomRad = false)
+      : randomRad(randomRad), range(range), color(color) {}
+  void addToLightMap(map::LightMap& map);
+  void addToImage(TCODImage& img);
+  void getDungeonPart(int* minx, int* miny, int* maxx, int* maxy);
+  virtual void update([[maybe_unused]] float elapsed) {}
 
-  static Building* generate(int width, int height, int nbRooms, TCODRandom* rng);
-  static Building* generateWallsOnly(int width, int height, int nbRooms, TCODRandom* rng);
-  void applyTo(Dungeon* dungeon, int dungeonDoorx, int dungeonDoory, bool cityWalls = false);
-  void setHuntingHide(Dungeon* dungeon);
-  static void buildCityWalls(int x, Dungeon* dungeon);
-  void collapseRoof();
+  bool randomRad;
+  float range;
+  map::HDRColor color;
 
  protected:
-  Building(int w, int h) : base::Rect{0, 0, w, h}, map(w * h, 0) {}
-  void buildExternalWalls();
-  void placeRandomDoor(TCODRandom* rng);
-  void placeRandomWindow(TCODRandom* rng);
-  bool getFreeFloor(int* fx, int* fy);
-  static void setBuildingWallCell(int x, int y, int ysym, int ch, Dungeon* dungeon);
+  void add(map::LightMap* l, TCODImage* i);
+  virtual float getIntensity() { return 1.0f; }
+  virtual map::HDRColor getColor([[maybe_unused]] float rad) { return color; }
+  float getFog(int x, int y);
 };
+
+class ExtendedLight : public Light {
+ public:
+  void setup(
+      map::HDRColor outColor, float intensityPatternDelay, const char* intensityPattern, const char* colorPattern);
+  void update(float elapsed) override;
+
+ protected:
+  map::HDRColor outColor;
+  const char* intensityPattern = nullptr;
+  const char* colorPattern = nullptr;
+  float intensityPatternDelay;
+  int intensityPatternLen;
+  int colorPatternLen;
+  float intensityTimer;
+  bool noiseIntensity;
+
+  float getIntensity() override;
+  map::HDRColor getColor(float rad) override;
+};
+}  // namespace map

@@ -29,8 +29,8 @@
 #include <umbra/umbra.hpp>
 
 #include "base/entity.hpp"
-#include "map_dungeon.hpp"
-#include "map_lightmap.hpp"
+#include "map/dungeon.hpp"
+#include "map/lightmap.hpp"
 #include "mob_creature.hpp"
 #include "mob_player.hpp"
 #include "screen.hpp"
@@ -57,12 +57,12 @@ class GameEngine : public Screen {
   bool update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse) override;
 
   Player player{};
-  Dungeon* dungeon{};  // current dungeon map
+  map::Dungeon* dungeon{};  // current dungeon map
   int xOffset{}, yOffset{};  // coordinate of console cell 0,0 in dungeon
   int mousex{}, mousey{};  // cell under mouse cursor
   TCODImage ground{CON_W * 2, CON_H * 2};  // visible part of the ground
 
-  LightMap lightMap{CON_W * 2, CON_H * 2};  // store light reaching each cell
+  map::LightMap lightMap{CON_W * 2, CON_H * 2};  // store light reaching each cell
   Packer packer{0, 0, CON_W, CON_H};
 
   inline float getFog(int x, int y) { return lightMap.getFog(x, y); }

@@ -588,7 +588,7 @@ bool Inventory::update(float elapsed, TCOD_key_t& k, TCOD_mouse_t& mouse) {
     if (dragOut) {
       int dungeonx = mouse.cx + gameEngine->xOffset;
       int dungeony = mouse.cy - 1 + gameEngine->yOffset;
-      Dungeon* dungeon = gameEngine->dungeon;
+      map::Dungeon* dungeon = gameEngine->dungeon;
       dragOut = false;
       if (!IN_RECTANGLE(dungeonx, dungeony, dungeon->width, dungeon->height) || mouse.rbutton) {
         // out of map or right click : cancel

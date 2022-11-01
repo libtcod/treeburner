@@ -49,7 +49,7 @@ Fish::~Fish() {
   if (zone) zone->shoal->list.removeFast(this);
 }
 
-void Fish::render(LightMap& lightMap) {
+void Fish::render(map::LightMap& lightMap) {
   // position on console
   int conx = (int)(x - gameEngine->xOffset);
   int cony = (int)(y - gameEngine->yOffset);
@@ -88,7 +88,7 @@ void Fish::slide() {
   int newy2 = getSubY();
   if (newx2 != oldx2 || newy2 != oldy2) {
     // move the fish while keeping it in water
-    Dungeon* dungeon = gameEngine->dungeon;
+    map::Dungeon* dungeon = gameEngine->dungeon;
     if (!IN_RECTANGLE(newx2, newy2, dungeon->width * 2, dungeon->height * 2)) {
       x = oldx;
       y = oldy;

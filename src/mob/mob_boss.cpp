@@ -53,7 +53,7 @@ Boss::Boss() {
   static const char* treasureIntensityPattern =
       strdup(config.getStringProperty("config.display.treasureIntensityPattern"));
 
-  treasureLight = new ExtendedLight();
+  treasureLight = new map::ExtendedLight();
   treasureLight->color = treasureLightColor;
   treasureLight->range = treasureLightRange * 2;
   treasureLight->setup(treasureLightColor, treasureIntensityDelay, treasureIntensityPattern, NULL);

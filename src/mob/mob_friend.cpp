@@ -113,7 +113,7 @@ bool Friend::updateHideAndSeek(float elapsed) {
         } else if ( timer > 10.0f ) {
                 Player *player=&gameEngine->player;
                 int pdist=(int)distance(*player);
-                Dungeon *dungeon=gameEngine->dungeon;
+                map::Dungeon *dungeon=gameEngine->dungeon;
                 standDelay+=elapsed;
                 if ( ( pdist > 2*SECURE_DIST || standDelay > 10.0f ) && (! path || path->isEmpty()) ) {
                                 // go near the player
@@ -156,7 +156,7 @@ TCODRandom::getInstance()->getInt(-SECURE_DIST*2,SECURE_DIST*2)); destx=CLAMP(0,
 }
 
 bool Friend::updateCatchMe(float elapsed) {
-        Dungeon *dungeon=gameEngine->dungeon;
+        map::Dungeon *dungeon=gameEngine->dungeon;
         bool inFov = dungeon->map->isInFov((int)x,(int)y);
         Player *player=&gameEngine->player;
 
@@ -247,9 +247,9 @@ float Friend::getWalkCost( int xFrom, int yFrom, int xTo, int yTo, void *userDat
 }
 
 float Friend::getWalkCostCatchMe(int xFrom, int yFrom, int xTo, int yTo, void *userData ) const {
-        Dungeon *dungeon=gameEngine->dungeon;
+        map::Dungeon *dungeon=gameEngine->dungeon;
         if ( !dungeon->map->isWalkable(xTo,yTo)) return 0.0f;
-        if ( ignoreCreatures ) return terrainTypes[dungeon->getTerrainType(xTo,yTo)].walkCost;
+        if ( ignoreCreatures ) return map::terrainTypes[dungeon->getTerrainType(xTo,yTo)].walkCost;
         Player *player=&gameEngine->player;
         float pdist=squaredDistance(*player);
         if ( pdist < 16.0f ) return 1.0f + SECURE_COEF*(SECURE_DIST - pdist);
@@ -257,9 +257,9 @@ float Friend::getWalkCostCatchMe(int xFrom, int yFrom, int xTo, int yTo, void *u
 }
 
 float Friend::getWalkCostHideAndSeek(int xFrom, int yFrom, int xTo, int yTo, void *userData ) const {
-        Dungeon *dungeon=gameEngine->dungeon;
+        map::Dungeon *dungeon=gameEngine->dungeon;
         if ( !dungeon->map->isWalkable(xTo,yTo)) return 0.0f;
-        if ( ignoreCreatures ) return terrainTypes[dungeon->getTerrainType(xTo,yTo)].walkCost;
+        if ( ignoreCreatures ) return map::terrainTypes[dungeon->getTerrainType(xTo,yTo)].walkCost;
         Player *player=&gameEngine->player;
         float pdist=squaredDistance(*player);
         if ( pdist < 16.0f ) return 1.0f + SECURE_COEF*(SECURE_DIST - pdist);
@@ -267,9 +267,9 @@ float Friend::getWalkCostHideAndSeek(int xFrom, int yFrom, int xTo, int yTo, voi
 }
 */
 float Friend::getWalkCost(int xFrom, int yFrom, int xTo, int yTo, void* userData) const {
-  Dungeon* dungeon = gameEngine->dungeon;
+  map::Dungeon* dungeon = gameEngine->dungeon;
   if (!dungeon->map->isWalkable(xTo, yTo)) return 0.0f;
-  float cost = terrainTypes[dungeon->getTerrainType(xTo, yTo)].walkCost;
+  float cost = map::terrainTypes[dungeon->getTerrainType(xTo, yTo)].walkCost;
   if (dungeon->hasWater(xTo * 2, yTo * 2)) cost *= 3;  // try to avoid getting wet!
   return cost;
 }

@@ -30,15 +30,18 @@
 #include <vector>
 
 #include "base/savegame.hpp"
-#include "map_cell.hpp"
+#include "map/cell.hpp"
 #include "mob_creature.hpp"
 #include "util_cavegen.hpp"
 #include "util_cellular.hpp"
 #include "util_clouds.hpp"
 
 class Player;
+namespace map {
 class LightMap;
+}
 
+namespace map {
 class Dungeon : public base::SaveListener {
  public:
   Dungeon(int width, int height);  // empty dungeon
@@ -46,8 +49,8 @@ class Dungeon : public base::SaveListener {
   virtual ~Dungeon();
 
   // the final dungeon map
-  Cell* cells = nullptr;  // normal resolution data
-  SubCell* subcells = nullptr;  // subcell resolution data
+  map::Cell* cells = nullptr;  // normal resolution data
+  map::SubCell* subcells = nullptr;  // subcell resolution data
   TCODMap* map = nullptr;  // normal resolution for pathfinding
   TCODMap* map2x = nullptr;  // double resolution for fovs
   TCODHeightMap* hmap = nullptr;  // double resolution. ground altitude
@@ -65,7 +68,7 @@ class Dungeon : public base::SaveListener {
   std::vector<item::Item*> items;
   TCODList<Creature*> creatures;
   TCODList<Creature*> corpses;
-  TCODList<Light*> lights;
+  TCODList<map::Light*> lights;
 
   // fov
   void computeFov(int x, int y);
@@ -81,9 +84,9 @@ class Dungeon : public base::SaveListener {
   void addCorpse(Creature* cr);
   void moveCreature(Creature* cr, int xFrom, int yFrom, int xTo, int yTo);
   void removeCreature(Creature* cr, bool kill = true);
-  void renderCreatures(LightMap& lightMap);
-  void renderSubcellCreatures(LightMap& lightMap);
-  void renderCorpses(LightMap& lightMap);
+  void renderCreatures(map::LightMap& lightMap);
+  void renderSubcellCreatures(map::LightMap& lightMap);
+  void renderCorpses(map::LightMap& lightMap);
   void computeSpawnSources();
   void getClosestSpawnSource(float x, float y, int* ssx, int* ssy) const {
     return getClosestSpawnSource((int)x, (int)y, ssx, ssy);
@@ -112,17 +115,17 @@ class Dungeon : public base::SaveListener {
   item::Item* getItem(int x, int y, const char* typeName);
   void addItem(item::Item* it);
   item::Item* removeItem(item::Item* it, int count = 1, bool del = true);
-  void renderItems(LightMap& lightMap, TCODImage* ground = NULL);
+  void renderItems(map::LightMap& lightMap, TCODImage* ground = NULL);
   void updateItems(float elapsed, TCOD_key_t k, TCOD_mouse_t* mouse);
   void computeWalkTransp(int x, int y);
 
   // lights
   inline void setAmbient(const TCODColor& col) { ambient = col; }
   inline const TCODColor& getAmbient() { return ambient; }
-  inline void addLight(Light* light) { lights.push(light); }
-  inline void removeLight(Light* light) { lights.removeFast(light); }
+  inline void addLight(map::Light* light) { lights.push(light); }
+  inline void removeLight(map::Light* light) { lights.removeFast(light); }
   void renderLightsToLightMap(
-      LightMap& lightMap,
+      map::LightMap& lightMap,
       int* minx = NULL,
       int* miny = NULL,
       int* maxx = NULL,
@@ -149,25 +152,25 @@ class Dungeon : public base::SaveListener {
   inline float getCloudCoef(int x2, int y2) const { return clouds ? clouds->getThickness(x2, y2) : 1.0f; }
 
   // ground
-  inline Cell* getCell(int x, int y) const { return &cells[x + y * width]; }
-  inline Cell* getCell(float x, float y) const { return &cells[(int)(x) + (int)(y)*width]; }
-  inline SubCell* getSubCell(int x2, int y2) const { return &subcells[x2 + y2 * width * 2]; }
+  inline map::Cell* getCell(int x, int y) const { return &cells[x + y * width]; }
+  inline map::Cell* getCell(float x, float y) const { return &cells[(int)(x) + (int)(y)*width]; }
+  inline map::SubCell* getSubCell(int x2, int y2) const { return &subcells[x2 + y2 * width * 2]; }
   void setWalkable(int x, int y, bool walkable);
   inline float isCellTransparent(float x, float y) { return map->isTransparent((int)x, (int)y); }
   inline float isCellWalkable(float x, float y) { return map->isWalkable((int)x, (int)y); }
   inline float getWaterCoef(int x2, int y2) const { return getSubCell(x2, y2)->waterCoef; }
   void setProperties(int x, int y, bool transparent, bool walkable);
-  inline void setTerrainType(int x, int y, TerrainId id) {
+  inline void setTerrainType(int x, int y, map::TerrainId id) {
     cells[x + y * width].terrain = id;
-    setWalkable(x, y, terrainTypes[id].walkable || terrainTypes[id].swimmable);
+    setWalkable(x, y, map::terrainTypes[id].walkable || map::terrainTypes[id].swimmable);
   }
-  inline TerrainId getTerrainType(int x, int y) const { return cells[x + y * width].terrain; }
+  inline map::TerrainId getTerrainType(int x, int y) const { return cells[x + y * width].terrain; }
   inline TCODColor getGroundColor(int x2, int y2) const { return subcells[x2 + y2 * width * 2].groundColor; }
   TCODColor getShadedGroundColor(int x2, int y2) const;
   void getClosestWalkable(
       int* x, int* y, bool includingStairs = true, bool includingCreatures = true, bool includingWater = true) const;
   inline bool hasRipples(float x, float y) const { return hasRipples((int)x, (int)y); }
-  inline bool hasRipples(int x, int y) const { return terrainTypes[getTerrainType(x, y)].ripples; }
+  inline bool hasRipples(int x, int y) const { return map::terrainTypes[getTerrainType(x, y)].ripples; }
   inline void setGroundColor(int x2, int y2, const TCODColor& col) { subcells[x2 + y2 * width * 2].groundColor = col; }
   inline bool hasCanopy(int x2, int y2) const { return canopy->getPixel(x2, y2).r != 0; }
   inline bool hasWater(int x2, int y2) const { return getWaterCoef(x2, y2) > 0.0f; }
@@ -199,3 +202,4 @@ class Dungeon : public base::SaveListener {
   void getRandomPositionInCorner(int cornerx, int cornery, int* x, int* y);
   void saveMap(int playerX, int playerY);
 };
+}  // namespace map

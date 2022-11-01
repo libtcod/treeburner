@@ -30,8 +30,8 @@
 
 #include "base/entity.hpp"
 #include "main.hpp"
-#include "map_building.hpp"
-#include "map_cell.hpp"
+#include "map/building.hpp"
+#include "map/cell.hpp"
 #include "screen_mainmenu.hpp"
 
 #define FOREST_W 400
@@ -52,7 +52,7 @@ struct EntityProb {
 };
 
 struct TerrainGenData {
-  TerrainId terrain;
+  map::TerrainId terrain;
   float threshold;
   EntityProb itemData[MAX_ENTITY_PROB];
 };
@@ -67,7 +67,7 @@ enum ForestId { FOREST_PINE, FOREST_NORTHERN, FOREST_OAK, NB_FORESTS };
 static LayeredTerrain forestTypes[NB_FORESTS] = {
     {"pine forest",
      {
-         {TERRAIN_GRASS_LUSH,
+         {map::TERRAIN_GRASS_LUSH,
           0.5f,
           {{"pine tree", -1, 0.36f, 0.0f, 1.0f},
            {NULL, CREATURE_DEER, 0.01f, 0.0f, 1.0f},
@@ -77,7 +77,7 @@ static LayeredTerrain forestTypes[NB_FORESTS] = {
            {"yarrow", -1, 0.001f, 0.0f, 1.0f},
            {"chamomile", -1, 0.001f, 0.0f, 1.0f},
            {NULL, -1}}},
-         {TERRAIN_GRASS_NORMAL,
+         {map::TERRAIN_GRASS_NORMAL,
           0.0f,
           {{"pine tree", -1, 0.28f, 0.0f, 1.0f},
            {"klamath", -1, 0.001f, 0.0f, 1.0f},
@@ -86,15 +86,15 @@ static LayeredTerrain forestTypes[NB_FORESTS] = {
            {"chamomile", -1, 0.001f, 0.0f, 1.0f},
            {"passiflora", -1, 0.001f, 0.0f, 1.0f},
            {NULL, -1}}},
-         {TERRAIN_GRASS_SPARSE,
+         {map::TERRAIN_GRASS_SPARSE,
           -0.9f,
           {{"pine tree", -1, 0.1f, 0.17f, 1.0f}, {"ephedra", -1, 0.001f, 0.8f, 1.0f}, {NULL, -1}}},
-         {TERRAIN_GROUND, -1.25f, {{NULL, -1}}},
-         {TERRAIN_GROUND, -1.5f, {{NULL, -1}}},
+         {map::TERRAIN_GROUND, -1.25f, {{NULL, -1}}},
+         {map::TERRAIN_GROUND, -1.5f, {{NULL, -1}}},
      }},
     {"northern forest",
      {
-         {TERRAIN_GRASS_NORMAL,
+         {map::TERRAIN_GRASS_NORMAL,
           0.66f,
           {{"oak tree", -1, 0.2f, 0.0f, 1.0f},
            {"apple tree", -1, 0.05f, 0.0f, 1.0f},
@@ -107,22 +107,22 @@ static LayeredTerrain forestTypes[NB_FORESTS] = {
            {"psyllium", -1, 0.001f, 0.5f, 1.0f},
            {"wolfsbane", -1, 0.001f, 0.5f, 1.0f},
            {NULL, -1}}},
-         {TERRAIN_GRASS_SPARSE,
+         {map::TERRAIN_GRASS_SPARSE,
           0.33f,
           {{"oak tree", -1, 0.11f, 0.0f, 1.0f},
            {"apple tree", -1, 0.05f, 0.0f, 1.0f},
            {"ephedra", -1, 0.001f, 0.8f, 1.0f},
            {"chamomile", -1, 0.001f, 0.8f, 1.0f},
            {NULL, -1}}},
-         {TERRAIN_GRASS_WITHERED,
+         {map::TERRAIN_GRASS_WITHERED,
           0.0f,
           {{"oak tree", -1, 0.07f, 0.0f, 1.0f}, {"apple tree", -1, 0.03f, 0.0f, 1.0f}, {NULL, -1}}},
-         {TERRAIN_GRASS_DRIED, -0.5f, {{"oak tree", -1, 0.04f, 0.0f, 1.0f}, {NULL, -1}}},
-         {TERRAIN_GROUND, -1.0f, {{"oak tree", -1, 0.02f, 0.1f, 1.0f}, {NULL, -1}}},
+         {map::TERRAIN_GRASS_DRIED, -0.5f, {{"oak tree", -1, 0.04f, 0.0f, 1.0f}, {NULL, -1}}},
+         {map::TERRAIN_GROUND, -1.0f, {{"oak tree", -1, 0.02f, 0.1f, 1.0f}, {NULL, -1}}},
      }},
     {"oak forest",
      {
-         {TERRAIN_GRASS_LUSH,
+         {map::TERRAIN_GRASS_LUSH,
           0.1f,
           {{"oak tree", -1, 0.36f, 0.0f, 1.0f},
            {"ginko", -1, 0.001f, 0.5f, 1.0f},
@@ -130,7 +130,7 @@ static LayeredTerrain forestTypes[NB_FORESTS] = {
            {"yarrow", -1, 0.001f, 0.0f, 1.0f},
            {"chamomile", -1, 0.001f, 0.0f, 1.0f},
            {NULL, -1}}},
-         {TERRAIN_GRASS_NORMAL,
+         {map::TERRAIN_GRASS_NORMAL,
           -0.4f,
           {{"oak tree", -1, 0.14f, 0.0f, 1.0f},
            {"klamath", -1, 0.001f, 0.0f, 1.0f},
@@ -140,7 +140,7 @@ static LayeredTerrain forestTypes[NB_FORESTS] = {
            {"chamomile", -1, 0.001f, 0.0f, 1.0f},
            {"passiflora", -1, 0.001f, 0.0f, 1.0f},
            {NULL, -1}}},
-         {TERRAIN_GRASS_SPARSE,
+         {map::TERRAIN_GRASS_SPARSE,
           -0.8f,
           {{"oak tree", -1, 0.06f, 0.12f, 1.0f},
            {"stone", -1, 0.1f, 0.0f, 0.1f},
@@ -150,14 +150,14 @@ static LayeredTerrain forestTypes[NB_FORESTS] = {
            {"ephedra", -1, 0.001f, 0.8f, 1.0f},
            {"chamomile", -1, 0.001f, 0.8f, 1.0f},
            {NULL, -1}}},
-         {TERRAIN_SHALLOW_WATER,
+         {map::TERRAIN_SHALLOW_WATER,
           WATER_START,
           {{"stone", -1, 0.25f, 0.2f, 1.0f},
            {"broom", -1, 0.001f, 0.2f, 1.0f},
            {"chaparral", -1, 0.001f, 0.2f, 1.0f},
            {"dill", -1, 0.001f, 0.2f, 1.0f},
            {NULL, -1}}},
-         {TERRAIN_DEEP_WATER, -1.0f, {{NULL, -1}}},
+         {map::TERRAIN_DEEP_WATER, -1.0f, {{NULL, -1}}},
          //    {TERRAIN_DIRT,0,-1.0f,-0.75f},
          //    {TERRAIN_GRASS_SPARSE,0,-1.25f,-0.75f},
      }},
@@ -392,13 +392,13 @@ bool ForestScreen::update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse) {
   return true;
 }
 
-void ForestScreen::placeHouse(Dungeon* dungeon, int doorx, int doory, base::Entity::Direction dir) {
-  Building* building = Building::generate(9, 7, 2, forestRng);
+void ForestScreen::placeHouse(map::Dungeon* dungeon, int doorx, int doory, base::Entity::Direction dir) {
+  map::Building* building = map::Building::generate(9, 7, 2, forestRng);
   building->applyTo(dungeon, doorx, doory);
   building->setHuntingHide(dungeon);
 }
 
-void ForestScreen::placeTree(Dungeon* dungeon, int x, int y, const item::ItemType* treeType) {
+void ForestScreen::placeTree(map::Dungeon* dungeon, int x, int y, const item::ItemType* treeType) {
   // trunk
   int dx = x / 2;
   int dy = y / 2;
@@ -433,7 +433,7 @@ void ForestScreen::generateMap(uint32_t seed) {
   static TCODColor sunColor = TCODColor(250, 250, 255);
   DBG(("Forest generation start\n"));
   forestRng = new TCODRandom(seed);
-  dungeon = new Dungeon(FOREST_W, FOREST_H);
+  dungeon = new map::Dungeon(FOREST_W, FOREST_H);
 
   saveGame.registerListener(CHA1_CHUNK_ID, base::PHASE_START, this);
   saveGame.registerListener(DUNG_CHUNK_ID, base::PHASE_START, dungeon);
@@ -479,7 +479,7 @@ void ForestScreen::generateMap(uint32_t seed) {
     f[0] = 2.5f * x / FOREST_W;
     if (x % 40 == 0) displayProgress(0.6f + (float)(2 * FOREST_W - 1 - x) / (2 * FOREST_W) * 0.4f);
     for (int y = 0; y < 2 * FOREST_H - 1; y++) {
-      if (dungeon->getCell(x / 2, y / 2)->terrain == TERRAIN_WOODEN_FLOOR) continue;
+      if (dungeon->getCell(x / 2, y / 2)->terrain == map::TERRAIN_WOODEN_FLOOR) continue;
       f[1] = 2.5f * y / FOREST_H;
       float height = terrainNoise.getFbm(f, 5.0f);
       float forestTypeId = (dungeon->hmap->getValue(x, y) * NB_FORESTS);
@@ -496,73 +496,73 @@ void ForestScreen::generateMap(uint32_t seed) {
       bool swimmable1 = false;
       bool swimmable2 = false;
       while (height <= info1->threshold) {
-        nextColor1 = terrainTypes[info1->terrain].color;
+        nextColor1 = map::terrainTypes[info1->terrain].color;
         maxThreshold1 = info1->threshold;
-        swimmable1 = terrainTypes[info1->terrain].swimmable;
+        swimmable1 = map::terrainTypes[info1->terrain].swimmable;
         info1++;
       }
       while (height <= info2->threshold) {
-        nextColor2 = terrainTypes[info2->terrain].color;
+        nextColor2 = map::terrainTypes[info2->terrain].color;
         maxThreshold2 = info2->threshold;
-        swimmable2 = terrainTypes[info2->terrain].swimmable;
+        swimmable2 = map::terrainTypes[info2->terrain].swimmable;
         info2++;
       }
       float terrainTypeCoef = forestTypeId - (int)forestTypeId;
       float layer1Height = (height - info1->threshold) / (maxThreshold1 - info1->threshold);
       float layer2Height = (height - info2->threshold) / (maxThreshold2 - info2->threshold);
       float waterCoef = 0.0f;
-      if (terrainTypes[info1->terrain].swimmable || swimmable1 || terrainTypes[info2->terrain].swimmable ||
+      if (map::terrainTypes[info1->terrain].swimmable || swimmable1 || map::terrainTypes[info2->terrain].swimmable ||
           swimmable2) {
         waterCoef = (WATER_START - height) / (WATER_START + 1);
       }
       TerrainGenData* info = NULL;
-      if ((terrainTypeCoef < 0.25f && !swimmable2 && !terrainTypes[info2->terrain].swimmable) || swimmable1 ||
-          terrainTypes[info1->terrain].swimmable) {
-        TCODColor groundCol1 = TCODColor::lerp(terrainTypes[info1->terrain].color, nextColor1, layer1Height);
+      if ((terrainTypeCoef < 0.25f && !swimmable2 && !map::terrainTypes[info2->terrain].swimmable) || swimmable1 ||
+          map::terrainTypes[info1->terrain].swimmable) {
+        TCODColor groundCol1 = TCODColor::lerp(map::terrainTypes[info1->terrain].color, nextColor1, layer1Height);
         dungeon->setGroundColor(x, y, groundCol1);
         /*
-                if ( terrainTypes[info1->terrain].swimmable && swimmable1 ) waterCoef=1.0f;
-                else if ( terrainTypes[info1->terrain].swimmable ) waterCoef=1.0f-layer1Height;
+                if ( map::terrainTypes[info1->terrain].swimmable && swimmable1 ) waterCoef=1.0f;
+                else if ( map::terrainTypes[info1->terrain].swimmable ) waterCoef=1.0f-layer1Height;
                 else if ( swimmable1 ) waterCoef=layer1Height;
                 */
         info = info1;
-      } else if (terrainTypeCoef > 0.75f || swimmable2 || terrainTypes[info2->terrain].swimmable) {
-        TCODColor groundCol2 = TCODColor::lerp(terrainTypes[info2->terrain].color, nextColor2, layer2Height);
+      } else if (terrainTypeCoef > 0.75f || swimmable2 || map::terrainTypes[info2->terrain].swimmable) {
+        TCODColor groundCol2 = TCODColor::lerp(map::terrainTypes[info2->terrain].color, nextColor2, layer2Height);
         dungeon->setGroundColor(x, y, groundCol2);
         /*
-                if ( terrainTypes[info2->terrain].swimmable && swimmable2 ) waterCoef=1.0f;
-                else if ( terrainTypes[info2->terrain].swimmable ) waterCoef=1.0f-layer2Height;
+                if ( map::terrainTypes[info2->terrain].swimmable && swimmable2 ) waterCoef=1.0f;
+                else if ( map::terrainTypes[info2->terrain].swimmable ) waterCoef=1.0f-layer2Height;
                 else if ( swimmable2 ) waterCoef=layer2Height;
                 */
         info = info2;
       } else {
-        TCODColor groundCol1 = TCODColor::lerp(terrainTypes[info1->terrain].color, nextColor1, layer1Height);
+        TCODColor groundCol1 = TCODColor::lerp(map::terrainTypes[info1->terrain].color, nextColor1, layer1Height);
         /*
 float waterCoef1=0.0f,waterCoef2=0.0f;
-if ( terrainTypes[info1->terrain].swimmable && swimmable1 ) waterCoef1=1.0f;
-else if ( terrainTypes[info1->terrain].swimmable ) waterCoef1=1.0f-layer1Height;
+if ( map::terrainTypes[info1->terrain].swimmable && swimmable1 ) waterCoef1=1.0f;
+else if ( map::terrainTypes[info1->terrain].swimmable ) waterCoef1=1.0f-layer1Height;
 else if ( swimmable1 ) waterCoef1=layer1Height;
 */
 
-        TCODColor groundCol2 = TCODColor::lerp(terrainTypes[info2->terrain].color, nextColor2, layer2Height);
+        TCODColor groundCol2 = TCODColor::lerp(map::terrainTypes[info2->terrain].color, nextColor2, layer2Height);
         /*
-if ( terrainTypes[info2->terrain].swimmable && swimmable2 ) waterCoef2=1.0f;
-else if ( terrainTypes[info2->terrain].swimmable ) waterCoef2=1.0f-layer2Height;
+if ( map::terrainTypes[info2->terrain].swimmable && swimmable2 ) waterCoef2=1.0f;
+else if ( map::terrainTypes[info2->terrain].swimmable ) waterCoef2=1.0f-layer2Height;
 else if ( swimmable2 ) waterCoef2=layer2Height;
 */
 
         float coef = (terrainTypeCoef - 0.25f) * 2;
-        if (terrainTypes[info1->terrain].swimmable && swimmable1)
+        if (map::terrainTypes[info1->terrain].swimmable && swimmable1)
           coef = 1.0f - waterCoef;
-        else if (terrainTypes[info2->terrain].swimmable && swimmable2)
+        else if (map::terrainTypes[info2->terrain].swimmable && swimmable2)
           coef = waterCoef;
         dungeon->setGroundColor(x, y, TCODColor::lerp(groundCol1, groundCol2, coef));
         // waterCoef=waterCoef2*coef + waterCoef1*(1.0f-coef);
         info = (terrainTypeCoef <= 0.5f ? info1 : info2);
       }
-      if (terrainTypes[info->terrain].ripples) waterCoef = MAX(0.01f, waterCoef);
+      if (map::terrainTypes[info->terrain].ripples) waterCoef = MAX(0.01f, waterCoef);
       dungeon->getSubCell(x, y)->waterCoef = waterCoef;
-      if ((x & 1) == 0 && (y & 1) == 0 && dungeon->getTerrainType(x / 2, y / 2) != TERRAIN_WOODEN_FLOOR) {
+      if ((x & 1) == 0 && (y & 1) == 0 && dungeon->getTerrainType(x / 2, y / 2) != map::TERRAIN_WOODEN_FLOOR) {
         dungeon->setTerrainType(x / 2, y / 2, info->terrain);
         EntityProb* itemData = info->itemData;
         int count = MAX_ENTITY_PROB;
@@ -618,7 +618,7 @@ void ForestScreen::loadMap(uint32_t seed) {
   static TCODColor sunColor = TCODColor(250, 250, 255);
   lightMap.clear(sunColor);
   forestRng = new TCODRandom(seed);
-  dungeon = new Dungeon(FOREST_W, FOREST_H);
+  dungeon = new map::Dungeon(FOREST_W, FOREST_H);
 
   saveGame.registerListener(CHA1_CHUNK_ID, base::PHASE_START, this);
   saveGame.registerListener(DUNG_CHUNK_ID, base::PHASE_START, dungeon);

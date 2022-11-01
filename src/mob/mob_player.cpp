@@ -112,7 +112,7 @@ void Player::heal(int healPoints) {
 bool Player::setPath(int xDest, int yDest, bool limitPath) {
   static int maxPathFinding = config.getIntProperty("config.creatures.player.maxPathFinding");
 
-  Dungeon* dungeon = gameEngine->dungeon;
+  map::Dungeon* dungeon = gameEngine->dungeon;
   if (!IN_RECTANGLE(xDest, yDest, dungeon->width, dungeon->height)) return false;
   // check if right clicked on a wall
   if (!dungeon->map->isWalkable(xDest, yDest)) {
@@ -162,7 +162,7 @@ bool Player::setPath(int xDest, int yDest, bool limitPath) {
   return true;
 }
 
-void Player::render(LightMap& lightMap) {
+void Player::render(map::LightMap& lightMap) {
   static float longButtonDelay = config.getFloatProperty("config.creatures.player.longButtonDelay");
   static float longSpellDelay = config.getFloatProperty("config.creatures.player.longSpellDelay");
   static float sprintLength = config.getFloatProperty("config.creatures.player.sprintLength");
@@ -255,7 +255,7 @@ void Player::getMoveKey(TCOD_key_t key, bool* up, bool* down, bool* left, bool* 
 }
 
 void Player::computeStealth(float elapsed) {
-  Dungeon* dungeon = gameEngine->dungeon;
+  map::Dungeon* dungeon = gameEngine->dungeon;
   float shadow = dungeon->getShadow(x * 2, y * 2);
   float cloud = dungeon->getCloudCoef(x * 2, y * 2);
   shadow = MIN(shadow, cloud);
@@ -273,7 +273,7 @@ bool Player::activateCell(int dungeonx, int dungeony, bool lbut_pressed, bool wa
   // click on adjacent non walkable item = activate it
   // clink on adjacent pickable item = pick it up
   bool useWeapon = true;
-  Dungeon* dungeon = gameEngine->dungeon;
+  map::Dungeon* dungeon = gameEngine->dungeon;
   auto* items = dungeon->getItems(dungeonx, dungeony);
   if (activated) *activated = false;
   if (items->size() > 0) {
@@ -331,7 +331,7 @@ bool Player::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
   static char quickslot10Key=config.getCharProperty("config.creatures.player.quickslot10");
   */
 
-  Dungeon* dungeon = gameEngine->dungeon;
+  map::Dungeon* dungeon = gameEngine->dungeon;
   if (initDungeon) {
     initDungeon = false;
     dungeon->addLight(&light);
@@ -484,8 +484,8 @@ bool Player::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
   if (crouch || stealth < 1.0f) {
     computeStealth(elapsed);
   }
-  TerrainId terrainId = dungeon->getTerrainType((int)x, (int)y);
-  float walkTime = terrainTypes[terrainId].walkCost * maxInvSpeed;
+  map::TerrainId terrainId = dungeon->getTerrainType((int)x, (int)y);
+  float walkTime = map::terrainTypes[terrainId].walkCost * maxInvSpeed;
   if (walkTimer >= 0) {
     bool hasWalked = false;
     int newx = (int)x, oldx = (int)x, newy = (int)y, oldy = (int)y;
@@ -706,7 +706,7 @@ void Player::updateSprintDelay(float elapsed, bool isSprinting) {
 
 void Player::updateHealing(float elapsed) {
   static float healRate = config.getFloatProperty("config.creatures.player.healRate");
-  Dungeon* dungeon = gameEngine->dungeon;
+  map::Dungeon* dungeon = gameEngine->dungeon;
   if (healPoints > 0) {
     float amount = elapsed * healRate;
     healPoints -= amount;

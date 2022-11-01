@@ -35,7 +35,7 @@
 #include "helpers.hpp"
 #include "item.hpp"
 #include "main.hpp"
-#include "map_building.hpp"
+#include "map/building.hpp"
 #include "screen_game.hpp"
 #include "ui_inventory.hpp"
 #include "util_cellular.hpp"
@@ -919,7 +919,7 @@ void Item::generateComponents() {
 }
 
 void Item::initLight() {
-  light_ = new ExtendedLight();
+  light_ = new map::ExtendedLight();
   light_->x = x * 2;
   light_->y = y * 2;
   light_->randomRad = false;
@@ -1063,11 +1063,11 @@ void Item::computeBottleName() {
   }
 }
 
-void Item::render(LightMap& lightMap, TCODImage* ground) {
+void Item::render(map::LightMap& lightMap, TCODImage* ground) {
   int conx = (int)(x - gameEngine->xOffset);
   int cony = (int)(y - gameEngine->yOffset);
   if (!IN_RECTANGLE(conx, cony, CON_W, CON_H)) return;
-  Dungeon* dungeon = gameEngine->dungeon;
+  map::Dungeon* dungeon = gameEngine->dungeon;
   TCODColor lightColor = lightMap.getColor(conx, cony);
   float shadow = dungeon->getShadow(x * 2, y * 2);
   float clouds = dungeon->getCloudCoef(x * 2, y * 2);
@@ -1242,7 +1242,7 @@ bool Item::age(float elapsed, ItemFeature* feat) {
 }
 
 bool Item::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
-  Dungeon* dungeon = gameEngine->dungeon;
+  map::Dungeon* dungeon = gameEngine->dungeon;
   if (!owner_ && !isOnScreen()) {
     // when not on screen, update only once per second
     cumulated_elapsed_ += elapsed;
@@ -1453,7 +1453,7 @@ bool Item::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
         float rad = ignite->heat.radius;
         gameEngine->removeFireZone((int)(x - rad), (int)(y - 2 * rad), (int)(2 * rad + 1), (int)(3 * rad));
       }
-      Cell* cell = dungeon->getCell(x, y);
+      map::Cell* cell = dungeon->getCell(x, y);
       if (cell->building) {
         cell->building->collapseRoof();
       }

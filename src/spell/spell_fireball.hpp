@@ -28,14 +28,14 @@
 
 #include "base/entity.hpp"
 #include "base/noisything.hpp"
-#include "map_light.hpp"
-#include "map_lightmap.hpp"
+#include "map/light.hpp"
+#include "map/lightmap.hpp"
 
 typedef enum { FB_SPARK, FB_STANDARD, FB_BURST, FB_INCANDESCENCE } FireBallType;
 
 class FireBall : public base::Entity, public base::NoisyThing {
  public:
-  Light light;  // light associated with this fireball
+  map::Light light;  // light associated with this fireball
 
   static float incanRange;  // incandescence cloud radius
   static float incanLife;  // incandescence cloud life in seconds
@@ -51,7 +51,7 @@ class FireBall : public base::Entity, public base::NoisyThing {
   FireBall(float xFrom, float yFrom, int xTo, int yTo, FireBallType type, const char* subtype = "fireball");
   ~FireBall();
 
-  void render(LightMap& lightMap);
+  void render(map::LightMap& lightMap);
   void render(TCODImage& ground);
   bool update(float elapsed);
 
@@ -59,7 +59,7 @@ class FireBall : public base::Entity, public base::NoisyThing {
   // type data
   struct Type {
     int trailLength;
-    HDRColor lightColor;
+    map::HDRColor lightColor;
     float speed;
     float standardLife;
     float sparkLife;

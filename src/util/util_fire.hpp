@@ -26,7 +26,7 @@
 #pragma once
 #include <libtcod.hpp>
 
-#include "map_dungeon.hpp"
+#include "map/dungeon.hpp"
 
 extern TCODColor fireColor[256];
 
@@ -50,7 +50,7 @@ class Fire {
 
 class FireManager {
  public:
-  FireManager(Dungeon* dungeon);
+  FireManager(map::Dungeon* dungeon);
   ~FireManager();
   void spark(int x, int y);
   void antispark(int x, int y);
@@ -68,7 +68,7 @@ class FireManager {
     float life;
   };
   TCODList<FireZone> zones;
-  Dungeon* dungeon = nullptr;
+  map::Dungeon* dungeon = nullptr;
   uint8_t* buf = nullptr;
   float el;
   base::Rect screenFireZone;

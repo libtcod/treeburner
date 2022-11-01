@@ -26,11 +26,13 @@
 #pragma once
 #include <libtcod.hpp>
 
-#include "map_lightmap.hpp"
+#include "map/lightmap.hpp"
 #include "mob_creature.hpp"
 #include "screen_school.hpp"
 
+namespace map {
 class Dungeon;
+}
 
 class Player : public Creature {
  public:
@@ -42,7 +44,7 @@ class Player : public Creature {
   void takeDamage(float amount) override;
   void termLevel();
   void heal(int healPoints);
-  void render(LightMap& lightMap) override;
+  void render(map::LightMap& lightMap) override;
   void setLightRange(float range) { light.range = range; }
   void setLightColor(TCODColor col) { light.color = col; }
   float getHealing();
@@ -65,9 +67,9 @@ class Player : public Creature {
   float lbuttonDelay, lWalkDelay, rbuttonDelay;
   bool lbutton, rbutton;
   float curHeal;
-  Light light;
+  map::Light light;
   bool up, down, left, right;
-  ExtendedLight healLight;
+  map::ExtendedLight healLight;
   bool initDungeon;
   bool isSprinting;
 

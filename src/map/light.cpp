@@ -23,17 +23,18 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#include "map_light.hpp"
+#include "map/light.hpp"
 
 #include <math.h>
 
 #include "main.hpp"
-#include "map_lightmap.hpp"
+#include "map/lightmap.hpp"
 
-void Light::addToLightMap(LightMap& lightmap) { add(&lightmap, nullptr); }
+namespace map {
+void Light::addToLightMap(map::LightMap& lightmap) { add(&lightmap, nullptr); }
 void Light::addToImage(TCODImage& img) { add(nullptr, &img); }
 
-void Light::add(LightMap* l, TCODImage* img) {
+void Light::add(map::LightMap* l, TCODImage* img) {
   if (this->range == 0.0f) return;
   // get light range in dungeon coordinates
   int minx = (int)(this->x - this->range);
@@ -124,16 +125,16 @@ void Light::add(LightMap* l, TCODImage* img) {
             coef = 1.0f - rad;
           }
           if (coef > 0.0f) {
-            HDRColor col = getColor(rad);
+            map::HDRColor col = getColor(rad);
 
             float intensity = getIntensity();
             coef *= intensity;
             if (l) {
-              HDRColor prevCol = l->getHdrColor2x(cx + minx, cy + miny);
+              map::HDRColor prevCol = l->getHdrColor2x(cx + minx, cy + miny);
               prevCol = prevCol + (col * coef);
               l->setColor2x(cx + minx, cy + miny, prevCol);
             } else {
-              HDRColor prevCol = img->getPixel(cx + minx, cy + miny);
+              map::HDRColor prevCol = img->getPixel(cx + minx, cy + miny);
               prevCol = prevCol + (col * coef);
               img->putPixel(cx + minx, cy + miny, prevCol);
             }
@@ -153,7 +154,7 @@ void Light::getDungeonPart(int* minx, int* miny, int* maxx, int* maxy) {
 }
 
 void ExtendedLight::setup(
-    HDRColor outColor, float intensityPatternDelay, const char* intensityPattern, const char* colorPattern) {
+    map::HDRColor outColor, float intensityPatternDelay, const char* intensityPattern, const char* colorPattern) {
   this->outColor = outColor;
   this->intensityPatternDelay = intensityPatternDelay;
   this->intensityPattern = intensityPattern;
@@ -183,9 +184,10 @@ float ExtendedLight::getIntensity() {
   return (float)(itchar - '0') / 9.0f;
 }
 
-HDRColor ExtendedLight::getColor(float rad) {
+map::HDRColor ExtendedLight::getColor(float rad) {
   if (colorPatternLen == 0) return color;
   int colchar = colorPattern[(int)(rad * colorPatternLen)];
   float coef = (float)(colchar - '0') / 9.0f;
-  return HDRColor::lerp(color, outColor, coef);
+  return map::HDRColor::lerp(color, outColor, coef);
 }
+}  // namespace map

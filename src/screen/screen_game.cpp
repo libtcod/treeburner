@@ -474,7 +474,7 @@ void Game::initLevel() {
   player.setLightColor(TCODColor::lerp(playerLightColor, playerLightColorEnd, (float)(level + 1) / nbLevels));
 
   CaveGenerator caveGen(level);
-  dungeon = new Dungeon(level, &caveGen);
+  dungeon = new map::Dungeon(level, &caveGen);
   if (level == nbLevels - 1) {
     // boss
     boss = (Boss*)Creature::getCreature(CREATURE_ZEEPOH);

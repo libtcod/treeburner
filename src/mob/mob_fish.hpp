@@ -26,7 +26,7 @@
 #pragma once
 #include <libtcod.hpp>
 
-#include "map_lightmap.hpp"
+#include "map/lightmap.hpp"
 #include "mob_behavior.hpp"
 #include "mob_creature.hpp"
 #include "util_ripples.hpp"
@@ -44,7 +44,7 @@ class Fish : public Creature {
   Fish(WaterZone* zone);
   ~Fish() override;
   bool update(float elapsed) override;
-  void render(LightMap& lightMap) override;
+  void render(map::LightMap& lightMap) override;
   float oldx, oldy;
   void slide();
   void initItem() override;
