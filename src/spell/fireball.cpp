@@ -31,6 +31,7 @@
 
 #include "main.hpp"
 
+namespace spell {
 float FireBall::incanRange = 0.0f;
 float FireBall::incanLife = 0.0f;
 float FireBall::sparkleSpeed = 0.0f;
@@ -510,3 +511,4 @@ bool FireBall::update(float elapsed) {
   }
   return true;
 }
+}  // namespace spell

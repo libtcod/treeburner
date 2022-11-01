@@ -31,6 +31,7 @@
 #include "map/light.hpp"
 #include "map/lightmap.hpp"
 
+namespace spell {
 typedef enum { FB_SPARK, FB_STANDARD, FB_BURST, FB_INCANDESCENCE } FireBallType;
 
 class FireBall : public base::Entity, public base::NoisyThing {
@@ -91,3 +92,4 @@ class FireBall : public base::Entity, public base::NoisyThing {
   Type* type_data_{};
   TCODList<Sparkle*> sparkles_{};
 };
+}  // namespace spell

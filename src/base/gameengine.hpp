@@ -69,7 +69,7 @@ class GameEngine : public screen::Screen {
   void hitFlash();  // when player is hit
 
   // fireballs
-  void addFireball(FireBall* fb);
+  void addFireball(spell::FireBall* fb);
   void updateFireballs(float elapsed);
 
   // UI
@@ -104,10 +104,10 @@ class GameEngine : public screen::Screen {
   float aspectRatio{};  // font char width / font char height
   bool bossSeen{};
   bool bossIsDead{};
-  TCODList<FireBall*> fireballs{};
+  TCODList<spell::FireBall*> fireballs{};
 
  protected:
-  TCODList<FireBall*> fireballsToAdd{};
+  TCODList<spell::FireBall*> fireballsToAdd{};
   bool isUpdatingFireballs{};
   float pauseCoef{};
   int nbPause{};
