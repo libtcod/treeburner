@@ -28,7 +28,7 @@
 #include <math.h>
 
 #include "main.hpp"
-#include "map_dungeon.hpp"
+#include "map/dungeon.hpp"
 
 TCODList<ScarePoint*> HerdBehavior::scare;
 

@@ -28,8 +28,8 @@
 
 #include "base/entity.hpp"
 #include "base/noisything.hpp"
-#include "map_light.hpp"
-#include "map_lightmap.hpp"
+#include "map/light.hpp"
+#include "map/lightmap.hpp"
 
 typedef enum { FB_SPARK, FB_STANDARD, FB_BURST, FB_INCANDESCENCE } FireBallType;
 

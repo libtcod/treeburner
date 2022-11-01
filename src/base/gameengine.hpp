@@ -29,8 +29,8 @@
 #include <umbra/umbra.hpp>
 
 #include "base/entity.hpp"
-#include "map_dungeon.hpp"
-#include "map_lightmap.hpp"
+#include "map/dungeon.hpp"
+#include "map/lightmap.hpp"
 #include "mob_creature.hpp"
 #include "mob_player.hpp"
 #include "screen.hpp"

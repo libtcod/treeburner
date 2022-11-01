@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#include "map_cell.hpp"
+#include "map/cell.hpp"
 
 std::array<TerrainType, NB_TERRAINS> terrainTypes = {{
     {"deep swamp water", TCODColor(44, 74, 62), false, true, true, 5.0f},

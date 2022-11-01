@@ -26,7 +26,7 @@
 #pragma once
 #include <libtcod.hpp>
 
-#include "map_dungeon.hpp"
+#include "map/dungeon.hpp"
 
 extern TCODColor fireColor[256];
 

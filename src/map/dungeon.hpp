@@ -30,7 +30,7 @@
 #include <vector>
 
 #include "base/savegame.hpp"
-#include "map_cell.hpp"
+#include "map/cell.hpp"
 #include "mob_creature.hpp"
 #include "util_cavegen.hpp"
 #include "util_cellular.hpp"

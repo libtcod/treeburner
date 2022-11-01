@@ -26,7 +26,7 @@
 #pragma once
 #include <libtcod.hpp>
 
-#include "map_lightmap.hpp"
+#include "map/lightmap.hpp"
 #include "mob_creature.hpp"
 #include "screen_school.hpp"
 

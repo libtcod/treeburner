@@ -24,7 +24,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 #pragma once
-#include "map_light.hpp"
+#include "map/light.hpp"
 #include "mob_creature.hpp"
 
 class Boss : public Creature {

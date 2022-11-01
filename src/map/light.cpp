@@ -23,12 +23,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#include "map_light.hpp"
+#include "map/light.hpp"
 
 #include <math.h>
 
 #include "main.hpp"
-#include "map_lightmap.hpp"
+#include "map/lightmap.hpp"
 
 void Light::addToLightMap(LightMap& lightmap) { add(&lightmap, nullptr); }
 void Light::addToImage(TCODImage& img) { add(nullptr, &img); }

@@ -31,7 +31,7 @@
 #include <libtcod/matrix.hpp>
 
 #include "main.hpp"
-#include "map_dungeon.hpp"
+#include "map/dungeon.hpp"
 #include "mob_fish.hpp"
 
 // range below which fishes try to get away from each other

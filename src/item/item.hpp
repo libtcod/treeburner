@@ -28,8 +28,8 @@
 #include <string>
 
 #include "base/entity.hpp"
-#include "map_light.hpp"
-#include "map_lightmap.hpp"
+#include "map/light.hpp"
+#include "map/lightmap.hpp"
 #include "modifier.hpp"
 
 class Creature;

@@ -31,8 +31,8 @@
 #include "base/gameengine.hpp"
 #include "base/savegame.hpp"
 #include "base/userpref.hpp"
-#include "map_cell.hpp"
-#include "map_lightmap.hpp"
+#include "map/cell.hpp"
+#include "map/lightmap.hpp"
 #include "util_sound.hpp"
 #include "util_threadpool.hpp"
 

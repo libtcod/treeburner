@@ -30,8 +30,8 @@
 
 #include "base/entity.hpp"
 #include "main.hpp"
-#include "map_building.hpp"
-#include "map_cell.hpp"
+#include "map/building.hpp"
+#include "map/cell.hpp"
 #include "util_powerup.hpp"
 
 #define FOREST_W 400
