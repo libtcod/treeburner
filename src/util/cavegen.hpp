@@ -26,23 +26,31 @@
 #pragma once
 #include <libtcod.hpp>
 
-// sub-cell image & console blitting functions
+namespace util {
+class CaveGenerator : public ITCODBspCallback {
+ public:
+  CaveGenerator(int level);  // bsp / cellular automate dungeon
 
-// background with MULTIPLY op, opaque foreground
-void blitTransparent(const TCODConsole* src, int x, int y, int w, int h, TCODConsole* dst, int xd, int yd);
-// transparent background & foreground with independant alphas
-void blitSemiTransparent(
-    const TCODConsole* src, int x, int y, int w, int h, TCODConsole* dst, int xd, int yd, float bgalpha, float fgalpha);
-// multiply colors with coef
-void darken(int x0, int y0, int w, int h, float coef);
-// add white * coef to foreground and background
-void lighten(int x0, int y0, int w, int h, float coef);
+  // the final dungeon map
+  TCODMap* map = nullptr;  // normal resolution for pathfinding
+  TCODMap* map2x = nullptr;  // double resolution for fovs
+  // dungeon generation parameters
+  int size;
+  int size2x;  // well.. size*2
+  TCODImage* ground = nullptr;  // ground color (subcell rez)
 
-// draw a transparent rectangle
-void rect(TCODConsole* con, int x, int y, int w, int h, const TCODColor& col, float alpha);
-// transparent blit2x, updates the content of img !
-void transpBlit2x(
-    TCODImage* img, int xsrc, int ysrc, int wsrc, int hsrc, TCODConsole* con, int xdst, int ydst, float alpha);
-// transparent rectangle blit2x with color key
-void transpRect2x(
-    TCODConsole* con, int x, int y, int w2, int h2, const TCODColor& col, const TCODColor& keyCol, float alpha);
+  // dungeon generator stuff
+  bool visitNode(TCODBsp* node, void* userData) override;
+  // apply blur to ground bitmap
+  static void smoothImage(TCODImage* img);
+
+ protected:
+  int level;
+  int bspDepth;  // how many times we split the map
+  int minRoomSize;  // minimum room width/height
+  bool randomRoom;  // a room fills a random part of the node or the maximum available space ?
+  bool roomWalls;  // if true, rooms from BSP leafs are always isolated by walls
+
+  void initData(int size);
+};
+}  // namespace util

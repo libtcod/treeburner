@@ -26,36 +26,27 @@
 #pragma once
 #include <libtcod.hpp>
 
-#include "base/entity.hpp"
-#include "util_ripples.hpp"
+namespace util {
+typedef int (*thread_job_t)(void* dat);
 
-namespace map {
-class Dungeon;
-}
-
-namespace mob {
-class Shoal;
-}
-
-struct WaterZone {
-  base::Rect rect;  // water zone
-  float cumulatedElapsed;
-  float* data = nullptr;  // water height data after update
-  float* oldData = nullptr;  // water height data before update
-  bool isActive;
-  mob::Shoal* shoal = nullptr;
+struct ThreadData {
+  int id;
+  void* jobData = nullptr;
+  TCOD_semaphore_t sem;
+  thread_job_t job;
+  int jobResult;
 };
 
-class RippleManager {
+class ThreadPool {
  public:
-  RippleManager(map::Dungeon* dungeon);
-  void startRipple(int dungeonx, int dungeony, float height = 0.0f);
-  bool updateRipples(float elapsed);
-  void renderRipples(TCODImage& ground);
+  ThreadPool();
+  int addJob(thread_job_t job, void* data);
+  bool isFinished(int jobId);
+  bool isMultiThreadEnabled();
+  void waitUntilFinished(int jobId);
 
  protected:
-  map::Dungeon* dungeon = nullptr;
-  TCODList<WaterZone*> zones;
-  void init();
-  float getData(const WaterZone& wz, int x2, int y2) const { return wz.data[x2 + y2 * wz.rect.w * 2]; }
+  TCODList<TCOD_thread_t> threads;
+  int nbCores;
 };
+}  // namespace util

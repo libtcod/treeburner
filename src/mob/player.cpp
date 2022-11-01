@@ -30,7 +30,7 @@
 
 #include "base/movement.hpp"
 #include "main.hpp"
-#include "util_subcell.hpp"
+#include "util/subcell.hpp"
 
 namespace mob {
 // maximum sprint : 2 times faster
@@ -201,7 +201,7 @@ void Player::render(map::LightMap& lightMap) {
         sprintBar.putPixel(x, 0, col);
         sprintBar.putPixel(x, 1, col);
       }
-      transpBlit2x(&sprintBar, 0, 0, 10, 2, TCODConsole::root, CON_W / 2 - 2, CON_H / 2 + 2, 0.4f);
+      util::transpBlit2x(&sprintBar, 0, 0, 10, 2, TCODConsole::root, CON_W / 2 - 2, CON_H / 2 + 2, 0.4f);
     }
   }
 
@@ -214,7 +214,7 @@ void Player::render(map::LightMap& lightMap) {
       TCODColor col = TCODColor::lerp(TCODColor::white, TCODColor::darkViolet, coef);
       stealthBar.putPixel(0, y, col);
       stealthBar.putPixel(1, y, col);
-      transpBlit2x(&stealthBar, 0, 0, 2, 10, TCODConsole::root, CON_W / 2 - 3, CON_H / 2 - 3, 0.4f);
+      util::transpBlit2x(&stealthBar, 0, 0, 2, 10, TCODConsole::root, CON_W / 2 - 3, CON_H / 2 - 3, 0.4f);
     }
   }
 }
@@ -744,7 +744,7 @@ bool Player::loadData(uint32_t chunkId, uint32_t chunkVersion, TCODZip* zip) {
   saveGame.loadChunk(&chunkId, &chunkVersion);
   bool ret = Creature::loadData(chunkId, chunkVersion, zip);
   if (ret) {
-    TextGenerator::addGlobalValue("PLAYER_NAME", name);
+    util::TextGenerator::addGlobalValue("PLAYER_NAME", name);
   }
   return ret;
 }

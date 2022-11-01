@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#include "util_ripples.hpp"
+#include "util/ripples.hpp"
 
 #include <assert.h>
 #include <math.h>
@@ -34,6 +34,7 @@
 #include "map/dungeon.hpp"
 #include "mob/fish.hpp"
 
+namespace util {
 // range below which fishes try to get away from each other
 #define SHOAL_CLOSE_RANGE 2.0f
 // range below which fishes try to get closer from each other
@@ -335,3 +336,4 @@ void RippleManager::renderRipples(TCODImage& ground) {
     }
   }
 }
+}  // namespace util

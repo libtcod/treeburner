@@ -28,6 +28,7 @@
 
 #include "base/entity.hpp"
 
+namespace util {
 class Packer : public base::Rect {
  public:
   TCODList<Rect> rects;
@@ -49,3 +50,4 @@ class Packer : public base::Rect {
   bool findEmptyPlace(base::Rect* rect);
   void addRectInternal(base::Rect* rect, bool duplicate);
 };
+}  // namespace util

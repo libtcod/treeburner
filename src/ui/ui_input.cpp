@@ -26,7 +26,7 @@
 #include "ui_input.hpp"
 
 #include "constants.hpp"
-#include "util_subcell.hpp"
+#include "util/subcell.hpp"
 
 void TextInput::init(const char* title, const char* text, int maxSize) {
   this->title = title;
@@ -56,7 +56,7 @@ TextInput::~TextInput() {
 
 void TextInput::render(int x, int y) {
   if (!txt) txt = new TCODText(x - width / 2 + 2, y + height - 3, MIN(maxSize, width - 4), 1, maxSize);
-  blitTransparent(con, 0, 0, 0, 0, TCODConsole::root, x - width / 2, y);
+  util::blitTransparent(con, 0, 0, 0, 0, TCODConsole::root, x - width / 2, y);
   txt->render(TCODConsole::root);
 }
 

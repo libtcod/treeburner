@@ -33,7 +33,7 @@
 #include "screen/game.hpp"
 #include "screen/mainmenu.hpp"
 #include "screen/treeBurner.hpp"
-#include "util_powerup.hpp"
+#include "util/powerup.hpp"
 
 TCODNoise noise1d(1);
 TCODNoise noise2d(2);
@@ -46,6 +46,8 @@ base::UserPref userPref;
 UmbraEngine engine("./data/cfg/umbra.txt", UMBRA_REGISTER_ALL);
 TCODImage background("./data/img/background.png");
 TCODParser config;
+util::Sound sound;
+util::ThreadPool* threadPool = nullptr;
 
 map::HDRColor getHDRColorProperty(const TCODParser& parser, const char* name) {
   TCODList<float> l(parser.getListProperty(name, TCOD_TYPE_FLOAT));
@@ -193,13 +195,13 @@ int main(int argc, char* argv[]) {
   // read main configuration file
   config.run("data/cfg/config.txt", NULL);
   mob::ConditionType::init();
-  TextGenerator::setGlobalFunction("NUMBER_TO_LETTER", new NumberToLetterFunc());
+  util::TextGenerator::setGlobalFunction("NUMBER_TO_LETTER", new util::NumberToLetterFunc());
 
   // load user preferences (mouse control mode, ...)
   userPref.load();
-  Powerup::init();
+  util::Powerup::init();
 
-  threadPool = new ThreadPool();
+  threadPool = new util::ThreadPool();
 
   // initialise random number generator
   if (!saveGame.load(base::PHASE_INIT)) {

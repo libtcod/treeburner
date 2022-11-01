@@ -26,7 +26,7 @@
 
 // world generator
 // this was mostly generated with libtcod 1.4.2 heightmap tool !
-#include "util_worldgen.hpp"
+#include "util/worldgen.hpp"
 
 #include <SDL.h>
 
@@ -35,6 +35,7 @@
 
 #include "main.hpp"
 
+namespace util {
 /// Workaround function until the time profiling code can be refactored to use uint64.
 static auto getTime() -> float { return SDL_GetTicks64() * 0.001f; }
 
@@ -1432,3 +1433,4 @@ void WorldGenerator::saveAltitudeMap(const char* filename) {
   }
   img.save(filename);
 }
+}  // namespace util

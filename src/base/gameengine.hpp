@@ -37,9 +37,9 @@
 #include "spell_fireball.hpp"
 #include "ui_dialog.hpp"
 #include "ui_gui.hpp"
-#include "util_fire.hpp"
-#include "util_packer.hpp"
-#include "util_ripples.hpp"
+#include "util/fire.hpp"
+#include "util/packer.hpp"
+#include "util/ripples.hpp"
 
 namespace base {
 class GameEngine : public screen::Screen {
@@ -63,7 +63,7 @@ class GameEngine : public screen::Screen {
   TCODImage ground{CON_W * 2, CON_H * 2};  // visible part of the ground
 
   map::LightMap lightMap{CON_W * 2, CON_H * 2};  // store light reaching each cell
-  Packer packer{0, 0, CON_W, CON_H};
+  util::Packer packer{0, 0, CON_W, CON_H};
 
   inline float getFog(int x, int y) { return lightMap.getFog(x, y); }
   void hitFlash();  // when player is hit
@@ -113,8 +113,8 @@ class GameEngine : public screen::Screen {
   int nbPause{};
   bool lookOn{};  // shit pressed
   bool firstFrame{true};
-  RippleManager* rippleManager{};
-  FireManager* fireManager{};
+  util::RippleManager* rippleManager{};
+  util::FireManager* fireManager{};
   float hitFlashAmount{};
 
   void onInitialise() override;

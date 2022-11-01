@@ -181,7 +181,7 @@ void Weapon::renderDescription(int x, int y, bool below) {
         renderDescriptionFrame(x,y,below);
 }
 
-static TextGenerator *textgen=NULL;
+static util::TextGenerator *textgen=NULL;
 
 Weapon *Weapon::getRandom(ItemClass itemClass) {
         int typenum=rng->getInt(0,NB_ITEM_WEAPON-1);
@@ -190,7 +190,7 @@ Weapon *Weapon::getRandom(ItemClass itemClass) {
 
 Weapon *Weapon::getRandom(ItemTypeId2 id,ItemClass itemClass) {
         if (! textgen ) {
-                textgen=new TextGenerator("data/cfg/weapon.txg",rng);
+                textgen=new util::TextGenerator("data/cfg/weapon.txg",rng);
                 textgen->parseFile();
         }
         Item * weapon = new Item(-1,-1,id);

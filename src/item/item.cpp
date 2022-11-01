@@ -38,11 +38,11 @@
 #include "map/building.hpp"
 #include "screen/game.hpp"
 #include "ui_inventory.hpp"
-#include "util_cellular.hpp"
-#include "util_textgen.hpp"
+#include "util/cellular.hpp"
+#include "util/textgen.hpp"
 
 // text generator for item names
-static TextGenerator* textgen = NULL;
+static util::TextGenerator* textgen = NULL;
 
 namespace item {
 TCODConsole* Item::descCon = NULL;
@@ -838,7 +838,7 @@ Item* Item::getItem(const ItemType* type, float x, float y, bool createComponent
 #define MAX_CAST_BONUS 0.2f
 Item* Item::getRandomWeapon(const char* typeName, ItemClass itemClass) {
   if (!textgen) {
-    textgen = new TextGenerator("data/cfg/weapon.txg", rng);
+    textgen = new util::TextGenerator("data/cfg/weapon.txg", rng);
     textgen->parseFile();
   }
   ItemType* type = getType(typeName);

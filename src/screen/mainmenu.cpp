@@ -30,7 +30,7 @@
 
 #include "constants.hpp"
 #include "main.hpp"
-#include "util_subcell.hpp"
+#include "util/subcell.hpp"
 
 namespace screen {
 MainMenu* MainMenu::instance = NULL;
@@ -97,7 +97,7 @@ void MainMenu::onInitialise() {
   title->getSize(&titlew, &titleh);
   titlex = CON_W - titlew / 2;
   titley = CON_H / 3 + 28;
-  fire = new Fire(titlew, titleh + 10);
+  fire = new util::Fire(titlew, titleh + 10);
   worldDone = TCODSystem::newSemaphore(0);
   rock = new TCODImage("data/img/rock.png");
   rockNormal = new TCODImage("data/img/rock_n.png");
@@ -209,7 +209,7 @@ void MainMenu::render() {
     float elcoef = 1.0f;
     if (elapsed < 10.0f) elcoef = (elapsed - 2.0f) / 8.0f;
 
-    darken(MENUX - 5, MENUY + selectedItem * 2, MENUW * 2, 1, 1.0f - elcoef * 0.5f);
+    util::darken(MENUX - 5, MENUY + selectedItem * 2, MENUW * 2, 1, 1.0f - elcoef * 0.5f);
     TCODConsole::root->setDefaultForeground(TEXT_COLOR * elcoef);
     int itemNum = 0;
     for (MenuItemId* it = menu.begin(); it != menu.end(); it++, itemNum++) {

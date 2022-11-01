@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Jice
+ * Copyright (c) 2009 Jice
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,50 +26,54 @@
 #pragma once
 #include <libtcod.hpp>
 
-#include "map/dungeon.hpp"
+namespace util {
+typedef enum { PW_FIRST = 0, PW_FB = 0, PW_BURST, PW_SPARKLE_THROUGH, PW_SPARKLE_BOUNCE, PW_INCAN, PW_NB } PowerupId;
 
-extern TCODColor fireColor[256];
-
-class Fire {
+class Powerup {
  public:
-  Fire(int w, int h);
-  ~Fire();
-  void generateImage();
-  void spark(int x, int y);
-  void antispark(int x, int y);
-  void softspark(int x, int y, int delta);
-  void update(float elapsed);
-  TCODImage* img = nullptr;
+  static TCODList<Powerup*> list;
 
- protected:
-  int w, h;
-  uint8_t* buf = nullptr;
-  uint8_t* smoothedBuf = nullptr;
-  float el;
+  Powerup(
+      PowerupId id,
+      int level,
+      const char* name = nullptr,
+      const char* type = nullptr,
+      const char* description = nullptr,
+      Powerup* prerequisite = nullptr);
+
+  static void init();
+  void apply();
+  static void getAvailable(TCODList<Powerup*>* l);
+
+  PowerupId id_{};
+  const char* name_{};
+  int level_{};
+  const char* type_{};
+  const char* description_{};
+  Powerup* prerequisite_{};
+  bool enabled_{};
 };
 
-class FireManager {
+class PowerupGraph {
  public:
-  FireManager(map::Dungeon* dungeon);
-  ~FireManager();
-  void spark(int x, int y);
-  void antispark(int x, int y);
-  void softspark(int x, int y, int delta);
-  void update(float elapsed);
-  void renderFire(TCODImage& ground);
-  void addZone(int x, int y, int w, int h);
-  void removeZone(int x, int y, int w, int h);
+  static PowerupGraph* instance;
+
+  void refresh() { need_refresh_ = true; }
+  void setFontSize(int fontSize);
+  void render();
+  bool update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse);
 
  protected:
-  inline uint8_t get(int x, int y) { return buf[x + dungeon->width * 2 * y]; }
-  inline void set(int x, int y, uint8_t v) { buf[x + dungeon->width * 2 * y] = v; }
-  struct FireZone {
-    base::Rect r;
-    float life;
-  };
-  TCODList<FireZone> zones;
-  map::Dungeon* dungeon = nullptr;
-  uint8_t* buf = nullptr;
-  float el;
-  base::Rect screenFireZone;
+  friend class Powerup;
+
+  static TCODImage* img_[PW_NB];
+  static const char* img_name_[PW_NB];
+
+  PowerupGraph();
+
+  bool need_refresh_{};
+  int icon_width_{}, icon_height_{};  // in console cells
+  int mouse_cx_{}, mouse_cy_{};
+  Powerup* selected{};
 };
+}  // namespace util

@@ -76,7 +76,7 @@ Villager::Villager() {
 }
 
 bool Villager::update(float elapsed) {
-  static TextGenerator talkGenerator("data/cfg/villager.txg");
+  static util::TextGenerator talkGenerator("data/cfg/villager.txg");
   bool oldSeen = seen;
   if (!Minion::update(elapsed)) return false;
   if (!oldSeen && seen && talkDelay > 10.0f) {

@@ -31,13 +31,13 @@
 
 #include "base/aidirector.hpp"
 #include "main.hpp"
-#include "util_powerup.hpp"
+#include "util/powerup.hpp"
 
 namespace screen {
 Game::Game() : level(0), helpOn(false) {}
 
 void Game::onInitialise() {
-  PowerupGraph::instance->setFontSize(8 + engine.getFontID() * 2);
+  util::PowerupGraph::instance->setFontSize(8 + engine.getFontID() * 2);
   lightMap.fogRange = 15.0f;
 }
 
@@ -249,7 +249,7 @@ void Game::render() {
   }
   /*
   if ( isGamePaused() && pauseScreen ) {
-          blitTransparent(pauseScreen,0,0,CON_W-20,CON_H-20,TCODConsole::root,10,5);
+          util::blitTransparent(pauseScreen,0,0,CON_W-20,CON_H-20,TCODConsole::root,10,5);
   }
   */
 }
@@ -368,13 +368,13 @@ bool Game::update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse) {
     }
     if (k.c == 'm' && k.lalt && !k.pressed) {
       // debug mode : Alt-m : max spells
-      TCODList<Powerup*> list;
+      TCODList<util::Powerup*> list;
       bool again = true;
       do {
-        Powerup::getAvailable(&list);
+        util::Powerup::getAvailable(&list);
         again = false;
         while (!list.isEmpty()) {
-          Powerup* sel = list.pop();
+          util::Powerup* sel = list.pop();
           sel->apply();
           again = true;
         }
@@ -474,7 +474,7 @@ void Game::initLevel() {
 
   player.setLightColor(TCODColor::lerp(playerLightColor, playerLightColorEnd, (float)(level + 1) / nbLevels));
 
-  CaveGenerator caveGen(level);
+  util::CaveGenerator caveGen(level);
   dungeon = new map::Dungeon(level, &caveGen);
   if (level == nbLevels - 1) {
     // boss

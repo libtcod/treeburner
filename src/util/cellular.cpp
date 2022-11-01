@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#include "util_cellular.hpp"
+#include "util/cellular.hpp"
 
 #include <algorithm>
 #include <utility>
@@ -34,6 +34,7 @@
 // 1 : wall
 // 0 : ground
 
+namespace util {
 CellularAutomata::CellularAutomata(TCODMap* map) : CellularAutomata{map->getWidth(), map->getHeight()} {
   for (int py = 0; py < h_; ++py) {
     for (int px = 0; px < w_; ++px) {
@@ -237,3 +238,4 @@ CellularAutomata::CellularAutomata(CellularAutomata& c1, CellularAutomata& c2, f
   }
   data_ = std::move(data2);
 }
+}  // namespace util

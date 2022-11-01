@@ -32,7 +32,7 @@
 #include "main.hpp"
 #include "map/building.hpp"
 #include "map/cell.hpp"
-#include "util_powerup.hpp"
+#include "util/powerup.hpp"
 
 namespace screen {
 #define FOREST_W 400
@@ -444,7 +444,7 @@ void TreeBurner::generateMap(uint32_t seed) {
 #ifndef NDEBUG
   float t0 = TCODSystem::getElapsedSeconds();
 #endif
-  Packer packer(FOREST_W - 100, 20, 80, FOREST_H - 40);
+  util::Packer packer(FOREST_W - 100, 20, 80, FOREST_H - 40);
   // set water as non buildable
   for (int x = FOREST_W - 100; x < FOREST_W - 20; x++) {
     for (int y = 20; y < FOREST_H; y++) {
@@ -640,14 +640,14 @@ void TreeBurner::onActivate() {
   player.y = py;
   strcpy(player.name, "You");
   // make player uber powerful
-  Powerup::init();
-  TCODList<Powerup*> list;
+  util::Powerup::init();
+  TCODList<util::Powerup*> list;
   bool again = true;
   do {
-    Powerup::getAvailable(&list);
+    util::Powerup::getAvailable(&list);
     again = false;
     while (!list.isEmpty()) {
-      Powerup* sel = list.pop();
+      util::Powerup* sel = list.pop();
       sel->apply();
       again = true;
     }
@@ -662,8 +662,8 @@ void TreeBurner::onActivate() {
   gui.log.critical(
       "Welcome to TreeBurner v%s ! %c?%c for help.", getStringParam("version"), TCOD_COLCTRL_2, TCOD_COLCTRL_STOP);
   lookOn = false;
-  rippleManager = new RippleManager(dungeon);
-  fireManager = new FireManager(dungeon);
+  rippleManager = new util::RippleManager(dungeon);
+  fireManager = new util::FireManager(dungeon);
   aiDirector.setBaseCreature(mob::CREATURE_VILLAGER);
 
   Objective* obj = new Objective(

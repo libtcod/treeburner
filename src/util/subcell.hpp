@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Jice
+ * Copyright (c) 2009 Jice
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,21 +26,25 @@
 #pragma once
 #include <libtcod.hpp>
 
-class CloudBox {
- public:
-  CloudBox(int width, int height);
-  ~CloudBox();
-  float getInterpolatedThickness(int x, int y);
-  float getThickness(int x, int y);
-  TCODColor getColor(float thickness, int x, int y);
-  void update(float elapsed);
+namespace util {
+// sub-cell image & console blitting functions
 
- protected:
-  int width, height, x0;
-  float *data, xOffset, xTotalOffset;
-  float* highOctaveNoise = nullptr;
-  TCODColor cloudColorMap[256];
-  float getNoisierThickness(int x, int y);
-  float getData(float* data, int x, int y);
-  float getInterpolatedData(float* data, int x, int y);
-};
+// background with MULTIPLY op, opaque foreground
+void blitTransparent(const TCODConsole* src, int x, int y, int w, int h, TCODConsole* dst, int xd, int yd);
+// transparent background & foreground with independant alphas
+void blitSemiTransparent(
+    const TCODConsole* src, int x, int y, int w, int h, TCODConsole* dst, int xd, int yd, float bgalpha, float fgalpha);
+// multiply colors with coef
+void darken(int x0, int y0, int w, int h, float coef);
+// add white * coef to foreground and background
+void lighten(int x0, int y0, int w, int h, float coef);
+
+// draw a transparent rectangle
+void rect(TCODConsole* con, int x, int y, int w, int h, const TCODColor& col, float alpha);
+// transparent blit2x, updates the content of img !
+void transpBlit2x(
+    TCODImage* img, int xsrc, int ysrc, int wsrc, int hsrc, TCODConsole* con, int xdst, int ydst, float alpha);
+// transparent rectangle blit2x with color key
+void transpRect2x(
+    TCODConsole* con, int x, int y, int w2, int h2, const TCODColor& col, const TCODColor& keyCol, float alpha);
+}  // namespace util

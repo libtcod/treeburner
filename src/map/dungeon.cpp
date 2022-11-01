@@ -39,7 +39,7 @@ Dungeon::Dungeon(int width, int height) : level(0), ambient(TCODColor::black) {
   this->width = width;
   this->height = height;
   initData(NULL);
-  clouds = new CloudBox(width * 2, height * 2);
+  clouds = new util::CloudBox(width * 2, height * 2);
   canopy = new TCODImage(width * 2, height * 2);
 }
 
@@ -55,7 +55,7 @@ void Dungeon::computeSpawnSources() {
 }
 
 // allocate all data
-void Dungeon::initData(CaveGenerator* caveGen) {
+void Dungeon::initData(util::CaveGenerator* caveGen) {
   cells = new map::Cell[width * height];
   subcells = new map::SubCell[width * height * 4];
   stairx = stairy = -1;
@@ -92,7 +92,7 @@ void Dungeon::cleanData() {
   if (clouds) delete clouds;
 }
 
-Dungeon::Dungeon(int level, CaveGenerator* caveGen) : level(level), ambient(TCODColor::black) {
+Dungeon::Dungeon(int level, util::CaveGenerator* caveGen) : level(level), ambient(TCODColor::black) {
   // get dungeons min/max size from config
   static int nbLevels = config.getIntProperty("config.gameplay.nbLevels");
   static int minSize = config.getIntProperty("config.gameplay.dungeonMinSize");
@@ -127,11 +127,11 @@ void Dungeon::finalizeMap(bool roundCorners, bool blurGround) {
 
   // apply cellular automata to 2x map
   if (roundCorners) {
-    CellularAutomata cell2x(map2x);
-    cell2x.generate(&CellularAutomata::CAFunc_roundCorners, 1);
-    cell2x.generate(&CellularAutomata::CAFunc_removeInnerWalls, 1);
-    cell2x.generate(&CellularAutomata::CAFunc_roundCorners, 1);
-    cell2x.generate(&CellularAutomata::CAFunc_cleanIsolatedWalls, 1);
+    util::CellularAutomata cell2x(map2x);
+    cell2x.generate(&util::CellularAutomata::CAFunc_roundCorners, 1);
+    cell2x.generate(&util::CellularAutomata::CAFunc_removeInnerWalls, 1);
+    cell2x.generate(&util::CellularAutomata::CAFunc_roundCorners, 1);
+    cell2x.generate(&util::CellularAutomata::CAFunc_cleanIsolatedWalls, 1);
     cell2x.seal();
     cell2x.apply(map2x);
     // fix walk info in normal resolution map

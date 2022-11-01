@@ -30,7 +30,7 @@
 
 #include "constants.hpp"
 #include "main.hpp"
-#include "util_subcell.hpp"
+#include "util/subcell.hpp"
 
 #define NB_LINES 10
 #define HISTORY_SIZE 256
@@ -94,28 +94,28 @@ void Logger::render() {
   if (!isMinimized) {
     scroller->render(con, 0, 1);
     scroller->renderScrollbar(con, 0, 1);
-    blitSemiTransparent(
+    util::blitSemiTransparent(
         con, 0, 0, maximizedRect.w, maximizedRect.h, TCODConsole::root, maximizedRect.x, maximizedRect.y, 0.8f, 1.0f);
     /*
     int nbMessages = messages.size();
     int nbDisplayed = MIN(CON_H-1,nbMessages-offset);
     if ( nbMessages > 0 ) {
             y = CON_H-nbDisplayed;
-            blitTransparent(con,0,0,maximizedRect.w,maximizedRect.h,TCODConsole::root,maximizedRect.x,maximizedRect.y);
+            util::blitTransparent(con,0,0,maximizedRect.w,maximizedRect.h,TCODConsole::root,maximizedRect.x,maximizedRect.y);
             // scrollbar
             if ( nbDisplayed < nbMessages ) {
                     int firstDisplayed = nbMessages - offset - nbDisplayed;
                     int start = ((CON_H-1) * firstDisplayed)/nbMessages;
                     int end = (CON_H * (firstDisplayed + nbDisplayed))/nbMessages;
                     end=MIN(CON_H-1,end);
-                    if ( start > 0 ) darken(maximizedRect.x+LOG_WIDTH-1,0,1,start,0.5f);
-                    if ( end+1 < CON_H ) darken(maximizedRect.x+LOG_WIDTH-1,end+1,1,CON_H-1-end,0.5f);
-                    lighten(maximizedRect.x+LOG_WIDTH-2,start,2,end-start+1,focus || drag ? 0.5f : 0.25f);
+                    if ( start > 0 ) util::darken(maximizedRect.x+LOG_WIDTH-1,0,1,start,0.5f);
+                    if ( end+1 < CON_H ) util::darken(maximizedRect.x+LOG_WIDTH-1,end+1,1,CON_H-1-end,0.5f);
+                    util::lighten(maximizedRect.x+LOG_WIDTH-2,start,2,end-start+1,focus || drag ? 0.5f : 0.25f);
             }
     }
     */
   } else if (titleBarAlpha > 0.0f) {
-    blitSemiTransparent(
+    util::blitSemiTransparent(
         con, 0, 0, rect.w, rect.h, TCODConsole::root, rect.x, rect.y, 0.8f * titleBarAlpha, titleBarAlpha);
   } else if (nbActive > 0) {
     int ry = 0, dy = 0, count = 0;
@@ -139,7 +139,7 @@ void Logger::render() {
         timer = 1.0f;
       else
         timer = timer * 2;
-      blitSemiTransparent(con, 0, y, LOG_WIDTH, 1, TCODConsole::root, rect.x, ry, 0.8f * timer, timer);
+      util::blitSemiTransparent(con, 0, y, LOG_WIDTH, 1, TCODConsole::root, rect.x, ry, 0.8f * timer, timer);
     }
   }
   if (titleBarAlpha > 0.0f) renderFrame(titleBarAlpha, "Message log");

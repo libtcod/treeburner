@@ -26,18 +26,22 @@
 #pragma once
 #include <libtcod.hpp>
 
-class NameGenerator {
+namespace util {
+// some utilities to dig in TCODMaps
+class MapCarver {
  public:
-  static const char* generateName(TCODRandom* ngRng, const char* pre[], const char* mid[], const char* post[]);
-  static const char* generateRegionName(TCODRandom* ngRng);
-  static const char* generateCityName(TCODRandom* ngRng);
-  static const char* generateCelticName(TCODRandom* ngRng, bool male);
-  static const char* generateNorseName(TCODRandom* ngRng, bool male);
-  static const char* generateMesopotamianName(TCODRandom* ngRng, bool male);
-  static const char* generateFantasyName(TCODRandom* ngRng, bool male);
-  static const char* generateRandomName(TCODRandom* ngRng);
-
- protected:
-  static int count(const char** list);
-  static void concatSyllable(char* dest, const char* syl1, const char* syl2);
+  static void room(TCODMap* map, int x, int y, int w, int h);
+  // draw a horizontal line
+  static void hline(TCODMap* map, int x1, int y, int x2);
+  // draw a horizontal line left until we reach an empty space
+  static void hlineLeft(TCODMap* map, int x, int y);
+  // draw a horizontal line right until we reach an empty space
+  static void hlineRight(TCODMap* map, int x, int y);
+  // draw a vertical line down until we reach an empty space
+  static void vlineDown(TCODMap* map, int x, int y);
+  // draw a vertical line up until we reach an empty space
+  static void vlineUp(TCODMap* map, int x, int y);
+  // draw a vertical line
+  static void vline(TCODMap* map, int x, int y1, int y2);
 };
+}  // namespace util

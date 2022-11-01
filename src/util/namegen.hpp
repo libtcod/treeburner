@@ -26,29 +26,20 @@
 #pragma once
 #include <libtcod.hpp>
 
-class CaveGenerator : public ITCODBspCallback {
+namespace util {
+class NameGenerator {
  public:
-  CaveGenerator(int level);  // bsp / cellular automate dungeon
-
-  // the final dungeon map
-  TCODMap* map = nullptr;  // normal resolution for pathfinding
-  TCODMap* map2x = nullptr;  // double resolution for fovs
-  // dungeon generation parameters
-  int size;
-  int size2x;  // well.. size*2
-  TCODImage* ground = nullptr;  // ground color (subcell rez)
-
-  // dungeon generator stuff
-  bool visitNode(TCODBsp* node, void* userData) override;
-  // apply blur to ground bitmap
-  static void smoothImage(TCODImage* img);
+  static const char* generateName(TCODRandom* ngRng, const char* pre[], const char* mid[], const char* post[]);
+  static const char* generateRegionName(TCODRandom* ngRng);
+  static const char* generateCityName(TCODRandom* ngRng);
+  static const char* generateCelticName(TCODRandom* ngRng, bool male);
+  static const char* generateNorseName(TCODRandom* ngRng, bool male);
+  static const char* generateMesopotamianName(TCODRandom* ngRng, bool male);
+  static const char* generateFantasyName(TCODRandom* ngRng, bool male);
+  static const char* generateRandomName(TCODRandom* ngRng);
 
  protected:
-  int level;
-  int bspDepth;  // how many times we split the map
-  int minRoomSize;  // minimum room width/height
-  bool randomRoom;  // a room fills a random part of the node or the maximum available space ?
-  bool roomWalls;  // if true, rooms from BSP leafs are always isolated by walls
-
-  void initData(int size);
+  static int count(const char** list);
+  static void concatSyllable(char* dest, const char* syl1, const char* syl2);
 };
+}  // namespace util

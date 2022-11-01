@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#include "util_fire.hpp"
+#include "util/fire.hpp"
 
 #include <stdlib.h>
 #include <string.h>
@@ -35,6 +35,7 @@
 
 // old school fire routines
 
+namespace util {
 TCODColor fireColor[256];
 static bool col_init = false;
 
@@ -284,3 +285,4 @@ void FireManager::renderFire(TCODImage& ground) {
     }
   }
 }
+}  // namespace util

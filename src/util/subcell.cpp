@@ -23,10 +23,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#include "util_subcell.hpp"
+#include "util/subcell.hpp"
 
 #include "main.hpp"
 
+namespace util {
 // background with MULTIPLY op, opaque foreground
 void blitTransparent(const TCODConsole* src, int x, int y, int w, int h, TCODConsole* dst, int xd, int yd) {
   if (w == 0) w = src->getWidth();
@@ -190,3 +191,4 @@ void transpRect2x(
   */
   transpBlit2x(img, 0, 0, w2, h2, con, x, y, alpha);
 }
+}  // namespace util

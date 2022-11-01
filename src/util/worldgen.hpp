@@ -28,6 +28,7 @@
 #include <libtcod.hpp>
 #include <vector>
 
+namespace util {
 // size of the heightmap
 static constexpr auto HM_WIDTH = 800;
 static constexpr auto HM_HEIGHT = 800;
@@ -150,3 +151,4 @@ class WorldGenerator {
   std::vector<River> rivers_{};
   TCODRandom* wg_rng_{};
 };
+}  // namespace util

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009 Jice
+ * Copyright (c) 2010 Jice
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,52 +26,38 @@
 #pragma once
 #include <libtcod.hpp>
 
-typedef enum { PW_FIRST = 0, PW_FB = 0, PW_BURST, PW_SPARKLE_THROUGH, PW_SPARKLE_BOUNCE, PW_INCAN, PW_NB } PowerupId;
+#include "base/entity.hpp"
+#include "util/ripples.hpp"
 
-class Powerup {
- public:
-  static TCODList<Powerup*> list;
+namespace map {
+class Dungeon;
+}
 
-  Powerup(
-      PowerupId id,
-      int level,
-      const char* name = nullptr,
-      const char* type = nullptr,
-      const char* description = nullptr,
-      Powerup* prerequisite = nullptr);
+namespace mob {
+class Shoal;
+}
 
-  static void init();
-  void apply();
-  static void getAvailable(TCODList<Powerup*>* l);
-
-  PowerupId id_{};
-  const char* name_{};
-  int level_{};
-  const char* type_{};
-  const char* description_{};
-  Powerup* prerequisite_{};
-  bool enabled_{};
+namespace util {
+struct WaterZone {
+  base::Rect rect;  // water zone
+  float cumulatedElapsed;
+  float* data = nullptr;  // water height data after update
+  float* oldData = nullptr;  // water height data before update
+  bool isActive;
+  mob::Shoal* shoal = nullptr;
 };
 
-class PowerupGraph {
+class RippleManager {
  public:
-  static PowerupGraph* instance;
-
-  void refresh() { need_refresh_ = true; }
-  void setFontSize(int fontSize);
-  void render();
-  bool update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse);
+  RippleManager(map::Dungeon* dungeon);
+  void startRipple(int dungeonx, int dungeony, float height = 0.0f);
+  bool updateRipples(float elapsed);
+  void renderRipples(TCODImage& ground);
 
  protected:
-  friend class Powerup;
-
-  static TCODImage* img_[PW_NB];
-  static const char* img_name_[PW_NB];
-
-  PowerupGraph();
-
-  bool need_refresh_{};
-  int icon_width_{}, icon_height_{};  // in console cells
-  int mouse_cx_{}, mouse_cy_{};
-  Powerup* selected{};
+  map::Dungeon* dungeon = nullptr;
+  TCODList<WaterZone*> zones;
+  void init();
+  float getData(const WaterZone& wz, int x2, int y2) const { return wz.data[x2 + y2 * wz.rect.w * 2]; }
 };
+}  // namespace util

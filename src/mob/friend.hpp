@@ -27,7 +27,7 @@
 #include <libtcod.hpp>
 
 #include "mob/creature.hpp"
-#include "util_textgen.hpp"
+#include "util/textgen.hpp"
 
 namespace mob {
 enum FriendAiMode {
@@ -46,7 +46,7 @@ class Friend : public Creature {
   void saveData(uint32_t chunkId, TCODZip* zip) override;
 
  private:
-  TextGenerator* talkGenerator = nullptr;
+  util::TextGenerator* talkGenerator = nullptr;
   float timer;
   bool startPhrase, foodTuto, foodObj;
 

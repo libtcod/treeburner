@@ -36,13 +36,13 @@ namespace mob {
 
 Friend::Friend() : Creature(), timer(0.0f), startPhrase(false), lostDelay(-5.0f) {
   strcpy(name, "Aidan");
-  TextGenerator::addGlobalValue("FRIEND_NAME", name);
+  util::TextGenerator::addGlobalValue("FRIEND_NAME", name);
   ch = '@';
   color_ = TCODColor(210, 210, 255);
   life = 100;
   speed = 12.0f;
   type = CREATURE_FRIEND;
-  talkGenerator = new TextGenerator("data/cfg/dialog_chap1.txg");
+  talkGenerator = new util::TextGenerator("data/cfg/dialog_chap1.txg");
   awayCount = 0;
   talkText.delay = -2.0f;
   caught = 0;

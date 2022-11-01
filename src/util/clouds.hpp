@@ -26,19 +26,23 @@
 #pragma once
 #include <libtcod.hpp>
 
-class Script {
+namespace util {
+class CloudBox {
  public:
-  Script();
-  ~Script();
-  bool parse(const char* script, ...);
-  bool parseFile(const char* filename);
-  bool parse(TCODLex* lex);
-  float getFloatVariable(const char* name);
-  void setFloatVariable(const char* name, float val);
-  bool execute();
+  CloudBox(int width, int height);
+  ~CloudBox();
+  float getInterpolatedThickness(int x, int y);
+  float getThickness(int x, int y);
+  TCODColor getColor(float thickness, int x, int y);
+  void update(float elapsed);
 
  protected:
-  void init();
-  int ref;  // reference to precompiled chunk
-  void* data = nullptr;
+  int width, height, x0;
+  float *data, xOffset, xTotalOffset;
+  float* highOctaveNoise = nullptr;
+  TCODColor cloudColorMap[256];
+  float getNoisierThickness(int x, int y);
+  float getData(float* data, int x, int y);
+  float getInterpolatedData(float* data, int x, int y);
 };
+}  // namespace util

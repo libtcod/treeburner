@@ -28,7 +28,7 @@
 #include "helpers.hpp"
 #include "main.hpp"
 #include "ui_inventory.hpp"
-#include "util_subcell.hpp"
+#include "util/subcell.hpp"
 
 #define CRAFT_WIDTH 70
 #define CRAFT_HEIGHT 40
@@ -135,7 +135,7 @@ void Craft::render() {
   if (result) create.render(con);
   if (tool || !ingredients.empty()) clear.render(con);
 
-  blitSemiTransparent(con, 0, 0, rect.w, rect.h, TCODConsole::root, rect.x, rect.y, 0.8f, 1.0f);
+  util::blitSemiTransparent(con, 0, 0, rect.w, rect.h, TCODConsole::root, rect.x, rect.y, 0.8f, 1.0f);
 
   // result
   if (result) {

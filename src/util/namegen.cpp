@@ -23,11 +23,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#include "util_namegen.hpp"
+#include "util/namegen.hpp"
 
 #include <ctype.h>
 #include <stdio.h>
 
+namespace util {
 static const char* region_pre[] = {"Act",  "Afr", "Ag",  "Agr",   "Alb",  "Am",   "An",  "Angl", "Ant", "As",  "Asys",
                                    "Asis", "At",  "Atl", "Brund", "Cath", "Cor",  "Dan", "Eb",   "Eg",  "Er",  "Esc",
                                    "Esp",  "Est", "Eth", "Eur",   "Flor", "It",   "Lyr", "Mal",  "Mir", "Myr", "Nor",
@@ -191,3 +192,4 @@ const char* NameGenerator::generateRandomName(TCODRandom* ngRng) {
       break;
   }
 }
+}  // namespace util

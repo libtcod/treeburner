@@ -27,7 +27,7 @@
 #include "ui_dialog.hpp"
 
 #include "main.hpp"
-#include "util_subcell.hpp"
+#include "util/subcell.hpp"
 
 void Widget::sendEvent(EWidgetEvent event) {
   for (UIListener** it = listeners.begin(); it != listeners.end(); it++) {
@@ -286,7 +286,7 @@ void Dialog::renderFrame(float alpha, const char* title) {
   }
 
   if (alpha < 1.0f)
-    blitSemiTransparent(con, 0, 0, rect.w, 1, TCODConsole::root, rect.x, rect.y, alpha, alpha);
+    util::blitSemiTransparent(con, 0, 0, rect.w, 1, TCODConsole::root, rect.x, rect.y, alpha, alpha);
   else
     TCODConsole::blit(con, 0, 0, rect.w, 1, TCODConsole::root, rect.x, rect.y);
 }

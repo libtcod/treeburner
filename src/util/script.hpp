@@ -26,25 +26,21 @@
 #pragma once
 #include <libtcod.hpp>
 
-typedef int (*thread_job_t)(void* dat);
-
-struct ThreadData {
-  int id;
-  void* jobData = nullptr;
-  TCOD_semaphore_t sem;
-  thread_job_t job;
-  int jobResult;
-};
-
-class ThreadPool {
+namespace util {
+class Script {
  public:
-  ThreadPool();
-  int addJob(thread_job_t job, void* data);
-  bool isFinished(int jobId);
-  bool isMultiThreadEnabled();
-  void waitUntilFinished(int jobId);
+  Script();
+  ~Script();
+  bool parse(const char* script, ...);
+  bool parseFile(const char* filename);
+  bool parse(TCODLex* lex);
+  float getFloatVariable(const char* name);
+  void setFloatVariable(const char* name, float val);
+  bool execute();
 
  protected:
-  TCODList<TCOD_thread_t> threads;
-  int nbCores;
+  void init();
+  int ref;  // reference to precompiled chunk
+  void* data = nullptr;
 };
+}  // namespace util

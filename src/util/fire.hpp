@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009 Jice
+ * Copyright (c) 2010 Jice
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,20 +26,52 @@
 #pragma once
 #include <libtcod.hpp>
 
-// some utilities to dig in TCODMaps
-class MapCarver {
+#include "map/dungeon.hpp"
+
+namespace util {
+extern TCODColor fireColor[256];
+
+class Fire {
  public:
-  static void room(TCODMap* map, int x, int y, int w, int h);
-  // draw a horizontal line
-  static void hline(TCODMap* map, int x1, int y, int x2);
-  // draw a horizontal line left until we reach an empty space
-  static void hlineLeft(TCODMap* map, int x, int y);
-  // draw a horizontal line right until we reach an empty space
-  static void hlineRight(TCODMap* map, int x, int y);
-  // draw a vertical line down until we reach an empty space
-  static void vlineDown(TCODMap* map, int x, int y);
-  // draw a vertical line up until we reach an empty space
-  static void vlineUp(TCODMap* map, int x, int y);
-  // draw a vertical line
-  static void vline(TCODMap* map, int x, int y1, int y2);
+  Fire(int w, int h);
+  ~Fire();
+  void generateImage();
+  void spark(int x, int y);
+  void antispark(int x, int y);
+  void softspark(int x, int y, int delta);
+  void update(float elapsed);
+  TCODImage* img = nullptr;
+
+ protected:
+  int w, h;
+  uint8_t* buf = nullptr;
+  uint8_t* smoothedBuf = nullptr;
+  float el;
 };
+
+class FireManager {
+ public:
+  FireManager(map::Dungeon* dungeon);
+  ~FireManager();
+  void spark(int x, int y);
+  void antispark(int x, int y);
+  void softspark(int x, int y, int delta);
+  void update(float elapsed);
+  void renderFire(TCODImage& ground);
+  void addZone(int x, int y, int w, int h);
+  void removeZone(int x, int y, int w, int h);
+
+ protected:
+  inline uint8_t get(int x, int y) { return buf[x + dungeon->width * 2 * y]; }
+  inline void set(int x, int y, uint8_t v) { buf[x + dungeon->width * 2 * y] = v; }
+  struct FireZone {
+    base::Rect r;
+    float life;
+  };
+  TCODList<FireZone> zones;
+  map::Dungeon* dungeon = nullptr;
+  uint8_t* buf = nullptr;
+  float el;
+  base::Rect screenFireZone;
+};
+}  // namespace util

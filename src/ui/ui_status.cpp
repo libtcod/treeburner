@@ -28,7 +28,7 @@
 #include "constants.hpp"
 #include "main.hpp"
 #include "ui_inventory.hpp"
-#include "util_subcell.hpp"
+#include "util/subcell.hpp"
 
 #define PANEL_HEIGHT 11
 
@@ -78,7 +78,8 @@ void StatusPanel::render() {
     if (!player->conditions.isEmpty()) {
       con->printEx(rect.w / 2, y + 2 * dy, TCOD_BKGND_NONE, TCOD_CENTER, "Conditions");
     }
-    blitSemiTransparent(con, 0, 0, rect.w, rect.h, TCODConsole::root, rect.x, rect.y, titleBarAlpha, titleBarAlpha);
+    util::blitSemiTransparent(
+        con, 0, 0, rect.w, rect.h, TCODConsole::root, rect.x, rect.y, titleBarAlpha, titleBarAlpha);
   }
   if (titleBarAlpha > 0.0f) {
     renderFrame(titleBarAlpha, "Status");

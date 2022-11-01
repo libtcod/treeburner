@@ -29,7 +29,7 @@
 #include "map/lightmap.hpp"
 #include "mob/behavior.hpp"
 #include "mob/creature.hpp"
-#include "util_ripples.hpp"
+#include "util/ripples.hpp"
 
 namespace mob {
 class Fish;
@@ -42,7 +42,7 @@ class Shoal {
 
 class Fish : public Creature {
  public:
-  Fish(WaterZone* zone);
+  Fish(util::WaterZone* zone);
   ~Fish() override;
   bool update(float elapsed) override;
   void render(map::LightMap& lightMap) override;
@@ -53,6 +53,6 @@ class Fish : public Creature {
   bool updated;
 
  protected:
-  WaterZone* zone = nullptr;
+  util::WaterZone* zone = nullptr;
 };
 }  // namespace mob
