@@ -23,13 +23,14 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#include "screen_end.hpp"
+#include "screen/end.hpp"
 
 #include <SDL.h>
 
 #include "constants.hpp"
 #include "main.hpp"
 
+namespace screen {
 EndScreen::EndScreen(const char* txt, float fadeLvl, bool stats)
     : Screen(fadeLvl), txt(strdup(txt)), noiseZ(0.0f), stats(stats) {
   fadeInLength = fadeOutLength = (int)(config.getFloatProperty("config.display.fadeTime") * 1000);
@@ -339,3 +340,4 @@ void PaperScreen::onDeactivate() {
   TCODSystem::registerSDLRenderer(NULL);
   TCODConsole::root->setDirty(0, 0, CON_W, CON_H);
 }
+}  // namespace screen

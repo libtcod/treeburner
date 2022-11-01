@@ -29,6 +29,7 @@
 #include "screen.hpp"
 #include "util_fire.hpp"
 
+namespace screen {
 enum MenuItemId { MENU_NEW_GAME, MENU_CONTINUE, MENU_EXIT, MENU_NB_ITEMS };
 
 class MainMenu : public Screen {
@@ -60,3 +61,4 @@ class MainMenu : public Screen {
   int titlex, titley, titlew, titleh;
   Fire* fire;
 };
+}  // namespace screen

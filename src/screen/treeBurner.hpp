@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009 Jice
+ * Copyright (c) 2010 Jice
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,26 +26,32 @@
 #pragma once
 #include <libtcod.hpp>
 
+#include "base/aidirector.hpp"
 #include "base/gameengine.hpp"
-#include "mob/boss.hpp"
 
-class Game : public base::GameEngine {
+namespace screen {
+class TreeBurner : public base::GameEngine {
  public:
-  Game();
+  TreeBurner();
 
   void render() override;
   bool update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse) override;
+  void generateMap(uint32_t seed);  // generate a new random map
+  void loadMap(uint32_t seed);  // load map from savegame
 
-  int level;  // current dungeon level
-  mob::Boss* boss;
+  void onFontChange();
 
  protected:
-  float finalExplosion;
+  TCODRandom* forestRng;
 
-  bool helpOn;
-
-  void initLevel();
-  void termLevel();
-  void onInitialise() override;
   void onActivate() override;
+  void onDeactivate() override;
+  void placeTree(map::Dungeon* dungeon, int x, int y, const item::ItemType* treeType);
+  void placeHouse(map::Dungeon* dungeon, int doorx, int doory, base::Entity::Direction dir);
+  int debugMap;
+  base::AiDirector aiDirector;
+  mob::Creature* boss;
+  int cityWallX;
+  float endTimer;
 };
+}  // namespace screen

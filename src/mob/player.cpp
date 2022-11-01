@@ -80,7 +80,7 @@ void Player::init() {
   up = down = left = right = false;
   averageSpeed = speedElapsed = speedDist = 0.0f;
   sprintDelay = sprintLength;
-  // cannot do this. Game::lights not created yet...
+  // cannot do this. screen::Game::lights not created yet...
   // gameEngine->addLight(&light);
 }
 

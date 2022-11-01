@@ -123,7 +123,7 @@ void Weapon::use(int dx, int dy) {
 
 void Weapon::fire() {
         FireBall *fb=new FireBall(owner->x,owner->y,targetx,targety,FB_STANDARD);
-        ((Game *)gameEngine)->addFireball(fb);
+        ((screen::Game *)gameEngine)->addFireball(fb);
         gameEngine->stats.nbSpellStandard++;
 }
 

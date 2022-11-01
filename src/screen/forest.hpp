@@ -26,60 +26,38 @@
 #pragma once
 #include <libtcod.hpp>
 
-#include "constants.hpp"
-#include "screen.hpp"
-#include "util_textgen.hpp"
-#include "util_worldgen.hpp"
+#include "base/gameengine.hpp"
+#include "base/savegame.hpp"
+#include "mob/friend.hpp"
+#include "ui_input.hpp"
 
-enum ESchool { SCHOOL_FIRE, SCHOOL_WATER, NB_SCHOOLS };
-extern const char* schoolTypeName[NB_SCHOOLS];
-#define MAP_WIDTH CON_W * 4 / 3
-#define MAP_HEIGHT (CON_H - 2) * 2
-
-class School {
+namespace screen {
+class ForestScreen : public base::GameEngine, public base::SaveListener {
  public:
-  enum { SHORE, PLAIN, FOREST_EDGE, FOREST, MOUNTAIN, SNOW } terrain;
-  int x, y;
-  ESchool type;
-  char name[32];
-  char desc[512];
-};
+  mob::Friend* fr;
 
-class SchoolScreen : public Screen {
- public:
-  static SchoolScreen* instance;
-  SchoolScreen();
+  ForestScreen();
+
   void render() override;
   bool update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse) override;
-  void generateWorld(uint32_t seed);
+  void onEvent(const SDL_Event&) override{};
+  void generateMap(uint32_t seed);  // generate a new random map
+  void loadMap(uint32_t seed);  // load map from savegame
+
+  void onFontChange();
+
+  // SaveListener
+  bool loadData(uint32_t chunkId, uint32_t chunkVersion, TCODZip* zip) override;
+  void saveData(uint32_t chunkId, TCODZip* zip) override;
 
  protected:
-  School school[NB_SCHOOLS];
-  WorldGenerator worldGen;
-  // world map current offset and destination offset
-  float offx, offy, dx, dy;
-  // rendered world
-  TCODImage* world;
-  // orb transparency map
-  TCODImage* mapmask;
-  // orb reflection map
-  TCODImage* mapreflection;
-  TCODConsole* con;
-  int selectedSchool;
-  // precomputed fisheye distorsion
-  float fisheyex[MAP_WIDTH][MAP_HEIGHT];
-  float fisheyey[MAP_WIDTH][MAP_HEIGHT];
-  bool worldGenerated;
-  TextGenerator* textGen;
-  TCODRandom* schoolRng;
+  TCODRandom* forestRng;
 
-  bool isPosOk(int schoolNum) const;
-  int getTerrainType(int x, int y, int range) const;
-  void selectSchool(int num);
-  const char* genSchoolDescription(School* sch);
-  char* goatSoup(const char* source, School* sch, char* buf);
-  void setContextSchool(School* sch);
   void onActivate() override;
-  // apply sun light & cloud shadow to interpolated color
-  TCODColor getMapShadedColor(float worldX, float worldY, bool clouds);
+  void onDeactivate() override;
+  void placeTree(map::Dungeon* dungeon, int x, int y, const item::ItemType* treeType);
+  void placeHouse(map::Dungeon* dungeon, int doorx, int doory, base::Entity::Direction dir);
+  int debugMap;
+  TextInput textInput;
 };
+}  // namespace screen

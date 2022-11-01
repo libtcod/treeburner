@@ -28,7 +28,7 @@
 #include "base/aidirector.hpp"
 #include "base/gameengine.hpp"
 #include "main.hpp"
-#include "screen_game.hpp"
+#include "screen/game.hpp"
 
 namespace mob {
 VillageHead::VillageHead() {
@@ -76,7 +76,7 @@ void Boss::setSeen() {
   static float bossSpeed = config.getFloatProperty("config.creatures.boss.speed");
 
   seen = true;
-  ((Game*)(gameEngine))->bossSeen = true;
+  ((screen::Game*)(gameEngine))->bossSeen = true;
   base::AiDirector::instance->bossSeen();
   speed = bossSpeed;
 }

@@ -28,7 +28,7 @@
 
 #include "map/lightmap.hpp"
 #include "mob/creature.hpp"
-#include "screen_school.hpp"
+#include "screen/school.hpp"
 
 namespace map {
 class Dungeon;
@@ -59,7 +59,7 @@ class Player : public Creature {
   void saveData(uint32_t chunkId, TCODZip* zip) override;
 
   float maxFovRange;
-  School school;
+  screen::School school;
   float stealth;
   bool crouch;
 

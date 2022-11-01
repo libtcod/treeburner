@@ -42,7 +42,7 @@
 #include "util_ripples.hpp"
 
 namespace base {
-class GameEngine : public Screen {
+class GameEngine : public screen::Screen {
  public:
   GameEngine();
   ~GameEngine() = default;

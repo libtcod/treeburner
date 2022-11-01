@@ -27,6 +27,7 @@
 #include <libtcod.hpp>
 #include <umbra/umbra.hpp>
 
+namespace screen {
 class Screen : public UmbraModule {
  public:
   Screen(float fadeLvl) : UmbraModule{}, fadeLvl{fadeLvl} {}
@@ -59,3 +60,4 @@ class Screen : public UmbraModule {
     fade = FADE_UP;
   }
 };
+}  // namespace screen

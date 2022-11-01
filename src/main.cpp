@@ -28,11 +28,11 @@
 #include <stdio.h>
 #include <time.h>
 
-#include "screen_end.hpp"
-#include "screen_forest.hpp"
-#include "screen_game.hpp"
-#include "screen_mainmenu.hpp"
-#include "screen_treeBurner.hpp"
+#include "screen/end.hpp"
+#include "screen/forest.hpp"
+#include "screen/game.hpp"
+#include "screen/mainmenu.hpp"
+#include "screen/treeBurner.hpp"
 #include "util_powerup.hpp"
 
 TCODNoise noise1d(1);
@@ -57,14 +57,14 @@ class ModuleFactory : public UmbraModuleFactory {
   UmbraModule* createModule(const char* name) {
     // the cave modules
     if (strcmp(name, "mainMenu") == 0)
-      return new MainMenu();
+      return new screen::MainMenu();
     else if (strcmp(name, "chapter1") == 0)
-      return new ForestScreen();
+      return new screen::ForestScreen();
     else if (strcmp(name, "chapter1Story") == 0)
-      return new PaperScreen("data/cfg/chapter1.txg", "title", "text", 1);
+      return new screen::PaperScreen("data/cfg/chapter1.txg", "title", "text", 1);
     // pyromancer modules
     else if (strcmp(name, "pyroTitle") == 0)
-      return new EndScreen(
+      return new screen::EndScreen(
           "There was a time when you were one of the most brilliant students"
           " in the pyromancy school of Doryen. Most of your power was concentrated in a single artefact :"
           " an amulet. Yeah, yeah. Amulets are soo old school, but your master never allowed you"
@@ -73,25 +73,27 @@ class ModuleFactory : public UmbraModuleFactory {
           " He is said to hide deep in a dungeon, protected by a horde of minions."
           " God knows how he managed to learn this summoning spell. He really sucked at magic when he"
           " was still attending courses.\n\n"
-          "The thing is, you have this date with Alena tomorrow. Not only is she your pyromancy master's daughter,"
+          "The thing is, you have this date with Alena tomorrow. Not only is she your pyromancy master's "
+          "daughter,"
           " but she's also hot like hell, and it would be very bad if you couldn't use your"
           " amulet to impress her...\n\nLooks like you'll have to dive in the dungeon and kick some arses to get"
           " your stuff back...",
           1.0f,
           false);
     else if (strcmp(name, "pyroGame") == 0)
-      return new Game();
+      return new screen::Game();
     else if (strcmp(name, "pyroVictory") == 0)
-      return new EndScreen(
-          "Congratulations, you won!\n\nMore important, you'll be able to show off with Alena tomorrow ! But this is "
+      return new screen::EndScreen(
+          "Congratulations, you won!\n\nMore important, you'll be able to show off with Alena "
+          "tomorrow ! But this is "
           "another story...");
     else if (strcmp(name, "pyroGameOver") == 0)
-      return new EndScreen(
+      return new screen::EndScreen(
           "You're dead...\n\nEven worse, Zeepoh will probably go with Alena now that you turned into a pile of "
           "ashes...");
     // treeBurner modules
     else if (strcmp(name, "treeBurnerTitle") == 0)
-      return new EndScreen(
+      return new screen::EndScreen(
           TCODRandom::getInstance()->getInt(0, 1)
               ? "Hate. Unending, undying hate. That's all you can feel. "
                 "The deepest loathing imaginable, nothing more than an intense desire to kill them all. "
@@ -104,7 +106,7 @@ class ModuleFactory : public UmbraModuleFactory {
           1.0f,
           false);
     else if (strcmp(name, "treeBurnerVictory") == 0)
-      return new EndScreen(
+      return new screen::EndScreen(
           TCODRandom::getInstance()->getInt(0, 1)
               ? "You wake up, drenched in a cold sweat. The cave is dark, and the still underground lake "
                 "lays at your feet. Ilia is laying next to you, still fast asleep. She doesn't even stir. "
@@ -122,7 +124,8 @@ class ModuleFactory : public UmbraModuleFactory {
                 "down the ceiling.\n\n"
                 "Ilia is still sleeping by your side, and the look of her serene face calms you. Her delicate "
                 "features are neatly framed by the locks of her hair, painting an image of peace in your mind. "
-                "You need every bit of help you can get, to wipe the terrible memory of the dream from your mind.\n\n"
+                "You need every bit of help you can get, to wipe the terrible memory of the dream from your "
+                "mind.\n\n"
                 "The surge of power you felt, and the sick joy of killing all those helpless women and children "
                 "leaves you feeling drained and exhausted. You know that you should probably go back to sleep, "
                 "but fear of the nightmare recurring keeps your eyes open wide.\n\n"
@@ -132,22 +135,25 @@ class ModuleFactory : public UmbraModuleFactory {
           1.0f,
           false);
     else if (strcmp(name, "treeBurnerGame") == 0)
-      return new TreeBurner();
+      return new screen::TreeBurner();
     else if (strcmp(name, "treeBurnerGameOver") == 0)
-      return new EndScreen(
+      return new screen::EndScreen(
           TCODRandom::getInstance()->getInt(0, 1)
               ? "You bolt upright, screaming. The sound of your voice echoes in the darkness of the cave. "
                 "You can see nothing, but you hear Ilia stirring. Her hand instinctively reaches for her "
                 "Azuran dagger, and she turns to you.\n\n"
                 "\"Are you alright?\"\n"
                 "You shake your head. \"It was just a dream, but it was awful. I was this powerful pyromancer, "
-                "and I was using my powers in such terrible ways. Killing people, by the dozens. Women... kids... "
+                "and I was using my powers in such terrible ways. Killing people, by the dozens. Women... "
+                "kids... "
                 "all the same.\"\n"
                 "\"Don't worry about it. Like you said, it was just a dream. Go back to sleep, we have a long "
                 "day ahead of us.\"\n"
-                "\"Yeah, I suppose. Sorry for waking you, but it just felt so real.\" You lay back down, and pull "
+                "\"Yeah, I suppose. Sorry for waking you, but it just felt so real.\" You lay back down, and "
+                "pull "
                 "the blanket snug around you. Only the wind whistling through the cave and the steady plink of "
-                "water can be heard. You focus on the sound, unable to get back to sleep. All you can think about "
+                "water can be heard. You focus on the sound, unable to get back to sleep. All you can think "
+                "about "
                 "is the dream. That terrible nightmare still leaves you shaking..."
               : "You awaken to the sound of your own terrified screams. The darkness of the cave is complete, "
                 "and you can't even see your hands in front of your face. You can't see, but you can hear Ilia "
@@ -157,18 +163,21 @@ class ModuleFactory : public UmbraModuleFactory {
                 "severely.\n"
                 "\"Nothing. Don't worry about it, it was just a nightmare.\"\n"
                 "She breathes a sigh of relief. \"Silly boy, don't let a dream cause you so much stress.\"\n"
-                "\"I know, but it just seemed so real. I was this powerful pyromancer, and I was killing everything "
+                "\"I know, but it just seemed so real. I was this powerful pyromancer, and I was killing "
+                "everything "
                 "in my sight. Women... and children... everyone.\"\n"
                 "She laughs. \"You? A mighty pyromancer? It must have been a dream. I've yet to see you produce "
-                "more than a candle's flicker of light, much less a massive fireball. Go back to sleep, we have a "
+                "more than a candle's flicker of light, much less a massive fireball. Go back to sleep, we have "
+                "a "
                 "long way to go before we find Aidan.\"\n"
                 "\"You're right. Sorry for waking you, it's just... I don't know.\" You lay back down, and close "
-                "your eyes, but your heart is still pounding rapidly in your chest. You know that sleep won't come "
+                "your eyes, but your heart is still pounding rapidly in your chest. You know that sleep won't "
+                "come "
                 "easily. Not after the dream...",
           1.0f,
           false);
     else if (strcmp(name, "treeBurnerCredits") == 0)
-      return new EndScreen(
+      return new screen::EndScreen(
           "Code - Jice\n\n\n"
           "Words - Tim Pruett\n\n\n\n\n"
           "libtcod 1.5.1wip\n\n\n"

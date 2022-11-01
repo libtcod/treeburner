@@ -38,10 +38,10 @@
 base::GameEngine* gameEngine = nullptr;
 
 namespace base {
-GameEngine::GameEngine() : Screen{0} { gameEngine = this; }
+GameEngine::GameEngine() : screen::Screen{0} { gameEngine = this; }
 
 void GameEngine::onActivate() {
-  Screen::onActivate();
+  screen::Screen::onActivate();
   hitFlashAmount = 0.0f;
   firstFrame = true;
   computeAspectRatio();
@@ -52,7 +52,7 @@ void GameEngine::onActivate() {
 }
 
 void GameEngine::onDeactivate() {
-  Screen::onDeactivate();
+  screen::Screen::onDeactivate();
   gui.deactivate();
 }
 

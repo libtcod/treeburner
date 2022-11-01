@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#include "screen_game.hpp"
+#include "screen/game.hpp"
 
 #include <ctype.h>
 #include <stdarg.h>
@@ -33,6 +33,7 @@
 #include "main.hpp"
 #include "util_powerup.hpp"
 
+namespace screen {
 Game::Game() : level(0), helpOn(false) {}
 
 void Game::onInitialise() {
@@ -492,3 +493,4 @@ void Game::termLevel() {
   fireballs.clearAndDelete();
   base::AiDirector::instance->termLevel();
 }
+}  // namespace screen

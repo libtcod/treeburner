@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#include "screen_forest.hpp"
+#include "screen/forest.hpp"
 
 #include <math.h>
 #include <stdio.h>
@@ -32,8 +32,9 @@
 #include "main.hpp"
 #include "map/building.hpp"
 #include "map/cell.hpp"
-#include "screen_mainmenu.hpp"
+#include "screen/mainmenu.hpp"
 
+namespace screen {
 #define FOREST_W 400
 #define FOREST_H 400
 #define WATER_START -0.87f
@@ -715,3 +716,4 @@ void ForestScreen::onFontChange() {
     recomputeCanopy();
   }
 }
+}  // namespace screen
