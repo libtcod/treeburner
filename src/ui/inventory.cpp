@@ -31,6 +31,7 @@
 #include "main.hpp"
 #include "util/subcell.hpp"
 
+namespace ui {
 #define INV_WIDTH 70
 #define INV_HEIGHT 40
 
@@ -54,13 +55,13 @@ Inventory::Inventory() : selectedItem(-1), closeOn(false) {
   dragOut = false;
   cmenuon = false;
   cmenudrag = false;
-  flags = DIALOG_MODAL | DIALOG_CLOSABLE;
+  flags = ui::DIALOG_MODAL | ui::DIALOG_CLOSABLE;
   closeButton.set(rect.w - 1, 0);
   for (int i = 0; i < item::NB_INV_TABS; i++) guiTabs.addTab(tabNames[i]);
   guiTabs.curTab = item::INV_ARMOR;
   takeAll.setLabel("Take all");
   takeAll.addListener(this);
-  craft.setLabel("Craft");
+  craft.setLabel("ui::Craft");
   craft.addListener(this);
 }
 
@@ -146,7 +147,7 @@ void Inventory::checkDefaultAction(item::Item* item) {
   }
 }
 
-bool Inventory::onWidgetEvent(Widget* widget, EWidgetEvent event) {
+bool Inventory::onWidgetEvent(ui::Widget* widget, ui::EWidgetEvent event) {
   if (widget == &takeAll && container) {
     InventoryTab* curTab = &tabs[guiTabs.curTab];
     while (!curTab->items.empty()) {
@@ -155,7 +156,7 @@ bool Inventory::onWidgetEvent(Widget* widget, EWidgetEvent event) {
       gameEngine->gui.inventory.guiTabs.curTab = item::INV_ALL;
     }
   } else if (widget == &craft && owner) {
-    gameEngine->gui.setMode(GUI_CRAFT);
+    gameEngine->gui.setMode(ui::GUI_CRAFT);
   }
   return false;
 }
@@ -402,27 +403,27 @@ void Inventory::activateItem() {
 }
 
 void Inventory::onActivate() {
-  Dialog::onActivate();
-  if (firstOpen && gameEngine->gui.mode == GUI_INVENTORY) {
+  ui::Dialog::onActivate();
+  if (firstOpen && gameEngine->gui.mode == ui::GUI_INVENTORY) {
     firstOpen = false;
-    gameEngine->gui.tutorial.startLiveTuto(TUTO_INVENTORY);
+    gameEngine->gui.tutorial.startLiveTuto(ui::TUTO_INVENTORY);
   }
 }
 
 void Inventory::onDeactivate() {
-  Dialog::onDeactivate();
+  ui::Dialog::onDeactivate();
   if (combinationResult) delete combinationResult;
   combinationResult = NULL;
   if (owner) {
-    if (gameEngine->gui.mode == GUI_INVLOOT)
-      gameEngine->gui.mode = GUI_LOOT;
+    if (gameEngine->gui.mode == ui::GUI_INVLOOT)
+      gameEngine->gui.mode = ui::GUI_LOOT;
     else
-      gameEngine->gui.mode = GUI_NONE;
+      gameEngine->gui.mode = ui::GUI_NONE;
   } else {
-    if (gameEngine->gui.mode == GUI_INVLOOT)
-      gameEngine->gui.mode = GUI_INVENTORY;
+    if (gameEngine->gui.mode == ui::GUI_INVLOOT)
+      gameEngine->gui.mode = ui::GUI_INVENTORY;
     else
-      gameEngine->gui.mode = GUI_NONE;
+      gameEngine->gui.mode = ui::GUI_NONE;
   }
 }
 
@@ -674,3 +675,4 @@ bool Inventory::update(float elapsed, TCOD_key_t& k, TCOD_mouse_t& mouse) {
   }
   return true;
 }
+}  // namespace ui

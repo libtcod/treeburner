@@ -32,6 +32,7 @@
 #include "ui/status.hpp"
 #include "ui/tuto.hpp"
 
+namespace ui {
 enum EGuiMode {
   GUI_NONE,  // no dialog displayed
   GUI_INVENTORY,  // inventory alone
@@ -46,14 +47,14 @@ enum EGuiMode {
 class Gui {
  public:
   EGuiMode mode;
-  Inventory inventory;
-  Inventory loot;
-  Descriptor descriptor;
-  StatusPanel statusPanel;
-  Logger log;
-  Tutorial tutorial;
-  Objectives objectives;
-  Craft craft;
+  ui::Inventory inventory;
+  ui::Inventory loot;
+  ui::Descriptor descriptor;
+  ui::StatusPanel statusPanel;
+  ui::Logger log;
+  ui::Tutorial tutorial;
+  ui::Objectives objectives;
+  ui::Craft craft;
 
   void initialize();
   void activate();
@@ -61,3 +62,4 @@ class Gui {
   void setMode(EGuiMode mode);
   void closeDialogs();
 };
+}  // namespace ui

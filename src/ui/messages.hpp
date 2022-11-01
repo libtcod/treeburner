@@ -33,9 +33,10 @@
 #include "base/savegame.hpp"
 #include "ui/dialog.hpp"
 
+namespace ui {
 enum MessageSeverity { DEBUG, INFO, WARN, CRITICAL, NB_SEVERITIES };
 
-class Logger : public MultiPosDialog, public base::SaveListener, public Scrollable {
+class Logger : public ui::MultiPosDialog, public base::SaveListener, public ui::Scrollable {
  public:
   Logger();
   template <typename S, typename... Ts>
@@ -75,10 +76,11 @@ class Logger : public MultiPosDialog, public base::SaveListener, public Scrollab
   };
 
   int nbActive;
-  Scroller* scroller;
+  ui::Scroller* scroller;
   bool lookOn;
   float titleBarAlpha;
 
   void addMessage(MessageSeverity severity, std::string msg);
   std::deque<Message> messages{};
 };
+}  // namespace ui

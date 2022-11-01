@@ -30,6 +30,7 @@
 #include "ui/inventory.hpp"
 #include "util/subcell.hpp"
 
+namespace ui {
 #define CRAFT_WIDTH 70
 #define CRAFT_HEIGHT 40
 
@@ -38,9 +39,9 @@ Craft::Craft() {
   rect.x = rect.y = 5;
   rect.w = CRAFT_WIDTH;
   rect.h = CRAFT_HEIGHT;
-  flags = DIALOG_MODAL | DIALOG_CLOSABLE;
+  flags = ui::DIALOG_MODAL | ui::DIALOG_CLOSABLE;
   closeButton.set(rect.w - 1, 0);
-  scroller = new Scroller(this, CRAFT_WIDTH / 2 - 2, CRAFT_HEIGHT - 3);
+  scroller = new ui::Scroller(this, CRAFT_WIDTH / 2 - 2, CRAFT_HEIGHT - 3);
   create.setLabel("Create");
   create.setPos(3 * rect.w / 4 + 1, rect.h - 1);
   create.addListener(this);
@@ -86,23 +87,23 @@ void Craft::getScrollColor(int idx, TCODColor* fore, TCODColor* back) {
       break;
     }
   }
-  *fore = enabled ? item::Item::classColor[item->item_class_] : guiDisabledText;
-  *back = (enabled && idx == selectedItem ? guiHighlightedBackground : guiBackground);
+  *fore = enabled ? item::Item::classColor[item->item_class_] : ui::guiDisabledText;
+  *back = (enabled && idx == selectedItem ? ui::guiHighlightedBackground : ui::guiBackground);
 }
 
 void Craft::render() {
   renderFrame(1.0f, "Craft");
-  con->setDefaultBackground(guiBackground);
-  con->setDefaultForeground(guiText);
-  con->printFrame(0, 1, rect.w / 2 + 1, rect.h - 1, true, TCOD_BKGND_SET, "Inventory");
-  if (dragItem && !dragItem->isTool()) con->setDefaultForeground(guiDisabledText);
+  con->setDefaultBackground(ui::guiBackground);
+  con->setDefaultForeground(ui::guiText);
+  con->printFrame(0, 1, rect.w / 2 + 1, rect.h - 1, true, TCOD_BKGND_SET, "ui::Inventory");
+  if (dragItem && !dragItem->isTool()) con->setDefaultForeground(ui::guiDisabledText);
   con->printFrame(rect.w / 2, 1, rect.w - rect.w / 2, rect.h - 1, true, TCOD_BKGND_SET, "Tool");
   if (dragItem && !dragItem->isIngredient())
-    con->setDefaultForeground(guiDisabledText);
+    con->setDefaultForeground(ui::guiDisabledText);
   else
-    con->setDefaultForeground(guiText);
+    con->setDefaultForeground(ui::guiText);
   con->printFrame(rect.w / 2, 4, rect.w - rect.w / 2, rect.h - 4, true, TCOD_BKGND_SET, "Ingredients");
-  con->setDefaultForeground(guiText);
+  con->setDefaultForeground(ui::guiText);
   con->printFrame(
       rect.w / 2, rect.h / 2 + 4, rect.w - rect.w / 2, rect.h - rect.h / 2 - 4, true, TCOD_BKGND_SET, "Result");
   con->setChar(rect.w / 2, 1, TCOD_CHAR_TEES);
@@ -120,14 +121,14 @@ void Craft::render() {
   int y = 5;
   for (item::Item* it : ingredients) {
     con->setDefaultForeground(item::Item::classColor[it->item_class_]);
-    con->setDefaultBackground(y - 5 == selectedIngredient ? guiHighlightedBackground : guiBackground);
+    con->setDefaultBackground(y - 5 == selectedIngredient ? ui::guiHighlightedBackground : ui::guiBackground);
     con->printEx(rect.w / 2 + 1, y++, TCOD_BKGND_SET, TCOD_LEFT, it->aName().c_str());
   }
 
   // tool
   if (tool) {
     con->setDefaultForeground(item::Item::classColor[tool->item_class_]);
-    con->setDefaultBackground(selectedTool ? guiHighlightedBackground : guiBackground);
+    con->setDefaultBackground(selectedTool ? ui::guiHighlightedBackground : ui::guiBackground);
     con->printEx(rect.w / 2 + 1, 2, TCOD_BKGND_SET, TCOD_LEFT, tool->aName().c_str());
   }
 
@@ -279,8 +280,8 @@ bool Craft::update(float elapsed, TCOD_key_t& k, TCOD_mouse_t& mouse) {
   return true;
 }
 
-// UIListener
-bool Craft::onWidgetEvent(Widget* widget, EWidgetEvent event) {
+// ui::UIListener
+bool Craft::onWidgetEvent(ui::Widget* widget, ui::EWidgetEvent event) {
   if (widget == &create && result) {
     // delete ingredients
     const auto deleteIngredients = [&](item::Item* it) {
@@ -395,3 +396,4 @@ void Craft::computeRecipes() {
     }
   }
 }
+}  // namespace ui

@@ -26,6 +26,7 @@
 #pragma once
 #include <libtcod.hpp>
 
+namespace ui {
 class TextInput {
  public:
   TextInput() : con(NULL), txt(NULL) {}
@@ -42,3 +43,4 @@ class TextInput {
   TCODConsole* con;
   TCODText* txt;
 };
+}  // namespace ui

@@ -28,6 +28,7 @@
 #include "constants.hpp"
 #include "util/subcell.hpp"
 
+namespace ui {
 void TextInput::init(const char* title, const char* text, int maxSize) {
   this->title = title;
   this->text = text;
@@ -64,3 +65,4 @@ bool TextInput::update(float elapsed, TCOD_key_t k) {
   if (txt) return txt->update(k);
   return true;
 }
+}  // namespace ui

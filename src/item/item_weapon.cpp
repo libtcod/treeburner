@@ -160,10 +160,10 @@ void Weapon::renderDescription(int x, int y, bool below) {
         descCon->setForegroundColor(col);
         if (name) {
                 descCon->print(CON_W/4,cy++,name);
-                descCon->setForegroundColor(guiText);
+                descCon->setForegroundColor(ui::guiText);
         }
         descCon->print(CON_W/4,cy++,typeName);
-        descCon->setForegroundColor(guiText);
+        descCon->setForegroundColor(ui::guiText);
         if ( wieldname[ Weapon::types[subType].wield ] ) {
                 descCon->print(CON_W/4,cy++,wieldname[Weapon::types[subType].wield]);
         }

@@ -58,6 +58,6 @@ class ForestScreen : public base::GameEngine, public base::SaveListener {
   void placeTree(map::Dungeon* dungeon, int x, int y, const item::ItemType* treeType);
   void placeHouse(map::Dungeon* dungeon, int doorx, int doory, base::Entity::Direction dir);
   int debugMap;
-  TextInput textInput;
+  ui::TextInput textInput;
 };
 }  // namespace screen

@@ -27,6 +27,7 @@
 
 #include "main.hpp"
 
+namespace ui {
 void Gui::initialize() {
   engine.registerModule(&log);
   engine.registerModule(&statusPanel);
@@ -119,3 +120,4 @@ void Gui::closeDialogs() {
       break;
   }
 }
+}  // namespace ui

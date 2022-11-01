@@ -212,34 +212,34 @@ void GameEngine::removeFireZone(int x, int y, int w, int h) {
 void GameEngine::onInitialise() { gui.initialize(); }
 
 void GameEngine::openCloseInventory() {
-  if (gui.mode == GUI_INVENTORY || gui.mode == GUI_INVLOOT)
-    gui.setMode(GUI_NONE);
-  else if (gui.mode == GUI_LOOT)
-    gui.setMode(GUI_INVLOOT);
+  if (gui.mode == ui::GUI_INVENTORY || gui.mode == ui::GUI_INVLOOT)
+    gui.setMode(ui::GUI_NONE);
+  else if (gui.mode == ui::GUI_LOOT)
+    gui.setMode(ui::GUI_INVLOOT);
   else
-    gui.setMode(GUI_INVENTORY);
+    gui.setMode(ui::GUI_INVENTORY);
 }
 
 void GameEngine::openCloseObjectives() {
-  if (gui.mode == GUI_OBJECTIVES)
-    gui.setMode(GUI_NONE);
+  if (gui.mode == ui::GUI_OBJECTIVES)
+    gui.setMode(ui::GUI_NONE);
   else
-    gui.setMode(GUI_OBJECTIVES);
+    gui.setMode(ui::GUI_OBJECTIVES);
 }
 
 void GameEngine::openCloseCraft() {
-  if (gui.mode == GUI_CRAFT)
-    gui.setMode(GUI_NONE);
+  if (gui.mode == ui::GUI_CRAFT)
+    gui.setMode(ui::GUI_NONE);
   else
-    gui.setMode(GUI_CRAFT);
+    gui.setMode(ui::GUI_CRAFT);
 }
 
 void GameEngine::openCloseLoot(item::Item* toLoot) {
-  if (gui.mode == GUI_LOOT)
-    gui.setMode(GUI_NONE);
+  if (gui.mode == ui::GUI_LOOT)
+    gui.setMode(ui::GUI_NONE);
   else {
     gui.loot.initialize(toLoot);
-    gui.setMode(GUI_INVLOOT);
+    gui.setMode(ui::GUI_INVLOOT);
   }
 }
 

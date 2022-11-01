@@ -31,15 +31,16 @@
 #include "mob/creature.hpp"
 #include "ui/dialog.hpp"
 
-class Craft : public Dialog, public UIListener, public Scrollable {
+namespace ui {
+class Craft : public ui::Dialog, public ui::UIListener, public ui::Scrollable {
  public:
   Craft();
   void initialize(mob::Creature* owner, bool soft = false);
   void render() override;
   bool update(float elapsed, TCOD_key_t& k, TCOD_mouse_t& mouse) override;
 
-  // UIListener
-  bool onWidgetEvent(Widget* widget, EWidgetEvent event) override;
+  // ui::UIListener
+  bool onWidgetEvent(ui::Widget* widget, ui::EWidgetEvent event) override;
 
   // scrollable
   int getScrollTotalSize() override;
@@ -51,7 +52,7 @@ class Craft : public Dialog, public UIListener, public Scrollable {
   int selectedItem;
   int selectedIngredient;
   bool selectedTool;
-  Scroller* scroller;
+  ui::Scroller* scroller;
   Button clear;
   Button create;
   mob::Creature* owner;
@@ -68,3 +69,4 @@ class Craft : public Dialog, public UIListener, public Scrollable {
   void computeResult();
   void computeRecipes();
 };
+}  // namespace ui

@@ -27,6 +27,7 @@
 #include "item.hpp"
 #include "mob/creature.hpp"
 
+namespace ui {
 // displays a description of an item/creature/...
 class Descriptor {
  public:
@@ -41,3 +42,4 @@ class Descriptor {
   char tooltip[32];
   bool lookOn;
 };
+}  // namespace ui

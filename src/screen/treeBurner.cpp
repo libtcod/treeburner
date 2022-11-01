@@ -304,7 +304,7 @@ bool TreeBurner::update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse) {
 
   GameEngine::update(elapsed, k, mouse);
 
-  if (k.c == ' ' && !k.pressed && gui.mode == GUI_NONE) {
+  if (k.c == ' ' && !k.pressed && gui.mode == ui::GUI_NONE) {
     if (isGamePaused())
       resumeGame();
     else
@@ -344,7 +344,7 @@ bool TreeBurner::update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse) {
   // log.update(k,mouse,elapsed);
 
   if (isGamePaused()) {
-    if (gui.mode == GUI_NONE) gui.descriptor.setFocus(mousex, mousey, mousex + xOffset, mousey + yOffset, lookOn);
+    if (gui.mode == ui::GUI_NONE) gui.descriptor.setFocus(mousex, mousey, mousex + xOffset, mousey + yOffset, lookOn);
     return true;
   }
 
@@ -617,7 +617,7 @@ void TreeBurner::onActivate() {
   // disable fading (to see the progress bar)
   TCODConsole::setFade(255, TCODColor::black);
   TCODConsole::setColorControl(TCOD_COLCTRL_1, TCODColor(255, 255, 240), TCODColor::black);
-  TCODConsole::setColorControl(TCOD_COLCTRL_2, guiHighlightedText, TCODColor::black);
+  TCODConsole::setColorControl(TCOD_COLCTRL_2, ui::guiHighlightedText, TCODColor::black);
   GameEngine::onActivate();
   init();
 
@@ -666,7 +666,7 @@ void TreeBurner::onActivate() {
   fireManager = new util::FireManager(dungeon);
   aiDirector.setBaseCreature(mob::CREATURE_VILLAGER);
 
-  Objective* obj = new Objective(
+  ui::Objective* obj = new ui::Objective(
       "Find the village",
       "They must be hiding in this forest. Find the village. It must be destroyed!",
       NULL,
@@ -680,7 +680,7 @@ void TreeBurner::onActivate() {
   obj->onSuccess->setFloatVariable("cityWallX", cityWallX);
   gui.objectives.addObjective(obj);
 
-  obj = new Objective(
+  obj = new ui::Objective(
       "Kill the village head",
       "The old man is probably in the village! Find him and turn him into ashes.",
       "",
@@ -691,10 +691,10 @@ void TreeBurner::onActivate() {
       "end ");
   gui.objectives.addObjective(obj);
 
-  gui.tutorial.disableMenuPage(TUTO_ITEMS);
-  gui.tutorial.disableMenuPage(TUTO_INVENTORY2);
-  gui.tutorial.enableMenuPage(TUTO_FIREBALL);
-  gui.tutorial.startLiveTuto(TUTO_FOOD);
+  gui.tutorial.disableMenuPage(ui::TUTO_ITEMS);
+  gui.tutorial.disableMenuPage(ui::TUTO_INVENTORY2);
+  gui.tutorial.enableMenuPage(ui::TUTO_FIREBALL);
+  gui.tutorial.startLiveTuto(ui::TUTO_FOOD);
 }
 
 void TreeBurner::onDeactivate() { GameEngine::onDeactivate(); }

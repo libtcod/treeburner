@@ -100,7 +100,7 @@ class GameEngine : public screen::Screen {
   static TCODColor setSepia(const TCODColor& col, float coef);
   void displayProgress(float prog);  // renders a progress bar and flush
 
-  Gui gui{};
+  ui::Gui gui{};
   float aspectRatio{};  // font char width / font char height
   bool bossSeen{};
   bool bossIsDead{};

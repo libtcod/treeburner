@@ -28,7 +28,8 @@
 
 #include "ui/dialog.hpp"
 
-class StatusPanel : public MultiPosDialog {
+namespace ui {
+class StatusPanel : public ui::MultiPosDialog {
  public:
   StatusPanel();
   void render() override;
@@ -38,3 +39,4 @@ class StatusPanel : public MultiPosDialog {
  protected:
   float titleBarAlpha;
 };
+}  // namespace ui

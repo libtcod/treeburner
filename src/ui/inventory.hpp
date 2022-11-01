@@ -30,6 +30,7 @@
 #include "item.hpp"
 #include "ui/dialog.hpp"
 
+namespace ui {
 // gui skin colors
 extern TCODColor guiBackground;
 extern TCODColor guiHighlightedBackground;
@@ -44,7 +45,7 @@ struct InventoryTab {
   std::vector<item::Item*> items;
 };
 
-class Inventory : public Dialog, public UIListener {
+class Inventory : public ui::Dialog, public ui::UIListener {
  public:
   Inventory();
   virtual ~Inventory() {}
@@ -55,8 +56,8 @@ class Inventory : public Dialog, public UIListener {
   void onDeactivate() override;
   bool update(float elapsed, TCOD_key_t& k, TCOD_mouse_t& mouse) override;
 
-  // UIListener
-  bool onWidgetEvent(Widget* widget, EWidgetEvent event) override;
+  // ui::UIListener
+  bool onWidgetEvent(ui::Widget* widget, ui::EWidgetEvent event) override;
 
  protected:
   void activateItem();
@@ -65,7 +66,7 @@ class Inventory : public Dialog, public UIListener {
 
   InventoryTab tabs[item::NB_INV_TABS];
   // InventoryTabId curTabId,mouseTabId;
-  Tabs guiTabs;
+  ui::Tabs guiTabs;
   Button takeAll;
   Button craft;
   int selectedItem;
@@ -86,3 +87,4 @@ class Inventory : public Dialog, public UIListener {
   int cmenux, cmenuy, cmenuitem, cmenuwidth, cmenuheight;
   bool cmenuon;
 };
+}  // namespace ui

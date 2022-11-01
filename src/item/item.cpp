@@ -776,7 +776,7 @@ Item::Item(float x, float y, const ItemType& type) {
   if (descCon == NULL) {
     descCon = new TCODConsole(CON_W / 2, CON_H / 2);
     descCon->setAlignment(TCOD_CENTER);
-    descCon->setDefaultBackground(guiBackground);
+    descCon->setDefaultBackground(ui::guiBackground);
   }
   setPos(x, y);
   typeName_ = type.name;
@@ -1091,7 +1091,7 @@ void Item::renderDescription(int x, int y, bool below) {
       descCon->print(CON_W / 4, cy++, "%s(%d)", name_->c_str(), count_);
     else
       descCon->print(CON_W / 4, cy++, name_->c_str());
-    descCon->setDefaultForeground(guiText);
+    descCon->setDefaultForeground(ui::guiText);
     descCon->print(CON_W / 4, cy++, typeName_.c_str());
   } else {
     if (count_ > 1)
@@ -1099,7 +1099,7 @@ void Item::renderDescription(int x, int y, bool below) {
     else
       descCon->print(CON_W / 4, cy++, typeName_.c_str());
   }
-  descCon->setDefaultForeground(guiText);
+  descCon->setDefaultForeground(ui::guiText);
   ItemFeature* feat = getFeature(ITEM_FEAT_FOOD);
   if (feat) descCon->print(CON_W / 4, cy++, "Health:+%d", feat->food.health);
   feat = getFeature(ITEM_FEAT_ATTACK);
@@ -1149,7 +1149,7 @@ void Item::renderGenericDescription(int x, int y, bool below, bool frame) {
       descCon->print(CON_W / 4, cy++, "%s(%d)", name_->c_str(), count_);
     else
       descCon->print(CON_W / 4, cy++, name_->c_str());
-    descCon->setDefaultForeground(guiText);
+    descCon->setDefaultForeground(ui::guiText);
     descCon->print(CON_W / 4, cy++, typeName_.c_str());
   } else {
     if (count_ > 1)
@@ -1157,7 +1157,7 @@ void Item::renderGenericDescription(int x, int y, bool below, bool frame) {
     else
       descCon->print(CON_W / 4, cy++, typeName_.c_str());
   }
-  descCon->setDefaultForeground(guiText);
+  descCon->setDefaultForeground(ui::guiText);
   ItemFeature* feat = getFeature(ITEM_FEAT_FOOD);
   if (feat) descCon->print(CON_W / 4, cy++, "Health:+%d", feat->food.health);
   feat = getFeature(ITEM_FEAT_ATTACK);
@@ -1641,7 +1641,7 @@ void Item::renderDescriptionFrame(int x, int y, bool below, bool frame) {
   ch += 2;
   if (frame) {
     // drawn the frame
-    descCon->setDefaultForeground(guiText);
+    descCon->setDefaultForeground(ui::guiText);
     descCon->putChar(cx, cy, TCOD_CHAR_NW, TCOD_BKGND_NONE);
     descCon->putChar(cx + cw - 1, cy, TCOD_CHAR_NE, TCOD_BKGND_NONE);
     descCon->putChar(cx, cy + ch - 1, TCOD_CHAR_SW, TCOD_BKGND_NONE);
