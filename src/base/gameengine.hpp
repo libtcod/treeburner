@@ -34,7 +34,7 @@
 #include "mob/creature.hpp"
 #include "mob/player.hpp"
 #include "screen.hpp"
-#include "spell_fireball.hpp"
+#include "spell/fireball.hpp"
 #include "ui/dialog.hpp"
 #include "ui/gui.hpp"
 #include "util/fire.hpp"

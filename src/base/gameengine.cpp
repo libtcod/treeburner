@@ -33,7 +33,7 @@
 #include "base/entity.hpp"
 #include "item.hpp"
 #include "main.hpp"
-#include "spell_fireball.hpp"
+#include "spell/fireball.hpp"
 
 base::GameEngine* gameEngine = nullptr;
 
