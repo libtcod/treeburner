@@ -457,7 +457,7 @@ bool Tutorial::update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse) {
       }
       if (renderMenu && menu.size() > 1 && fadeOutDelay == 0.0f) {
         bool up = false, down = false, left = false, right = false;
-        Player::getMoveKey(k, &up, &down, &left, &right);
+        mob::Player::getMoveKey(k, &up, &down, &left, &right);
         if (up || left) {
           selectedItem--;
           if (selectedItem < 0) {

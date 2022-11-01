@@ -44,7 +44,7 @@ struct WeaponType {
         int flags;
 };
 
-class Creature;
+class mob::Creature;
 
 class Weapon : public Item {
 public :
@@ -54,7 +54,7 @@ public :
         Weapon(int x,int y, WeaponTypeId2 id);
         ~Weapon();
 
-        Item *pickup(Creature *owner);
+        Item *pickup(mob::Creature *owner);
         bool update(float elapsed, TCOD_key_t key, TCOD_mouse_t *mouse);
         void renderDescription(int x, int y, bool below=true);
         void use();

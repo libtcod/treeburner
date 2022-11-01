@@ -31,8 +31,8 @@
 #include "base/entity.hpp"
 #include "map/dungeon.hpp"
 #include "map/lightmap.hpp"
-#include "mob_creature.hpp"
-#include "mob_player.hpp"
+#include "mob/creature.hpp"
+#include "mob/player.hpp"
 #include "screen.hpp"
 #include "spell_fireball.hpp"
 #include "ui_dialog.hpp"
@@ -56,7 +56,7 @@ class GameEngine : public Screen {
   void onEvent(const SDL_Event&) override{};
   bool update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse) override;
 
-  Player player{};
+  mob::Player player{};
   map::Dungeon* dungeon{};  // current dungeon map
   int xOffset{}, yOffset{};  // coordinate of console cell 0,0 in dungeon
   int mousex{}, mousey{};  // cell under mouse cursor
@@ -85,7 +85,7 @@ class GameEngine : public Screen {
     int nbSpellBurst{};
     int nbSpellIncandescence{};
     int nbSteps{};
-    int creatureDeath[NB_CREATURE_TYPES]{};
+    int creatureDeath[mob::NB_CREATURE_TYPES]{};
   } stats;
   inline void startRipple(float x, float y) { startRipple((int)x, (int)y); }
   void startRipple(int dungeonx, int dungeony, float height = 0.0f);

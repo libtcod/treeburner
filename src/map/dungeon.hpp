@@ -31,12 +31,15 @@
 
 #include "base/savegame.hpp"
 #include "map/cell.hpp"
-#include "mob_creature.hpp"
+#include "mob/creature.hpp"
 #include "util_cavegen.hpp"
 #include "util_cellular.hpp"
 #include "util_clouds.hpp"
 
+namespace mob {
 class Player;
+}
+
 namespace map {
 class LightMap;
 }
@@ -66,8 +69,8 @@ class Dungeon : public base::SaveListener {
   // stair to next level
   int stairx, stairy;
   std::vector<item::Item*> items;
-  TCODList<Creature*> creatures;
-  TCODList<Creature*> corpses;
+  TCODList<mob::Creature*> creatures;
+  TCODList<mob::Creature*> corpses;
   TCODList<map::Light*> lights;
 
   // fov
@@ -77,13 +80,13 @@ class Dungeon : public base::SaveListener {
 
   // creatures
   bool hasCreature(int x, int y) const;
-  Creature* getCreature(int x, int y) const;
-  Creature* getCreature(CreatureTypeId id) const;
-  Creature* getCreature(const char* name) const;
-  void addCreature(Creature* cr);
-  void addCorpse(Creature* cr);
-  void moveCreature(Creature* cr, int xFrom, int yFrom, int xTo, int yTo);
-  void removeCreature(Creature* cr, bool kill = true);
+  mob::Creature* getCreature(int x, int y) const;
+  mob::Creature* getCreature(mob::CreatureTypeId id) const;
+  mob::Creature* getCreature(const char* name) const;
+  void addCreature(mob::Creature* cr);
+  void addCorpse(mob::Creature* cr);
+  void moveCreature(mob::Creature* cr, int xFrom, int yFrom, int xTo, int yTo);
+  void removeCreature(mob::Creature* cr, bool kill = true);
   void renderCreatures(map::LightMap& lightMap);
   void renderSubcellCreatures(map::LightMap& lightMap);
   void renderCorpses(map::LightMap& lightMap);
@@ -192,7 +195,7 @@ class Dungeon : public base::SaveListener {
   TCODList<int> spawnSources;
   std::vector<item::Item*> itemsToAdd;
   bool isUpdatingItems;
-  TCODList<Creature*> creaturesToAdd;
+  TCODList<mob::Creature*> creaturesToAdd;
   bool isUpdatingCreatures;
   TCODColor ambient;  // ambient light
   CloudBox* clouds = nullptr;  // for outdoors

@@ -27,7 +27,7 @@
 #include <libtcod.hpp>
 
 #include "base/gameengine.hpp"
-#include "mob_boss.hpp"
+#include "mob/boss.hpp"
 
 class Game : public base::GameEngine {
  public:
@@ -37,7 +37,7 @@ class Game : public base::GameEngine {
   bool update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse) override;
 
   int level;  // current dungeon level
-  Boss* boss;
+  mob::Boss* boss;
 
  protected:
   float finalExplosion;

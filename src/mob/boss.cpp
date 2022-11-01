@@ -23,13 +23,14 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#include "mob_boss.hpp"
+#include "mob/boss.hpp"
 
 #include "base/aidirector.hpp"
 #include "base/gameengine.hpp"
 #include "main.hpp"
 #include "screen_game.hpp"
 
+namespace mob {
 VillageHead::VillageHead() {
   static TCODColor villageHeadColor = config.getColorProperty("config.creatures.villageHead.col");
   static char villageHeadChar = config.getCharProperty("config.creatures.villageHead.ch");
@@ -163,3 +164,4 @@ float Boss::getWalkCost(int xFrom, int yFrom, int xTo, int yTo, void* userData) 
   if (pdist < secureDist) return 1.0f + secureCoef * (secureDist - pdist);
   return 1.0f;
 }
+}  // namespace mob

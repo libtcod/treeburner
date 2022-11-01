@@ -23,12 +23,13 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#include "mob_minion.hpp"
+#include "mob/minion.hpp"
 
 #include <math.h>
 
 #include "main.hpp"
 
+namespace mob {
 float Villager::talkDelay = 0.0f;
 
 Archer::Archer() {
@@ -149,3 +150,4 @@ bool Minion::update(float elapsed) {
   }
   return true;
 }
+}  // namespace mob

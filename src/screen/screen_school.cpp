@@ -332,7 +332,7 @@ bool SchoolScreen::update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse) {
     return false;
   }
   bool up = false, down = false, left = false, right = false;
-  Player::getMoveKey(k, &up, &down, &left, &right);
+  mob::Player::getMoveKey(k, &up, &down, &left, &right);
   if (down || right) {
     selectSchool(selectedSchool + 1);
   } else if (up || left) {

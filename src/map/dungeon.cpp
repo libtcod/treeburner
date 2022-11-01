@@ -32,7 +32,7 @@
 
 #include "helpers.hpp"
 #include "main.hpp"
-#include "mob_player.hpp"
+#include "mob/player.hpp"
 
 namespace map {
 Dungeon::Dungeon(int width, int height) : level(0), ambient(TCODColor::black) {
@@ -109,7 +109,7 @@ Dungeon::Dungeon(int level, CaveGenerator* caveGen) : level(level), ambient(TCOD
   finalizeMap(level >= 1, true);
 
   if (debug) {
-    Player* player = &gameEngine->player;
+    mob::Player* player = &gameEngine->player;
     saveMap((int)player->x, (int)player->y);
   }
 }
@@ -413,7 +413,7 @@ void Dungeon::getRandomPositionInCorner(int cornerx, int cornery, int* px, int* 
 }
 
 void Dungeon::setPlayerStartingPosition() {
-  Player* player = &gameEngine->player;
+  mob::Player* player = &gameEngine->player;
   // choose a corner
   int cornerx = rng->getInt(0, 1);
   int cornery = rng->getInt(0, 1);
@@ -479,38 +479,38 @@ void Dungeon::saveMap(int playerX, int playerY) {
   tmp.save(fmt::format("cave{:02d}.png", level).c_str());
 }
 
-Creature* Dungeon::getCreature(int x, int y) const {
+mob::Creature* Dungeon::getCreature(int x, int y) const {
   if (!IN_RECTANGLE(x, y, width, height)) return NULL;
   if (getCell(x, y)->nbCreatures == 0) return NULL;
-  for (Creature** it = creatures.begin(); it != creatures.end(); it++) {
+  for (mob::Creature** it = creatures.begin(); it != creatures.end(); it++) {
     if ((int)(*it)->x == x && (int)(*it)->y == y) return *it;
   }
   return NULL;
 }
 
-Creature* Dungeon::getCreature(CreatureTypeId id) const {
-  for (Creature** it = creatures.begin(); it != creatures.end(); it++) {
+mob::Creature* Dungeon::getCreature(mob::CreatureTypeId id) const {
+  for (mob::Creature** it = creatures.begin(); it != creatures.end(); it++) {
     if ((*it)->type == id) return *it;
   }
   return NULL;
 }
 
-Creature* Dungeon::getCreature(const char* name) const {
+mob::Creature* Dungeon::getCreature(const char* name) const {
   if (strcmp(name, "player") == 0) return &gameEngine->player;
-  for (Creature** it = creatures.begin(); it != creatures.end(); it++) {
+  for (mob::Creature** it = creatures.begin(); it != creatures.end(); it++) {
     if (strcmp((*it)->name, name) == 0) return *it;
   }
   return NULL;
 }
 
-void Dungeon::moveCreature(Creature* cr, int xFrom, int yFrom, int xTo, int yTo) {
+void Dungeon::moveCreature(mob::Creature* cr, int xFrom, int yFrom, int xTo, int yTo) {
   // printf ("%x %d %d -> %d %d\n",cr,xFrom,yFrom,xTo,yTo);
   getCell(xTo, yTo)->nbCreatures++;
   assert(getCell(xFrom, yFrom)->nbCreatures > 0);
   getCell(xFrom, yFrom)->nbCreatures--;
 }
 
-void Dungeon::addCreature(Creature* cr) {
+void Dungeon::addCreature(mob::Creature* cr) {
   if (isUpdatingCreatures) {
     creaturesToAdd.push(cr);
   } else {
@@ -525,7 +525,7 @@ bool Dungeon::hasCreature(int x, int y) const {
   return true;
 }
 
-void Dungeon::removeCreature(Creature* cr, bool kill) {
+void Dungeon::removeCreature(mob::Creature* cr, bool kill) {
   map::Cell* cell = getCell(cr->x, cr->y);
   cell->nbCreatures--;
   if (kill) {
@@ -539,13 +539,13 @@ void Dungeon::removeCreature(Creature* cr, bool kill) {
   }
 }
 
-void Dungeon::addCorpse(Creature* cr) {
+void Dungeon::addCorpse(mob::Creature* cr) {
   getCell(cr->x, cr->y)->hasCorpse = true;
   corpses.push(cr);
 }
 
 void Dungeon::renderCreatures(map::LightMap& lightMap) {
-  for (Creature** it = creatures.begin(); it != creatures.end(); it++) {
+  for (mob::Creature** it = creatures.begin(); it != creatures.end(); it++) {
     if ((*it)->ch != 0) {
       if (map->isInFov((int)(*it)->x, (int)(*it)->y)) (*it)->render(lightMap);
       if ((*it)->isTalking()) (*it)->renderTalk();
@@ -554,7 +554,7 @@ void Dungeon::renderCreatures(map::LightMap& lightMap) {
 }
 
 void Dungeon::renderSubcellCreatures(map::LightMap& lightMap) {
-  for (Creature** it = creatures.begin(); it != creatures.end(); it++) {
+  for (mob::Creature** it = creatures.begin(); it != creatures.end(); it++) {
     if ((*it)->ch == 0) {
       assert(IN_RECTANGLE((*it)->x, (*it)->y, width, height));
       if (IN_RECTANGLE((*it)->x, (*it)->y, width, height)) {
@@ -568,10 +568,10 @@ void Dungeon::renderSubcellCreatures(map::LightMap& lightMap) {
 void Dungeon::updateCreatures(float elapsed) {
   // can't use iterator because the boss update function summon creatures,
   // which may result in creatures reallocation
-  TCODList<Creature*> toDelete;
+  TCODList<mob::Creature*> toDelete;
   isUpdatingCreatures = true;
   for (int i = 0; i < creatures.size(); i++) {
-    Creature* cr = creatures.get(i);
+    mob::Creature* cr = creatures.get(i);
     if (cr->toDelete) {
       toDelete.push(cr);
     } else if ((cr->isUpdatedOffscreen() || cr->isOnScreen()) && !cr->update(elapsed)) {
@@ -579,12 +579,12 @@ void Dungeon::updateCreatures(float elapsed) {
     }
   }
   isUpdatingCreatures = false;
-  for (Creature** it = toDelete.begin(); it != toDelete.end(); it++) {
+  for (mob::Creature** it = toDelete.begin(); it != toDelete.end(); it++) {
     creatures.removeFast(*it);
     removeCreature(*it, !(*it)->toDelete);
     if ((*it)->toDelete) delete *it;
   }
-  for (Creature** it = creaturesToAdd.begin(); it != creaturesToAdd.end(); it++) {
+  for (mob::Creature** it = creaturesToAdd.begin(); it != creaturesToAdd.end(); it++) {
     addCreature(*it);
   }
   creaturesToAdd.clear();
@@ -594,7 +594,7 @@ void Dungeon::killCreaturesAtRange(int radius) {
   float px = gameEngine->player.x;
   float py = gameEngine->player.y;
   int rad2 = radius * radius;
-  for (Creature** it = creatures.begin(); it != creatures.end(); it++) {
+  for (mob::Creature** it = creatures.begin(); it != creatures.end(); it++) {
     float dx = (*it)->x - px;
     float dy = (*it)->y - py;
     if (dx * dx + dy * dy <= rad2) (*it)->life = 0;
@@ -602,7 +602,7 @@ void Dungeon::killCreaturesAtRange(int radius) {
 }
 
 void Dungeon::renderCorpses(map::LightMap& lightMap) {
-  for (Creature** it = corpses.begin(); it != corpses.end(); it++) {
+  for (mob::Creature** it = corpses.begin(); it != corpses.end(); it++) {
     if (map->isInFov((int)(*it)->x, (int)(*it)->y)) (*it)->render(lightMap);
   }
 }
@@ -730,7 +730,7 @@ void Dungeon::restoreShadowBeforeTree() {
 }
 
 void Dungeon::renderItems(map::LightMap& lightMap, TCODImage* ground) {
-  Player* player = &gameEngine->player;
+  mob::Player* player = &gameEngine->player;
   float aspectRatio = gameEngine->aspectRatio;
   // static items in fov
   for (int tx = (int)(-player->fovRange); tx <= (int)(player->fovRange); tx++) {
@@ -883,11 +883,11 @@ void Dungeon::saveData(uint32_t chunkId, TCODZip* zip) {
 
   // save the creatures
   int nbCreaturesToSave = 0;
-  for (Creature** it = creatures.begin(); it != creatures.end(); it++) {
+  for (mob::Creature** it = creatures.begin(); it != creatures.end(); it++) {
     if ((*it)->mustSave()) nbCreaturesToSave++;
   }
   zip->putInt(nbCreaturesToSave);
-  for (Creature** it = creatures.begin(); it != creatures.end(); it++) {
+  for (mob::Creature** it = creatures.begin(); it != creatures.end(); it++) {
     if ((*it)->mustSave()) {
       zip->putInt((*it)->type);
       (*it)->saveData(CREA_CHUNK_ID, zip);
@@ -895,7 +895,7 @@ void Dungeon::saveData(uint32_t chunkId, TCODZip* zip) {
   }
   // save the corpses
   zip->putInt(corpses.size());
-  for (Creature** it = corpses.begin(); it != corpses.end(); it++) {
+  for (mob::Creature** it = corpses.begin(); it != corpses.end(); it++) {
     zip->putInt((*it)->type);
     (*it)->saveData(CREA_CHUNK_ID, zip);
   }
@@ -936,13 +936,13 @@ bool Dungeon::loadData(uint32_t chunkId, uint32_t chunkVersion, TCODZip* zip) {
   // load the creatures
   int nbCreatures = zip->getInt();
   while (nbCreatures > 0) {
-    CreatureTypeId creatureId = (CreatureTypeId)zip->getInt();
-    if (creatureId < 0 || creatureId >= NB_CREATURE_TYPES) {
+    mob::CreatureTypeId creatureId = (mob::CreatureTypeId)zip->getInt();
+    if (creatureId < 0 || creatureId >= mob::NB_CREATURE_TYPES) {
       return false;
     }
     uint32_t creaChunkId, creaChunkVersion;
     saveGame.loadChunk(&creaChunkId, &creaChunkVersion);
-    Creature* crea = Creature::getCreature(creatureId);
+    mob::Creature* crea = mob::Creature::getCreature(creatureId);
     if (!crea->loadData(creaChunkId, creaChunkVersion, zip)) return false;
     addCreature(crea);
     nbCreatures--;
@@ -951,13 +951,13 @@ bool Dungeon::loadData(uint32_t chunkId, uint32_t chunkVersion, TCODZip* zip) {
   // load the corpses
   int nbCorpses = zip->getInt();
   while (nbCorpses > 0) {
-    CreatureTypeId creatureId = (CreatureTypeId)zip->getInt();
-    if (creatureId < 0 || creatureId >= NB_CREATURE_TYPES) {
+    mob::CreatureTypeId creatureId = (mob::CreatureTypeId)zip->getInt();
+    if (creatureId < 0 || creatureId >= mob::NB_CREATURE_TYPES) {
       return false;
     }
     uint32_t creaChunkId, creaChunkVersion;
     saveGame.loadChunk(&creaChunkId, &creaChunkVersion);
-    Creature* crea = Creature::getCreature(creatureId);
+    mob::Creature* crea = mob::Creature::getCreature(creatureId);
     if (!crea->loadData(creaChunkId, creaChunkVersion, zip)) return false;
     addCorpse(crea);
     nbCorpses--;

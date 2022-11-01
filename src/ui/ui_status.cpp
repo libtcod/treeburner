@@ -62,7 +62,7 @@ StatusPanel::StatusPanel() {
 
 void StatusPanel::render() {
   static TCODImage img(20, 4);
-  Player* player = &gameEngine->player;
+  mob::Player* player = &gameEngine->player;
   int y, dy;
   if (rect.y == 0) {
     y = 1;
@@ -101,11 +101,11 @@ void StatusPanel::render() {
   img.blit2x(TCODConsole::root, rect.x + 1, rect.y + y + dy, 0, 0, 20, 2);
 
   y += 3 * dy;
-  TCODList<Condition*> conds;
+  TCODList<mob::Condition*> conds;
   // extract conditions from the player.
   // every condition is displayed only once (the longer)
-  for (Condition** it = player->conditions.begin(); it != player->conditions.end(); it++) {
-    Condition** it2 = NULL;
+  for (mob::Condition** it = player->conditions.begin(); it != player->conditions.end(); it++) {
+    mob::Condition** it2 = NULL;
     for (it2 = conds.begin(); it2 != conds.end(); it2++) {
       if ((*it)->equals((*it2)->type->type, (*it2)->alias)) {
         break;
@@ -119,7 +119,7 @@ void StatusPanel::render() {
       if ((*it)->duration > (*it2)->duration) *it2 = *it;
     }
   }
-  for (Condition** it = conds.begin(); it != conds.end(); it++) {
+  for (mob::Condition** it = conds.begin(); it != conds.end(); it++) {
     float coef = (*it)->duration / (*it)->initialDuration;
     for (int x = 0; x < 20; x++) {
       img.putPixel(x, 0, x < coef * 20 ? TCODColor::azure : TCODColor::black);

@@ -28,13 +28,13 @@
 #include <vector>
 
 #include "item.hpp"
-#include "mob_creature.hpp"
+#include "mob/creature.hpp"
 #include "ui_dialog.hpp"
 
 class Craft : public Dialog, public UIListener, public Scrollable {
  public:
   Craft();
-  void initialize(Creature* owner, bool soft = false);
+  void initialize(mob::Creature* owner, bool soft = false);
   void render() override;
   bool update(float elapsed, TCOD_key_t& k, TCOD_mouse_t& mouse) override;
 
@@ -54,7 +54,7 @@ class Craft : public Dialog, public UIListener, public Scrollable {
   Scroller* scroller;
   Button clear;
   Button create;
-  Creature* owner;
+  mob::Creature* owner;
   bool isDragging, isDraggingStart;
   int dragx, dragy, dragStartX, dragStartY;
   item::Item* dragItem;

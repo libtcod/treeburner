@@ -48,7 +48,7 @@ class Inventory : public Dialog, public UIListener {
  public:
   Inventory();
   virtual ~Inventory() {}
-  void initialize(Creature* owner);
+  void initialize(mob::Creature* owner);
   void initialize(item::Item* container);
   void render() override;
   void onActivate() override;
@@ -70,7 +70,7 @@ class Inventory : public Dialog, public UIListener {
   Button craft;
   int selectedItem;
   bool closeOn;  // mouse hovers close button
-  Creature* owner;  // either owner or container is NULL
+  mob::Creature* owner;  // either owner or container is NULL
   item::Item* container;
   // for item combination
   item::ItemCombination* combination;

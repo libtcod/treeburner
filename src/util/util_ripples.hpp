@@ -33,7 +33,9 @@ namespace map {
 class Dungeon;
 }
 
+namespace mob {
 class Shoal;
+}
 
 struct WaterZone {
   base::Rect rect;  // water zone
@@ -41,7 +43,7 @@ struct WaterZone {
   float* data = nullptr;  // water height data after update
   float* oldData = nullptr;  // water height data before update
   bool isActive;
-  Shoal* shoal = nullptr;
+  mob::Shoal* shoal = nullptr;
 };
 
 class RippleManager {

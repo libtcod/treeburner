@@ -23,18 +23,19 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#include "mob_creature.hpp"
+#include "mob/creature.hpp"
 
 #include <stdio.h>
 
 #include "base/aidirector.hpp"
 #include "constants.hpp"
 #include "main.hpp"
-#include "mob_boss.hpp"
-#include "mob_fish.hpp"
-#include "mob_friend.hpp"
-#include "mob_minion.hpp"
+#include "mob/boss.hpp"
+#include "mob/fish.hpp"
+#include "mob/friend.hpp"
+#include "mob/minion.hpp"
 
+namespace mob {
 TCODList<Creature*> Creature::creatureByType[NB_CREATURE_TYPES];
 
 TCODList<ConditionType*> ConditionType::list;
@@ -647,3 +648,4 @@ bool Creature::loadData(uint32_t chunkId, uint32_t chunkVersion, TCODZip* zip) {
   }
   return true;
 }
+}  // namespace mob

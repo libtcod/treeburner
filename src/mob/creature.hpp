@@ -30,11 +30,14 @@
 #include "base/noisything.hpp"
 #include "base/savegame.hpp"
 #include "item.hpp"
-#include "mob_behavior.hpp"
+#include "mob/behavior.hpp"
 
 class Game;
+namespace mob {
 class Creature;
+}
 
+namespace mob {
 enum CreatureTypeId {
   // the cave chapter 1
   CREATURE_FRIEND,
@@ -199,3 +202,4 @@ class Creature : public base::DynamicEntity,
   bool walk(float elapsed);
   void randomWalk(float elapsed);
 };
+}  // namespace mob

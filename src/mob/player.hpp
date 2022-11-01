@@ -27,13 +27,14 @@
 #include <libtcod.hpp>
 
 #include "map/lightmap.hpp"
-#include "mob_creature.hpp"
+#include "mob/creature.hpp"
 #include "screen_school.hpp"
 
 namespace map {
 class Dungeon;
 }
 
+namespace mob {
 class Player : public Creature {
  public:
   Player();
@@ -79,3 +80,4 @@ class Player : public Creature {
   void updateHealing(float elapsed);
   bool activateCell(int dungeonx, int dungeony, bool lbut_pressed, bool walk, bool* activated = NULL);
 };
+}  // namespace mob

@@ -373,7 +373,7 @@ bool MainMenu::update(float el, TCOD_key_t k, TCOD_mouse_t mouse) {
     }
     bool up = false, down = false, left = false, right = false;
     k.pressed = true;
-    Player::getMoveKey(k, &up, &down, &left, &right);
+    mob::Player::getMoveKey(k, &up, &down, &left, &right);
     if (down || right)
       selectedItem = (selectedItem + 1) % menu.size();
     else if (up || left)

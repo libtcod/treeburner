@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Jice
+ * Copyright (c) 2009 Jice
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,33 +24,30 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 #pragma once
-#include <libtcod.hpp>
+#include "map/light.hpp"
+#include "mob/creature.hpp"
 
-#include "map/lightmap.hpp"
-#include "mob_behavior.hpp"
-#include "mob_creature.hpp"
-#include "util_ripples.hpp"
-
-class Fish;
-
-class Shoal {
+namespace mob {
+class Boss : public Creature {
  public:
-  TCODList<Fish*> list;
-  TCODList<ScarePoint*> scare;
-};
-
-class Fish : public Creature {
- public:
-  Fish(WaterZone* zone);
-  ~Fish() override;
+  Boss();
   bool update(float elapsed) override;
-  void render(map::LightMap& lightMap) override;
-  float oldx, oldy;
-  void slide();
-  void initItem() override;
-  bool wasOnScreen() const;
-  bool updated;
+  void setSeen();
+  void stun(float delay) override;
+  void takeDamage(float amount) override;
+  float getWalkCost(int xFrom, int yFrom, int xTo, int yTo, void* userData) const override;
 
  protected:
-  WaterZone* zone = nullptr;
+  float pathTimer;
+  float summonTimer;
+  bool seen;
+  bool summonMinions;
+  bool stayInLair;
+  map::ExtendedLight* treasureLight = nullptr;
 };
+
+class VillageHead : public Boss {
+ public:
+  VillageHead();
+};
+}  // namespace mob

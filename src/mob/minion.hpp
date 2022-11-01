@@ -24,28 +24,33 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 #pragma once
-#include "map/light.hpp"
-#include "mob_creature.hpp"
+#include "mob/creature.hpp"
 
-class Boss : public Creature {
+namespace mob {
+class Minion : public Creature {
  public:
-  Boss();
+  Minion();
   bool update(float elapsed) override;
   void setSeen();
-  void stun(float delay) override;
-  void takeDamage(float amount) override;
-  float getWalkCost(int xFrom, int yFrom, int xTo, int yTo, void* userData) const override;
+  void onReplace() override;
 
  protected:
   float pathTimer;
-  float summonTimer;
   bool seen;
-  bool summonMinions;
-  bool stayInLair;
-  map::ExtendedLight* treasureLight = nullptr;
 };
 
-class VillageHead : public Boss {
+class Villager : public Minion {
  public:
-  VillageHead();
+  Villager();
+  bool update(float elapsed) override;
+
+ protected:
+  static float talkDelay;
 };
+
+class Archer : public Minion {
+ public:
+  Archer();
+  bool update(float elapsed) override;
+};
+}  // namespace mob

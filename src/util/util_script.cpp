@@ -28,7 +28,7 @@
 #include <lua.hpp>
 
 int scHasCreatureItemType(lua_State* L) {
-  Creature* cr = NULL;
+  mob::Creature* cr = NULL;
   const char* creatureName = lua_tostring(L, 1);
   cr = gameEngine->dungeon->getCreature(creatureName);
   if (!cr) {
@@ -47,7 +47,7 @@ int scHasCreatureItemType(lua_State* L) {
 }
 
 int scGetBestCreatureFoodName(lua_State* L) {
-  Creature* cr = NULL;
+  mob::Creature* cr = NULL;
   const char* creatureName = lua_tostring(L, 1);
   cr = gameEngine->dungeon->getCreature(creatureName);
   if (!cr) {
@@ -70,7 +70,7 @@ int scGetBestCreatureFoodName(lua_State* L) {
 }
 
 int scGetBestCreatureFoodHP(lua_State* L) {
-  Creature* cr = NULL;
+  mob::Creature* cr = NULL;
   const char* creatureName = lua_tostring(L, 1);
   cr = gameEngine->dungeon->getCreature(creatureName);
   if (!cr) {
@@ -148,7 +148,7 @@ int scTextGen(lua_State* L) {
 int scCreatureTalk(lua_State* L) {
   const char* creatureName = lua_tostring(L, 1);
   const char* msg = lua_tostring(L, 2);
-  Creature* cr = gameEngine->dungeon->getCreature(creatureName);
+  mob::Creature* cr = gameEngine->dungeon->getCreature(creatureName);
   if (!cr) {
     return 0;
   }
@@ -158,7 +158,7 @@ int scCreatureTalk(lua_State* L) {
 
 int scCreaturePos(lua_State* L) {
   const char* creatureName = lua_tostring(L, 1);
-  Creature* cr = gameEngine->dungeon->getCreature(creatureName);
+  mob::Creature* cr = gameEngine->dungeon->getCreature(creatureName);
   if (!cr) {
     return 0;
   }
@@ -169,7 +169,7 @@ int scCreaturePos(lua_State* L) {
 
 int scCreatureLife(lua_State* L) {
   const char* creatureName = lua_tostring(L, 1);
-  Creature* cr = gameEngine->dungeon->getCreature(creatureName);
+  mob::Creature* cr = gameEngine->dungeon->getCreature(creatureName);
   if (!cr) {
     return 0;
   }

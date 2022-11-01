@@ -32,7 +32,7 @@
 
 #include "main.hpp"
 #include "map/dungeon.hpp"
-#include "mob_fish.hpp"
+#include "mob/fish.hpp"
 
 // range below which fishes try to get away from each other
 #define SHOAL_CLOSE_RANGE 2.0f
@@ -119,9 +119,9 @@ void RippleManager::init() {
             int nbFish =
                 TCODRandom::getInstance()->getInt(zone->rect.w * zone->rect.h / 80, zone->rect.w * zone->rect.h / 20);
             if (nbFish > 0) {
-              zone->shoal = new Shoal();
+              zone->shoal = new mob::Shoal();
               while (nbFish > 0) {
-                Fish* fish = new Fish(zone);
+                mob::Fish* fish = new mob::Fish(zone);
                 zone->shoal->list.push(fish);
                 // find a random place in the lake
                 int x2 = TCODRandom::getInstance()->getInt(0, zone->rect.w - 1);
@@ -163,7 +163,7 @@ void RippleManager::startRipple(int dungeonx, int dungeony, float height) {
       zone->data[off] = -height;
       zone->isActive = true;
       if (zone->shoal) {
-        zone->shoal->scare.push(new ScarePoint(dungeonx, dungeony));
+        zone->shoal->scare.push(new mob::ScarePoint(dungeonx, dungeony));
       }
       break;
     }
@@ -227,14 +227,14 @@ bool RippleManager::updateRipples(float elapsed) {
       }
     }
     // update the fish shoal
-    Shoal* shoal = zone->shoal;
+    mob::Shoal* shoal = zone->shoal;
     if (shoal) {
-      for (Fish** f1 = shoal->list.begin(); f1 != shoal->list.end(); f1++) {
-        Fish* fish1 = *f1;
+      for (mob::Fish** f1 = shoal->list.begin(); f1 != shoal->list.end(); f1++) {
+        mob::Fish* fish1 = *f1;
         // some of the fishes of the shoal may be out of screen. skip them
         if (!fish1->updated) continue;
-        for (Fish** f2 = shoal->list.begin(); f2 != shoal->list.end(); f2++) {
-          Fish* fish2 = *f2;
+        for (mob::Fish** f2 = shoal->list.begin(); f2 != shoal->list.end(); f2++) {
+          mob::Fish* fish2 = *f2;
           // fish-fish interaction
           // TODO can be optimized with fastInvSqrt
           if (fish1 != fish2) {
@@ -257,7 +257,7 @@ bool RippleManager::updateRipples(float elapsed) {
         fish1->dy = CLAMP(-MAX_FISH_SPEED, MAX_FISH_SPEED, fish1->dy);
         // fish-scare interaction
         // TODO can be optimized with fastInvSqrt
-        for (ScarePoint** spit = shoal->scare.begin(); spit != shoal->scare.end(); spit++) {
+        for (mob::ScarePoint** spit = shoal->scare.begin(); spit != shoal->scare.end(); spit++) {
           float dx = (*spit)->x - fish1->x;
           float dy = (*spit)->y - fish1->y;
           float dist = sqrtf(dx * dx + dy * dy);
@@ -273,7 +273,7 @@ bool RippleManager::updateRipples(float elapsed) {
         fish1->slide();
         assert(gameEngine->dungeon->hasWater(fish1->getSubX(), fish1->getSubY()));
       }
-      for (ScarePoint** spit = shoal->scare.begin(); spit != shoal->scare.end(); spit++) {
+      for (mob::ScarePoint** spit = shoal->scare.begin(); spit != shoal->scare.end(); spit++) {
         (*spit)->life -= elapsed;
         if ((*spit)->life <= 0.0f) {
           delete (*spit);

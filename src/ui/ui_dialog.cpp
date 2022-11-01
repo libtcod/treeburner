@@ -175,7 +175,7 @@ void Scroller::update(float elapsed, TCOD_key_t& k, TCOD_mouse_t& mouse, int rec
   // scrollbar focus
   if (nbDisplayed < nbMessages) {
     bool up = false, down = false, left = false, right = false;
-    Player::getMoveKey(k, &up, &down, &left, &right);
+    mob::Player::getMoveKey(k, &up, &down, &left, &right);
     if ((up || left) && scrollOffset < nbMessages - height) {
       scrollOffset += 5;
       scrollOffset = MIN(nbMessages - height, scrollOffset);

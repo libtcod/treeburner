@@ -70,7 +70,7 @@ static LayeredTerrain forestTypes[NB_FORESTS] = {
          {map::TERRAIN_GRASS_LUSH,
           0.5f,
           {{"pine tree", -1, 0.36f, 0.0f, 1.0f},
-           {NULL, CREATURE_DEER, 0.01f, 0.0f, 1.0f},
+           {NULL, mob::CREATURE_DEER, 0.01f, 0.0f, 1.0f},
            {"wolfsbane", -1, 0.001f, 0.5f, 1.0f},
            {"ginko", -1, 0.001f, 0.5f, 1.0f},
            {"klamath", -1, 0.001f, 0.0f, 1.0f},
@@ -375,7 +375,7 @@ bool ForestScreen::update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse) {
   }
   dungeon->updateClouds(elapsed);
 
-  HerdBehavior::updateScarePoints(elapsed);
+  mob::HerdBehavior::updateScarePoints(elapsed);
 
   // update fireballs
   TCODList<FireBall*> fireballsToRemove;
@@ -581,7 +581,7 @@ else if ( swimmable2 ) waterCoef2=layer2Height;
                   dungeon->addItem(item::Item::getItem(type, x / 2, y / 2));
               }
             } else {
-              Creature* cr = Creature::getCreature((CreatureTypeId)itemData->creatureType);
+              mob::Creature* cr = mob::Creature::getCreature((mob::CreatureTypeId)itemData->creatureType);
               cr->setPos(x / 2, y / 2);
               dungeon->addCreature(cr);
             }
@@ -640,7 +640,7 @@ void ForestScreen::loadMap(uint32_t seed) {
   saveGame.load(base::PHASE_START);
 
   dungeon->computeSpawnSources();
-  fr = (Friend*)dungeon->getCreature(CREATURE_FRIEND);
+  fr = (mob::Friend*)dungeon->getCreature(mob::CREATURE_FRIEND);
 #ifndef NDEBUG
   float t1 = TCODSystem::getElapsedSeconds();
   DBG(("Forest loading end. %g sec\n", t1 - t0));
@@ -662,7 +662,7 @@ void ForestScreen::onActivate() {
     generateMap(saveGame.seed);
     dungeon->setPlayerStartingPosition();
     int fx, fy;
-    fr = new Friend();
+    fr = new mob::Friend();
     item::Item* knife = item::Item::getRandomWeapon("knife", item::ITEM_CLASS_STANDARD);
     knife->addComponent(item::Item::getItem("emerald", 0, 0, false));
     knife->name_ = strdup("emerald pocketknife");

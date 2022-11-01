@@ -23,12 +23,13 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#include "mob_friend.hpp"
+#include "mob/friend.hpp"
 
 #include <stdio.h>
 
 #include "main.hpp"
 
+namespace mob {
 #define SECURE_DIST 12
 #define SECURE_COEF 3.0f
 #define NB_CAUGHT 25
@@ -298,3 +299,4 @@ bool Friend::loadData(uint32_t chunkId, uint32_t chunkVersion, TCODZip* zip) {
   // aiMode=(FriendAiMode)zip->getInt();
   return true;
 }
+}  // namespace mob

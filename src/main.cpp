@@ -183,7 +183,7 @@ class ModuleFactory : public UmbraModuleFactory {
 int main(int argc, char* argv[]) {
   // read main configuration file
   config.run("data/cfg/config.txt", NULL);
-  ConditionType::init();
+  mob::ConditionType::init();
   TextGenerator::setGlobalFunction("NUMBER_TO_LETTER", new NumberToLetterFunc());
 
   // load user preferences (mouse control mode, ...)

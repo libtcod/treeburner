@@ -25,7 +25,7 @@
  */
 #pragma once
 #include "item.hpp"
-#include "mob_creature.hpp"
+#include "mob/creature.hpp"
 
 // displays a description of an item/creature/...
 class Descriptor {
@@ -37,7 +37,7 @@ class Descriptor {
  protected:
   int x, y, mousex, mousey;
   item::Item* item;
-  Creature* creature;
+  mob::Creature* creature;
   char tooltip[32];
   bool lookOn;
 };

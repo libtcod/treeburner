@@ -26,44 +26,33 @@
 #pragma once
 #include <libtcod.hpp>
 
-#include "mob_creature.hpp"
-#include "util_textgen.hpp"
+#include "map/lightmap.hpp"
+#include "mob/behavior.hpp"
+#include "mob/creature.hpp"
+#include "util_ripples.hpp"
 
-enum FriendAiMode {
-  AI_CATCH_ME,
-  AI_HIDE_AND_SEEK,
-};
+namespace mob {
+class Fish;
 
-class Friend : public Creature {
+class Shoal {
  public:
-  Friend();
-  bool update(float elapsed) override;
-  float getWalkCost(int xFrom, int yFrom, int xTo, int yTo, void* userData) const override;
-
-  // SaveListener
-  bool loadData(uint32_t chunkId, uint32_t chunkVersion, TCODZip* zip) override;
-  void saveData(uint32_t chunkId, TCODZip* zip) override;
-
- private:
-  TextGenerator* talkGenerator = nullptr;
-  float timer;
-  bool startPhrase, foodTuto, foodObj;
-
-  // catch me vars
-  float lostDelay;
-
-  int awayCount;
-  int caught;
-
-  // hide & seek vars
-  int counter;
-  bool see, tutoPause;
-  float sight;
-
-  bool updateCatchMe(float elapsed);
-  bool updateHideAndSeek(float elapsed);
-  bool updateFollow(float elapsed);
-  float getWalkCostCatchMe(int xFrom, int yFrom, int xTo, int yTo, void* userData) const;
-  float getWalkCostHideAndSeek(int xFrom, int yFrom, int xTo, int yTo, void* userData) const;
-  float getWalkCostFollow(int xFrom, int yFrom, int xTo, int yTo, void* userData) const;
+  TCODList<Fish*> list;
+  TCODList<ScarePoint*> scare;
 };
+
+class Fish : public Creature {
+ public:
+  Fish(WaterZone* zone);
+  ~Fish() override;
+  bool update(float elapsed) override;
+  void render(map::LightMap& lightMap) override;
+  float oldx, oldy;
+  void slide();
+  void initItem() override;
+  bool wasOnScreen() const;
+  bool updated;
+
+ protected:
+  WaterZone* zone = nullptr;
+};
+}  // namespace mob
