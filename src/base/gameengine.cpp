@@ -72,7 +72,7 @@ void GameEngine::recomputeCanopy(item::Item* it) {
         for (int y = (int)r.y; y < (int)(r.y + r.h); y++) {
           if (IN_RECTANGLE(x, y, dungeon->width * 2, dungeon->height * 2)) {
             dungeon->canopy->putPixel(x, y, TCODColor::black);
-            SubCell* sub = dungeon->getSubCell(x, y);
+            map::SubCell* sub = dungeon->getSubCell(x, y);
             sub->shadow = sub->shadowBeforeTree;
             dungeon->setShadowHeight(x, y, dungeon->smapBeforeTree->getValue(x, y));
           }

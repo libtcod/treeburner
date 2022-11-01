@@ -31,6 +31,7 @@
 #include "base/savegame.hpp"
 #include "item.hpp"
 
+namespace map {
 // Terrain system adapted from Umbrarum Regnum Tech Demo 1
 struct TerrainType {
   const char* name{};  // terrain type name
@@ -80,7 +81,7 @@ struct Cell : public base::Persistant {
   // cells already seen by the player
   bool memory{};
   TerrainId terrain{TERRAIN_GROUND};
-  Building* building{};  // if cell is inside a building
+  map::Building* building{};  // if cell is inside a building
 
   // SaveListener
   bool loadData(TCODZip* zip) override;
@@ -98,3 +99,4 @@ struct SubCell : public base::Persistant {
   bool loadData(TCODZip* zip) override;
   void saveData(TCODZip* zip) override;
 };
+}  // namespace map

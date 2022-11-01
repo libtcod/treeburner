@@ -30,34 +30,36 @@
 #include "base/noisything.hpp"
 #include "map/lightmap.hpp"
 
+namespace map {
 class Light : public base::Entity, public base::NoisyThing {
  public:
   Light() : randomRad(false), range(0.0f), color{tcod::ColorRGB{255, 255, 255}} {}
   Light(float range, TCODColor color = TCODColor::white, bool randomRad = false)
       : randomRad(randomRad), range(range), color(color) {}
-  void addToLightMap(LightMap& map);
+  void addToLightMap(map::LightMap& map);
   void addToImage(TCODImage& img);
   void getDungeonPart(int* minx, int* miny, int* maxx, int* maxy);
   virtual void update([[maybe_unused]] float elapsed) {}
 
   bool randomRad;
   float range;
-  HDRColor color;
+  map::HDRColor color;
 
  protected:
-  void add(LightMap* l, TCODImage* i);
+  void add(map::LightMap* l, TCODImage* i);
   virtual float getIntensity() { return 1.0f; }
-  virtual HDRColor getColor([[maybe_unused]] float rad) { return color; }
+  virtual map::HDRColor getColor([[maybe_unused]] float rad) { return color; }
   float getFog(int x, int y);
 };
 
 class ExtendedLight : public Light {
  public:
-  void setup(HDRColor outColor, float intensityPatternDelay, const char* intensityPattern, const char* colorPattern);
+  void setup(
+      map::HDRColor outColor, float intensityPatternDelay, const char* intensityPattern, const char* colorPattern);
   void update(float elapsed) override;
 
  protected:
-  HDRColor outColor;
+  map::HDRColor outColor;
   const char* intensityPattern = nullptr;
   const char* colorPattern = nullptr;
   float intensityPatternDelay;
@@ -67,5 +69,6 @@ class ExtendedLight : public Light {
   bool noiseIntensity;
 
   float getIntensity() override;
-  HDRColor getColor(float rad) override;
+  map::HDRColor getColor(float rad) override;
 };
+}  // namespace map

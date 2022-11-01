@@ -30,6 +30,7 @@
 #include "base/entity.hpp"
 #include "map/dungeon.hpp"
 
+namespace map {
 enum BuildingMapId {
   BUILDING_NONE,
   BUILDING_FLOOR,
@@ -54,9 +55,9 @@ class Building : public base::Rect {
 
   static Building* generate(int width, int height, int nbRooms, TCODRandom* rng);
   static Building* generateWallsOnly(int width, int height, int nbRooms, TCODRandom* rng);
-  void applyTo(Dungeon* dungeon, int dungeonDoorx, int dungeonDoory, bool cityWalls = false);
-  void setHuntingHide(Dungeon* dungeon);
-  static void buildCityWalls(int x, Dungeon* dungeon);
+  void applyTo(map::Dungeon* dungeon, int dungeonDoorx, int dungeonDoory, bool cityWalls = false);
+  void setHuntingHide(map::Dungeon* dungeon);
+  static void buildCityWalls(int x, map::Dungeon* dungeon);
   void collapseRoof();
 
  protected:
@@ -65,5 +66,6 @@ class Building : public base::Rect {
   void placeRandomDoor(TCODRandom* rng);
   void placeRandomWindow(TCODRandom* rng);
   bool getFreeFloor(int* fx, int* fy);
-  static void setBuildingWallCell(int x, int y, int ysym, int ch, Dungeon* dungeon);
+  static void setBuildingWallCell(int x, int y, int ysym, int ch, map::Dungeon* dungeon);
 };
+}  // namespace map

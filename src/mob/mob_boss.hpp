@@ -42,7 +42,7 @@ class Boss : public Creature {
   bool seen;
   bool summonMinions;
   bool stayInLair;
-  ExtendedLight* treasureLight = nullptr;
+  map::ExtendedLight* treasureLight = nullptr;
 };
 
 class VillageHead : public Boss {

@@ -45,8 +45,8 @@ class TreeBurner : public base::GameEngine {
 
   void onActivate() override;
   void onDeactivate() override;
-  void placeTree(Dungeon* dungeon, int x, int y, const item::ItemType* treeType);
-  void placeHouse(Dungeon* dungeon, int doorx, int doory, base::Entity::Direction dir);
+  void placeTree(map::Dungeon* dungeon, int x, int y, const item::ItemType* treeType);
+  void placeHouse(map::Dungeon* dungeon, int doorx, int doory, base::Entity::Direction dir);
   int debugMap;
   base::AiDirector aiDirector;
   Creature* boss;

@@ -125,7 +125,7 @@ Fire::~Fire() {
   delete img;
 }
 
-FireManager::FireManager(Dungeon* dungeon) : dungeon(dungeon), el(0.0f) {
+FireManager::FireManager(map::Dungeon* dungeon) : dungeon(dungeon), el(0.0f) {
   buf = new uint8_t[dungeon->width * dungeon->height * 4];
   memset(buf, 0, sizeof(uint8_t) * dungeon->width * dungeon->height * 4);
   if (!col_init) {
@@ -277,7 +277,7 @@ void FireManager::renderFire(TCODImage& ground) {
     for (int y = (int)screenFireZone.y; y < screenFireZone.h; y++) {
       uint8_t v = get(x, y);
       if (v > 0) {
-        HDRColor col = fireColor[v];
+        map::HDRColor col = fireColor[v];
         col = col * 1.5f + ground.getPixel(x - dx, y - dy);
         ground.putPixel(x - dx, y - dy, col);
       }

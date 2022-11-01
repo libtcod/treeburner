@@ -115,16 +115,16 @@ FireBall::Type* FireBall::getType(const char* name) {
 
 FireBall::~FireBall() { gameEngine->dungeon->removeLight(&light); }
 
-void FireBall::render(LightMap& lightMap) {
+void FireBall::render(map::LightMap& lightMap) {
   if (effect == FIREBALL_MOVE) {
     float curx = fx_ * 2 - gameEngine->xOffset * 2;
     float cury = fy_ * 2 - gameEngine->yOffset * 2;
-    HDRColor col = type_data_->lightColor;
+    map::HDRColor col = type_data_->lightColor;
     for (int i = 0; i < type_data_->trailLength; i++) {
       int icurx = (int)curx;
       int icury = (int)cury;
       if (IN_RECTANGLE(icurx, icury, lightMap.width, lightMap.height)) {
-        HDRColor lcol = lightMap.getColor2x(icurx, icury);
+        map::HDRColor lcol = lightMap.getColor2x(icurx, icury);
         lcol = lcol + col;
         lightMap.setColor2x(icurx, icury, lcol);
       }
@@ -138,7 +138,7 @@ void FireBall::render(LightMap& lightMap) {
       int lmy = (int)((*it)->y) - gameEngine->yOffset * 2;
       if (IN_RECTANGLE(lmx, lmy, lightMap.width, lightMap.height)) {
         if (gameEngine->dungeon->map2x->isInFov((int)((*it)->x), (int)((*it)->y))) {
-          HDRColor lcol = lightMap.getColor2x(lmx, lmy);
+          map::HDRColor lcol = lightMap.getColor2x(lmx, lmy);
           lcol = lcol + light.color;
           lightMap.setColor2x(lmx, lmy, lcol);
         }
@@ -181,7 +181,7 @@ void FireBall::render(TCODImage& ground) {
 
 bool FireBall::updateMove(float elapsed) {
   base::GameEngine* game = gameEngine;
-  Dungeon* dungeon = game->dungeon;
+  map::Dungeon* dungeon = game->dungeon;
   int oldx = (int)x;
   int oldy = (int)y;
   fx_ += dx_ * type_data_->speed;
@@ -342,7 +342,7 @@ bool FireBall::updateStandard(float elapsed) {
 
 bool FireBall::updateTorch(float elapsed) {
   base::GameEngine* game = gameEngine;
-  Dungeon* dungeon = game->dungeon;
+  map::Dungeon* dungeon = game->dungeon;
   float f;
   fx_life_ -= elapsed / incanLife;
   if (fx_life_ < 0.0f) {
@@ -398,7 +398,7 @@ bool FireBall::updateTorch(float elapsed) {
 
 bool FireBall::updateSparkle(float elapsed) {
   base::GameEngine* game = gameEngine;
-  Dungeon* dungeon = game->dungeon;
+  map::Dungeon* dungeon = game->dungeon;
   bool firstFrame = (fx_life_ == 1.0f);
   fx_life_ -= elapsed / type_data_->sparkleLife;
   if (fx_life_ < 0.0f) {

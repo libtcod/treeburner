@@ -26,6 +26,7 @@
 #pragma once
 #include <libtcod.hpp>
 
+namespace map {
 // color that can go beyond 0-255 range
 struct HDRColor {
   float r, g, b;
@@ -83,3 +84,4 @@ class LightMap {
   float fogZ;
   TCODNoise* fogNoise = nullptr;
 };
+}  // namespace map

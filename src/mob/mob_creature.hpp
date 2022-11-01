@@ -148,7 +148,7 @@ class Creature : public base::DynamicEntity,
   static TCODList<Creature*> creatureByType[NB_CREATURE_TYPES];
 
   virtual bool update(float elapsed);
-  virtual void render(LightMap& lightMap);
+  virtual void render(map::LightMap& lightMap);
   void renderTalk();
   virtual void takeDamage(float amount);
   virtual void stun(float delay);

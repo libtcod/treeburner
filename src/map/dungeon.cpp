@@ -34,6 +34,7 @@
 #include "main.hpp"
 #include "mob_player.hpp"
 
+namespace map {
 Dungeon::Dungeon(int width, int height) : level(0), ambient(TCODColor::black) {
   this->width = width;
   this->height = height;
@@ -55,8 +56,8 @@ void Dungeon::computeSpawnSources() {
 
 // allocate all data
 void Dungeon::initData(CaveGenerator* caveGen) {
-  cells = new Cell[width * height];
-  subcells = new SubCell[width * height * 4];
+  cells = new map::Cell[width * height];
+  subcells = new map::SubCell[width * height * 4];
   stairx = stairy = -1;
   if (caveGen) {
     map = caveGen->map;
@@ -219,18 +220,19 @@ void Dungeon::smoothShadow() {
 }
 
 void Dungeon::updateLights(float elapsed) {
-  for (Light** it = lights.begin(); it != lights.end(); it++) {
+  for (map::Light** it = lights.begin(); it != lights.end(); it++) {
     (*it)->update(elapsed);
   }
 }
 
-void Dungeon::renderLightsToLightMap(LightMap& lightMap, int* minx, int* miny, int* maxx, int* maxy, bool clearMap) {
+void Dungeon::renderLightsToLightMap(
+    map::LightMap& lightMap, int* minx, int* miny, int* maxx, int* maxy, bool clearMap) {
   int minx2x = width * 2 - 1;
   int maxx2x = 0;
   int miny2x = height * 2 - 1;
   int maxy2x = 0;
   if (clearMap) lightMap.clear(ambient);
-  for (Light** it = lights.begin(); it != lights.end(); it++) {
+  for (map::Light** it = lights.begin(); it != lights.end(); it++) {
     int light_minx, light_maxx, light_miny, light_maxy;
     (*it)->addToLightMap(lightMap);
     (*it)->getDungeonPart(&light_minx, &light_miny, &light_maxx, &light_maxy);
@@ -250,7 +252,7 @@ void Dungeon::renderLightsToImage(TCODImage& img, int* minx, int* miny, int* max
   int maxx2x = 0;
   int miny2x = height * 2 - 1;
   int maxy2x = 0;
-  for (Light** it = lights.begin(); it != lights.end(); it++) {
+  for (map::Light** it = lights.begin(); it != lights.end(); it++) {
     int light_minx, light_maxx, light_miny, light_maxy;
     (*it)->addToImage(img);
     (*it)->getDungeonPart(&light_minx, &light_miny, &light_maxx, &light_maxy);
@@ -524,7 +526,7 @@ bool Dungeon::hasCreature(int x, int y) const {
 }
 
 void Dungeon::removeCreature(Creature* cr, bool kill) {
-  Cell* cell = getCell(cr->x, cr->y);
+  map::Cell* cell = getCell(cr->x, cr->y);
   cell->nbCreatures--;
   if (kill) {
     if (!cell->hasCorpse) {
@@ -542,7 +544,7 @@ void Dungeon::addCorpse(Creature* cr) {
   corpses.push(cr);
 }
 
-void Dungeon::renderCreatures(LightMap& lightMap) {
+void Dungeon::renderCreatures(map::LightMap& lightMap) {
   for (Creature** it = creatures.begin(); it != creatures.end(); it++) {
     if ((*it)->ch != 0) {
       if (map->isInFov((int)(*it)->x, (int)(*it)->y)) (*it)->render(lightMap);
@@ -551,7 +553,7 @@ void Dungeon::renderCreatures(LightMap& lightMap) {
   }
 }
 
-void Dungeon::renderSubcellCreatures(LightMap& lightMap) {
+void Dungeon::renderSubcellCreatures(map::LightMap& lightMap) {
   for (Creature** it = creatures.begin(); it != creatures.end(); it++) {
     if ((*it)->ch == 0) {
       assert(IN_RECTANGLE((*it)->x, (*it)->y, width, height));
@@ -599,7 +601,7 @@ void Dungeon::killCreaturesAtRange(int radius) {
   }
 }
 
-void Dungeon::renderCorpses(LightMap& lightMap) {
+void Dungeon::renderCorpses(map::LightMap& lightMap) {
   for (Creature** it = corpses.begin(); it != corpses.end(); it++) {
     if (map->isInFov((int)(*it)->x, (int)(*it)->y)) (*it)->render(lightMap);
   }
@@ -612,7 +614,7 @@ bool Dungeon::hasItem(int x, int y) const {
 
 bool Dungeon::hasActivableItem(int x, int y) const {
   if (!IN_RECTANGLE(x, y, width, height)) return false;
-  Cell* cell = getCell(x, y);
+  map::Cell* cell = getCell(x, y);
   if (cell->items.size() != 1) return false;
   item::Item* it = cell->items.front();
   return it->isActivatedOnBump();
@@ -624,7 +626,7 @@ bool Dungeon::hasItemType(int x, int y, const item::ItemType* type) { return get
 
 item::Item* Dungeon::getItem(int x, int y, const item::ItemType* type) {
   if (!IN_RECTANGLE(x, y, width, height)) return nullptr;
-  Cell* cell = getCell(x, y);
+  map::Cell* cell = getCell(x, y);
   for (item::Item* it : cell->items) {
     if (it->isA(type)) return it;
   }
@@ -638,7 +640,7 @@ item::Item* Dungeon::getItem(int x, int y, const char* typeName) {
 
 bool Dungeon::hasItemFlag(int x, int y, int flag) {
   if (!IN_RECTANGLE(x, y, width, height)) return false;
-  Cell* cell = getCell(x, y);
+  map::Cell* cell = getCell(x, y);
   for (const item::Item* it : cell->items) {
     if ((it->typeData->flags & flag) != 0) return true;
   }
@@ -676,7 +678,7 @@ void Dungeon::addItem(item::Item* it) {
 
 void Dungeon::computeWalkTransp(int x, int y) {
   if (!IN_RECTANGLE(x, y, width, height)) return;
-  Cell* cell = getCell(x, y);
+  map::Cell* cell = getCell(x, y);
   bool walk = true;
   bool transp = true;
   for (const item::Item* it : cell->items) {
@@ -727,7 +729,7 @@ void Dungeon::restoreShadowBeforeTree() {
   smap->copy(smapBeforeTree);
 }
 
-void Dungeon::renderItems(LightMap& lightMap, TCODImage* ground) {
+void Dungeon::renderItems(map::LightMap& lightMap, TCODImage* ground) {
   Player* player = &gameEngine->player;
   float aspectRatio = gameEngine->aspectRatio;
   // static items in fov
@@ -737,7 +739,8 @@ void Dungeon::renderItems(LightMap& lightMap, TCODImage* ground) {
       int dy = (int)(sqrtf(player->fovRange * player->fovRange - tx * tx) * aspectRatio);
       for (int ty = -dy; ty <= dy; ty++) {
         int y = (int)(player->y + ty);
-        if ((unsigned)y < (unsigned)height && map->isInFov(x, y) && !terrainTypes[getTerrainType(x, y)].swimmable) {
+        if ((unsigned)y < (unsigned)height && map->isInFov(x, y) &&
+            !map::terrainTypes[getTerrainType(x, y)].swimmable) {
           item::Item* it = getFirstItem(x, y);
           if (it && it->speed == 0.0f) {
             it->render(lightMap, ground);
@@ -978,3 +981,4 @@ bool Dungeon::loadData(uint32_t chunkId, uint32_t chunkVersion, TCODZip* zip) {
 
   return true;
 }
+}  // namespace map

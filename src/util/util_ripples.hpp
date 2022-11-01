@@ -29,7 +29,10 @@
 #include "base/entity.hpp"
 #include "util_ripples.hpp"
 
+namespace map {
 class Dungeon;
+}
+
 class Shoal;
 
 struct WaterZone {
@@ -43,13 +46,13 @@ struct WaterZone {
 
 class RippleManager {
  public:
-  RippleManager(Dungeon* dungeon);
+  RippleManager(map::Dungeon* dungeon);
   void startRipple(int dungeonx, int dungeony, float height = 0.0f);
   bool updateRipples(float elapsed);
   void renderRipples(TCODImage& ground);
 
  protected:
-  Dungeon* dungeon = nullptr;
+  map::Dungeon* dungeon = nullptr;
   TCODList<WaterZone*> zones;
   void init();
   float getData(const WaterZone& wz, int x2, int y2) const { return wz.data[x2 + y2 * wz.rect.w * 2]; }

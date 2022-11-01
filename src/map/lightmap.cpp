@@ -28,6 +28,7 @@
 #include "main.hpp"
 #include "map/dungeon.hpp"
 
+namespace map {
 HDRColor operator*(float value, const HDRColor& c) { return c * value; }
 
 LightMap::LightMap(int width, int height) : width(width), height(height) {
@@ -84,7 +85,7 @@ void LightMap::applyToImage(TCODImage& image, int minx2x, int miny2x, int maxx2x
   static int memoryWallIntensity = (int)(memoryWallColor.r) + memoryWallColor.g + memoryWallColor.b;
   static TCODColor wallColor = config.getColorProperty("config.display.wallColor");
   static TCODColor groundColor = config.getColorProperty("config.display.groundColor");
-  Dungeon* dungeon = gameEngine->dungeon;
+  map::Dungeon* dungeon = gameEngine->dungeon;
   if (maxx2x == 0) maxx2x = width - 1;
   if (maxy2x == 0) maxy2x = height - 1;
   for (int x = minx2x; x <= maxx2x; x++) {
@@ -134,7 +135,7 @@ void LightMap::applyToImage(TCODImage& image, int minx2x, int miny2x, int maxx2x
 }
 
 void LightMap::applyToImageOutdoor(TCODImage& image) {
-  Dungeon* dungeon = gameEngine->dungeon;
+  map::Dungeon* dungeon = gameEngine->dungeon;
   int maxx2x = width - 1;
   int maxy2x = height - 1;
   for (int x = 0; x <= maxx2x; x++) {
@@ -157,3 +158,4 @@ void LightMap::applyToImageOutdoor(TCODImage& image) {
     }
   }
 }
+}  // namespace map

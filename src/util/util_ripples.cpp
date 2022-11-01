@@ -54,7 +54,7 @@
 // how many times ripples are updated per second
 #define RIPPLE_FPS 10
 
-RippleManager::RippleManager(Dungeon* dungeon) : dungeon(dungeon) {}
+RippleManager::RippleManager(map::Dungeon* dungeon) : dungeon(dungeon) {}
 
 void RippleManager::init() {
   auto visited = tcod::Matrix<int8_t, 2>({dungeon->width, dungeon->height});
