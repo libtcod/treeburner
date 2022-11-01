@@ -27,7 +27,7 @@
 #include <libtcod.hpp>
 
 #include "base/savegame.hpp"
-#include "ui_dialog.hpp"
+#include "ui/dialog.hpp"
 #include "util/script.hpp"
 
 class Objective {

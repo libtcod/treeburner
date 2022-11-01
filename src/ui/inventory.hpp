@@ -28,7 +28,7 @@
 #include <vector>
 
 #include "item.hpp"
-#include "ui_dialog.hpp"
+#include "ui/dialog.hpp"
 
 // gui skin colors
 extern TCODColor guiBackground;

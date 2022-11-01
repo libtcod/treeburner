@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#include "ui_dialog.hpp"
+#include "ui/dialog.hpp"
 
 #include "main.hpp"
 #include "util/subcell.hpp"

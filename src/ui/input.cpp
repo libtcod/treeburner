@@ -23,41 +23,44 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#pragma once
-#include "ui_craft.hpp"
-#include "ui_descriptor.hpp"
-#include "ui_inventory.hpp"
-#include "ui_messages.hpp"
-#include "ui_objectives.hpp"
-#include "ui_status.hpp"
-#include "ui_tuto.hpp"
+#include "ui/input.hpp"
 
-enum EGuiMode {
-  GUI_NONE,  // no dialog displayed
-  GUI_INVENTORY,  // inventory alone
-  GUI_LOOT,  // loot alone
-  GUI_INVLOOT,  // inventory + loot
-  GUI_OBJECTIVES,
-  GUI_MAXIMIZED,  // any maximized dialog (currently only messages)
-  GUI_CRAFT,  // crafting screen
-  GUI_TUTORIAL,  // tutorial with menu
-};
+#include "constants.hpp"
+#include "util/subcell.hpp"
 
-class Gui {
- public:
-  EGuiMode mode;
-  Inventory inventory;
-  Inventory loot;
-  Descriptor descriptor;
-  StatusPanel statusPanel;
-  Logger log;
-  Tutorial tutorial;
-  Objectives objectives;
-  Craft craft;
+void TextInput::init(const char* title, const char* text, int maxSize) {
+  this->title = title;
+  this->text = text;
+  this->maxSize = maxSize;
+  width = strlen(title) + 8;
+  width = MAX(30, width);
+  height = TCODConsole::root->getHeightRect(CON_W / 2 - width / 2 + 2, 0, width - 4, 0, text) + 6;
+  if (con) delete con;
+  if (txt) delete txt;
+  txt = NULL;
+  con = new TCODConsole(width, height);
+  con->setDefaultForeground(TCODColor::lightGrey);
+  con->setDefaultBackground(TCODColor::lightYellow);
+  con->printFrame(0, 0, width, height, false, TCOD_BKGND_SET, title);
+  con->setDefaultBackground(TCODColor::grey);
+  con->setDefaultForeground(TCODColor::lightYellow);
+  con->rect(0, 0, width, height, false, TCOD_BKGND_SET);
+  con->rect(1, 1, width - 2, height - 2, true, TCOD_BKGND_NONE);
+  con->printRect(2, 2, width - 4, 0, text);
+}
 
-  void initialize();
-  void activate();
-  void deactivate();
-  void setMode(EGuiMode mode);
-  void closeDialogs();
-};
+TextInput::~TextInput() {
+  if (txt) delete txt;
+  if (con) delete con;
+}
+
+void TextInput::render(int x, int y) {
+  if (!txt) txt = new TCODText(x - width / 2 + 2, y + height - 3, MIN(maxSize, width - 4), 1, maxSize);
+  util::blitTransparent(con, 0, 0, 0, 0, TCODConsole::root, x - width / 2, y);
+  txt->render(TCODConsole::root);
+}
+
+bool TextInput::update(float elapsed, TCOD_key_t k) {
+  if (txt) return txt->update(k);
+  return true;
+}

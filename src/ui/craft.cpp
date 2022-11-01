@@ -23,11 +23,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#include "ui_craft.hpp"
+#include "ui/craft.hpp"
 
 #include "helpers.hpp"
 #include "main.hpp"
-#include "ui_inventory.hpp"
+#include "ui/inventory.hpp"
 #include "util/subcell.hpp"
 
 #define CRAFT_WIDTH 70

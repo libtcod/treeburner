@@ -26,7 +26,7 @@
 #pragma once
 #include <libtcod.hpp>
 
-#include "ui_dialog.hpp"
+#include "ui/dialog.hpp"
 
 class StatusPanel : public MultiPosDialog {
  public:
