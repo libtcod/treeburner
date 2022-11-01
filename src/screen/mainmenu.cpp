@@ -30,7 +30,7 @@
 
 #include "constants.hpp"
 #include "main.hpp"
-#include "util_subcell.hpp"
+#include "util/subcell.hpp"
 
 namespace screen {
 MainMenu* MainMenu::instance = NULL;

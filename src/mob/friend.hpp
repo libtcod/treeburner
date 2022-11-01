@@ -27,7 +27,7 @@
 #include <libtcod.hpp>
 
 #include "mob/creature.hpp"
-#include "util_textgen.hpp"
+#include "util/textgen.hpp"
 
 namespace mob {
 enum FriendAiMode {

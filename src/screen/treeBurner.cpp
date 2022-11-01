@@ -32,7 +32,7 @@
 #include "main.hpp"
 #include "map/building.hpp"
 #include "map/cell.hpp"
-#include "util_powerup.hpp"
+#include "util/powerup.hpp"
 
 namespace screen {
 #define FOREST_W 400

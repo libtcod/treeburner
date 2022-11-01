@@ -28,8 +28,8 @@
 
 #include "constants.hpp"
 #include "screen.hpp"
-#include "util_textgen.hpp"
-#include "util_worldgen.hpp"
+#include "util/textgen.hpp"
+#include "util/worldgen.hpp"
 
 namespace screen {
 enum ESchool { SCHOOL_FIRE, SCHOOL_WATER, NB_SCHOOLS };

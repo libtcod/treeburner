@@ -23,12 +23,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#include "util_cavegen.hpp"
+#include "util/cavegen.hpp"
 
 #include <stdio.h>
 
 #include "main.hpp"
-#include "util_carver.hpp"
+#include "util/carver.hpp"
 
 // allocate all data
 void CaveGenerator::initData(int size) {

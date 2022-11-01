@@ -30,7 +30,7 @@
 
 #include "constants.hpp"
 #include "main.hpp"
-#include "util_subcell.hpp"
+#include "util/subcell.hpp"
 
 #define NB_LINES 10
 #define HISTORY_SIZE 256

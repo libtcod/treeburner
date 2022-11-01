@@ -28,7 +28,7 @@
 #include "helpers.hpp"
 #include "main.hpp"
 #include "ui_inventory.hpp"
-#include "util_subcell.hpp"
+#include "util/subcell.hpp"
 
 #define CRAFT_WIDTH 70
 #define CRAFT_HEIGHT 40

@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#include "util_carver.hpp"
+#include "util/carver.hpp"
 
 // dig a rectangular room
 void MapCarver::room(TCODMap* map, int x, int y, int w, int h) {

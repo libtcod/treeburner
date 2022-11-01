@@ -33,7 +33,7 @@
 
 #include "main.hpp"
 #include "mob/minion.hpp"
-#include "util_powerup.hpp"
+#include "util/powerup.hpp"
 
 namespace base {
 AiDirector* AiDirector::instance = NULL;

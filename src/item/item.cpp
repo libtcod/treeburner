@@ -38,8 +38,8 @@
 #include "map/building.hpp"
 #include "screen/game.hpp"
 #include "ui_inventory.hpp"
-#include "util_cellular.hpp"
-#include "util_textgen.hpp"
+#include "util/cellular.hpp"
+#include "util/textgen.hpp"
 
 // text generator for item names
 static TextGenerator* textgen = NULL;

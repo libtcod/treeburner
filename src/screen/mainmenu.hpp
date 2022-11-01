@@ -27,7 +27,7 @@
 #include <libtcod.hpp>
 
 #include "screen.hpp"
-#include "util_fire.hpp"
+#include "util/fire.hpp"
 
 namespace screen {
 enum MenuItemId { MENU_NEW_GAME, MENU_CONTINUE, MENU_EXIT, MENU_NB_ITEMS };

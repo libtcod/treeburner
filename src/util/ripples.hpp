@@ -27,7 +27,7 @@
 #include <libtcod.hpp>
 
 #include "base/entity.hpp"
-#include "util_ripples.hpp"
+#include "util/ripples.hpp"
 
 namespace map {
 class Dungeon;

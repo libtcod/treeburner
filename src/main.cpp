@@ -33,7 +33,7 @@
 #include "screen/game.hpp"
 #include "screen/mainmenu.hpp"
 #include "screen/treeBurner.hpp"
-#include "util_powerup.hpp"
+#include "util/powerup.hpp"
 
 TCODNoise noise1d(1);
 TCODNoise noise2d(2);

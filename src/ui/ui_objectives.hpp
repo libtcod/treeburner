@@ -28,7 +28,7 @@
 
 #include "base/savegame.hpp"
 #include "ui_dialog.hpp"
-#include "util_script.hpp"
+#include "util/script.hpp"
 
 class Objective {
  public:

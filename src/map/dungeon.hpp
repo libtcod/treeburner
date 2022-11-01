@@ -32,9 +32,9 @@
 #include "base/savegame.hpp"
 #include "map/cell.hpp"
 #include "mob/creature.hpp"
-#include "util_cavegen.hpp"
-#include "util_cellular.hpp"
-#include "util_clouds.hpp"
+#include "util/cavegen.hpp"
+#include "util/cellular.hpp"
+#include "util/clouds.hpp"
 
 namespace mob {
 class Player;

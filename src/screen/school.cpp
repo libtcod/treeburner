@@ -34,7 +34,7 @@
 
 #include "main.hpp"
 #include "screen/mainmenu.hpp"
-#include "util_subcell.hpp"
+#include "util/subcell.hpp"
 
 namespace screen {
 #define SQR(x) ((x) * (x))

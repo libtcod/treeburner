@@ -27,7 +27,7 @@
 
 #include "constants.hpp"
 #include "main.hpp"
-#include "util_subcell.hpp"
+#include "util/subcell.hpp"
 
 #define OBJ_WIDTH (CON_W - 4)
 #define OBJ_HEIGHT 40

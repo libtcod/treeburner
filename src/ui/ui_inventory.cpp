@@ -29,7 +29,7 @@
 #include <stdio.h>
 
 #include "main.hpp"
-#include "util_subcell.hpp"
+#include "util/subcell.hpp"
 
 #define INV_WIDTH 70
 #define INV_HEIGHT 40

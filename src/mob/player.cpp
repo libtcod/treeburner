@@ -30,7 +30,7 @@
 
 #include "base/movement.hpp"
 #include "main.hpp"
-#include "util_subcell.hpp"
+#include "util/subcell.hpp"
 
 namespace mob {
 // maximum sprint : 2 times faster

@@ -33,8 +33,8 @@
 #include "base/userpref.hpp"
 #include "map/cell.hpp"
 #include "map/lightmap.hpp"
-#include "util_sound.hpp"
-#include "util_threadpool.hpp"
+#include "util/sound.hpp"
+#include "util/threadpool.hpp"
 
 /// @brief Return true if x and y in the bounds of a rectable shaped w and h.
 template <typename T>

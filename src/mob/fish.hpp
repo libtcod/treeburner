@@ -29,7 +29,7 @@
 #include "map/lightmap.hpp"
 #include "mob/behavior.hpp"
 #include "mob/creature.hpp"
-#include "util_ripples.hpp"
+#include "util/ripples.hpp"
 
 namespace mob {
 class Fish;

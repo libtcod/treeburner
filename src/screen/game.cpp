@@ -31,7 +31,7 @@
 
 #include "base/aidirector.hpp"
 #include "main.hpp"
-#include "util_powerup.hpp"
+#include "util/powerup.hpp"
 
 namespace screen {
 Game::Game() : level(0), helpOn(false) {}

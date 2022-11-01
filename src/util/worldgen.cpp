@@ -26,7 +26,7 @@
 
 // world generator
 // this was mostly generated with libtcod 1.4.2 heightmap tool !
-#include "util_worldgen.hpp"
+#include "util/worldgen.hpp"
 
 #include <SDL.h>
 

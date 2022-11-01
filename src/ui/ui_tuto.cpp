@@ -29,7 +29,7 @@
 
 #include "constants.hpp"
 #include "main.hpp"
-#include "util_subcell.hpp"
+#include "util/subcell.hpp"
 
 #define FADE_TIME 0.5f
 #define BLINK_TIME 3.0f

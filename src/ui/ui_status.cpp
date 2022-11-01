@@ -28,7 +28,7 @@
 #include "constants.hpp"
 #include "main.hpp"
 #include "ui_inventory.hpp"
-#include "util_subcell.hpp"
+#include "util/subcell.hpp"
 
 #define PANEL_HEIGHT 11
 

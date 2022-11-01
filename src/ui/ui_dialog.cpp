@@ -27,7 +27,7 @@
 #include "ui_dialog.hpp"
 
 #include "main.hpp"
-#include "util_subcell.hpp"
+#include "util/subcell.hpp"
 
 void Widget::sendEvent(EWidgetEvent event) {
   for (UIListener** it = listeners.begin(); it != listeners.end(); it++) {

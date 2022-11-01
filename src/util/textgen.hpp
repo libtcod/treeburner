@@ -26,7 +26,7 @@
 #pragma once
 #include <libtcod.hpp>
 
-#include "util_namegen.hpp"
+#include "util/namegen.hpp"
 
 struct Rule {
   const char* name = nullptr;

@@ -37,9 +37,9 @@
 #include "spell_fireball.hpp"
 #include "ui_dialog.hpp"
 #include "ui_gui.hpp"
-#include "util_fire.hpp"
-#include "util_packer.hpp"
-#include "util_ripples.hpp"
+#include "util/fire.hpp"
+#include "util/packer.hpp"
+#include "util/ripples.hpp"
 
 namespace base {
 class GameEngine : public screen::Screen {
