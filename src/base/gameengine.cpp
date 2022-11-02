@@ -166,7 +166,7 @@ bool GameEngine::update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse) {
   static float hitFlashDelay = config.getFloatProperty("config.display.hitFlashDelay");
   static TCODColor flashColor = config.getColorProperty("config.display.flashColor");
   packer.clear();
-  if (fade == FADE_OFF) {
+  if (fade_ == FADE_OFF) {
     if (hitFlashAmount > 0.0f) {
       hitFlashAmount -= elapsed;
       if (hitFlashAmount > 0.0f) {

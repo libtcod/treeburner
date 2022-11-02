@@ -170,7 +170,7 @@ static const char* debugMapNames[] = {"heightmap", "shadowheight", "fov", "norma
 ForestScreen::ForestScreen() {
   forestRng = NULL;
   debugMap = 0;
-  fadeInLength = fadeOutLength = (int)(config.getFloatProperty("config.display.fadeTime") * 1000);
+  fade_in_length_ms_ = fade_out_length_ms_ = (int)(config.getFloatProperty("config.display.fadeTime") * 1000);
 }
 
 void ForestScreen::render() {
@@ -369,7 +369,7 @@ bool ForestScreen::update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse) {
   dungeon->computeFov((int)player.x, (int)player.y);
 
   // update monsters
-  if (fade != FADE_DOWN) {
+  if (fade_ != FADE_DOWN) {
     dungeon->updateCreatures(elapsed);
     // ripples must be after creatures because of shoal updates
     rippleManager->updateRipples(elapsed);
@@ -687,10 +687,10 @@ void ForestScreen::onActivate() {
   }
   // re-enable fading
   TCODConsole::setFade(0, TCODColor::black);
-  fade = FADE_UP;
-  fadeLvl = 0.0f;
+  fade_ = FADE_UP;
+  fade_level_ = 0.0f;
   player.maxFovRange = player.fovRange = 8;
-  timefix = 1.0f;
+  time_fix_ = 1.0f;
   if (newGame)
     gui.log.critical("Welcome to the Cave v" VERSION " ! %c?%c for help.", TCOD_COLCTRL_2, TCOD_COLCTRL_STOP);
   lookOn = false;

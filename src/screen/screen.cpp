@@ -29,29 +29,24 @@
 #include "main.hpp"
 
 namespace screen {
-int SCREEN_MAIN_MENU;
-int SCREEN_STORY;
-int SCREEN_CHAPTER_1;
-int SCREEN_GAME_OVER;
-int SCREEN_GAME_WON;
 
 // chapter pictures
-static const int chapNbPix[] = {
+static constexpr int chapNbPix[] = {
     1,
     1,
 };
-static const char* chapPix[] = {
+static constexpr char* chapter_pictures[] = {
     "data/img/g32.png",
     "data/img/f22.png",
 };
 
 TCODImage* Screen::loadChapterPicture(bool big) {
-  int pixnum = 0;
+  int picture_i = 0;
   for (int ch = 0; ch < saveGame.chapter; ch++) {
-    pixnum += chapNbPix[ch];
+    picture_i += chapNbPix[ch];
   }
   char tmp[128];
-  strcpy(tmp, chapPix[pixnum]);
+  strcpy(tmp, chapter_pictures[picture_i]);
   if (big) {
     char* ptr = strrchr(tmp, '.');
     strcpy(ptr, "b.png");
@@ -62,88 +57,89 @@ TCODImage* Screen::loadChapterPicture(bool big) {
 }
 
 void Screen::prepareImage(TCODImage* img) const {
-  static uint8_t key[1024];
+  static constexpr auto KEY_LENGTH = 1024;
+  static constexpr auto KEY_MASK = 1023;
+  static std::array<uint8_t, KEY_LENGTH> key;
   static bool init = false;
-#define KEYLEN 1024
-#define KEYMASK 1023
 
   if (!init) {
     uint8_t seed = (uint8_t)(666 & 0xFF);
-    for (int i = 0; i < KEYLEN; i++) {
-      key[i] = seed;
+    for (auto& it : key) {
+      it = seed;
       seed = seed * 1103515245 + 12345;
     }
     init = true;
   }
-  int k = 0, w, h;
+  int w, h;
   img->getSize(&w, &h);
-  for (int x = 0; x < w; x++) {
-    for (int y = 0; y < h; y++) {
+  int key_i = 0;
+  for (int y = 0; y < h; y++) {
+    for (int x = 0; x < w; x++) {
       TCODColor col = img->getPixel(x, y);
-      col.r ^= key[k++];
-      k &= KEYMASK;
-      col.g ^= key[k++];
-      k &= KEYMASK;
-      col.b ^= key[k++];
-      k &= KEYMASK;
+      col.r ^= key.at(key_i++);
+      key_i &= KEY_MASK;
+      col.g ^= key.at(key_i++);
+      key_i &= KEY_MASK;
+      col.b ^= key.at(key_i++);
+      key_i &= KEY_MASK;
       img->putPixel(x, y, col);
     }
   }
 }
 
 bool Screen::update() {
-  if (timefix > 0) {
+  if (time_fix_ > 0) {
     // this is the frame where activate has been called.
     // it might be unusually long. skip update to avoid jerky animation
-    timefix = 0.0f;
+    time_fix_ = 0.0f;
     return true;
   }
-  static float timeScale = config.getFloatProperty("config.gameplay.timeScale");
-  float elapsed = TCODSystem::getLastFrameLength() * timeScale;
-  if (fade == FADE_UP) {
-    fadeLvl += elapsed * 1000.0f / fadeInLength;
-    if (fadeLvl >= 1.0f) {
-      TCODConsole::setFade(255, fadeInColor);
-      fade = FADE_OFF;
-      fadeLvl = 1.0f;
+  static const float timeScale = config.getFloatProperty("config.gameplay.timeScale");
+  const float elapsed = TCODSystem::getLastFrameLength() * timeScale;
+  if (fade_ == FADE_UP) {
+    fade_level_ += elapsed * 1000.0f / fade_in_length_ms_;
+    if (fade_level_ >= 1.0f) {
+      TCODConsole::setFade(255, fade_in_color_);
+      fade_ = FADE_OFF;
+      fade_level_ = 1.0f;
     } else {
-      TCODConsole::setFade((int)(fadeLvl * 255), fadeInColor);
+      TCODConsole::setFade((int)(fade_level_ * 255), fade_in_color_);
     }
-  } else if (fade == FADE_DOWN) {
-    fadeLvl -= elapsed * 1000.0f / fadeOutLength;
-    if (fadeLvl < 0.0f) {
-      TCODConsole::setFade(0, fadeOutColor);
-      fadeLvl = 0.0f;
+  } else if (fade_ == FADE_DOWN) {
+    fade_level_ -= elapsed * 1000.0f / fade_out_length_ms_;
+    if (fade_level_ < 0.0f) {
+      TCODConsole::setFade(0, fade_out_color_);
+      fade_level_ = 0.0f;
     } else {
-      TCODConsole::setFade((int)(fadeLvl * 255), fadeOutColor);
+      TCODConsole::setFade((int)(fade_level_ * 255), fade_out_color_);
     }
     bool fadeEnded = true;
     for (int x = 0; x < CON_W && fadeEnded; x++) {
       for (int y = 0; y < CON_H && fadeEnded; y++) {
-        TCODColor fcol = TCODConsole::root->getCharForeground(x, y);
-        fcol = TCODColor::lerp(fcol, fadeOutColor, fadeLvl);
-        if (fcol.r != fadeOutColor.r || fcol.g != fadeOutColor.g || fcol.b != fadeOutColor.b) {
+        TCODColor fg_color = TCODConsole::root->getCharForeground(x, y);
+        fg_color = TCODColor::lerp(fg_color, fade_out_color_, fade_level_);
+        if (fg_color.r != fade_out_color_.r || fg_color.g != fade_out_color_.g || fg_color.b != fade_out_color_.b) {
           fadeEnded = false;
         }
-        TCODColor bcol = TCODConsole::root->getCharBackground(x, y);
-        bcol = TCODColor::lerp(bcol, fadeOutColor, fadeLvl);
-        if (bcol.r != fadeOutColor.r || bcol.g != fadeOutColor.g || bcol.b != fadeOutColor.b) {
+        TCODColor bg_color = TCODConsole::root->getCharBackground(x, y);
+        bg_color = TCODColor::lerp(bg_color, fade_out_color_, fade_level_);
+        if (bg_color.r != fade_out_color_.r || bg_color.g != fade_out_color_.g || bg_color.b != fade_out_color_.b) {
           fadeEnded = false;
         }
       }
     }
-    if (fadeEnded) fadeLvl = 0.0f;
+    if (fadeEnded) fade_level_ = 0.0f;
   }
   return update(elapsed, key_, ms_);
 }
 
 void Screen::setFadeIn(int lengthInMilli, TCODColor col) {
-  fadeInLength = lengthInMilli;
-  fadeInColor = col;
+  fade_in_length_ms_ = lengthInMilli;
+  fade_in_color_ = col;
 }
 
 void Screen::setFadeOut(int lengthInMilli, TCODColor col) {
-  fadeOutLength = lengthInMilli;
-  fadeOutColor = col;
+  fade_out_length_ms_ = lengthInMilli;
+  fade_out_color_ = col;
 }
 }  // namespace screen

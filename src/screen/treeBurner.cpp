@@ -117,7 +117,7 @@ static const char* debugMapNames[] = {
 TreeBurner::TreeBurner() {
   forestRng = NULL;
   debugMap = 0;
-  fadeInLength = fadeOutLength = (int)(config.getFloatProperty("config.display.fadeTime") * 1000);
+  fade_in_length_ms_ = fade_out_length_ms_ = (int)(config.getFloatProperty("config.display.fadeTime") * 1000);
   endTimer = 0.0f;
 }
 
@@ -353,20 +353,20 @@ bool TreeBurner::update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse) {
   xOffset = (int)(player.x - CON_W / 2);
   yOffset = (int)(player.y - CON_H / 2);
 
-  if (player.life <= 0 && fade != FADE_DOWN) {
-    setFadeOut(fadeOutLength, TCODColor::darkRed);
-    fade = FADE_DOWN;
+  if (player.life <= 0 && fade_ != FADE_DOWN) {
+    setFadeOut(fade_out_length_ms_, TCODColor::darkRed);
+    fade_ = FADE_DOWN;
   }
   if (bossIsDead) {
     endTimer += elapsed;
     if (endTimer < 30.0f) dungeon->setAmbient(TCODColor::lerp(sunColor, dawnColor, endTimer / 30.0f));
   }
-  if (fade != FADE_DOWN && gui.objectives.sleeping.size() == 0 && gui.objectives.active.size() == 0 &&
+  if (fade_ != FADE_DOWN && gui.objectives.sleeping.size() == 0 && gui.objectives.active.size() == 0 &&
       endTimer > 30.0f) {
-    setFadeOut(fadeOutLength, TCODColor::darkRed);
-    fade = FADE_DOWN;
+    setFadeOut(fade_out_length_ms_, TCODColor::darkRed);
+    fade_ = FADE_DOWN;
   }
-  if (fade == FADE_DOWN && fadeLvl <= 0.0f) {
+  if (fade_ == FADE_DOWN && fade_level_ <= 0.0f) {
     if (player.life <= 0) {
       // death
       engine.activateModule("treeBurnerGameOver");
@@ -384,7 +384,7 @@ bool TreeBurner::update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse) {
   dungeon->computeFov((int)player.x, (int)player.y);
 
   // update monsters
-  if (fade != FADE_DOWN) {
+  if (fade_ != FADE_DOWN) {
     dungeon->updateCreatures(elapsed);
     // ripples must be updated after creatures because of shoal updates
     rippleManager->updateRipples(elapsed);
@@ -655,10 +655,10 @@ void TreeBurner::onActivate() {
 
   // re-enable fading
   TCODConsole::setFade(0, TCODColor::black);
-  fade = FADE_UP;
-  fadeLvl = 0.0f;
+  fade_ = FADE_UP;
+  fade_level_ = 0.0f;
   player.maxFovRange = player.fovRange = 8;
-  timefix = 1.0f;
+  time_fix_ = 1.0f;
   gui.log.critical(
       "Welcome to TreeBurner v%s ! %c?%c for help.", getStringParam("version"), TCOD_COLCTRL_2, TCOD_COLCTRL_STOP);
   lookOn = false;
