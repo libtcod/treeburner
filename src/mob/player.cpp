@@ -486,8 +486,8 @@ bool Player::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
       }
       if (IN_RECTANGLE(new_x, new_y, dungeon->width, dungeon->height) && !dungeon->hasCreature(new_x, new_y) &&
           dungeon->map->isWalkable(new_x, new_y)) {
-        x_ = new_x;
-        y_ = new_y;
+        x_ = gsl::narrow_cast<float>(new_x);
+        y_ = gsl::narrow_cast<float>(new_y);
         if (dx != 0 && dy != 0) {
           speed_dist_ += 1.41f;
           speed_ = playerSpeedDiag;
@@ -511,8 +511,8 @@ bool Player::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
           // horizontal slide
           if (IN_RECTANGLE(new_x, new_y, dungeon->width, dungeon->height) && dungeon->map->isWalkable(new_x, new_y) &&
               (!dungeon->hasCreature(new_x, new_y) || !dungeon->getCreature(new_x, new_y)->isBlockingPath())) {
-            x_ = new_x;
-            y_ = new_y;
+            x_ = gsl::narrow_cast<float>(new_x);
+            y_ = gsl::narrow_cast<float>(new_y);
             gameEngine->stats.nbSteps++;
             speed_dist_ += 1.0f;
             hasWalked = true;
@@ -522,8 +522,8 @@ bool Player::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
             new_y = (int)y_ + dy;
             if (IN_RECTANGLE(new_x, new_y, dungeon->width, dungeon->height) && dungeon->map->isWalkable(new_x, new_y) &&
                 (!dungeon->hasCreature(new_x, new_y) || !dungeon->getCreature(new_x, new_y)->isBlockingPath())) {
-              x_ = new_x;
-              y_ = new_y;
+              x_ = gsl::narrow_cast<float>(new_x);
+              y_ = gsl::narrow_cast<float>(new_y);
               gameEngine->stats.nbSteps++;
               speed_dist_ += 1.0f;
               hasWalked = true;
@@ -537,8 +537,8 @@ bool Player::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
                !dungeon->getCreature((int)x_ + dx, (int)y_ + dy)->isBlockingPath())) {
             new_x = (int)x_ + dx;
             new_y = (int)y_ + dy;
-            x_ = new_x;
-            y_ = new_y;
+            x_ = gsl::narrow_cast<float>(new_x);
+            y_ = gsl::narrow_cast<float>(new_y);
             gameEngine->stats.nbSteps++;
             dy = -dy;
             speed_dist_ += 1.41f;
@@ -551,8 +551,8 @@ bool Player::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
                !dungeon->getCreature((int)x_ + dx, (int)y_ - dy)->isBlockingPath())) {
             new_x = (int)x_ + dx;
             new_y = (int)y_ - dy;
-            x_ = new_x;
-            y_ = new_y;
+            x_ = gsl::narrow_cast<float>(new_x);
+            y_ = gsl::narrow_cast<float>(new_y);
             gameEngine->stats.nbSteps++;
             dy = -dy;
             speed_dist_ += 1.41f;
@@ -567,8 +567,8 @@ bool Player::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
                !dungeon->getCreature((int)x_ + dx, (int)y_ + dy)->isBlockingPath())) {
             new_x = (int)x_ + dx;
             new_y = (int)y_ + dy;
-            x_ = new_x;
-            y_ = new_y;
+            x_ = gsl::narrow_cast<float>(new_x);
+            y_ = gsl::narrow_cast<float>(new_y);
             gameEngine->stats.nbSteps++;
             dx = -dx;
             speed_dist_ += 1.41f;
@@ -581,8 +581,8 @@ bool Player::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
                !dungeon->getCreature((int)x_ - dx, (int)y_ + dy)->isBlockingPath())) {
             new_x = (int)x_ - dx;
             new_y = (int)y_ + dy;
-            x_ = new_x;
-            y_ = new_y;
+            x_ = gsl::narrow_cast<float>(new_x);
+            y_ = gsl::narrow_cast<float>(new_y);
             gameEngine->stats.nbSteps++;
             dx = -dx;
             speed_dist_ += 1.41f;
@@ -616,7 +616,7 @@ bool Player::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
       auto* items = dungeon->getItems((int)x_, (int)y_);
       std::vector<item::Item*> toPick;
       for (item::Item* it : *items) {
-        if (!it->speed_ > 0 && it->isPickable()) {
+        if (!(it->speed_ > 0) && it->isPickable()) {
           toPick.push_back(it);
         }
       }
@@ -642,7 +642,7 @@ void Player::computeFovRange(float elapsed) {
   if (average_speed_ > playerSpeed / 2) {
     const float fovSpeed = average_speed_ - playerSpeed / 2;
     const float fovRefSpeed = playerSpeed / 2;
-    fovRangeTarget = max_fov_range_ - (fovSpeed * 0.5 / fovRefSpeed) * 0.8 * max_fov_range_;
+    fovRangeTarget = max_fov_range_ - (fovSpeed * 0.5f / fovRefSpeed) * 0.8f * max_fov_range_;
   }
   if (crouched_) fovRangeTarget *= 1.15f;
   if (fov_range_ > fovRangeTarget)
