@@ -26,6 +26,8 @@
 #pragma once
 #include <libtcod.hpp>
 #include <memory>
+#include <string>
+#include <string_view>
 
 #include "base/entity.hpp"
 #include "base/noisything.hpp"
@@ -66,7 +68,6 @@ enum CreatureFlags {
 };
 
 #define CREATURE_NAME_SIZE 32
-#define CREATURE_TALK_SIZE 64
 #define VISIBLE_HEIGHT 0.05f
 #define MIN_VISIBLE_HEIGHT 0.02f
 
@@ -141,7 +142,7 @@ class Creature : public base::DynamicEntity,
   virtual void takeDamage(float amount);
   virtual void stun(float delay);
   virtual float getWalkCost(int xFrom, int yFrom, int xTo, int yTo, void* userData) const override;
-  void talk(const char* text);
+  void talk(std::string_view text);
   bool isTalking() const noexcept { return talk_text_.delay > 0.0f; }
   bool isInRange(int x, int y);
   bool isPlayer();
@@ -195,7 +196,7 @@ class Creature : public base::DynamicEntity,
   friend class HerdBehavior;
   friend class ForestScreen;
   struct TalkText : public base::Rect {
-    char text[CREATURE_TALK_SIZE]{};
+    std::string text{};
     float delay{};
   };
   bool walk(float elapsed);

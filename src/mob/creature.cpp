@@ -266,25 +266,24 @@ bool Creature::isInRange(int px, int py) {
 
 bool Creature::isPlayer() { return this == &gameEngine->player; }
 
-void Creature::talk(const char* text) {
-  strncpy(talk_text_.text, (char*)text, CREATURE_TALK_SIZE - 1);
-  talk_text_.text[CREATURE_TALK_SIZE - 1] = 0;
-  talk_text_.delay = strlen(text) * 0.1f;
-  talk_text_.delay = MAX(0.5f, talk_text_.delay);
+void Creature::talk(std::string_view text) {
+  talk_text_.text = text;
+  talk_text_.delay = gsl::narrow_cast<float>(talk_text_.text.size()) * 0.1f;
+  talk_text_.delay = std::max(0.5f, talk_text_.delay);
   // compute text size
-  char* ptr = (char*)text;
+  const char* ptr = talk_text_.text.c_str();
   talk_text_.h_ = 1;
   talk_text_.w_ = 0;
-  char* end = strchr(ptr, '\n');
+  const char* end = strchr(ptr, '\n');
   while (end) {
-    int len = end - ptr;
+    const int len = end - ptr;
     if (talk_text_.w_ < len) talk_text_.w_ = len;
-    talk_text_.h_++;
+    ++talk_text_.h_;
     ptr = end + 1;
     end = strchr(ptr, '\n');
   }
   if (end) {
-    int len = end - ptr;
+    const int len = end - ptr;
     if (talk_text_.w_ < len) talk_text_.w_ = len;
   }
 }
@@ -299,7 +298,8 @@ void Creature::renderTalk() {
   gameEngine->packer.addRect(&talk_text_);
   TCODConsole::root->setDefaultBackground(TCODColor::lighterYellow);
   TCODConsole::root->setDefaultForeground(TCODColor::darkGrey);
-  TCODConsole::root->printEx((int)talk_text_.x_, (int)talk_text_.y_, TCOD_BKGND_SET, TCOD_CENTER, talk_text_.text);
+  TCODConsole::root->printEx(
+      (int)talk_text_.x_, (int)talk_text_.y_, TCOD_BKGND_SET, TCOD_CENTER, talk_text_.text.c_str());
 }
 
 void Creature::render(map::LightMap& lightMap) {
