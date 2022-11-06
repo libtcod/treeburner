@@ -307,20 +307,19 @@ void Creature::render(map::LightMap& lightMap) {
   static const int darknessLevel = config.getIntProperty("config.gameplay.darknessLevel");
   static const float fireSpeed = config.getFloatProperty("config.display.fireSpeed");
   static const TCODColor corpseColor = config.getColorProperty("config.display.corpseColor");
-  static constexpr TCODColor lowFire(255, 0, 0);
-  static constexpr TCODColor midFire(255, 204, 0);
-  static constexpr TCODColor highFire(255, 255, 200);
-  static TCODColor fire[64];
-  static bool fireInit = false;
-  if (!fireInit) {
-    for (int i = 0; i < 32; i++) {
-      fire[i] = TCODColor::lerp(lowFire, midFire, i / 32.0f);
+  static const std::array<TCODColor, 64> fire_color = []() {
+    static constexpr TCODColor lowFire(255, 0, 0);
+    static constexpr TCODColor midFire(255, 204, 0);
+    static constexpr TCODColor highFire(255, 255, 200);
+    std::array<TCODColor, 64> new_array{};
+    for (int i = 0; i < 32; ++i) {
+      new_array.at(i) = TCODColor::lerp(lowFire, midFire, i / 32.0f);
     }
-    for (int i = 32; i < 64; i++) {
-      fire[i] = TCODColor::lerp(midFire, highFire, (i - 32) / 32.0f);
+    for (int i = 32; i < 64; ++i) {
+      new_array.at(i) = TCODColor::lerp(midFire, highFire, (i - 32) / 32.0f);
     }
-    fireInit = true;
-  }
+    return new_array;
+  }();
 
   // position on console
   const int console_x = (int)(x_ - gameEngine->xOffset);
@@ -345,7 +344,7 @@ void Creature::render(map::LightMap& lightMap) {
   } else if (burn_) {
     const float fire_x = TCODSystem::getElapsedSeconds() * fireSpeed + noise_offset_;
     const int fire_index = (int)((0.5f + 0.5f * noise1d.get(&fire_x)) * 64.0f);
-    color = fire[fire_index];
+    color = fire_color.at(fire_index);
     const int r = (int)(color.r * 1.5f * lightColor.r / 255);
     const int g = (int)(color.g * 1.5f * lightColor.g / 255);
     const int b = (int)(color.b * 1.5f * lightColor.b / 255);
