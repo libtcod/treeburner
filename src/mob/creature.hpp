@@ -25,6 +25,7 @@
  */
 #pragma once
 #include <libtcod.hpp>
+#include <memory>
 
 #include "base/entity.hpp"
 #include "base/noisything.hpp"
@@ -118,9 +119,6 @@ class Creature : public base::DynamicEntity,
                  public base::SaveListener {
  public:
   Creature() = default;
-  virtual ~Creature() noexcept {
-    if (path_) delete path_;
-  }
 
   virtual void onReplace() {}
 
@@ -178,7 +176,7 @@ class Creature : public base::DynamicEntity,
   float max_life_{};
   float speed_{};
   float height_{1.0f};  // in meters
-  TCODPath* path_{};
+  std::unique_ptr<TCODPath> path_{};
   bool ignore_creatures_{};  // walk mode
   bool burn_{};
   int flags_{};

@@ -72,7 +72,6 @@ float Player::getHealth() { return life_ / max_life_; }
 float Player::getHealing() { return std::min((life_ + heal_points_) / max_life_, 1.0f); }
 
 void Player::termLevel() {
-  if (path_) delete path_;
   path_ = nullptr;
   walk_timer_ = 0.0f;
   init_dungeon_ = true;
@@ -126,7 +125,7 @@ bool Player::setPath(int xDest, int yDest, bool limitPath) {
         return false;  // hit another wall. no path
     }
   }
-  if (!path_) path_ = new TCODPath(dungeon->width, dungeon->height, this, nullptr);
+  if (!path_) path_ = std::make_unique<TCODPath>(dungeon->width, dungeon->height, this, nullptr);
   ignore_creatures_ = false;
   bool ok = path_->compute((int)x_, (int)y_, xDest, yDest);
   if (!ok) {
@@ -136,7 +135,6 @@ bool Player::setPath(int xDest, int yDest, bool limitPath) {
   ignore_creatures_ = true;
   if (!ok) return false;
   if (limitPath && !dungeon->getMemory(xDest, yDest) && path_->size() > maxPathFinding) {
-    delete path_;
     path_ = nullptr;
     return false;
   }
@@ -484,7 +482,6 @@ bool Player::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
       int old_new_x = new_x;
       int old_new_y = new_y;
       if (path_) {
-        delete path_;
         path_ = nullptr;
       }
       if (IN_RECTANGLE(new_x, new_y, dungeon->width, dungeon->height) && !dungeon->hasCreature(new_x, new_y) &&
@@ -611,9 +608,7 @@ bool Player::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
         gameEngine->stats.nbSteps++;
         hasWalked = true;
       } else {
-        // the path is obstructed. cancel it
-        delete path_;
-        path_ = nullptr;
+        path_ = nullptr;  // the path is obstructed. cancel it
       }
     }
     // auto pickup items

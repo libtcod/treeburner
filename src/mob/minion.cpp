@@ -129,7 +129,7 @@ bool Minion::update(float elapsed) {
   } else {
     // track player
     if (!path_) {
-      path_ = new TCODPath(game->dungeon->width, game->dungeon->height, this, game);
+      path_ = std::make_unique<TCODPath>(game->dungeon->width, game->dungeon->height, this, game);
     }
     if (pathTimer > pathDelay) {
       int dx, dy;
