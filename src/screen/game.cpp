@@ -172,7 +172,7 @@ void Game::render() {
 
   // render boss health bar
   if (bossSeen && !bossIsDead) {
-    float lifeper = (float)(boss->life) / bossLife;
+    float lifeper = (float)(boss->life_) / bossLife;
     for (int x = 120; x < 140; x++) {
       TCODColor col = (x - 120) < (int)(lifeper * 20) ? TCODColor::red : TCODColor::darkerRed;
       ground.putPixel(x, 5, col);
@@ -289,14 +289,14 @@ bool Game::update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse) {
   xOffset = (int)(player.x_ - CON_W / 2);
   yOffset = (int)(player.y_ - CON_H / 2);
 
-  if (player.life <= 0 && fade_ != FADE_DOWN) {
+  if (player.life_ <= 0 && fade_ != FADE_DOWN) {
     setFadeOut(fade_out_length_ms_, TCODColor::darkRed);
     fade_ = FADE_DOWN;
   }
 
   // update fading
   if (fade_ == FADE_DOWN && fade_level_ <= 0.0f) {
-    if (player.life <= 0) {
+    if (player.life_ <= 0) {
       // death
       engine.activateModule("pyroGameOver");
       return false;
@@ -359,7 +359,7 @@ bool Game::update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse) {
     if (k.c == 'b' && k.lalt && !k.pressed) {
       // debug mode : Alt-b = burn
       for (mob::Creature** cr = dungeon->creatures.begin(); cr != dungeon->creatures.end(); cr++) {
-        (*cr)->burn = true;
+        (*cr)->burn_ = true;
       }
     }
     if (k.c == 'i' && k.lalt && !k.pressed) {

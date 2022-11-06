@@ -125,8 +125,8 @@ bool Condition::update(float elapsed) {
     case HEAL: {
       // gain health over time
       if (curAmount > 0) {
-        target->life += curAmount;
-        if (target->life > target->maxLife) target->life = target->maxLife;
+        target->life_ += curAmount;
+        if (target->life_ > target->max_life_) target->life_ = target->max_life_;
       }
       curAmount = 0;
     } break;
@@ -138,7 +138,7 @@ bool Condition::update(float elapsed) {
     switch (type->type) {
       case WOUNDED: {
         // wounded decrease the max hp
-        target->maxLife = target->maxLife / (1.0f - amount);
+        target->max_life_ = target->max_life_ / (1.0f - amount);
       } break;
       default:
         break;
@@ -157,51 +157,27 @@ void Condition::applyTo(Creature* cr) {
       do {
         cond = cr->getCondition(POISONED);
         if (cond) {
-          cr->conditions.remove(cond);
+          cr->conditions_.remove(cond);
           delete cond;
         }
       } while (cond);
     } break;
     case WOUNDED: {
       // wounded decrease the max hp
-      float quantity = amount * cr->maxLife;
-      cr->maxLife -= quantity;
-      if (cr->maxLife < 0) {
-        cr->maxLife = 0;
+      float quantity = amount * cr->max_life_;
+      cr->max_life_ -= quantity;
+      if (cr->max_life_ < 0) {
+        cr->max_life_ = 0;
       }
-      cr->life = MIN(cr->maxLife, cr->life);
+      cr->life_ = MIN(cr->max_life_, cr->life_);
     } break;
     default:
       break;
   }
 }
 
-Creature::Creature()
-    : path(NULL),
-      ignoreCreatures(true),
-      burn(false),
-      flags(0),
-      mainHand(NULL),
-      offHand(NULL),
-      asItem(NULL),
-      fovRange(0),
-      walkTimer(0.0f),
-      pathTimer(0.0f),
-      curDmg(0.0f) {
-  name[0] = 0;
-  talkText.text[0] = 0;
-  talkText.delay = 0.0f;
-  height = 1.0f;
-  toDelete = false;
-  currentBehavior = NULL;
-}
-
-Creature::~Creature() {
-  if (path) delete path;
-}
-
 void Creature::addCondition(Condition* cond) {
-  conditions.push(cond);
+  conditions_.push(cond);
   cond->target = this;
 }
 
@@ -209,7 +185,7 @@ bool Creature::hasCondition(ConditionTypeId type, const char* alias) { return (g
 
 float Creature::getMaxConditionDuration(ConditionTypeId type, const char* alias) {
   float maxVal = -1E8f;
-  for (Condition** it = conditions.begin(); it != conditions.end(); it++) {
+  for (Condition** it = conditions_.begin(); it != conditions_.end(); it++) {
     if ((*it)->equals(type, alias) && (*it)->duration > maxVal) maxVal = (*it)->duration;
   }
   return maxVal;
@@ -217,7 +193,7 @@ float Creature::getMaxConditionDuration(ConditionTypeId type, const char* alias)
 
 float Creature::getMinConditionAmount(ConditionTypeId type, const char* alias) {
   float minVal = 1E8f;
-  for (Condition** it = conditions.begin(); it != conditions.end(); it++) {
+  for (Condition** it = conditions_.begin(); it != conditions_.end(); it++) {
     if ((*it)->equals(type, alias) && (*it)->amount < minVal) minVal = (*it)->amount;
   }
   return minVal;
@@ -225,14 +201,14 @@ float Creature::getMinConditionAmount(ConditionTypeId type, const char* alias) {
 
 float Creature::getMaxConditionAmount(ConditionTypeId type, const char* alias) {
   float maxVal = -1E8f;
-  for (Condition** it = conditions.begin(); it != conditions.end(); it++) {
+  for (Condition** it = conditions_.begin(); it != conditions_.end(); it++) {
     if ((*it)->equals(type, alias) && (*it)->amount > maxVal) maxVal = (*it)->amount;
   }
   return maxVal;
 }
 
 Condition* Creature::getCondition(ConditionTypeId type, const char* alias) {
-  for (Condition** it = conditions.begin(); it != conditions.end(); it++) {
+  for (Condition** it = conditions_.begin(); it != conditions_.end(); it++) {
     if ((*it)->equals(type, alias)) return *it;
   }
   return NULL;
@@ -243,13 +219,13 @@ Creature* Creature::getCreature(CreatureTypeId id) {
   switch (id) {
     case CREATURE_DEER:
       ret = new Creature();
-      strcpy(ret->name, "deer");
-      ret->ch = 'd';
+      strcpy(ret->name_, "deer");
+      ret->ch_ = 'd';
       ret->color_ = TCODColor::darkerYellow;
-      ret->maxLife = ret->life = 10.0f;
-      ret->speed = 20.0f;
-      ret->flags = CREATURE_SAVE;
-      ret->currentBehavior = new HerdBehavior(new AvoidWaterWalkPattern());
+      ret->max_life_ = ret->life_ = 10.0f;
+      ret->speed_ = 20.0f;
+      ret->flags_ = CREATURE_SAVE;
+      ret->current_behavior_ = new HerdBehavior(new AvoidWaterWalkPattern());
       break;
     case CREATURE_FRIEND:
       ret = new Friend();
@@ -276,7 +252,7 @@ Creature* Creature::getCreature(CreatureTypeId id) {
       break;
   }
   if (ret) {
-    ret->type = id;
+    ret->type_ = id;
     creatureByType[id].push(ret);
   }
   return ret;
@@ -285,31 +261,31 @@ Creature* Creature::getCreature(CreatureTypeId id) {
 bool Creature::isInRange(int px, int py) {
   int dx = (int)(px - x_);
   int dy = (int)(py - y_);
-  return (ABS(dx) <= fovRange && ABS(dy) <= fovRange && dx * dx + dy * dy <= fovRange * fovRange);
+  return (ABS(dx) <= fov_range_ && ABS(dy) <= fov_range_ && dx * dx + dy * dy <= fov_range_ * fov_range_);
 }
 
 bool Creature::isPlayer() { return this == &gameEngine->player; }
 
 void Creature::talk(const char* text) {
-  strncpy(talkText.text, (char*)text, CREATURE_TALK_SIZE - 1);
-  talkText.text[CREATURE_TALK_SIZE - 1] = 0;
-  talkText.delay = strlen(text) * 0.1f;
-  talkText.delay = MAX(0.5f, talkText.delay);
+  strncpy(talk_text_.text, (char*)text, CREATURE_TALK_SIZE - 1);
+  talk_text_.text[CREATURE_TALK_SIZE - 1] = 0;
+  talk_text_.delay = strlen(text) * 0.1f;
+  talk_text_.delay = MAX(0.5f, talk_text_.delay);
   // compute text size
   char* ptr = (char*)text;
-  talkText.h_ = 1;
-  talkText.w_ = 0;
+  talk_text_.h_ = 1;
+  talk_text_.w_ = 0;
   char* end = strchr(ptr, '\n');
   while (end) {
     int len = end - ptr;
-    if (talkText.w_ < len) talkText.w_ = len;
-    talkText.h_++;
+    if (talk_text_.w_ < len) talk_text_.w_ = len;
+    talk_text_.h_++;
     ptr = end + 1;
     end = strchr(ptr, '\n');
   }
   if (end) {
     int len = end - ptr;
-    if (talkText.w_ < len) talkText.w_ = len;
+    if (talk_text_.w_ < len) talk_text_.w_ = len;
   }
 }
 
@@ -317,13 +293,13 @@ void Creature::renderTalk() {
   int conx = (int)(x_ - gameEngine->xOffset);
   int cony = (int)(y_ - gameEngine->yOffset);
   if (!IN_RECTANGLE(conx, cony, CON_W, CON_H)) return;  // creature out of console
-  talkText.x_ = conx;
-  talkText.y_ = cony - talkText.h_;
-  if (talkText.y_ < 0) talkText.y_ = cony + 1;
-  gameEngine->packer.addRect(&talkText);
+  talk_text_.x_ = conx;
+  talk_text_.y_ = cony - talk_text_.h_;
+  if (talk_text_.y_ < 0) talk_text_.y_ = cony + 1;
+  gameEngine->packer.addRect(&talk_text_);
   TCODConsole::root->setDefaultBackground(TCODColor::lighterYellow);
   TCODConsole::root->setDefaultForeground(TCODColor::darkGrey);
-  TCODConsole::root->printEx((int)talkText.x_, (int)talkText.y_, TCOD_BKGND_SET, TCOD_CENTER, talkText.text);
+  TCODConsole::root->printEx((int)talk_text_.x_, (int)talk_text_.y_, TCOD_BKGND_SET, TCOD_CENTER, talk_text_.text);
 }
 
 void Creature::render(map::LightMap& lightMap) {
@@ -352,21 +328,21 @@ void Creature::render(map::LightMap& lightMap) {
   if (!IN_RECTANGLE(conx, cony, CON_W, CON_H)) return;  // out of console
 
   float playerDist = distance(gameEngine->player);
-  float apparentHeight = height / playerDist;
+  float apparentHeight = height_ / playerDist;
   if (apparentHeight < MIN_VISIBLE_HEIGHT) return;  // too small to see at that distance
 
   TCODColor c;
-  int displayChar = ch;
+  int displayChar = ch_;
   TCODColor lightColor = lightMap.getColor(conx, cony) * 1.5f;
   map::Dungeon* dungeon = gameEngine->dungeon;
   float shadow = dungeon->getShadow(x_ * 2, y_ * 2);
   float clouds = dungeon->getCloudCoef(x_ * 2, y_ * 2);
   shadow = MIN(shadow, clouds);
   lightColor = lightColor * shadow;
-  if (life <= 0) {
-    ch = '%';
+  if (life_ <= 0) {
+    ch_ = '%';
     c = corpseColor * lightColor;
-  } else if (burn) {
+  } else if (burn_) {
     float fireX = TCODSystem::getElapsedSeconds() * fireSpeed + noise_offset_;
     int fireIdx = (int)((0.5f + 0.5f * noise1d.get(&fireX)) * 64.0f);
     c = fire[fireIdx];
@@ -387,22 +363,22 @@ void Creature::render(map::LightMap& lightMap) {
   TCODConsole::root->setCharForeground(conx, cony, c);
 }
 
-void Creature::stun(float delay) { walkTimer = MIN(-delay, walkTimer); }
+void Creature::stun(float delay) { walk_timer_ = MIN(-delay, walk_timer_); }
 
 bool Creature::walk(float elapsed) {
-  walkTimer += elapsed;
+  walk_timer_ += elapsed;
   map::TerrainId terrainId = gameEngine->dungeon->getTerrainType((int)x_, (int)y_);
-  float walkTime = map::terrainTypes[terrainId].walkCost / speed;
-  if (walkTimer >= 0) {
-    walkTimer = -walkTime;
-    if (path && !path->isEmpty()) {
+  float walkTime = map::terrainTypes[terrainId].walkCost / speed_;
+  if (walk_timer_ >= 0) {
+    walk_timer_ = -walkTime;
+    if (path_ && !path_->isEmpty()) {
       int newx, newy;
       base::GameEngine* game = gameEngine;
-      path->get(0, &newx, &newy);
+      path_->get(0, &newx, &newy);
       if ((game->player.x_ != newx || game->player.y_ != newy) && !game->dungeon->hasCreature(newx, newy)) {
         int oldx = (int)x_, oldy = (int)y_;
         int newx = oldx, newy = oldy;
-        if (path->walk(&newx, &newy, false)) {
+        if (path_->walk(&newx, &newy, false)) {
           setPos(newx, newy);
           game->dungeon->moveCreature(this, oldx, oldy, newx, newy);
           if (game->dungeon->hasRipples(newx, newy)) {
@@ -417,9 +393,9 @@ bool Creature::walk(float elapsed) {
 }
 
 void Creature::randomWalk(float elapsed) {
-  walkTimer += elapsed;
-  if (walkTimer >= 0) {
-    walkTimer = -1.0f / speed;
+  walk_timer_ += elapsed;
+  if (walk_timer_ >= 0) {
+    walk_timer_ = -1.0f / speed_;
     static int dirx[] = {-1, 0, 1, -1, 1, -1, 0, 1};
     static int diry[] = {-1, -1, -1, 0, 0, 1, 1, 1};
     int d = TCODRandom::getInstance()->getInt(0, 7);
@@ -444,27 +420,27 @@ void Creature::randomWalk(float elapsed) {
 float Creature::getWalkCost(int xFrom, int yFrom, int xTo, int yTo, void* userData) const {
   base::GameEngine* game = gameEngine;
   if (!game->dungeon->map->isWalkable(xTo, yTo)) return 0.0f;
-  if (ignoreCreatures) return 1.0f;
+  if (ignore_creatures_) return 1.0f;
   if (game->dungeon->hasCreature(xTo, yTo)) return 50.0f;
   if (game->player.x_ == xTo || game->player.y_ == yTo) return 50.0f;
   return 1.0f;
 }
 
 void Creature::takeDamage(float amount) {
-  curDmg += amount;
-  int idmg = (int)curDmg;
+  current_damage_ += amount;
+  int idmg = (int)current_damage_;
   if (idmg > 0) {
-    if (life > 0 && life <= idmg && this != &gameEngine->player) {
+    if (life_ > 0 && life_ <= idmg && this != &gameEngine->player) {
       base::AiDirector::instance->killCreature(this);
-      gameEngine->stats.creatureDeath[type]++;
+      gameEngine->stats.creatureDeath[type_]++;
     }
-    life -= idmg;
-    curDmg -= idmg;
+    life_ -= idmg;
+    current_damage_ -= idmg;
   }
 }
 
 item::Item* Creature::addToInventory(item::Item* item) {
-  item = item->addToList(inventory);
+  item = item->addToList(inventory_);
   item->owner_ = this;
   item->x_ = x_;
   item->y_ = y_;
@@ -473,17 +449,17 @@ item::Item* Creature::addToInventory(item::Item* item) {
 
 item::Item* Creature::removeFromInventory(item::Item* item, int count) {
   if (count == 0) count = item->count_;
-  item = item->removeFromList(inventory, count);
-  if (item == mainHand || item == offHand) unwield(item);
+  item = item->removeFromList(inventory_, count);
+  if (item == main_hand_ || item == off_hand_) unwield(item);
   item->owner_ = NULL;
   return item;
 }
 
 void Creature::updateConditions(float elapsed) {
-  for (Condition** it = conditions.begin(); it != conditions.end(); it++) {
+  for (Condition** it = conditions_.begin(); it != conditions_.end(); it++) {
     if ((*it)->update(elapsed)) {
       delete *it;
-      it = conditions.remove(it);
+      it = conditions_.remove(it);
     }
   }
 }
@@ -493,16 +469,16 @@ bool Creature::update(float elapsed) {
   static int distReplace =
       config.getIntProperty("config.aidirector.distReplace") * config.getIntProperty("config.aidirector.distReplace");
 
-  if (life <= 0) {
-    creatureByType[type].removeFast(this);
+  if (life_ <= 0) {
+    creatureByType[type_].removeFast(this);
     return false;
   }
-  if (talkText.delay > 0.0f) {
-    talkText.delay -= elapsed;
-    if (talkText.delay < 0.0f) talkText.delay = -10.0f;
-  } else if (talkText.delay < 0.0f) {
-    talkText.delay += elapsed;
-    if (talkText.delay > 0.0f) talkText.delay = 0.0f;
+  if (talk_text_.delay > 0.0f) {
+    talk_text_.delay -= elapsed;
+    if (talk_text_.delay < 0.0f) talk_text_.delay = -10.0f;
+  } else if (talk_text_.delay < 0.0f) {
+    talk_text_.delay += elapsed;
+    if (talk_text_.delay > 0.0f) talk_text_.delay = 0.0f;
   }
 
   updateConditions(elapsed);
@@ -516,18 +492,18 @@ bool Creature::update(float elapsed) {
     }
   }
 
-  if (burn) {
+  if (burn_) {
     takeDamage(burnDamage * elapsed);
   }
   // update items in inventory
-  inventory.erase(
-      std::remove_if(inventory.begin(), inventory.end(), [&elapsed](item::Item* it) { return it->age(elapsed); }),
-      inventory.end());
+  inventory_.erase(
+      std::remove_if(inventory_.begin(), inventory_.end(), [&elapsed](item::Item* it) { return it->age(elapsed); }),
+      inventory_.end());
   // ai
-  if (currentBehavior) {
-    if (!currentBehavior->update(this, elapsed)) currentBehavior = NULL;
+  if (current_behavior_) {
+    if (!current_behavior_->update(this, elapsed)) current_behavior_ = NULL;
   }
-  return life > 0;
+  return life_ > 0;
 }
 
 void Creature::equip(item::Item* it) {
@@ -536,32 +512,32 @@ void Creature::equip(item::Item* it) {
     case item::WIELD_NONE:
       break;
     case item::WIELD_MAIN_HAND:
-      if (offHand && offHand == mainHand) offHand = NULL;  // unequip two hands weapon
-      mainHand = it;
+      if (off_hand_ && off_hand_ == main_hand_) off_hand_ = NULL;  // unequip two hands weapon
+      main_hand_ = it;
       break;
     case item::WIELD_ONE_HAND:
-      if (!mainHand)
-        mainHand = it;
-      else if (!offHand)
-        offHand = it;
+      if (!main_hand_)
+        main_hand_ = it;
+      else if (!off_hand_)
+        off_hand_ = it;
       else {
-        if (offHand == mainHand) offHand = NULL;
-        mainHand = it;
+        if (off_hand_ == main_hand_) off_hand_ = NULL;
+        main_hand_ = it;
       }
       break;
     case item::WIELD_OFF_HAND:
-      if (mainHand && offHand == mainHand) mainHand = NULL;  // unequip two hands weapon
-      offHand = it;
+      if (main_hand_ && off_hand_ == main_hand_) main_hand_ = NULL;  // unequip two hands weapon
+      off_hand_ = it;
       break;
     case item::WIELD_TWO_HANDS:
-      mainHand = offHand = it;
+      main_hand_ = off_hand_ = it;
       break;
   }
 }
 
 void Creature::unequip(item::Item* it) {
-  if (it == mainHand) mainHand = NULL;
-  if (it == offHand) offHand = NULL;  // might be both for two hands items
+  if (it == main_hand_) main_hand_ = NULL;
+  if (it == off_hand_) off_hand_ = NULL;  // might be both for two hands items
 }
 
 void Creature::wield(item::Item* it) {
@@ -572,17 +548,17 @@ void Creature::wield(item::Item* it) {
       return;
       break;
     case item::WIELD_MAIN_HAND:
-      if (mainHand) unwield(mainHand);
+      if (main_hand_) unwield(main_hand_);
       break;
     case item::WIELD_OFF_HAND:
-      if (offHand) unwield(offHand);
+      if (off_hand_) unwield(off_hand_);
       break;
     case item::WIELD_ONE_HAND:
-      if (mainHand && offHand) unwield(mainHand);
+      if (main_hand_ && off_hand_) unwield(main_hand_);
       break;
     case item::WIELD_TWO_HANDS:
-      if (mainHand) unwield(mainHand);
-      if (offHand) unwield(offHand);
+      if (main_hand_) unwield(main_hand_);
+      if (off_hand_) unwield(off_hand_);
       break;
   }
   equip(it);
@@ -603,17 +579,17 @@ void Creature::saveData(uint32_t chunkId, TCODZip* zip) {
   saveGame.saveChunk(CREA_CHUNK_ID, CREA_CHUNK_VERSION);
   zip->putFloat(x_);
   zip->putFloat(y_);
-  zip->putFloat(life);
-  zip->putString(name);
+  zip->putFloat(life_);
+  zip->putString(name_);
   // save inventory
-  zip->putInt(inventory.size());
-  for (item::Item* it : inventory) {
+  zip->putInt(inventory_.size());
+  for (item::Item* it : inventory_) {
     zip->putString(it->typeData->name.c_str());
     it->saveData(ITEM_CHUNK_ID, zip);
   }
   // save conditions
-  zip->putInt(conditions.size());
-  for (Condition** it = conditions.begin(); it != conditions.end(); it++) {
+  zip->putInt(conditions_.size());
+  for (Condition** it = conditions_.begin(); it != conditions_.end(); it++) {
     (*it)->save(zip);
   }
 }
@@ -622,8 +598,8 @@ bool Creature::loadData(uint32_t chunkId, uint32_t chunkVersion, TCODZip* zip) {
   if (chunkVersion != CREA_CHUNK_VERSION) return false;
   x_ = zip->getFloat();
   y_ = zip->getFloat();
-  life = zip->getFloat();
-  strcpy(name, zip->getString());
+  life_ = zip->getFloat();
+  strcpy(name_, zip->getString());
   // load inventory
   int nbItems = zip->getInt();
   while (nbItems > 0) {
@@ -643,7 +619,7 @@ bool Creature::loadData(uint32_t chunkId, uint32_t chunkVersion, TCODZip* zip) {
     Condition* cond = new Condition();
     cond->target = this;
     cond->load(zip);
-    conditions.push(cond);
+    conditions_.push(cond);
     nbConditions--;
   }
   return true;

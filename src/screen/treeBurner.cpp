@@ -124,7 +124,7 @@ TreeBurner::TreeBurner() {
 void TreeBurner::render() {
   static bool debug = config.getBoolProperty("config.debug");
   // draw subcell ground
-  int squaredFov = (int)(player.fovRange * player.fovRange * 4);
+  int squaredFov = (int)(player.fov_range_ * player.fov_range_ * 4);
   int minx, maxx, miny, maxy;
   bool showDebugMap = false;
   ground.clear(TCODColor::black);
@@ -237,7 +237,7 @@ void TreeBurner::render() {
   // render boss health bar
   static int bossLife = config.getIntProperty("config.creatures.villageHead.life");
   if (bossSeen && !bossIsDead) {
-    float lifeper = (float)(boss->life) / bossLife;
+    float lifeper = (float)(boss->life_) / bossLife;
     for (int x = 70; x < 90; x++) {
       TCODColor col = (x - 70) < (int)(lifeper * 20) ? TCODColor::red : TCODColor::darkerRed;
       ground.putPixel(x, 5, col);
@@ -258,7 +258,7 @@ void TreeBurner::render() {
 
   gui.descriptor.render();
   if (bossSeen && !bossIsDead) {
-    TCODConsole::root->printEx(40, 1, TCOD_BKGND_NONE, TCOD_CENTER, boss->name);
+    TCODConsole::root->printEx(40, 1, TCOD_BKGND_NONE, TCOD_CENTER, boss->name_);
   }
 
   if (isGamePaused()) {
@@ -286,7 +286,7 @@ void TreeBurner::render() {
     TCODConsole::root->printEx(CON_W / 2, 0, TCOD_BKGND_MULTIPLY, TCOD_CENTER, debugMapNames[debugMap]);
   }
 
-  if (bossIsDead && player.life > 0) {
+  if (bossIsDead && player.life_ > 0) {
     TCODConsole::root->setDefaultForeground(TCODColor::lightRed);
     TCODConsole::root->printEx(40, 2, TCOD_BKGND_NONE, TCOD_CENTER, "VICTORY");
   }
@@ -333,7 +333,7 @@ bool TreeBurner::update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse) {
       player.y_ = FOREST_H / 2;
     } else if (k.c == 'w' && k.lalt && !k.pressed) {
       // debug mode : Alt-w = instawin
-      boss->life = 0;
+      boss->life_ = 0;
       bossSeen = true;
       bossIsDead = true;
     }
@@ -353,7 +353,7 @@ bool TreeBurner::update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse) {
   xOffset = (int)(player.x_ - CON_W / 2);
   yOffset = (int)(player.y_ - CON_H / 2);
 
-  if (player.life <= 0 && fade_ != FADE_DOWN) {
+  if (player.life_ <= 0 && fade_ != FADE_DOWN) {
     setFadeOut(fade_out_length_ms_, TCODColor::darkRed);
     fade_ = FADE_DOWN;
   }
@@ -367,7 +367,7 @@ bool TreeBurner::update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse) {
     fade_ = FADE_DOWN;
   }
   if (fade_ == FADE_DOWN && fade_level_ <= 0.0f) {
-    if (player.life <= 0) {
+    if (player.life_ <= 0) {
       // death
       engine.activateModule("treeBurnerGameOver");
       return false;
@@ -638,7 +638,7 @@ void TreeBurner::onActivate() {
   dungeon->getClosestWalkable(&px, &py, true, false);
   player.x_ = px;
   player.y_ = py;
-  strcpy(player.name, "You");
+  strcpy(player.name_, "You");
   // make player uber powerful
   util::Powerup::init();
   TCODList<util::Powerup*> list;
@@ -657,7 +657,7 @@ void TreeBurner::onActivate() {
   TCODConsole::setFade(0, TCODColor::black);
   fade_ = FADE_UP;
   fade_level_ = 0.0f;
-  player.max_fov_range_ = player.fovRange = 8;
+  player.max_fov_range_ = player.fov_range_ = 8;
   time_fix_ = 1.0f;
   gui.log.critical(
       "Welcome to TreeBurner v%s ! %c?%c for help.", getStringParam("version"), TCOD_COLCTRL_2, TCOD_COLCTRL_STOP);

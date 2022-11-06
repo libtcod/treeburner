@@ -117,26 +117,10 @@ class Creature : public base::DynamicEntity,
                  public base::NoisyThing,
                  public base::SaveListener {
  public:
-  CreatureTypeId type;
-  TCODColor color_;
-  int ch;  // character
-  float life, maxLife;
-  float speed;
-  float height;  // in meters
-  TCODPath* path;
-  bool ignoreCreatures;  // walk mode
-  bool burn;
-  int flags;
-  char name[CREATURE_NAME_SIZE];
-  item::Item *mainHand, *offHand = nullptr;
-  item::Item* asItem;  // an item corresponding to this creature
-  TCODList<Condition*> conditions;
-
-  // ai
-  Behavior* currentBehavior = nullptr;
-
-  Creature();
-  virtual ~Creature();
+  Creature() = default;
+  virtual ~Creature() noexcept {
+    if (path_) delete path_;
+  }
 
   virtual void onReplace() {}
 
@@ -160,49 +144,69 @@ class Creature : public base::DynamicEntity,
   virtual void stun(float delay);
   virtual float getWalkCost(int xFrom, int yFrom, int xTo, int yTo, void* userData) const override;
   void talk(const char* text);
-  bool isTalking() { return talkText.delay > 0.0f; }
+  bool isTalking() const noexcept { return talk_text_.delay > 0.0f; }
   bool isInRange(int x, int y);
   bool isPlayer();
 
   // flags
-  bool isReplacable() const { return (flags & CREATURE_REPLACABLE) != 0; }
-  bool isUpdatedOffscreen() const { return (flags & CREATURE_OFFSCREEN) != 0; }
-  bool mustSave() const { return (flags & CREATURE_SAVE) != 0; }
-  bool isBlockingPath() const { return (flags & CREATURE_NOTBLOCK) == 0; }
-  bool isCatchable() const { return (flags & CREATURE_CATCHABLE) != 0; }
+  bool isReplacable() const noexcept { return (flags_ & CREATURE_REPLACABLE) != 0; }
+  bool isUpdatedOffscreen() const noexcept { return (flags_ & CREATURE_OFFSCREEN) != 0; }
+  bool mustSave() const noexcept { return (flags_ & CREATURE_SAVE) != 0; }
+  bool isBlockingPath() const noexcept { return (flags_ & CREATURE_NOTBLOCK) == 0; }
+  bool isCatchable() const noexcept { return (flags_ & CREATURE_CATCHABLE) != 0; }
 
   // items
   item::Item* addToInventory(item::Item* it);  // in case of stackable items, returned item might be != it
   item::Item* removeFromInventory(item::Item* it, int count = 1);  // same as addToInventory
-  auto getInventory() { return inventory; }
+  auto& getInventory() { return inventory_; }
 
   void equip(item::Item* it);
   void unequip(item::Item* it);
   // same as equip/unequip but with messages (you're wielding...)
   void wield(item::Item* it);
   void unwield(item::Item* it);
-  virtual void initItem() {}  // build asItem member
+  virtual void initItem() {}  // build as_item_ member
 
   // SaveListener
   bool loadData(uint32_t chunkId, uint32_t chunkVersion, TCODZip* zip) override;
   void saveData(uint32_t chunkId, TCODZip* zip) override;
 
-  float fovRange;
-  bool toDelete;
+  CreatureTypeId type_{};
+  TCODColor color_{};
+  int ch_{};  // character
+  float life_{};
+  float max_life_{};
+  float speed_{};
+  float height_{1.0f};  // in meters
+  TCODPath* path_{};
+  bool ignore_creatures_{};  // walk mode
+  bool burn_{};
+  int flags_{};
+  char name_[CREATURE_NAME_SIZE]{};
+  item::Item* main_hand_{};
+  item::Item* off_hand_{};
+  item::Item* as_item_{};  // an item corresponding to this creature
+  TCODList<Condition*> conditions_{};
+  Behavior* current_behavior_{};  // ai
+  float fov_range_{};
+  bool to_delete_{};
 
  protected:
   friend class Behavior;
   friend class FollowBehavior;
   friend class HerdBehavior;
   friend class ForestScreen;
-  std::vector<item::Item*> inventory;
-  float walkTimer, pathTimer;
-  float curDmg;
   struct TalkText : public base::Rect {
-    char text[CREATURE_TALK_SIZE];
-    float delay;
-  } talkText;
+    char text[CREATURE_TALK_SIZE]{};
+    float delay{};
+  };
   bool walk(float elapsed);
   void randomWalk(float elapsed);
+
+  std::vector<item::Item*> inventory_{};
+  float walk_timer_{};
+  float path_timer_{};
+  float current_damage_{};
+  TalkText talk_text_{};
 };
 }  // namespace mob

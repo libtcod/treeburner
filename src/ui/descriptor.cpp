@@ -66,7 +66,7 @@ void Descriptor::render() {
   TCODConsole::root->setDefaultForeground(ui::guiText);
   // descriptor
   if (creature) {
-    TCODConsole::root->printEx(POSX, POSY, TCOD_BKGND_NONE, TCOD_RIGHT, creature->name);
+    TCODConsole::root->printEx(POSX, POSY, TCOD_BKGND_NONE, TCOD_RIGHT, creature->name_);
   } else if (item) {
     TCODConsole::root->printEx(POSX, POSY, TCOD_BKGND_NONE, TCOD_RIGHT, item->aName().c_str());
     if (lookOn) item->renderDescription(mousex, mousey - 1, false);

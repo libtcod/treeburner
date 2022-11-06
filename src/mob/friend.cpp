@@ -35,28 +35,28 @@ namespace mob {
 #define NB_CAUGHT 25
 
 Friend::Friend() : Creature(), timer(0.0f), startPhrase(false), lostDelay(-5.0f) {
-  strcpy(name, "Aidan");
-  util::TextGenerator::addGlobalValue("FRIEND_NAME", name);
-  ch = '@';
+  strcpy(name_, "Aidan");
+  util::TextGenerator::addGlobalValue("FRIEND_NAME", name_);
+  ch_ = '@';
   color_ = TCODColor(210, 210, 255);
-  life = 100;
-  speed = 12.0f;
-  type = CREATURE_FRIEND;
+  life_ = 100;
+  speed_ = 12.0f;
+  type_ = CREATURE_FRIEND;
   talkGenerator = new util::TextGenerator("data/cfg/dialog_chap1.txg");
   awayCount = 0;
-  talkText.delay = -2.0f;
+  talk_text_.delay = -2.0f;
   caught = 0;
-  height = 1.2f;
+  height_ = 1.2f;
   see = tutoPause = false;
   foodTuto = foodObj = false;
-  flags = CREATURE_OFFSCREEN | CREATURE_SAVE;
+  flags_ = CREATURE_OFFSCREEN | CREATURE_SAVE;
 }
 
 bool Friend::update(float elapsed) {
-  if (!currentBehavior) {
+  if (!current_behavior_) {
     FollowBehavior* behavior = new FollowBehavior(new AvoidWaterWalkPattern());
     behavior->setLeader(&gameEngine->player);
-    currentBehavior = behavior;
+    current_behavior_ = behavior;
   }
   timer += elapsed;
   if (!foodTuto && timer > 3.0f) {
@@ -67,7 +67,7 @@ bool Friend::update(float elapsed) {
     } else
       timer = 0.0f;
   } else if (
-      foodTuto && timer > 4.0f && talkText.delay == 0.0f && !startPhrase &&
+      foodTuto && timer > 4.0f && talk_text_.delay == 0.0f && !startPhrase &&
       gameEngine->player.isInRange((int)x_, (int)y_)) {
     talk(talkGenerator->generate("friend", "${HUNGRY}"));
     startPhrase = true;
@@ -133,7 +133,7 @@ TCODRandom::getInstance()->getInt(-SECURE_DIST*2,SECURE_DIST*2)); destx=CLAMP(0,
                                 standDelay=0.0f;
                         }
                         bool inFov = dungeon->map->isInFov((int)x,(int)y);
-                        if ( walkTimer == 0.0f && inFov ) {
+                        if ( walk_timer_ == 0.0f && inFov ) {
                                 float sightTest=TCODRandom::getInstance()->getFloat(0.5f,0.9f);
                                 if ( sightTest < player->stealth ) {
                                         player->stealth += 2 * (player->stealth - sightTest) * elapsed;
@@ -148,7 +148,7 @@ TCODRandom::getInstance()->getInt(-SECURE_DIST*2,SECURE_DIST*2)); destx=CLAMP(0,
                                 see=false;
                                 standDelay=0.0f;
                         }
-                        if (! see && talkText.delay == 0.0f && standDelay > 5.0f ) {
+                        if (! see && talk_text_.delay == 0.0f && standDelay > 5.0f ) {
                                 talk(talkGenerator->generate("friend","${HS_TEASE}"));
                         }
                 }
@@ -163,14 +163,14 @@ bool Friend::updateCatchMe(float elapsed) {
 
         pathTimer+=elapsed;
         standDelay+=elapsed;
-        if ( talkText.delay == 0.0f && ! startPhrase ) {
+        if ( talk_text_.delay == 0.0f && ! startPhrase ) {
                 talk(talkGenerator->generate("friend","${CATCH_ME}"));
                 startPhrase=true;
                 gameEngine->gui.tutorial->startLiveTuto(TUTO_CATCH_ME);
         } else {
                 if (!inFov) {
                         lostDelay += elapsed;
-                        if (talkText.delay == 0.0f) {
+                        if (talk_text_.delay == 0.0f) {
                                 if ( awayCount > 4 ) {
                                         talk(talkGenerator->generate("friend","${CATCH_AWAY}"));
                                         awayCount=-5;
@@ -182,7 +182,7 @@ bool Friend::updateCatchMe(float elapsed) {
                 } else {
                         lostDelay = -5.0f;
                 }
-                if (talkText.delay == 0.0f && standDelay > 10.0f ) {
+                if (talk_text_.delay == 0.0f && standDelay > 10.0f ) {
                         talk(talkGenerator->generate("friend","${CATCH_COMEON}"));
                         standDelay=0.0f;
                 }
@@ -198,7 +198,7 @@ bool Friend::updateCatchMe(float elapsed) {
         int pdist=(int)distance(*player);
         if ( startPhrase && timer > 4.0f ) {
                 if ( pdist < 2 && inFov ) caught++;
-                if ( caught < NB_CAUGHT && talkText.delay == 0.0f && pdist < 4 ) {
+                if ( caught < NB_CAUGHT && talk_text_.delay == 0.0f && pdist < 4 ) {
                         talk(talkGenerator->generate("friend","${CATCH_ALMOST}"));
                 }
         }
@@ -250,7 +250,7 @@ float Friend::getWalkCost( int xFrom, int yFrom, int xTo, int yTo, void *userDat
 float Friend::getWalkCostCatchMe(int xFrom, int yFrom, int xTo, int yTo, void *userData ) const {
         map::Dungeon *dungeon=gameEngine->dungeon;
         if ( !dungeon->map->isWalkable(xTo,yTo)) return 0.0f;
-        if ( ignoreCreatures ) return map::terrainTypes[dungeon->getTerrainType(xTo,yTo)].walkCost;
+        if ( ignore_creatures_ ) return map::terrainTypes[dungeon->getTerrainType(xTo,yTo)].walkCost;
         Player *player=&gameEngine->player;
         float pdist=squaredDistance(*player);
         if ( pdist < 16.0f ) return 1.0f + SECURE_COEF*(SECURE_DIST - pdist);
@@ -260,7 +260,7 @@ float Friend::getWalkCostCatchMe(int xFrom, int yFrom, int xTo, int yTo, void *u
 float Friend::getWalkCostHideAndSeek(int xFrom, int yFrom, int xTo, int yTo, void *userData ) const {
         map::Dungeon *dungeon=gameEngine->dungeon;
         if ( !dungeon->map->isWalkable(xTo,yTo)) return 0.0f;
-        if ( ignoreCreatures ) return map::terrainTypes[dungeon->getTerrainType(xTo,yTo)].walkCost;
+        if ( ignore_creatures_ ) return map::terrainTypes[dungeon->getTerrainType(xTo,yTo)].walkCost;
         Player *player=&gameEngine->player;
         float pdist=squaredDistance(*player);
         if ( pdist < 16.0f ) return 1.0f + SECURE_COEF*(SECURE_DIST - pdist);

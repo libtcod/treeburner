@@ -35,10 +35,10 @@ VillageHead::VillageHead() {
   static TCODColor villageHeadColor = config.getColorProperty("config.creatures.villageHead.col");
   static char villageHeadChar = config.getCharProperty("config.creatures.villageHead.ch");
   static int villageHeadLife = config.getIntProperty("config.creatures.villageHead.life");
-  ch = villageHeadChar;
+  ch_ = villageHeadChar;
   color_ = villageHeadColor;
-  life = villageHeadLife;
-  strcpy(name, "village head");
+  life_ = villageHeadLife;
+  strcpy(name_, "village head");
   summonMinions = true;
   stayInLair = false;
 }
@@ -60,14 +60,14 @@ Boss::Boss() {
   treasureLight->setup(treasureLightColor, treasureIntensityDelay, treasureIntensityPattern, NULL);
   gameEngine->dungeon->addLight(treasureLight);
 
-  ch = bossChar;
+  ch_ = bossChar;
   color_ = bossColor;
-  life = bossLife;
+  life_ = bossLife;
   seen = false;
-  speed = 1.0f;
+  speed_ = 1.0f;
   pathTimer = TCODRandom::getInstance()->getFloat(0.0f, pathDelay);
   summonTimer = 0.0f;
-  ignoreCreatures = false;
+  ignore_creatures_ = false;
   summonMinions = true;
   stayInLair = true;
 }
@@ -78,7 +78,7 @@ void Boss::setSeen() {
   seen = true;
   ((screen::Game*)(gameEngine))->bossSeen = true;
   base::AiDirector::instance->bossSeen();
-  speed = bossSpeed;
+  speed_ = bossSpeed;
 }
 
 // boss can't be stunned
@@ -86,7 +86,7 @@ void Boss::stun(float delay) {}
 
 void Boss::takeDamage(float amount) {
   Creature::takeDamage(amount);
-  if (life <= 0.0f) {
+  if (life_ <= 0.0f) {
     // the boss dies
     gameEngine->bossIsDead = true;
     base::AiDirector::instance->bossDead();
@@ -102,11 +102,11 @@ bool Boss::update(float elapsed) {
   static float burnDamage = config.getFloatProperty("config.creatures.burnDamage");
 
   treasureLight->setPos(x_ * 2, y_ * 2);
-  if (life <= 0) {
+  if (life_ <= 0) {
     gameEngine->dungeon->removeLight(treasureLight);
     return false;
   }
-  if (burn) {
+  if (burn_) {
     takeDamage(burnDamage * elapsed);
   }
   pathTimer += elapsed;
@@ -126,7 +126,7 @@ bool Boss::update(float elapsed) {
     }
   }
   if (pathTimer > pathDelay) {
-    if (!path || path->isEmpty()) {
+    if (!path_ || path_->isEmpty()) {
       // stay away from player
       // while staying in lair
       int destx, desty;
@@ -140,17 +140,17 @@ bool Boss::update(float elapsed) {
       destx = CLAMP(0, gameEngine->dungeon->width - 1, destx);
       desty = CLAMP(0, gameEngine->dungeon->height - 1, desty);
       gameEngine->dungeon->getClosestWalkable(&destx, &desty, true, true);
-      if (!path) {
-        path = new TCODPath(gameEngine->dungeon->width, gameEngine->dungeon->height, this, gameEngine);
+      if (!path_) {
+        path_ = new TCODPath(gameEngine->dungeon->width, gameEngine->dungeon->height, this, gameEngine);
       }
-      path->compute((int)x_, (int)y_, destx, desty);
+      path_->compute((int)x_, (int)y_, destx, desty);
       pathTimer = 0.0f;
     } else
       walk(elapsed);
   } else {
     walk(elapsed);
   }
-  return life > 0;
+  return life_ > 0;
 }
 
 float Boss::getWalkCost(int xFrom, int yFrom, int xTo, int yTo, void* userData) const {
@@ -159,7 +159,7 @@ float Boss::getWalkCost(int xFrom, int yFrom, int xTo, int yTo, void* userData) 
 
   // the boss don't like to be near player
   if (!gameEngine->dungeon->map->isWalkable(xTo, yTo)) return 0.0f;
-  if (ignoreCreatures) return 1.0f;
+  if (ignore_creatures_) return 1.0f;
   float pdist = SQRDIST(gameEngine->player.x_ - xTo, gameEngine->player.y_ - yTo);
   if (pdist < secureDist) return 1.0f + secureCoef * (secureDist - pdist);
   return 1.0f;

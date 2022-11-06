@@ -36,10 +36,10 @@ Archer::Archer() {
   static TCODColor archerColor = config.getColorProperty("config.creatures.archer.col");
   static char archerChar = config.getCharProperty("config.creatures.archer.ch");
   static int archerLife = config.getIntProperty("config.creatures.archer.life");
-  ch = archerChar;
+  ch_ = archerChar;
   color_ = archerColor;
-  life = archerLife;
-  strcpy(name, "archer");
+  life_ = archerLife;
+  strcpy(name_, "archer");
   pathTimer = 0.0f;
 }
 
@@ -69,10 +69,10 @@ Villager::Villager() {
   static TCODColor villagerColor = config.getColorProperty("config.creatures.villager.col");
   static char villagerChar = config.getCharProperty("config.creatures.villager.ch");
   static int villagerLife = config.getIntProperty("config.creatures.villager.life");
-  ch = villagerChar;
+  ch_ = villagerChar;
   color_ = villagerColor;
-  life = villagerLife;
-  strcpy(name, "villager");
+  life_ = villagerLife;
+  strcpy(name_, "villager");
 }
 
 bool Villager::update(float elapsed) {
@@ -94,18 +94,18 @@ Minion::Minion() {
   static TCODColor minionColor = config.getColorProperty("config.creatures.minion.col");
   static int minionLife = config.getIntProperty("config.creatures.minion.life");
   static float pathDelay = config.getFloatProperty("config.creatures.pathDelay");
-  ch = minionChar;
+  ch_ = minionChar;
   color_ = minionColor;
-  life = minionLife;
+  life_ = minionLife;
   seen = false;
-  speed = 1.0f;
+  speed_ = 1.0f;
   pathTimer = TCODRandom::getInstance()->getFloat(0.0f, pathDelay);
 }
 
 void Minion::setSeen() {
   static float minionSpeed = config.getFloatProperty("config.creatures.minion.speed");
   seen = true;
-  speed = minionSpeed;
+  speed_ = minionSpeed;
 }
 
 void Minion::onReplace() { seen = false; }
@@ -124,19 +124,19 @@ bool Minion::update(float elapsed) {
       setSeen();
     }
   }
-  if (burn || !seen) {
+  if (burn_ || !seen) {
     randomWalk(elapsed);
   } else {
     // track player
-    if (!path) {
-      path = new TCODPath(game->dungeon->width, game->dungeon->height, this, game);
+    if (!path_) {
+      path_ = new TCODPath(game->dungeon->width, game->dungeon->height, this, game);
     }
     if (pathTimer > pathDelay) {
       int dx, dy;
-      path->getDestination(&dx, &dy);
+      path_->getDestination(&dx, &dy);
       if (dx != game->player.x_ || dy != game->player.y_) {
         // path is no longer valid (the player moved)
-        path->compute((int)x_, (int)y_, (int)game->player.x_, (int)game->player.y_);
+        path_->compute((int)x_, (int)y_, (int)game->player.x_, (int)game->player.y_);
         pathTimer = 0.0f;
       }
     }

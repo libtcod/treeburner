@@ -148,7 +148,7 @@ void AiDirector::spawnMinion(bool chase, int x, int y) {
 void AiDirector::replace(mob::Creature* cr) {
   const int old_x = (int)cr->x_;
   const int old_y = (int)cr->y_;
-  cr->burn = false;
+  cr->burn_ = false;
   int newx{};
   int newy{};
   gameEngine->dungeon->getClosestSpawnSource(gameEngine->player.x_, gameEngine->player.y_, &newx, &newy);

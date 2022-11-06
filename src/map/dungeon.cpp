@@ -490,7 +490,7 @@ mob::Creature* Dungeon::getCreature(int x, int y) const {
 
 mob::Creature* Dungeon::getCreature(mob::CreatureTypeId id) const {
   for (mob::Creature** it = creatures.begin(); it != creatures.end(); it++) {
-    if ((*it)->type == id) return *it;
+    if ((*it)->type_ == id) return *it;
   }
   return NULL;
 }
@@ -498,7 +498,7 @@ mob::Creature* Dungeon::getCreature(mob::CreatureTypeId id) const {
 mob::Creature* Dungeon::getCreature(const char* name) const {
   if (strcmp(name, "player") == 0) return &gameEngine->player;
   for (mob::Creature** it = creatures.begin(); it != creatures.end(); it++) {
-    if (strcmp((*it)->name, name) == 0) return *it;
+    if (strcmp((*it)->name_, name) == 0) return *it;
   }
   return NULL;
 }
@@ -533,7 +533,7 @@ void Dungeon::removeCreature(mob::Creature* cr, bool kill) {
       cell->hasCorpse = true;
       corpses.push(cr);
     } else
-      cr->toDelete = true;
+      cr->to_delete_ = true;
   } else {
     creatures.remove(cr);
   }
@@ -546,7 +546,7 @@ void Dungeon::addCorpse(mob::Creature* cr) {
 
 void Dungeon::renderCreatures(map::LightMap& lightMap) {
   for (mob::Creature** it = creatures.begin(); it != creatures.end(); it++) {
-    if ((*it)->ch != 0) {
+    if ((*it)->ch_ != 0) {
       if (map->isInFov((int)(*it)->x_, (int)(*it)->y_)) (*it)->render(lightMap);
       if ((*it)->isTalking()) (*it)->renderTalk();
     }
@@ -555,7 +555,7 @@ void Dungeon::renderCreatures(map::LightMap& lightMap) {
 
 void Dungeon::renderSubcellCreatures(map::LightMap& lightMap) {
   for (mob::Creature** it = creatures.begin(); it != creatures.end(); it++) {
-    if ((*it)->ch == 0) {
+    if ((*it)->ch_ == 0) {
       assert(IN_RECTANGLE((*it)->x_, (*it)->y_, width, height));
       if (IN_RECTANGLE((*it)->x_, (*it)->y_, width, height)) {
         if (map->isInFov((int)(*it)->x_, (int)(*it)->y_)) (*it)->render(lightMap);
@@ -572,7 +572,7 @@ void Dungeon::updateCreatures(float elapsed) {
   isUpdatingCreatures = true;
   for (int i = 0; i < creatures.size(); i++) {
     mob::Creature* cr = creatures.get(i);
-    if (cr->toDelete) {
+    if (cr->to_delete_) {
       toDelete.push(cr);
     } else if ((cr->isUpdatedOffscreen() || cr->isOnScreen()) && !cr->update(elapsed)) {
       toDelete.push(cr);
@@ -581,8 +581,8 @@ void Dungeon::updateCreatures(float elapsed) {
   isUpdatingCreatures = false;
   for (mob::Creature** it = toDelete.begin(); it != toDelete.end(); it++) {
     creatures.removeFast(*it);
-    removeCreature(*it, !(*it)->toDelete);
-    if ((*it)->toDelete) delete *it;
+    removeCreature(*it, !(*it)->to_delete_);
+    if ((*it)->to_delete_) delete *it;
   }
   for (mob::Creature** it = creaturesToAdd.begin(); it != creaturesToAdd.end(); it++) {
     addCreature(*it);
@@ -597,7 +597,7 @@ void Dungeon::killCreaturesAtRange(int radius) {
   for (mob::Creature** it = creatures.begin(); it != creatures.end(); it++) {
     float dx = (*it)->x_ - px;
     float dy = (*it)->y_ - py;
-    if (dx * dx + dy * dy <= rad2) (*it)->life = 0;
+    if (dx * dx + dy * dy <= rad2) (*it)->life_ = 0;
   }
 }
 
@@ -733,10 +733,10 @@ void Dungeon::renderItems(map::LightMap& lightMap, TCODImage* ground) {
   mob::Player* player = &gameEngine->player;
   float aspectRatio = gameEngine->aspectRatio;
   // static items in fov
-  for (int tx = (int)(-player->fovRange); tx <= (int)(player->fovRange); tx++) {
+  for (int tx = (int)(-player->fov_range_); tx <= (int)(player->fov_range_); tx++) {
     int x = (int)(player->x_ + tx);
     if ((unsigned)x < (unsigned)width) {
-      int dy = (int)(sqrtf(player->fovRange * player->fovRange - tx * tx) * aspectRatio);
+      int dy = (int)(sqrtf(player->fov_range_ * player->fov_range_ - tx * tx) * aspectRatio);
       for (int ty = -dy; ty <= dy; ty++) {
         int y = (int)(player->y_ + ty);
         if ((unsigned)y < (unsigned)height && map->isInFov(x, y) &&
@@ -889,14 +889,14 @@ void Dungeon::saveData(uint32_t chunkId, TCODZip* zip) {
   zip->putInt(nbCreaturesToSave);
   for (mob::Creature** it = creatures.begin(); it != creatures.end(); it++) {
     if ((*it)->mustSave()) {
-      zip->putInt((*it)->type);
+      zip->putInt((*it)->type_);
       (*it)->saveData(CREA_CHUNK_ID, zip);
     }
   }
   // save the corpses
   zip->putInt(corpses.size());
   for (mob::Creature** it = corpses.begin(); it != corpses.end(); it++) {
-    zip->putInt((*it)->type);
+    zip->putInt((*it)->type_);
     (*it)->saveData(CREA_CHUNK_ID, zip);
   }
   // save the items on ground

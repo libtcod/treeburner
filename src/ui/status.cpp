@@ -75,8 +75,8 @@ void StatusPanel::render() {
 
   if (titleBarAlpha > 0.0f) {
     con->clear();
-    con->printEx(rect.w / 2, y, TCOD_BKGND_NONE, TCOD_CENTER, "HP %d/%d", (int)player->life, (int)player->maxLife);
-    if (!player->conditions.isEmpty()) {
+    con->printEx(rect.w / 2, y, TCOD_BKGND_NONE, TCOD_CENTER, "HP %d/%d", (int)player->life_, (int)player->max_life_);
+    if (!player->conditions_.isEmpty()) {
       con->printEx(rect.w / 2, y + 2 * dy, TCOD_BKGND_NONE, TCOD_CENTER, "Conditions");
     }
     util::blitSemiTransparent(
@@ -106,7 +106,7 @@ void StatusPanel::render() {
   TCODList<mob::Condition*> conds;
   // extract conditions from the player.
   // every condition is displayed only once (the longer)
-  for (mob::Condition** it = player->conditions.begin(); it != player->conditions.end(); it++) {
+  for (mob::Condition** it = player->conditions_.begin(); it != player->conditions_.end(); it++) {
     mob::Condition** it2 = NULL;
     for (it2 = conds.begin(); it2 != conds.end(); it2++) {
       if ((*it)->equals((*it2)->type->type, (*it2)->alias)) {

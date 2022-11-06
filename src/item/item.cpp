@@ -1233,7 +1233,7 @@ bool Item::age(float elapsed, ItemFeature* feat) {
       if (!owner_) {
         if (as_creature_) gameEngine->dungeon->removeCreature(as_creature_, false);
       } else {
-        if (as_creature_) as_creature_->toDelete = true;
+        if (as_creature_) as_creature_->to_delete_ = true;
       }
       return false;
     }
@@ -1421,7 +1421,7 @@ bool Item::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
                 mob::Creature* cr = dungeon->getCreature((int)(x_) + tx, (int)(y_) + ty);
                 if (cr) {
                   cr->takeDamage(feat->heat.intensity);
-                  cr->burn = true;
+                  cr->burn_ = true;
                 }
                 if (gameEngine->player.x_ == x_ + tx && gameEngine->player.y_ == y_ + ty) {
                   gameEngine->player.takeDamage(feat->heat.intensity);
@@ -1445,7 +1445,7 @@ bool Item::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
       if (!owner_) {
         if (as_creature_) gameEngine->dungeon->removeCreature(as_creature_, false);
       } else {
-        if (as_creature_) as_creature_->toDelete = true;
+        if (as_creature_) as_creature_->to_delete_ = true;
       }
       ItemFeature* ignite = typeData->getFeature(ITEM_FEAT_HEAT);
       if (ignite) {
@@ -1463,7 +1463,7 @@ bool Item::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
   return true;
 }
 
-bool Item::isEquiped() { return (owner_ && (owner_->mainHand == this || owner_->offHand == this)); }
+bool Item::isEquiped() { return (owner_ && (owner_->main_hand_ == this || owner_->off_hand_ == this)); }
 
 void Item::destroy(int count) {
   Item* newItem = NULL;
@@ -1485,9 +1485,9 @@ void Item::use() {
     float odds = TCODRandom::getInstance()->getFloat(0.0f, 1.0f);
     if (isA("tree")) {
       bool cut = false;
-      if (gameEngine->player.mainHand && gameEngine->player.mainHand->isA("cut"))
+      if (gameEngine->player.main_hand_ && gameEngine->player.main_hand_->isA("cut"))
         cut = true;
-      else if (gameEngine->player.offHand && gameEngine->player.offHand->isA("cut"))
+      else if (gameEngine->player.off_hand_ && gameEngine->player.off_hand_->isA("cut"))
         cut = true;
       if (cut) {
         Item* it = produce(odds);
@@ -1557,13 +1557,13 @@ Item* Item::putInInventory(mob::Creature* owner, int putCount, const char* verb)
   ItemFeature* feat = it->getFeature(ITEM_FEAT_ATTACK);
   if (feat) {
     // auto equip weapon if hand is empty
-    if (owner->mainHand == NULL && (feat->attack.wield == WIELD_ONE_HAND || feat->attack.wield == WIELD_MAIN_HAND)) {
-      owner->mainHand = it;
+    if (owner->main_hand_ == NULL && (feat->attack.wield == WIELD_ONE_HAND || feat->attack.wield == WIELD_MAIN_HAND)) {
+      owner->main_hand_ = it;
     } else if (
-        owner->offHand == NULL && (feat->attack.wield == WIELD_ONE_HAND || feat->attack.wield == WIELD_OFF_HAND)) {
-      owner->offHand = it;
-    } else if (owner->mainHand == NULL && owner->offHand == NULL && feat->attack.wield == WIELD_TWO_HANDS) {
-      owner->mainHand = owner->offHand = it;
+        owner->off_hand_ == NULL && (feat->attack.wield == WIELD_ONE_HAND || feat->attack.wield == WIELD_OFF_HAND)) {
+      owner->off_hand_ = it;
+    } else if (owner->main_hand_ == NULL && owner->off_hand_ == NULL && feat->attack.wield == WIELD_TWO_HANDS) {
+      owner->main_hand_ = owner->off_hand_ = it;
     }
   }
 

@@ -358,7 +358,7 @@ bool FireBall::updateTorch(float elapsed) {
   for (mob::Creature **cr=dungeon->creatures.begin(); cr != dungeon->creatures.end(); cr++) {
           if ( ABS((*cr)->x-x)<curRange && ABS((*cr)->y-y)< curRange ) {
                   // do not set fire through walls
-                  if ( dungeon->hasLos((int)((*cr)->x),(int)((*cr)->y),(int)x,(int)y,true) ) (*cr)->burn=true;
+                  if ( dungeon->hasLos((int)((*cr)->x),(int)((*cr)->y),(int)x,(int)y,true) ) (*cr)->burn_=true;
           }
   }
   */
@@ -383,7 +383,7 @@ bool FireBall::updateTorch(float elapsed) {
             }
             mob::Creature* cr = dungeon->getCreature((int)(x_) + tx, (int)(y_) + ty);
             if (cr) {
-              cr->burn = true;
+              cr->burn_ = true;
               cr->takeDamage(damage / 4);
             }
           }

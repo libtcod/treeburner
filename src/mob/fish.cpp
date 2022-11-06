@@ -32,14 +32,14 @@
 
 namespace mob {
 Fish::Fish(util::WaterZone* zone) : Creature(), zone(zone) {
-  strcpy(name, "fish");
-  ch = 0;
+  strcpy(name_, "fish");
+  ch_ = 0;
   color_ = TCODColor::desaturatedSky;
-  life = 10;
-  speed = 12.0f;
-  type = CREATURE_FISH;
-  flags = CREATURE_NOTBLOCK | CREATURE_CATCHABLE;
-  height = 0.5f;
+  life_ = 10;
+  speed_ = 12.0f;
+  type_ = CREATURE_FISH;
+  flags_ = CREATURE_NOTBLOCK | CREATURE_CATCHABLE;
+  height_ = 0.5f;
   dx_ = TCODRandom::getInstance()->getFloat(-2.0f, 2.0f);
   dy_ = TCODRandom::getInstance()->getFloat(-2.0f, 2.0f);
   oldx = oldy = -1.0f;
@@ -57,7 +57,7 @@ void Fish::render(map::LightMap& lightMap) {
   if (!IN_RECTANGLE(conx, cony, CON_W, CON_H)) return;  // out of console
 
   float playerDist = distance(gameEngine->player);
-  float apparentHeight = height / playerDist;
+  float apparentHeight = height_ / playerDist;
   if (apparentHeight < MIN_VISIBLE_HEIGHT) return;  // too small to see at that distance
   apparentHeight -= MIN_VISIBLE_HEIGHT;
   float coef = 0.5f * apparentHeight / VISIBLE_HEIGHT;
@@ -72,8 +72,8 @@ void Fish::render(map::LightMap& lightMap) {
 }
 
 void Fish::initItem() {
-  asItem = item::Item::getItem("living fish", x_, y_);
-  asItem->as_creature_ = this;
+  as_item_ = item::Item::getItem("living fish", x_, y_);
+  as_item_->as_creature_ = this;
 }
 
 bool Fish::wasOnScreen() const {

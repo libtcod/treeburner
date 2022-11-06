@@ -46,42 +46,42 @@ Player::Player() {
       strdup(config.getStringProperty("config.creatures.player.healIntensityPattern"));
   static const float sprintLength = config.getFloatProperty("config.creatures.player.sprintLength");
 
-  ch = playerChar;
+  ch_ = playerChar;
   color_ = playerColor;
   heal_light_.color = healthColor;
   heal_light_.range = 7;
   heal_light_.randomRad = false;
   heal_light_.setup(healthColor, healthIntensityDelay, healthIntensityPattern, nullptr);
 
-  maxLife = 100.0f;
+  max_life_ = 100.0f;
   sprint_delay_ = sprintLength;
 }
 
 void Player::init() {
   static const float sprintLength = config.getFloatProperty("config.creatures.player.sprintLength");
   static const float playerSpeed = gameEngine->getFloatParam("playerSpeed");
-  speed = playerSpeed;
-  life = maxLife;
+  speed_ = playerSpeed;
+  life_ = max_life_;
   sprint_delay_ = sprintLength;
   // cannot do this. screen::Game::lights not created yet...
   // gameEngine->addLight(&light);
 }
 
-float Player::getHealth() { return life / maxLife; }
+float Player::getHealth() { return life_ / max_life_; }
 
-float Player::getHealing() { return std::min((life + heal_points_) / maxLife, 1.0f); }
+float Player::getHealing() { return std::min((life_ + heal_points_) / max_life_, 1.0f); }
 
 void Player::termLevel() {
-  if (path) delete path;
-  path = nullptr;
-  walkTimer = 0.0f;
+  if (path_) delete path_;
+  path_ = nullptr;
+  walk_timer_ = 0.0f;
   init_dungeon_ = true;
 }
 
 void Player::takeDamage(float amount) {
-  const float oldLife = life;
+  const float oldLife = life_;
   Creature::takeDamage(amount);
-  if (life < oldLife) gameEngine->hitFlash();
+  if (life_ < oldLife) gameEngine->hitFlash();
 }
 
 void Player::heal(int healPoints) {
@@ -126,18 +126,18 @@ bool Player::setPath(int xDest, int yDest, bool limitPath) {
         return false;  // hit another wall. no path
     }
   }
-  if (!path) path = new TCODPath(dungeon->width, dungeon->height, this, nullptr);
-  ignoreCreatures = false;
-  bool ok = path->compute((int)x_, (int)y_, xDest, yDest);
+  if (!path_) path_ = new TCODPath(dungeon->width, dungeon->height, this, nullptr);
+  ignore_creatures_ = false;
+  bool ok = path_->compute((int)x_, (int)y_, xDest, yDest);
   if (!ok) {
-    ignoreCreatures = true;
-    ok = path->compute((int)x_, (int)y_, xDest, yDest);
+    ignore_creatures_ = true;
+    ok = path_->compute((int)x_, (int)y_, xDest, yDest);
   }
-  ignoreCreatures = true;
+  ignore_creatures_ = true;
   if (!ok) return false;
-  if (limitPath && !dungeon->getMemory(xDest, yDest) && path->size() > maxPathFinding) {
-    delete path;
-    path = nullptr;
+  if (limitPath && !dungeon->getMemory(xDest, yDest) && path_->size() > maxPathFinding) {
+    delete path_;
+    path_ = nullptr;
     return false;
   }
   return true;
@@ -284,8 +284,8 @@ bool Player::activateCell(int dungeonx, int dungeony, bool lbut_pressed, bool wa
       if (lbut_pressed) {
         dungeon->removeCreature(crea, false);
         crea->initItem();
-        assert(crea->asItem);
-        crea->asItem->putInInventory(this, 0, "catch");
+        assert(crea->as_item_);
+        crea->as_item_->putInInventory(this, 0, "catch");
       }
     }
   }
@@ -317,11 +317,11 @@ bool Player::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
     dungeon->addLight(&light_);
   }
 
-  if (life <= 0) return false;
+  if (life_ <= 0) return false;
   light_.setPos(x_ * 2, y_ * 2);
   updateConditions(elapsed);
 
-  walkTimer += elapsed;
+  walk_timer_ += elapsed;
 
   // special key status
   const bool ctrl = TCODConsole::isKeyPressed(TCODK_CONTROL);
@@ -334,9 +334,9 @@ bool Player::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
     return true;
   }
   // update items in inventory
-  inventory.erase(
-      std::remove_if(inventory.begin(), inventory.end(), [&elapsed](item::Item* it) { return it->age(elapsed); }),
-      inventory.end());
+  inventory_.erase(
+      std::remove_if(inventory_.begin(), inventory_.end(), [&elapsed](item::Item* it) { return it->age(elapsed); }),
+      inventory_.end());
 
   // crouching
   crouched_ = ctrl;
@@ -371,8 +371,8 @@ bool Player::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
     }
   }
   if (useWeapon) {
-    if (mainHand) mainHand->update(elapsed, key, mouse);
-    if (offHand) offHand->update(elapsed, key, mouse);
+    if (main_hand_) main_hand_->update(elapsed, key, mouse);
+    if (off_hand_) off_hand_->update(elapsed, key, mouse);
   }
 
   if (mouse->lbutton) {
@@ -448,7 +448,7 @@ bool Player::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
   }
 
   // walk
-  float maxInvSpeed = 1.0f / speed;
+  float maxInvSpeed = 1.0f / speed_;
   if (is_sprinting_ && sprint_delay_ > 0.0f && sprint_delay_ < sprintLength) {
     float sprintCoef = 1.0f - 4 * (sprintLength - sprint_delay_) / sprintLength;
     sprintCoef = std::max(MIN_SPRINT_COEF, sprintCoef);
@@ -467,7 +467,7 @@ bool Player::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
   }
   map::TerrainId terrainId = dungeon->getTerrainType((int)x_, (int)y_);
   const float walkTime = map::terrainTypes[terrainId].walkCost * maxInvSpeed;
-  if (walkTimer >= 0) {
+  if (walk_timer_ >= 0) {
     bool hasWalked = false;
     const int old_x = (int)x_;
     const int old_y = (int)y_;
@@ -479,13 +479,13 @@ bool Player::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
     if (right_) ++new_x;
     int dx = new_x - (int)x_;
     int dy = new_y - (int)y_;
-    speed = playerSpeed;
+    speed_ = playerSpeed;
     if (dx != 0 || dy != 0) {
       int old_new_x = new_x;
       int old_new_y = new_y;
-      if (path) {
-        delete path;
-        path = nullptr;
+      if (path_) {
+        delete path_;
+        path_ = nullptr;
       }
       if (IN_RECTANGLE(new_x, new_y, dungeon->width, dungeon->height) && !dungeon->hasCreature(new_x, new_y) &&
           dungeon->map->isWalkable(new_x, new_y)) {
@@ -493,7 +493,7 @@ bool Player::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
         y_ = new_y;
         if (dx != 0 && dy != 0) {
           speed_dist_ += 1.41f;
-          speed = playerSpeedDiag;
+          speed_ = playerSpeedDiag;
         } else {
           speed_dist_ += 1.0f;
         }
@@ -545,7 +545,7 @@ bool Player::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
             gameEngine->stats.nbSteps++;
             dy = -dy;
             speed_dist_ += 1.41f;
-            speed = playerSpeedDiag;
+            speed_ = playerSpeedDiag;
             hasWalked = true;
           } else if (
               IN_RECTANGLE(x_ + dx, y_ - dy, dungeon->width, dungeon->height) &&
@@ -559,7 +559,7 @@ bool Player::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
             gameEngine->stats.nbSteps++;
             dy = -dy;
             speed_dist_ += 1.41f;
-            speed = playerSpeedDiag;
+            speed_ = playerSpeedDiag;
             hasWalked = true;
           }
         } else if (dy != 0) {
@@ -575,7 +575,7 @@ bool Player::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
             gameEngine->stats.nbSteps++;
             dx = -dx;
             speed_dist_ += 1.41f;
-            speed = playerSpeedDiag;
+            speed_ = playerSpeedDiag;
             hasWalked = true;
           } else if (
               IN_RECTANGLE(x_ - dx, y_ + dy, dungeon->width, dungeon->height) &&
@@ -589,7 +589,7 @@ bool Player::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
             gameEngine->stats.nbSteps++;
             dx = -dx;
             speed_dist_ += 1.41f;
-            speed = playerSpeedDiag;
+            speed_ = playerSpeedDiag;
             hasWalked = true;
           }
         }
@@ -603,17 +603,17 @@ bool Player::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
           }
         }
       }
-    } else if (path && !path->isEmpty()) {
-      path->get(0, &new_x, &new_y);
+    } else if (path_ && !path_->isEmpty()) {
+      path_->get(0, &new_x, &new_y);
       if (!dungeon->hasCreature(new_x, new_y)) {
-        path->walk(&new_x, &new_y, false);
+        path_->walk(&new_x, &new_y, false);
         setPos(new_x, new_y);
         gameEngine->stats.nbSteps++;
         hasWalked = true;
       } else {
         // the path is obstructed. cancel it
-        delete path;
-        path = nullptr;
+        delete path_;
+        path_ = nullptr;
       }
     }
     // auto pickup items
@@ -632,7 +632,7 @@ bool Player::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
         gameEngine->startRipple(x_, y_);
       }
     }
-    if (hasWalked) walkTimer = -walkTime;
+    if (hasWalked) walk_timer_ = -walkTime;
   }
   // healing effect
   updateHealing(elapsed);
@@ -650,10 +650,10 @@ void Player::computeFovRange(float elapsed) {
     fovRangeTarget = max_fov_range_ - (fovSpeed * 0.5 / fovRefSpeed) * 0.8 * max_fov_range_;
   }
   if (crouched_) fovRangeTarget *= 1.15f;
-  if (fovRange > fovRangeTarget)
-    fovRange += (fovRangeTarget - fovRange) * elapsed;
+  if (fov_range_ > fovRangeTarget)
+    fov_range_ += (fovRangeTarget - fov_range_) * elapsed;
   else
-    fovRange += (fovRangeTarget - fovRange) * elapsed / rangeAccomodation;
+    fov_range_ += (fovRangeTarget - fov_range_) * elapsed / rangeAccomodation;
 }
 
 void Player::computeAverageSpeed(float elapsed) {
@@ -690,7 +690,7 @@ void Player::updateHealing(float elapsed) {
   if (heal_points_ > 0) {
     float amount = elapsed * healRate;
     heal_points_ -= amount;
-    heal_light_.color = healthColor * (heal_points_ / (maxLife / 10));
+    heal_light_.color = healthColor * (heal_points_ / (max_life_ / 10));
     if (heal_points_ < 0) {
       amount += heal_points_;
       heal_points_ = 0;
@@ -698,9 +698,9 @@ void Player::updateHealing(float elapsed) {
     }
     current_heal_ += amount;
     const int iHeal = (int)current_heal_;
-    life += iHeal;
+    life_ += iHeal;
     current_heal_ -= iHeal;
-    life = std::min(maxLife, life);
+    life_ = std::min(max_life_, life_);
   }
 }
 
@@ -723,7 +723,7 @@ bool Player::loadData(uint32_t chunkId, uint32_t chunkVersion, TCODZip* zip) {
   saveGame.loadChunk(&chunkId, &chunkVersion);
   const bool ret = Creature::loadData(chunkId, chunkVersion, zip);
   if (ret) {
-    util::TextGenerator::addGlobalValue("PLAYER_NAME", name);
+    util::TextGenerator::addGlobalValue("PLAYER_NAME", name_);
   }
   return ret;
 }
