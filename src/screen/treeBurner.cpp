@@ -117,24 +117,24 @@ static const char* debugMapNames[] = {
 TreeBurner::TreeBurner() {
   forestRng = NULL;
   debugMap = 0;
-  fadeInLength = fadeOutLength = (int)(config.getFloatProperty("config.display.fadeTime") * 1000);
+  fade_in_length_ms_ = fade_out_length_ms_ = (int)(config.getFloatProperty("config.display.fadeTime") * 1000);
   endTimer = 0.0f;
 }
 
 void TreeBurner::render() {
   static bool debug = config.getBoolProperty("config.debug");
   // draw subcell ground
-  int squaredFov = (int)(player.fovRange * player.fovRange * 4);
+  int squaredFov = (int)(player.fov_range_ * player.fov_range_ * 4);
   int minx, maxx, miny, maxy;
   bool showDebugMap = false;
   ground.clear(TCODColor::black);
   base::Rect r1(xOffset * 2, yOffset * 2, CON_W * 2, CON_H * 2);
   base::Rect r2(0, 0, dungeon->width * 2, dungeon->height * 2);
   r1.intersect(r2);
-  minx = (int)(r1.x - xOffset * 2);
-  maxx = (int)(r1.x + r1.w - xOffset * 2);
-  miny = (int)(r1.y - yOffset * 2);
-  maxy = (int)(r1.y + r1.h - yOffset * 2);
+  minx = (int)(r1.x_ - xOffset * 2);
+  maxx = (int)(r1.x_ + r1.w_ - xOffset * 2);
+  miny = (int)(r1.y_ - yOffset * 2);
+  maxy = (int)(r1.y_ + r1.h_ - yOffset * 2);
   float fovRatio = 1.0f / (aspectRatio * aspectRatio);
   for (int x = minx; x < maxx; x++) {
     for (int y = miny; y < maxy; y++) {
@@ -169,7 +169,7 @@ void TreeBurner::render() {
   lightMap.applyToImageOutdoor(ground);
 
   // render canopy
-  map::Building* playerBuilding = dungeon->getCell(player.x, player.y)->building;
+  map::Building* playerBuilding = dungeon->getCell(player.x_, player.y_)->building;
   for (int x = minx; x < maxx; x++) {
     for (int y = miny; y < maxy; y++) {
       int dungeon2x = x + xOffset * 2;
@@ -215,8 +215,8 @@ void TreeBurner::render() {
         showDebugMap = true;
       }
 
-      int dx = (int)(dungeon2x - player.x * 2);
-      int dy = (int)(dungeon2y - player.y * 2);
+      int dx = (int)(dungeon2x - player.x_ * 2);
+      int dy = (int)(dungeon2y - player.y_ * 2);
       if (!showDebugMap &&
           (((!playerBuilding || dungeon->getCell(dungeon2x / 2, dungeon2y / 2)->building != playerBuilding) &&
             dx * dx + dy * dy * fovRatio > squaredFov) ||
@@ -237,7 +237,7 @@ void TreeBurner::render() {
   // render boss health bar
   static int bossLife = config.getIntProperty("config.creatures.villageHead.life");
   if (bossSeen && !bossIsDead) {
-    float lifeper = (float)(boss->life) / bossLife;
+    float lifeper = (float)(boss->life_) / bossLife;
     for (int x = 70; x < 90; x++) {
       TCODColor col = (x - 70) < (int)(lifeper * 20) ? TCODColor::red : TCODColor::darkerRed;
       ground.putPixel(x, 5, col);
@@ -258,7 +258,7 @@ void TreeBurner::render() {
 
   gui.descriptor.render();
   if (bossSeen && !bossIsDead) {
-    TCODConsole::root->printEx(40, 1, TCOD_BKGND_NONE, TCOD_CENTER, boss->name);
+    TCODConsole::root->printEx(40, 1, TCOD_BKGND_NONE, TCOD_CENTER, boss->name_);
   }
 
   if (isGamePaused()) {
@@ -286,7 +286,7 @@ void TreeBurner::render() {
     TCODConsole::root->printEx(CON_W / 2, 0, TCOD_BKGND_MULTIPLY, TCOD_CENTER, debugMapNames[debugMap]);
   }
 
-  if (bossIsDead && player.life > 0) {
+  if (bossIsDead && player.life_ > 0) {
     TCODConsole::root->setDefaultForeground(TCODColor::lightRed);
     TCODConsole::root->printEx(40, 2, TCOD_BKGND_NONE, TCOD_CENTER, "VICTORY");
   }
@@ -326,14 +326,14 @@ bool TreeBurner::update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse) {
       debugMap = (debugMap + 1) % NB_DEBUGMAPS;
     } else if (k.c == 'v' && k.lalt && !k.pressed) {
       // debug mode : Alt-v = go to village
-      if (player.x < cityWallX - 40)
-        player.x = cityWallX - 15;
+      if (player.x_ < cityWallX - 40)
+        player.x_ = cityWallX - 15;
       else
-        player.x = FOREST_W - 20;
-      player.y = FOREST_H / 2;
+        player.x_ = FOREST_W - 20;
+      player.y_ = FOREST_H / 2;
     } else if (k.c == 'w' && k.lalt && !k.pressed) {
       // debug mode : Alt-w = instawin
-      boss->life = 0;
+      boss->life_ = 0;
       bossSeen = true;
       bossIsDead = true;
     }
@@ -350,24 +350,24 @@ bool TreeBurner::update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse) {
 
   // update player
   player.update(elapsed, k, &mouse);
-  xOffset = (int)(player.x - CON_W / 2);
-  yOffset = (int)(player.y - CON_H / 2);
+  xOffset = (int)(player.x_ - CON_W / 2);
+  yOffset = (int)(player.y_ - CON_H / 2);
 
-  if (player.life <= 0 && fade != FADE_DOWN) {
-    setFadeOut(fadeOutLength, TCODColor::darkRed);
-    fade = FADE_DOWN;
+  if (player.life_ <= 0 && fade_ != FADE_DOWN) {
+    setFadeOut(fade_out_length_ms_, TCODColor::darkRed);
+    fade_ = FADE_DOWN;
   }
   if (bossIsDead) {
     endTimer += elapsed;
     if (endTimer < 30.0f) dungeon->setAmbient(TCODColor::lerp(sunColor, dawnColor, endTimer / 30.0f));
   }
-  if (fade != FADE_DOWN && gui.objectives.sleeping.size() == 0 && gui.objectives.active.size() == 0 &&
+  if (fade_ != FADE_DOWN && gui.objectives.sleeping.size() == 0 && gui.objectives.active.size() == 0 &&
       endTimer > 30.0f) {
-    setFadeOut(fadeOutLength, TCODColor::darkRed);
-    fade = FADE_DOWN;
+    setFadeOut(fade_out_length_ms_, TCODColor::darkRed);
+    fade_ = FADE_DOWN;
   }
-  if (fade == FADE_DOWN && fadeLvl <= 0.0f) {
-    if (player.life <= 0) {
+  if (fade_ == FADE_DOWN && fade_level_ <= 0.0f) {
+    if (player.life_ <= 0) {
       // death
       engine.activateModule("treeBurnerGameOver");
       return false;
@@ -381,10 +381,10 @@ bool TreeBurner::update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse) {
   dungeon->updateItems(elapsed, k, &mouse);
 
   // calculate player fov
-  dungeon->computeFov((int)player.x, (int)player.y);
+  dungeon->computeFov((int)player.x_, (int)player.y_);
 
   // update monsters
-  if (fade != FADE_DOWN) {
+  if (fade_ != FADE_DOWN) {
     dungeon->updateCreatures(elapsed);
     // ripples must be updated after creatures because of shoal updates
     rippleManager->updateRipples(elapsed);
@@ -456,13 +456,13 @@ void TreeBurner::generateMap(uint32_t seed) {
   int housey = forestRng->getInt(20, FOREST_H - 20);
   base::Rect house(housex, housey, forestRng->getInt(20, 30), forestRng->getInt(20, 30));
   if (packer.addRect(&house)) {
-    map::Building* building = map::Building::generate(house.w, house.h, house.w * house.h / 20, forestRng);
-    building->applyTo(dungeon, (int)(house.x + building->doorx), (int)(house.y + building->doory));
+    map::Building* building = map::Building::generate(house.w_, house.h_, house.w_ * house.h_ / 20, forestRng);
+    building->applyTo(dungeon, (int)(house.x_ + building->doorx), (int)(house.y_ + building->doory));
   }
   // the village head
   boss = mob::Creature::getCreature(mob::CREATURE_VILLAGE_HEAD);
-  housex = (int)(house.x + house.w / 2);
-  housey = (int)(house.y + house.h / 2);
+  housex = (int)(house.x_ + house.w_ / 2);
+  housey = (int)(house.y_ + house.h_ / 2);
   dungeon->getClosestWalkable(&housex, &housey, true, true, false);
   boss->setPos(housex, housey);
   dungeon->addCreature(boss);
@@ -471,8 +471,8 @@ void TreeBurner::generateMap(uint32_t seed) {
     int housey = forestRng->getInt(20, FOREST_H - 20);
     base::Rect house(housex, housey, forestRng->getInt(6, 12), forestRng->getInt(6, 12));
     if (packer.addRect(&house)) {
-      map::Building* building = map::Building::generate(house.w, house.h, house.w * house.h / 30, forestRng);
-      building->applyTo(dungeon, (int)(house.x + building->doorx), (int)(house.y + building->doory));
+      map::Building* building = map::Building::generate(house.w_, house.h_, house.w_ * house.h_ / 30, forestRng);
+      building->applyTo(dungeon, (int)(house.x_ + building->doorx), (int)(house.y_ + building->doory));
     }
     // building->setHuntingHide(dungeon);
   }
@@ -629,16 +629,16 @@ void TreeBurner::onActivate() {
   player.addToInventory(staff);
   player.equip(staff);
   */
-  player.x = 20;
-  player.y = FOREST_H / 2;
+  player.x_ = 20;
+  player.y_ = FOREST_H / 2;
   dungeon->setAmbient(config.getColorProperty("config.display.sunColor"));
   int px, py;
-  px = (int)player.x;
-  py = (int)player.y;
+  px = (int)player.x_;
+  py = (int)player.y_;
   dungeon->getClosestWalkable(&px, &py, true, false);
-  player.x = px;
-  player.y = py;
-  strcpy(player.name, "You");
+  player.x_ = px;
+  player.y_ = py;
+  strcpy(player.name_, "You");
   // make player uber powerful
   util::Powerup::init();
   TCODList<util::Powerup*> list;
@@ -655,10 +655,10 @@ void TreeBurner::onActivate() {
 
   // re-enable fading
   TCODConsole::setFade(0, TCODColor::black);
-  fade = FADE_UP;
-  fadeLvl = 0.0f;
-  player.maxFovRange = player.fovRange = 8;
-  timefix = 1.0f;
+  fade_ = FADE_UP;
+  fade_level_ = 0.0f;
+  player.max_fov_range_ = player.fov_range_ = 8;
+  time_fix_ = 1.0f;
   gui.log.critical(
       "Welcome to TreeBurner v%s ! %c?%c for help.", getStringParam("version"), TCOD_COLCTRL_2, TCOD_COLCTRL_STOP);
   lookOn = false;

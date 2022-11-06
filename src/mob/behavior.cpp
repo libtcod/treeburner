@@ -54,18 +54,18 @@ bool FollowBehavior::update(Creature* crea, float elapsed) {
   int pdist = (int)crea->distance(*leader_);
   map::Dungeon* dungeon = gameEngine->dungeon;
   standDelay += elapsed;
-  if ((pdist > FOLLOW_DIST || standDelay > 10.0f) && (!crea->path || crea->path->isEmpty())) {
+  if ((pdist > FOLLOW_DIST || standDelay > 10.0f) && (!crea->path_ || crea->path_->isEmpty())) {
     // go near the leader
-    int destx = (int)(leader_->x + TCODRandom::getInstance()->getInt(-FOLLOW_DIST, FOLLOW_DIST));
-    int desty = (int)(leader_->y + TCODRandom::getInstance()->getInt(-FOLLOW_DIST, FOLLOW_DIST));
+    int destx = (int)(leader_->x_ + TCODRandom::getInstance()->getInt(-FOLLOW_DIST, FOLLOW_DIST));
+    int desty = (int)(leader_->y_ + TCODRandom::getInstance()->getInt(-FOLLOW_DIST, FOLLOW_DIST));
     destx = CLAMP(0, dungeon->width - 1, destx);
     desty = CLAMP(0, dungeon->height - 1, desty);
     dungeon->getClosestWalkable(&destx, &desty, true, true, false);
-    if (!crea->path) {
-      crea->path = new TCODPath(dungeon->width, dungeon->height, walkPattern, NULL);
+    if (!crea->path_) {
+      crea->path_ = new TCODPath(dungeon->width, dungeon->height, walkPattern, NULL);
     }
-    crea->path->compute((int)crea->x, (int)crea->y, destx, desty);
-    crea->pathTimer = 0.0f;
+    crea->path_->compute((int)crea->x_, (int)crea->y_, destx, desty);
+    crea->path_timer_ = 0.0f;
   } else {
     if (crea->walk(elapsed)) {
       standDelay = 0.0f;
@@ -93,61 +93,61 @@ void HerdBehavior::updateScarePoints(float elapsed) {
 }
 
 bool HerdBehavior::update(Creature* crea1, float elapsed) {
-  TCODList<Creature*>* herd = &Creature::creatureByType[crea1->type];
+  TCODList<Creature*>* herd = &Creature::creatureByType[crea1->type_];
   //	printf ("=> %d\n",crea1);
   for (Creature** f2 = herd->begin(); f2 != herd->end(); f2++) {
     Creature* crea2 = *f2;
     if (crea1 != crea2) {
-      float dx = crea2->x - crea1->x;
+      float dx = crea2->x_ - crea1->x_;
       if (fabs(dx) >= FAR_RANGE) continue;
-      float dy = crea2->y - crea1->y;
+      float dy = crea2->y_ - crea1->y_;
       if (fabs(dy) >= FAR_RANGE) continue;  // too far to interact
       float invDist = crea1->fastInvDistance(*crea2);
       //	printf ("==> %d\n",crea2);
       if (invDist > 1E4f) {
       } else if (invDist > 1.0f / CLOSE_RANGE) {
         // get away from other creature
-        crea1->dx -= elapsed * 5.0f * dx * invDist;
-        crea1->dy -= elapsed * 5.0f * dy * invDist;
+        crea1->dx_ -= elapsed * 5.0f * dx * invDist;
+        crea1->dy_ -= elapsed * 5.0f * dy * invDist;
       } else if (invDist > 1.0f / FAR_RANGE) {
         // get closer to other creature
-        crea1->dx += elapsed * 1.2f * dx * invDist;
-        crea1->dy += elapsed * 1.2f * dy * invDist;
+        crea1->dx_ += elapsed * 1.2f * dx * invDist;
+        crea1->dy_ += elapsed * 1.2f * dy * invDist;
       }
     }
   }
 
-  crea1->dx = CLAMP(-crea1->speed, crea1->speed, crea1->dx);
-  crea1->dy = CLAMP(-crea1->speed, crea1->speed, crea1->dy);
+  crea1->dx_ = CLAMP(-crea1->speed_, crea1->speed_, crea1->dx_);
+  crea1->dy_ = CLAMP(-crea1->speed_, crea1->speed_, crea1->dy_);
   // interaction with scare points
   for (ScarePoint** spit = scare.begin(); spit != scare.end(); spit++) {
-    float dx = (*spit)->x - crea1->x;
-    float dy = (*spit)->y - crea1->y;
+    float dx = (*spit)->x_ - crea1->x_;
+    float dy = (*spit)->y_ - crea1->y_;
     float dist = base::Entity::fastInvSqrt(dx * dx + dy * dy);
     if (dist < 1E4f && dist > 1.0f / SCARE_RANGE) {
       float coef = (SCARE_RANGE - 1.0f / dist) * SCARE_RANGE;
-      crea1->dx -= elapsed * crea1->speed * 10 * coef * dx * dist;
-      crea1->dy -= elapsed * crea1->speed * 10 * coef * dy * dist;
+      crea1->dx_ -= elapsed * crea1->speed_ * 10 * coef * dx * dist;
+      crea1->dy_ -= elapsed * crea1->speed_ * 10 * coef * dy * dist;
     }
   }
-  crea1->dx = CLAMP(-crea1->speed * 2, crea1->speed * 2, crea1->dx);
-  crea1->dy = CLAMP(-crea1->speed * 2, crea1->speed * 2, crea1->dy);
+  crea1->dx_ = CLAMP(-crea1->speed_ * 2, crea1->speed_ * 2, crea1->dx_);
+  crea1->dy_ = CLAMP(-crea1->speed_ * 2, crea1->speed_ * 2, crea1->dy_);
 
-  float newx = crea1->x + crea1->dx;
-  float newy = crea1->y + crea1->dy;
+  float newx = crea1->x_ + crea1->dx_;
+  float newy = crea1->y_ + crea1->dy_;
   map::Dungeon* dungeon = gameEngine->dungeon;
   newx = CLAMP(0.0, dungeon->width - 1, newx);
   newy = CLAMP(0.0, dungeon->height - 1, newy);
-  crea1->walkTimer += elapsed;
-  if ((int)crea1->x != (int)newx || (int)crea1->y != (int)newy) {
+  crea1->walk_timer_ += elapsed;
+  if ((int)crea1->x_ != (int)newx || (int)crea1->y_ != (int)newy) {
     if (dungeon->isCellWalkable(newx, newy)) {
       map::TerrainId terrainId = gameEngine->dungeon->getTerrainType((int)newx, (int)newy);
-      float walkTime = map::terrainTypes[terrainId].walkCost / crea1->speed;
-      if (crea1->walkTimer >= walkTime) {
-        crea1->walkTimer = 0;
-        dungeon->moveCreature(crea1, (int)crea1->x, (int)crea1->y, (int)newx, (int)newy);
-        crea1->x = newx;
-        crea1->y = newy;
+      float walkTime = map::terrainTypes[terrainId].walkCost / crea1->speed_;
+      if (crea1->walk_timer_ >= walkTime) {
+        crea1->walk_timer_ = 0;
+        dungeon->moveCreature(crea1, (int)crea1->x_, (int)crea1->y_, (int)newx, (int)newy);
+        crea1->x_ = newx;
+        crea1->y_ = newy;
       }
     }
   }

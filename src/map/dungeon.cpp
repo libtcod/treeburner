@@ -110,7 +110,7 @@ Dungeon::Dungeon(int level, util::CaveGenerator* caveGen) : level(level), ambien
 
   if (debug) {
     mob::Player* player = &gameEngine->player;
-    saveMap((int)player->x, (int)player->y);
+    saveMap((int)player->x_, (int)player->y_);
   }
 }
 
@@ -430,7 +430,7 @@ void Dungeon::setPlayerStartingPosition() {
     // check that the stair is not too close to player starting position
     TCODPath path(map);
     dist = 1000000;
-    if (path.compute((int)player->x, (int)player->y, stairx, stairy)) {
+    if (path.compute((int)player->x_, (int)player->y_, stairx, stairy)) {
       dist = path.size();
     }
   } while (dist < width / 3);
@@ -483,14 +483,14 @@ mob::Creature* Dungeon::getCreature(int x, int y) const {
   if (!IN_RECTANGLE(x, y, width, height)) return NULL;
   if (getCell(x, y)->nbCreatures == 0) return NULL;
   for (mob::Creature** it = creatures.begin(); it != creatures.end(); it++) {
-    if ((int)(*it)->x == x && (int)(*it)->y == y) return *it;
+    if ((int)(*it)->x_ == x && (int)(*it)->y_ == y) return *it;
   }
   return NULL;
 }
 
 mob::Creature* Dungeon::getCreature(mob::CreatureTypeId id) const {
   for (mob::Creature** it = creatures.begin(); it != creatures.end(); it++) {
-    if ((*it)->type == id) return *it;
+    if ((*it)->type_ == id) return *it;
   }
   return NULL;
 }
@@ -498,7 +498,7 @@ mob::Creature* Dungeon::getCreature(mob::CreatureTypeId id) const {
 mob::Creature* Dungeon::getCreature(const char* name) const {
   if (strcmp(name, "player") == 0) return &gameEngine->player;
   for (mob::Creature** it = creatures.begin(); it != creatures.end(); it++) {
-    if (strcmp((*it)->name, name) == 0) return *it;
+    if (strcmp((*it)->name_, name) == 0) return *it;
   }
   return NULL;
 }
@@ -515,7 +515,7 @@ void Dungeon::addCreature(mob::Creature* cr) {
     creaturesToAdd.push(cr);
   } else {
     creatures.push(cr);
-    getCell(cr->x, cr->y)->nbCreatures++;
+    getCell(cr->x_, cr->y_)->nbCreatures++;
   }
 }
 
@@ -526,28 +526,28 @@ bool Dungeon::hasCreature(int x, int y) const {
 }
 
 void Dungeon::removeCreature(mob::Creature* cr, bool kill) {
-  map::Cell* cell = getCell(cr->x, cr->y);
+  map::Cell* cell = getCell(cr->x_, cr->y_);
   cell->nbCreatures--;
   if (kill) {
     if (!cell->hasCorpse) {
       cell->hasCorpse = true;
       corpses.push(cr);
     } else
-      cr->toDelete = true;
+      cr->to_delete_ = true;
   } else {
     creatures.remove(cr);
   }
 }
 
 void Dungeon::addCorpse(mob::Creature* cr) {
-  getCell(cr->x, cr->y)->hasCorpse = true;
+  getCell(cr->x_, cr->y_)->hasCorpse = true;
   corpses.push(cr);
 }
 
 void Dungeon::renderCreatures(map::LightMap& lightMap) {
   for (mob::Creature** it = creatures.begin(); it != creatures.end(); it++) {
-    if ((*it)->ch != 0) {
-      if (map->isInFov((int)(*it)->x, (int)(*it)->y)) (*it)->render(lightMap);
+    if ((*it)->ch_ != 0) {
+      if (map->isInFov((int)(*it)->x_, (int)(*it)->y_)) (*it)->render(lightMap);
       if ((*it)->isTalking()) (*it)->renderTalk();
     }
   }
@@ -555,10 +555,10 @@ void Dungeon::renderCreatures(map::LightMap& lightMap) {
 
 void Dungeon::renderSubcellCreatures(map::LightMap& lightMap) {
   for (mob::Creature** it = creatures.begin(); it != creatures.end(); it++) {
-    if ((*it)->ch == 0) {
-      assert(IN_RECTANGLE((*it)->x, (*it)->y, width, height));
-      if (IN_RECTANGLE((*it)->x, (*it)->y, width, height)) {
-        if (map->isInFov((int)(*it)->x, (int)(*it)->y)) (*it)->render(lightMap);
+    if ((*it)->ch_ == 0) {
+      assert(IN_RECTANGLE((*it)->x_, (*it)->y_, width, height));
+      if (IN_RECTANGLE((*it)->x_, (*it)->y_, width, height)) {
+        if (map->isInFov((int)(*it)->x_, (int)(*it)->y_)) (*it)->render(lightMap);
         if ((*it)->isTalking()) (*it)->renderTalk();
       }
     }
@@ -572,7 +572,7 @@ void Dungeon::updateCreatures(float elapsed) {
   isUpdatingCreatures = true;
   for (int i = 0; i < creatures.size(); i++) {
     mob::Creature* cr = creatures.get(i);
-    if (cr->toDelete) {
+    if (cr->to_delete_) {
       toDelete.push(cr);
     } else if ((cr->isUpdatedOffscreen() || cr->isOnScreen()) && !cr->update(elapsed)) {
       toDelete.push(cr);
@@ -581,8 +581,8 @@ void Dungeon::updateCreatures(float elapsed) {
   isUpdatingCreatures = false;
   for (mob::Creature** it = toDelete.begin(); it != toDelete.end(); it++) {
     creatures.removeFast(*it);
-    removeCreature(*it, !(*it)->toDelete);
-    if ((*it)->toDelete) delete *it;
+    removeCreature(*it, !(*it)->to_delete_);
+    if ((*it)->to_delete_) delete *it;
   }
   for (mob::Creature** it = creaturesToAdd.begin(); it != creaturesToAdd.end(); it++) {
     addCreature(*it);
@@ -591,19 +591,19 @@ void Dungeon::updateCreatures(float elapsed) {
 }
 
 void Dungeon::killCreaturesAtRange(int radius) {
-  float px = gameEngine->player.x;
-  float py = gameEngine->player.y;
+  float px = gameEngine->player.x_;
+  float py = gameEngine->player.y_;
   int rad2 = radius * radius;
   for (mob::Creature** it = creatures.begin(); it != creatures.end(); it++) {
-    float dx = (*it)->x - px;
-    float dy = (*it)->y - py;
-    if (dx * dx + dy * dy <= rad2) (*it)->life = 0;
+    float dx = (*it)->x_ - px;
+    float dy = (*it)->y_ - py;
+    if (dx * dx + dy * dy <= rad2) (*it)->life_ = 0;
   }
 }
 
 void Dungeon::renderCorpses(map::LightMap& lightMap) {
   for (mob::Creature** it = corpses.begin(); it != corpses.end(); it++) {
-    if (map->isInFov((int)(*it)->x, (int)(*it)->y)) (*it)->render(lightMap);
+    if (map->isInFov((int)(*it)->x_, (int)(*it)->y_)) (*it)->render(lightMap);
   }
 }
 
@@ -663,15 +663,15 @@ void Dungeon::addItem(item::Item* it) {
   if (isUpdatingItems)
     itemsToAdd.push_back(it);
   else {
-    item::Item* newItem = it->addToList(getCell(it->x, it->y)->items);
+    item::Item* newItem = it->addToList(getCell(it->x_, it->y_)->items);
     if (newItem == it) {
       items.push_back(newItem);
       if (newItem->getLight()) addLight(newItem->getLight());
-      bool walk = isCellWalkable((int)newItem->x, (int)newItem->y);
-      bool transp = isCellTransparent((int)newItem->x, (int)newItem->y);
+      bool walk = isCellWalkable((int)newItem->x_, (int)newItem->y_);
+      bool transp = isCellTransparent((int)newItem->x_, (int)newItem->y_);
       walk = walk && newItem->isWalkable();
       transp = transp && newItem->isTransparent();
-      setProperties((int)newItem->x, (int)newItem->y, transp, walk);
+      setProperties((int)newItem->x_, (int)newItem->y_, transp, walk);
     }
   }
 }
@@ -706,11 +706,11 @@ void Dungeon::setWalkable(int x, int y, bool walkable) {
 }
 
 item::Item* Dungeon::removeItem(item::Item* it, int count, bool del) {
-  item::Item* newItem = it->removeFromList(getCell(it->x, it->y)->items, count);
+  item::Item* newItem = it->removeFromList(getCell(it->x_, it->y_)->items, count);
   if (newItem == it) {
     if (it->getLight()) removeLight(it->getLight());
     if (del) it->to_delete_ = count;
-    computeWalkTransp((int)it->x, (int)it->y);
+    computeWalkTransp((int)it->x_, (int)it->y_);
   }
   return newItem;
 }
@@ -733,16 +733,16 @@ void Dungeon::renderItems(map::LightMap& lightMap, TCODImage* ground) {
   mob::Player* player = &gameEngine->player;
   float aspectRatio = gameEngine->aspectRatio;
   // static items in fov
-  for (int tx = (int)(-player->fovRange); tx <= (int)(player->fovRange); tx++) {
-    int x = (int)(player->x + tx);
+  for (int tx = (int)(-player->fov_range_); tx <= (int)(player->fov_range_); tx++) {
+    int x = (int)(player->x_ + tx);
     if ((unsigned)x < (unsigned)width) {
-      int dy = (int)(sqrtf(player->fovRange * player->fovRange - tx * tx) * aspectRatio);
+      int dy = (int)(sqrtf(player->fov_range_ * player->fov_range_ - tx * tx) * aspectRatio);
       for (int ty = -dy; ty <= dy; ty++) {
-        int y = (int)(player->y + ty);
+        int y = (int)(player->y_ + ty);
         if ((unsigned)y < (unsigned)height && map->isInFov(x, y) &&
             !map::terrainTypes[getTerrainType(x, y)].swimmable) {
           item::Item* it = getFirstItem(x, y);
-          if (it && it->speed == 0.0f) {
+          if (it && it->speed_ == 0.0f) {
             it->render(lightMap, ground);
           }
         }
@@ -751,7 +751,7 @@ void Dungeon::renderItems(map::LightMap& lightMap, TCODImage* ground) {
   }
   // moving items
   for (item::Item* it : items) {
-    if (it->speed > 0.0f && map->isInFov((int)it->x, (int)it->y)) {
+    if (it->speed_ > 0.0f && map->isInFov((int)it->x_, (int)it->y_)) {
       it->render(lightMap, ground);
     }
   }
@@ -889,14 +889,14 @@ void Dungeon::saveData(uint32_t chunkId, TCODZip* zip) {
   zip->putInt(nbCreaturesToSave);
   for (mob::Creature** it = creatures.begin(); it != creatures.end(); it++) {
     if ((*it)->mustSave()) {
-      zip->putInt((*it)->type);
+      zip->putInt((*it)->type_);
       (*it)->saveData(CREA_CHUNK_ID, zip);
     }
   }
   // save the corpses
   zip->putInt(corpses.size());
   for (mob::Creature** it = corpses.begin(); it != corpses.end(); it++) {
-    zip->putInt((*it)->type);
+    zip->putInt((*it)->type_);
     (*it)->saveData(CREA_CHUNK_ID, zip);
   }
   // save the items on ground

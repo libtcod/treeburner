@@ -33,7 +33,7 @@
 namespace screen {
 EndScreen::EndScreen(const char* txt, float fadeLvl, bool stats)
     : Screen(fadeLvl), txt(strdup(txt)), noiseZ(0.0f), stats(stats) {
-  fadeInLength = fadeOutLength = (int)(config.getFloatProperty("config.display.fadeTime") * 1000);
+  fade_in_length_ms_ = fade_out_length_ms_ = (int)(config.getFloatProperty("config.display.fadeTime") * 1000);
   alignment = TCOD_CENTER;
 }
 
@@ -122,24 +122,24 @@ if ( gameEngine && ((Game *)gameEngine)->bossIsDead ) {
       if (gameEngine->stats.creatureDeath[id] > 0) {
         mob::Creature* cr = mob::Creature::getCreature(id);  // yeah this sucks...
         TCODConsole::root->printEx(
-            78, thy++, TCOD_BKGND_NONE, TCOD_RIGHT, "%s : %d", cr->name, gameEngine->stats.creatureDeath[id]);
+            78, thy++, TCOD_BKGND_NONE, TCOD_RIGHT, "%s : %d", cr->name_, gameEngine->stats.creatureDeath[id]);
       }
     }
   }
 }
 
 bool EndScreen::update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse) {
-  if (fade == FADE_DOWN) {
-    if (fadeLvl <= 0.0f) {
+  if (fade_ == FADE_DOWN) {
+    if (fade_level_ <= 0.0f) {
       sound.setVolume(0.0f);
       //           	sound.unload();
       return false;
     } else
-      sound.setVolume(fadeLvl);
+      sound.setVolume(fade_level_);
   }
   noiseZ += elapsed * 0.1f;
   if ((k.vk != TCODK_NONE && k.vk != TCODK_ALT) || mouse.lbutton_pressed || mouse.rbutton_pressed) {
-    fade = FADE_DOWN;
+    fade_ = FADE_DOWN;
   }
   return true;
 }

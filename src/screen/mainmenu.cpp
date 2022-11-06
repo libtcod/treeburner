@@ -50,8 +50,8 @@ static const char* menuNames[MENU_NB_ITEMS] = {"New game", "Continue", "Exit"};
 MainMenu::MainMenu() : Screen(0), selectedItem(0), elapsed(0.0f), noiseZ(0.0f) {
   instance = this;
   worldGenJobId = -1;
-  fadeInLength = (int)(config.getFloatProperty("config.display.fadeTime") * 1000);
-  fadeOutLength = fadeInLength / 2;
+  fade_in_length_ms_ = (int)(config.getFloatProperty("config.display.fadeTime") * 1000);
+  fade_out_length_ms_ = fade_in_length_ms_ / 2;
 }
 
 struct WorldGenThreadData {
@@ -318,9 +318,9 @@ bool MainMenu::update(float el, TCOD_key_t k, TCOD_mouse_t mouse) {
   elapsed += el;
   fire->update(el);
   sound.update();
-  if (fade == FADE_DOWN) {
+  if (fade_ == FADE_DOWN) {
     MenuItemId id = menu.get(selectedItem);
-    if (fadeLvl <= 0.0f) {
+    if (fade_level_ <= 0.0f) {
       switch (id) {
         case MENU_NEW_GAME: {
           engine.deactivateAll();
@@ -364,10 +364,10 @@ bool MainMenu::update(float el, TCOD_key_t k, TCOD_mouse_t mouse) {
       }
     } else {
       // fade music
-      if (id != MENU_NEW_GAME) sound.setVolume(fadeLvl);
+      if (id != MENU_NEW_GAME) sound.setVolume(fade_level_);
     }
   }
-  if (fade != FADE_DOWN) {
+  if (fade_ != FADE_DOWN) {
     if ((mouse.dx != 0 || mouse.dy != 0) && mouse.cx >= MENUX - 5 && mouse.cx <= MENUX - 5 + MENUW) {
       int item = mouse.cy - MENUY;
       if (item >= 0 && (item & 1) == 0 && item / 2 < menu.size()) selectedItem = item / 2;
@@ -384,7 +384,7 @@ bool MainMenu::update(float el, TCOD_key_t k, TCOD_mouse_t mouse) {
         mouse.cx >= MENUX - 5 && mouse.cx <= MENUX - 5 + MENUW) ||
        k.vk == TCODK_ENTER || k.vk == TCODK_KPENTER) &&
       selectedItem != -1) {
-    fade = FADE_DOWN;
+    fade_ = FADE_DOWN;
   }
   return true;
 }

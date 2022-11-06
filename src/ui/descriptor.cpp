@@ -47,7 +47,7 @@ void Descriptor::setFocus(int mousex, int mousey, int x, int y, bool lookOn) {
   creature = NULL;
   this->lookOn = lookOn;
   if (IN_RECTANGLE(x, y, dungeon->width, dungeon->height) && player->isInRange(x, y) && dungeon->map->isInFov(x, y)) {
-    if (x == gameEngine->player.x && y == gameEngine->player.y)
+    if (x == gameEngine->player.x_ && y == gameEngine->player.y_)
       creature = &gameEngine->player;
     else
       creature = dungeon->getCreature(x, y);
@@ -66,7 +66,7 @@ void Descriptor::render() {
   TCODConsole::root->setDefaultForeground(ui::guiText);
   // descriptor
   if (creature) {
-    TCODConsole::root->printEx(POSX, POSY, TCOD_BKGND_NONE, TCOD_RIGHT, creature->name);
+    TCODConsole::root->printEx(POSX, POSY, TCOD_BKGND_NONE, TCOD_RIGHT, creature->name_);
   } else if (item) {
     TCODConsole::root->printEx(POSX, POSY, TCOD_BKGND_NONE, TCOD_RIGHT, item->aName().c_str());
     if (lookOn) item->renderDescription(mousex, mousey - 1, false);

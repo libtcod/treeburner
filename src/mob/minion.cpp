@@ -36,10 +36,10 @@ Archer::Archer() {
   static TCODColor archerColor = config.getColorProperty("config.creatures.archer.col");
   static char archerChar = config.getCharProperty("config.creatures.archer.ch");
   static int archerLife = config.getIntProperty("config.creatures.archer.life");
-  ch = archerChar;
+  ch_ = archerChar;
   color_ = archerColor;
-  life = archerLife;
-  strcpy(name, "archer");
+  life_ = archerLife;
+  strcpy(name_, "archer");
   pathTimer = 0.0f;
 }
 
@@ -47,18 +47,18 @@ bool Archer::update(float elapsed) {
   static float arrowSpeed = config.getFloatProperty("config.gameplay.arrowSpeed");
   pathTimer += elapsed;
   if (!Creature::update(elapsed)) return false;
-  if (gameEngine->dungeon->map->isInFov((int)x, (int)y)) {
+  if (gameEngine->dungeon->map->isInFov((int)x_, (int)y_)) {
     // see player
     if (pathTimer > 1.0f) {
       pathTimer = 0.0f;
-      item::Item* arrow = item::Item::getItem("arrow", x + 0.5f, y + 0.5f, false);
-      arrow->dx = gameEngine->player.x - x;
-      arrow->dy = gameEngine->player.y - y;
-      arrow->speed = arrowSpeed;
-      float l = sqrt(arrow->dx * arrow->dx + arrow->dy * arrow->dy);
-      arrow->dx /= l;
-      arrow->dy /= l;
-      arrow->duration = l / arrow->speed;
+      item::Item* arrow = item::Item::getItem("arrow", x_ + 0.5f, y_ + 0.5f, false);
+      arrow->dx_ = gameEngine->player.x_ - x_;
+      arrow->dy_ = gameEngine->player.y_ - y_;
+      arrow->speed_ = arrowSpeed;
+      float l = sqrt(arrow->dx_ * arrow->dx_ + arrow->dy_ * arrow->dy_);
+      arrow->dx_ /= l;
+      arrow->dy_ /= l;
+      arrow->duration_ = l / arrow->speed_;
       gameEngine->dungeon->addItem(arrow);
     }
   }
@@ -69,10 +69,10 @@ Villager::Villager() {
   static TCODColor villagerColor = config.getColorProperty("config.creatures.villager.col");
   static char villagerChar = config.getCharProperty("config.creatures.villager.ch");
   static int villagerLife = config.getIntProperty("config.creatures.villager.life");
-  ch = villagerChar;
+  ch_ = villagerChar;
   color_ = villagerColor;
-  life = villagerLife;
-  strcpy(name, "villager");
+  life_ = villagerLife;
+  strcpy(name_, "villager");
 }
 
 bool Villager::update(float elapsed) {
@@ -94,18 +94,18 @@ Minion::Minion() {
   static TCODColor minionColor = config.getColorProperty("config.creatures.minion.col");
   static int minionLife = config.getIntProperty("config.creatures.minion.life");
   static float pathDelay = config.getFloatProperty("config.creatures.pathDelay");
-  ch = minionChar;
+  ch_ = minionChar;
   color_ = minionColor;
-  life = minionLife;
+  life_ = minionLife;
   seen = false;
-  speed = 1.0f;
+  speed_ = 1.0f;
   pathTimer = TCODRandom::getInstance()->getFloat(0.0f, pathDelay);
 }
 
 void Minion::setSeen() {
   static float minionSpeed = config.getFloatProperty("config.creatures.minion.speed");
   seen = true;
-  speed = minionSpeed;
+  speed_ = minionSpeed;
 }
 
 void Minion::onReplace() { seen = false; }
@@ -117,33 +117,33 @@ bool Minion::update(float elapsed) {
   base::GameEngine* game = gameEngine;
   if (!Creature::update(elapsed)) return false;
   pathTimer += elapsed;
-  if (!seen && game->dungeon->map->isInFov((int)x, (int)y) && game->dungeon->getMemory(x, y)) {
+  if (!seen && game->dungeon->map->isInFov((int)x_, (int)y_) && game->dungeon->getMemory(x_, y_)) {
     float dist = squaredDistance(game->player);
-    if (dist < 1.0f || game->player.stealth >= 1.0f - 1.0f / dist) {
+    if (dist < 1.0f || game->player.stealth_ >= 1.0f - 1.0f / dist) {
       // creature is seen by player
       setSeen();
     }
   }
-  if (burn || !seen) {
+  if (burn_ || !seen) {
     randomWalk(elapsed);
   } else {
     // track player
-    if (!path) {
-      path = new TCODPath(game->dungeon->width, game->dungeon->height, this, game);
+    if (!path_) {
+      path_ = new TCODPath(game->dungeon->width, game->dungeon->height, this, game);
     }
     if (pathTimer > pathDelay) {
       int dx, dy;
-      path->getDestination(&dx, &dy);
-      if (dx != game->player.x || dy != game->player.y) {
+      path_->getDestination(&dx, &dy);
+      if (dx != game->player.x_ || dy != game->player.y_) {
         // path is no longer valid (the player moved)
-        path->compute((int)x, (int)y, (int)game->player.x, (int)game->player.y);
+        path_->compute((int)x_, (int)y_, (int)game->player.x_, (int)game->player.y_);
         pathTimer = 0.0f;
       }
     }
     walk(elapsed);
   }
-  float dx = ABS(game->player.x - x);
-  float dy = ABS(game->player.y - y);
+  float dx = ABS(game->player.x_ - x_);
+  float dy = ABS(game->player.y_ - y_);
   if (dx <= 1.0f && dy <= 1.0f) {
     // at melee range. attack
     game->player.takeDamage(minionDamage * elapsed);

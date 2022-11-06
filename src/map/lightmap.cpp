@@ -69,8 +69,8 @@ float LightMap::getPlayerFog(int x, int y) {
   if (fogRange == 0.0f) return 0.0f;
   float maxDistDiv = 1.0f / (fogRange * fogRange);
   float fogLevel = gameEngine->getFog(x, y);  // amount of fog, between 0 and fogMaxLevel
-  float playerdx = gameEngine->player.x * 2 - x;
-  float playerdy = gameEngine->player.y * 2 - y;
+  float playerdx = gameEngine->player.x_ * 2 - x;
+  float playerdy = gameEngine->player.y_ * 2 - y;
   float fogDist = playerdx * playerdx + playerdy * playerdy;  // distance from player
   float fogCoef = fogDist * maxDistDiv;
   fogCoef = MIN(1.0f, fogCoef);  // increase fog with distance

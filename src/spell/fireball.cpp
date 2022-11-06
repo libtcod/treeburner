@@ -49,13 +49,13 @@ FireBall::FireBall(float xFrom, float yFrom, int xTo, int yTo, FireBallType type
     damage = config.getFloatProperty("config.spells.fireball.baseDamage");
     range = config.getFloatProperty("config.spells.fireball.baseRange");
   }
-  x = xFrom;
-  fx_ = x;
-  y = yFrom;
-  fy_ = y;
+  x_ = xFrom;
+  fx_ = x_;
+  y_ = yFrom;
+  fy_ = y_;
 
-  light.x = x * 2;
-  light.y = y * 2;
+  light.x_ = x_ * 2;
+  light.y_ = y_ * 2;
 
   dx_ = xTo - xFrom;
   dy_ = yTo - yFrom;
@@ -183,21 +183,21 @@ void FireBall::render(TCODImage& ground) {
 bool FireBall::updateMove(float elapsed) {
   base::GameEngine* game = gameEngine;
   map::Dungeon* dungeon = game->dungeon;
-  int oldx = (int)x;
-  int oldy = (int)y;
+  int oldx = (int)x_;
+  int oldy = (int)y_;
   fx_ += dx_ * type_data_->speed;
   fy_ += dy_ * type_data_->speed;
-  x = (int)fx_;
-  y = (int)fy_;
-  light.x = x * 2;
-  light.y = y * 2;
+  x_ = (int)fx_;
+  y_ = (int)fy_;
+  light.x_ = x_ * 2;
+  light.y_ = y_ * 2;
   if (type == FB_SPARK) {
     fx_life_ -= elapsed / type_data_->sparkLife;
     if (fx_life_ < 0.0f) return false;
   }
 
   // check if we hit a wall
-  TCODLine::init(oldx, oldy, (int)x, (int)y);
+  TCODLine::init(oldx, oldy, (int)x_, (int)y_);
   int oldoldx = oldx;
   int oldoldy = oldy;
   while (!TCODLine::step(&oldx, &oldy)) {
@@ -205,8 +205,8 @@ bool FireBall::updateMove(float elapsed) {
     if (!IN_RECTANGLE(oldx, oldy, dungeon->width, dungeon->height)) {
       // wall hit
       // last ground cell before the wall
-      x = oldoldx;
-      y = oldoldy;
+      x_ = oldoldx;
+      y_ = oldoldy;
       end = true;
       wallhit = true;
     } else {
@@ -215,7 +215,7 @@ bool FireBall::updateMove(float elapsed) {
       if (type == FB_STANDARD) {
         for (FireBall** fb = gameEngine->fireballs.begin(); fb != gameEngine->fireballs.end(); fb++) {
           if ((*fb)->effect == FIREBALL_MOVE && (*fb)->type == FB_INCANDESCENCE &&
-              ABS((*fb)->x - x) < (*fb)->light.range / 2 && ABS((*fb)->y - y) < (*fb)->light.range / 2) {
+              ABS((*fb)->x_ - x_) < (*fb)->light.range / 2 && ABS((*fb)->y_ - y_) < (*fb)->light.range / 2) {
             float newdx = (*fb)->dx_;
             float newdy = (*fb)->dy_;
             float angle = atan2f(newdy, newdx);
@@ -230,8 +230,8 @@ bool FireBall::updateMove(float elapsed) {
             angle -= 2 * 0.78f;
             dx_ = cosf(angle);
             dy_ = sinf(angle);
-            x = (*fb)->x;
-            y = (*fb)->y;
+            x_ = (*fb)->x_;
+            y_ = (*fb)->y_;
             end = true;
             break;
           }
@@ -252,8 +252,8 @@ bool FireBall::updateMove(float elapsed) {
             end = true;
           }
         }
-        x = oldx;
-        y = oldy;
+        x_ = oldx;
+        y_ = oldy;
       }
       if (dungeon->hasItem(oldx, oldy) || dungeon->hasItem(oldx + 1, oldy) || dungeon->hasItem(oldx - 1, oldy) ||
           dungeon->hasItem(oldx, oldy + 1) || dungeon->hasItem(oldx, oldy - 1)) {
@@ -275,18 +275,18 @@ bool FireBall::updateMove(float elapsed) {
       if (!end && !dungeon->map->isWalkable(oldx, oldy)) {
         // wall hit
         // last ground cell before the wall
-        x = oldoldx;
-        y = oldoldy;
+        x_ = oldoldx;
+        y_ = oldoldy;
         end = true;
         wallhit = true;
       }
-      if (end && dungeon->hasRipples(x, y)) {
-        gameEngine->startRipple((int)x, (int)y, damage / 5);
+      if (end && dungeon->hasRipples(x_, y_)) {
+        gameEngine->startRipple((int)x_, (int)y_, damage / 5);
       }
     }
     if (end) {
-      light.x = x * 2;
-      light.y = y * 2;
+      light.x_ = x_ * 2;
+      light.y_ = y_ * 2;
       // start effect
       fx_life_ = 1.0f;
       switch (type) {
@@ -306,8 +306,8 @@ bool FireBall::updateMove(float elapsed) {
           effect = FIREBALL_SPARKLE;
           for (int i = 0; i < nbSparkles; i++) {
             Sparkle* sparkle = new Sparkle();
-            sparkle->x = x * 2;
-            sparkle->y = y * 2;
+            sparkle->x = x_ * 2;
+            sparkle->y = y_ * 2;
             float sparkleAngle = atan2f(-dy_, -dx_);
             if (wallhit) {
               sparkleAngle += TCODRandom::getInstance()->getFloat(-1.5f, 1.5f);
@@ -350,7 +350,7 @@ bool FireBall::updateTorch(float elapsed) {
     incandescences.removeFast(this);
     return false;
   }
-  f = noiseOffset + fx_life_ * 250.0f;
+  f = noise_offset_ + fx_life_ * 250.0f;
   float var = 0.2 * (4.0f + noise1d.get(&f));
   current_range_ = incanRange * (2.0 - fx_life_) * var;
   light.range = 2 * current_range_;
@@ -358,7 +358,7 @@ bool FireBall::updateTorch(float elapsed) {
   for (mob::Creature **cr=dungeon->creatures.begin(); cr != dungeon->creatures.end(); cr++) {
           if ( ABS((*cr)->x-x)<curRange && ABS((*cr)->y-y)< curRange ) {
                   // do not set fire through walls
-                  if ( dungeon->hasLos((int)((*cr)->x),(int)((*cr)->y),(int)x,(int)y,true) ) (*cr)->burn=true;
+                  if ( dungeon->hasLos((int)((*cr)->x),(int)((*cr)->y),(int)x,(int)y,true) ) (*cr)->burn_=true;
           }
   }
   */
@@ -368,11 +368,11 @@ bool FireBall::updateTorch(float elapsed) {
     heat_timer_ = 0.0f;
     float radius = current_range_;
     for (int tx = -(int)floor(radius); tx <= (int)ceil(radius); tx++) {
-      if ((int)(x) + tx >= 0 && (int)(x) + tx < dungeon->width) {
+      if ((int)(x_) + tx >= 0 && (int)(x_) + tx < dungeon->width) {
         int dy = (int)(sqrtf(radius * radius - tx * tx));
         for (int ty = -dy; ty <= dy; ty++) {
-          if ((int)(y) + ty >= 0 && (int)(y) + ty < dungeon->height) {
-            auto* items = dungeon->getItems((int)(x) + tx, (int)(y) + ty);
+          if ((int)(y_) + ty >= 0 && (int)(y_) + ty < dungeon->height) {
+            auto* items = dungeon->getItems((int)(x_) + tx, (int)(y_) + ty);
             for (item::Item* it : *items) {
               // found an adjacent item
               item::ItemFeature* fireFeat = it->getFeature(item::ITEM_FEAT_FIRE_EFFECT);
@@ -381,9 +381,9 @@ bool FireBall::updateTorch(float elapsed) {
                 it->fire_resistance_ -= damage / 4;
               }
             }
-            mob::Creature* cr = dungeon->getCreature((int)(x) + tx, (int)(y) + ty);
+            mob::Creature* cr = dungeon->getCreature((int)(x_) + tx, (int)(y_) + ty);
             if (cr) {
-              cr->burn = true;
+              cr->burn_ = true;
               cr->takeDamage(damage / 4);
             }
           }
@@ -424,8 +424,8 @@ bool FireBall::updateSparkle(float elapsed) {
     mob::Creature* cr = NULL;
     bool del = false;
     for (FireBall** fb = incandescences.begin(); fb != incandescences.end(); fb++) {
-      if (ABS((*fb)->x - sparkle->x / 2) < (*fb)->current_range_ &&
-          ABS((*fb)->y - sparkle->y / 2) < (*fb)->current_range_) {
+      if (ABS((*fb)->x_ - sparkle->x / 2) < (*fb)->current_range_ &&
+          ABS((*fb)->y_ - sparkle->y / 2) < (*fb)->current_range_) {
         FireBall* fb = new FireBall(
             sparkle->x / 2,
             sparkle->y / 2,

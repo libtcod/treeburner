@@ -50,8 +50,8 @@ Weapon::~Weapon() {
 Item *Weapon::pickup(mob::Creature *owner) {
         Item *newItem = Item::pickup(owner);
         // auto-equip if no weapon wielded
-        if (gameEngine->player.mainHand == NULL ) {
-                gameEngine->player.mainHand=newItem;
+        if (gameEngine->player.main_hand_ == NULL ) {
+                gameEngine->player.main_hand_=newItem;
         }
         return newItem;
 }

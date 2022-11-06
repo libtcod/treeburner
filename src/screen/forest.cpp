@@ -170,31 +170,31 @@ static const char* debugMapNames[] = {"heightmap", "shadowheight", "fov", "norma
 ForestScreen::ForestScreen() {
   forestRng = NULL;
   debugMap = 0;
-  fadeInLength = fadeOutLength = (int)(config.getFloatProperty("config.display.fadeTime") * 1000);
+  fade_in_length_ms_ = fade_out_length_ms_ = (int)(config.getFloatProperty("config.display.fadeTime") * 1000);
 }
 
 void ForestScreen::render() {
   static bool debug = config.getBoolProperty("config.debug");
   // draw subcell ground
-  int squaredFov = (int)(player.fovRange * player.fovRange * 4);
+  int squaredFov = (int)(player.fov_range_ * player.fov_range_ * 4);
   int minx, maxx, miny, maxy;
   bool showDebugMap = false;
   ground.clear(TCODColor::black);
   base::Rect r1(xOffset * 2, yOffset * 2, CON_W * 2, CON_H * 2);
   base::Rect r2(0, 0, dungeon->width * 2, dungeon->height * 2);
   r1.intersect(r2);
-  minx = (int)(r1.x - xOffset * 2);
-  maxx = (int)(r1.x + r1.w - xOffset * 2);
-  miny = (int)(r1.y - yOffset * 2);
-  maxy = (int)(r1.y + r1.h - yOffset * 2);
+  minx = (int)(r1.x_ - xOffset * 2);
+  maxx = (int)(r1.x_ + r1.w_ - xOffset * 2);
+  miny = (int)(r1.y_ - yOffset * 2);
+  maxy = (int)(r1.y_ + r1.h_ - yOffset * 2);
   float fovRatio = 1.0f / (aspectRatio * aspectRatio);
   for (int x = minx; x < maxx; x++) {
     for (int y = miny; y < maxy; y++) {
       int dungeon2x = x + xOffset * 2;
       int dungeon2y = y + yOffset * 2;
       TCODColor col;
-      int dx = (int)(dungeon2x - player.x * 2);
-      int dy = (int)(dungeon2y - player.y * 2);
+      int dx = (int)(dungeon2x - player.x_ * 2);
+      int dy = (int)(dungeon2y - player.y_ * 2);
       /*
                               // in fov range, you see under the tree tops
                               // out of range, you see the tree tops
@@ -294,7 +294,7 @@ void ForestScreen::render() {
   }
 
   // TCODConsole::root->print(0,2,"player pos %d %d\nfriend pos %d %d\n",player.x,player.y,fr->x,fr->y);
-  if (player.name[0] == 0) textInput.render(CON_W / 2, 2);
+  if (player.name_[0] == 0) textInput.render(CON_W / 2, 2);
 }
 
 bool ForestScreen::update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse) {
@@ -307,10 +307,10 @@ bool ForestScreen::update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse) {
 
   GameEngine::update(elapsed, k, mouse);
 
-  if (player.name[0] == 0) {
+  if (player.name_[0] == 0) {
     if (!textInput.update(elapsed, k)) {
-      strcpy(player.name, textInput.getText());
-      util::TextGenerator::addGlobalValue("PLAYER_NAME", player.name);
+      strcpy(player.name_, textInput.getText());
+      util::TextGenerator::addGlobalValue("PLAYER_NAME", player.name_);
       resumeGame();
     } else
       return true;
@@ -344,7 +344,7 @@ bool ForestScreen::update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse) {
       debugMap = (debugMap + 1) % NB_DEBUGMAPS;
     } else if (k.c == 'i' && k.lalt && !k.pressed) {
       // debug mode : Alt-i = item
-      dungeon->addItem(item::Item::getItem("short bronze blade", player.x, player.y - 1));
+      dungeon->addItem(item::Item::getItem("short bronze blade", player.x_, player.y_ - 1));
     }
   }
   if (k.vk == TCODK_ALT || k.lalt) lookOn = k.pressed;
@@ -359,17 +359,17 @@ bool ForestScreen::update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse) {
 
   // update player
   player.update(elapsed, k, &mouse);
-  xOffset = (int)(player.x - CON_W / 2);
-  yOffset = (int)(player.y - CON_H / 2);
+  xOffset = (int)(player.x_ - CON_W / 2);
+  yOffset = (int)(player.y_ - CON_H / 2);
 
   // update items
   dungeon->updateItems(elapsed, k, &mouse);
 
   // calculate player fov
-  dungeon->computeFov((int)player.x, (int)player.y);
+  dungeon->computeFov((int)player.x_, (int)player.y_);
 
   // update monsters
-  if (fade != FADE_DOWN) {
+  if (fade_ != FADE_DOWN) {
     dungeon->updateCreatures(elapsed);
     // ripples must be after creatures because of shoal updates
     rippleManager->updateRipples(elapsed);
@@ -669,15 +669,15 @@ void ForestScreen::onActivate() {
     knife->name_ = strdup("emerald pocketknife");
     knife->an_ = true;
     player.addToInventory(knife);
-    player.x = housex;
-    player.y = housey + 10;
+    player.x_ = housex;
+    player.y_ = housey + 10;
     int px, py;
-    px = (int)player.x;
-    py = (int)player.y;
+    px = (int)player.x_;
+    py = (int)player.y_;
     dungeon->getClosestWalkable(&px, &py, true, false);
-    player.x = px;
-    player.y = py;
-    dungeon->getClosestSpawnSource(player.x, player.y, &fx, &fy);
+    player.x_ = px;
+    player.y_ = py;
+    dungeon->getClosestSpawnSource(player.x_, player.y_, &fx, &fy);
     dungeon->getClosestWalkable(&fx, &fy, true, false);
     fr->setPos(fx, fy);
     dungeon->addCreature(fr);
@@ -687,15 +687,15 @@ void ForestScreen::onActivate() {
   }
   // re-enable fading
   TCODConsole::setFade(0, TCODColor::black);
-  fade = FADE_UP;
-  fadeLvl = 0.0f;
-  player.maxFovRange = player.fovRange = 8;
-  timefix = 1.0f;
+  fade_ = FADE_UP;
+  fade_level_ = 0.0f;
+  player.max_fov_range_ = player.fov_range_ = 8;
+  time_fix_ = 1.0f;
   if (newGame)
     gui.log.critical("Welcome to the Cave v" VERSION " ! %c?%c for help.", TCOD_COLCTRL_2, TCOD_COLCTRL_STOP);
   lookOn = false;
   rippleManager = new util::RippleManager(dungeon);
-  if (player.name[0] == 0) {
+  if (player.name_[0] == 0) {
     if (userPref.nbLaunches == 1) {
       textInput.init("Welcome to The Cave !", "PageUp/PageDown to change font size\nPlease enter your name :", 60);
     } else {

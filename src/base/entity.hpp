@@ -33,86 +33,88 @@ class Entity {
  public:
   enum Direction { NONE = 0, UP, DOWN, NORTH, SOUTH, EAST, WEST, NE, NW, SE, SW };
 
-  float x{};
-  float y{};
-
   Entity() = default;
-  Entity(int px, int py) noexcept : x{gsl::narrow_cast<float>(px)}, y(gsl::narrow_cast<float>(py)) {}
-  Entity(float px, float py) noexcept : x{px}, y{py} {}
+  Entity(int x, int y) noexcept : x_{gsl::narrow_cast<float>(x)}, y_(gsl::narrow_cast<float>(y)) {}
+  Entity(float x, float y) noexcept : x_{x}, y_{y} {}
   // get subcell coordinates
-  int getSubX() const noexcept { return gsl::narrow_cast<int>(x * 2); }
-  int getSubY() const noexcept { return gsl::narrow_cast<int>(y * 2); }
-  void setPos(int new_x, int new_y) noexcept {
-    x = gsl::narrow_cast<float>(new_x);
-    y = gsl::narrow_cast<float>(new_y);
+  int getSubX() const noexcept { return gsl::narrow_cast<int>(x_ * 2); }
+  int getSubY() const noexcept { return gsl::narrow_cast<int>(y_ * 2); }
+  void setPos(int x, int y) noexcept {
+    x_ = gsl::narrow_cast<float>(x);
+    y_ = gsl::narrow_cast<float>(y);
   }
-  void setPos(float new_x, float new_y) noexcept {
-    x = new_x;
-    y = new_y;
+  void setPos(float x, float y) noexcept {
+    x_ = x;
+    y_ = y;
   }
   Entity& addDir(Direction d) noexcept {
     static constexpr auto x_dirs = std::array{0, 0, 0, 0, 0, 1, -1, 1, -1, 1, -1};
     static constexpr auto y_dirs = std::array{0, 0, 0, -1, 1, 0, 0, -1, -1, 1, 1};
-    x += x_dirs[d];
-    y += y_dirs[d];
+    x_ += x_dirs[d];
+    y_ += y_dirs[d];
     return *this;
   }
   static Direction movementToDir(int xFrom, int yFrom, int xTo, int yTo) {
     static constexpr Direction dirs[3][3] = {{NW, NORTH, NE}, {WEST, NONE, EAST}, {SW, SOUTH, SE}};
     return dirs[yTo - yFrom + 1][xTo - xFrom + 1];
   }
-  float squaredDistance(const Entity& p) const { return (p.x - x) * (p.x - x) + (p.y - y) * (p.y - y); }
+  float squaredDistance(const Entity& p) const noexcept {
+    return (p.x_ - x_) * (p.x_ - x_) + (p.y_ - y_) * (p.y_ - y_);
+  }
   bool isOnScreen() const;
   float distance(const Entity& p) const;
   float fastInvDistance(const Entity& p) const { return fastInvSqrt(squaredDistance(p)); }
   static float fastInvSqrt(float n);
+
+  float x_{};
+  float y_{};
 };
 
 // a rectangular zone in the world
 class Rect : public Entity {
  public:
-  int w{};
-  int h{};
-
   Rect() = default;
-  Rect(int x, int y, int pw, int ph) noexcept
-      : Entity(gsl::narrow_cast<float>(x), gsl::narrow_cast<float>(y)), w(pw), h(ph) {}
-  Rect(float x, float y, int pw, int ph) noexcept : Entity{x, y}, w{pw}, h{ph} {}
-  bool pointInside(float px, float py) const noexcept { return (px >= x && py >= y && px < x + w && py < y + h); }
-  bool pointInside(const Entity& pt) const noexcept { return pointInside(pt.x, pt.y); }
+  Rect(int x, int y, int width, int height) noexcept
+      : Entity(gsl::narrow_cast<float>(x), gsl::narrow_cast<float>(y)), w_{width}, h_{height} {}
+  Rect(float x, float y, int width, int height) noexcept : Entity{x, y}, w_{width}, h_{height} {}
+  bool pointInside(float px, float py) const noexcept { return (px >= x_ && py >= y_ && px < x_ + w_ && py < y_ + h_); }
+  bool pointInside(const Entity& pt) const noexcept { return pointInside(pt.x_, pt.y_); }
   bool isIntersecting(const Rect& r) const noexcept {
-    return !(r.x > x + w || r.x + r.w < x || r.y > y + h || r.y + r.h < y);
+    return !(r.x_ > x_ + w_ || r.x_ + r.w_ < x_ || r.y_ > y_ + h_ || r.y_ + r.h_ < y_);
   }
   // smallest rectangle containing this and r
   void merge(const Rect& r) noexcept {
-    float minx = std::min(x, r.x);
-    float maxx = std::max(x + w, r.x + r.w);
-    float miny = std::min(y, r.y);
-    float maxy = std::max(y + h, r.y + r.h);
-    x = minx;
-    w = gsl::narrow_cast<int>(maxx - minx);
-    y = miny;
-    h = gsl::narrow_cast<int>(maxy - miny);
+    const float min_x = std::min(x_, r.x_);
+    const float max_x = std::max(x_ + w_, r.x_ + r.w_);
+    const float min_y = std::min(y_, r.y_);
+    const float max_y = std::max(y_ + h_, r.y_ + r.h_);
+    x_ = min_x;
+    w_ = gsl::narrow_cast<int>(max_x - min_x);
+    y_ = min_y;
+    h_ = gsl::narrow_cast<int>(max_y - min_y);
   }
   // intersection of this and r
   void intersect(const Rect& r) noexcept {
-    float minx = std::max(x, r.x);
-    float maxx = std::min(x + w, r.x + r.w);
-    float miny = std::max(y, r.y);
-    float maxy = std::min(y + h, r.y + r.h);
-    x = minx;
-    y = miny;
-    w = gsl::narrow_cast<int>(maxx - minx);
-    h = gsl::narrow_cast<int>(maxy - miny);
+    const float min_x = std::max(x_, r.x_);
+    const float max_x = std::min(x_ + w_, r.x_ + r.w_);
+    const float min_y = std::max(y_, r.y_);
+    const float max_y = std::min(y_ + h_, r.y_ + r.h_);
+    x_ = min_x;
+    y_ = min_y;
+    w_ = gsl::narrow_cast<int>(max_x - min_x);
+    h_ = gsl::narrow_cast<int>(max_y - min_y);
   }
+
+  int w_{};
+  int h_{};
 };
 
 // entity with dynamic pos and speed
 class DynamicEntity : public Entity {
  public:
-  float dx{}, dy{};  // movement direction (unit vector)
-  float duration{};  // movement duration in seconds
-  float speed{};  // speed in cells/sec
   DynamicEntity() = default;
+  float dx_{}, dy_{};  // movement direction (unit vector)
+  float duration_{};  // movement duration in seconds
+  float speed_{};  // speed in cells/sec
 };
 }  // namespace base

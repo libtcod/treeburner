@@ -172,7 +172,7 @@ void Game::render() {
 
   // render boss health bar
   if (bossSeen && !bossIsDead) {
-    float lifeper = (float)(boss->life) / bossLife;
+    float lifeper = (float)(boss->life_) / bossLife;
     for (int x = 120; x < 140; x++) {
       TCODColor col = (x - 120) < (int)(lifeper * 20) ? TCODColor::red : TCODColor::darkerRed;
       ground.putPixel(x, 5, col);
@@ -206,8 +206,8 @@ void Game::render() {
   }
 
   // render level
-  if (fade == FADE_UP) {
-    TCODColor lvlCol = TCODColor::white * (1.0f - fadeLvl);
+  if (fade_ == FADE_UP) {
+    TCODColor lvlCol = TCODColor::white * (1.0f - fade_level_);
     TCODConsole::root->setDefaultForeground(lvlCol);
     TCODConsole::root->printEx(CON_W / 2, CON_H - 5, TCOD_BKGND_NONE, TCOD_CENTER, "Level %d", level + 1);
   }
@@ -286,24 +286,24 @@ bool Game::update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse) {
   player.update(elapsed, k, &mouse);
   if (isGamePaused()) return true;
 
-  xOffset = (int)(player.x - CON_W / 2);
-  yOffset = (int)(player.y - CON_H / 2);
+  xOffset = (int)(player.x_ - CON_W / 2);
+  yOffset = (int)(player.y_ - CON_H / 2);
 
-  if (player.life <= 0 && fade != FADE_DOWN) {
-    setFadeOut(fadeOutLength, TCODColor::darkRed);
-    fade = FADE_DOWN;
+  if (player.life_ <= 0 && fade_ != FADE_DOWN) {
+    setFadeOut(fade_out_length_ms_, TCODColor::darkRed);
+    fade_ = FADE_DOWN;
   }
 
   // update fading
-  if (fade == FADE_DOWN && fadeLvl <= 0.0f) {
-    if (player.life <= 0) {
+  if (fade_ == FADE_DOWN && fade_level_ <= 0.0f) {
+    if (player.life_ <= 0) {
       // death
       engine.activateModule("pyroGameOver");
       return false;
     }
     if (level < nbLevels - 1) {
       // go to next level
-      fade = FADE_UP;
+      fade_ = FADE_UP;
       termLevel();
       level++;
       initLevel();
@@ -312,16 +312,16 @@ bool Game::update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse) {
       engine.activateModule("pyroVictory");
       return false;
     }
-  } else if (fade == FADE_OFF) {
+  } else if (fade_ == FADE_OFF) {
     if (finalExplosion <= 0.0f) {
-      setFadeOut(fadeOutLength, TCODColor::white);
-      fade = FADE_DOWN;
-      fadeLvl = 1.0f;
+      setFadeOut(fade_out_length_ms_, TCODColor::white);
+      fade_ = FADE_DOWN;
+      fade_level_ = 1.0f;
     }
   }
 
   // level ending condition
-  if (player.x == dungeon->stairx && player.y == dungeon->stairy && fade == FADE_OFF) {
+  if (player.x_ == dungeon->stairx && player.y_ == dungeon->stairy && fade_ == FADE_OFF) {
     if (level == nbLevels - 1) {
       if (bossIsDead) {
         if (finalExplosion == 2.0f) {
@@ -330,16 +330,16 @@ bool Game::update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse) {
         }
       }
     } else {
-      fade = FADE_DOWN;
-      fadeLvl = 1.0f;
+      fade_ = FADE_DOWN;
+      fade_level_ = 1.0f;
     }
   }
 
   // calculate player fov
-  dungeon->computeFov((int)player.x, (int)player.y);
+  dungeon->computeFov((int)player.x_, (int)player.y_);
 
   // update monsters
-  if (fade != FADE_DOWN) {
+  if (fade_ != FADE_DOWN) {
     if (bossIsDead && finalExplosion > 0.0f && finalExplosion <= 1.0f) {
       int radius = (int)(2 * CON_H * (1.0f - finalExplosion)) - 10;
       if (radius > 0) dungeon->killCreaturesAtRange(radius);
@@ -359,12 +359,12 @@ bool Game::update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse) {
     if (k.c == 'b' && k.lalt && !k.pressed) {
       // debug mode : Alt-b = burn
       for (mob::Creature** cr = dungeon->creatures.begin(); cr != dungeon->creatures.end(); cr++) {
-        (*cr)->burn = true;
+        (*cr)->burn_ = true;
       }
     }
     if (k.c == 'i' && k.lalt && !k.pressed) {
       // debug mode : Alt-i = item
-      dungeon->addItem(item::Item::getItem("knife", player.x, player.y - 1));
+      dungeon->addItem(item::Item::getItem("knife", player.x_, player.y_ - 1));
     }
     if (k.c == 'm' && k.lalt && !k.pressed) {
       // debug mode : Alt-m : max spells
@@ -385,7 +385,7 @@ bool Game::update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse) {
       // debug mode : Alt-w : weapon
       static int i = 0;
       item::Item* w = item::Item::getRandomWeapon("staff", (item::ItemClass)i++);
-      w->setPos(player.x, player.y - 1);
+      w->setPos(player.x_, player.y_ - 1);
       w->name_ = strdup("Pyromancer's staff");
       if (i > item::ITEM_CLASS_GOLD) i = 0;
       dungeon->addItem(w);

@@ -315,7 +315,7 @@ void SchoolScreen::render() {
 }
 
 void SchoolScreen::setContextSchool(School* sch) {
-  gameEngine->player.school = *sch;
+  gameEngine->player.school_ = *sch;
   util::TextGenerator::deleteGlobalValue("SCHOOL_NAME");
   util::TextGenerator::deleteGlobalValue("SCHOOL_TYPE");
   util::TextGenerator::deleteGlobalValue("PLAYER_CLASS");
@@ -329,7 +329,7 @@ void SchoolScreen::setContextSchool(School* sch) {
 }
 
 bool SchoolScreen::update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse) {
-  if (fade == FADE_DOWN && fadeLvl <= 0.0f) {
+  if (fade_ == FADE_DOWN && fade_level_ <= 0.0f) {
     return false;
   }
   bool up = false, down = false, left = false, right = false;
@@ -342,8 +342,8 @@ bool SchoolScreen::update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse) {
       ((k.vk == TCODK_ENTER || k.vk == TCODK_KPENTER) && k.vk != TCODK_ALT) ||
       (mouse.cy >= MENUY + 3 && mouse.cy < MENUY + 3 + NB_SCHOOLS && mouse.cx >= 2 && mouse.cx < 2 + MENU_WIDTH &&
        (mouse.lbutton_pressed || mouse.rbutton_pressed))) {
-    if (fade != FADE_DOWN) {
-      fade = FADE_DOWN;
+    if (fade_ != FADE_DOWN) {
+      fade_ = FADE_DOWN;
       setContextSchool(&school[selectedSchool]);
     }
   } else if (
@@ -376,7 +376,7 @@ void SchoolScreen::selectSchool(int num) {
   dy = school[num].y - MAP_HEIGHT / 2;
   dx = CLAMP(0, dw, dx);
   dy = CLAMP(0, dh, dy);
-  gameEngine->player.school = school[selectedSchool];
+  gameEngine->player.school_ = school[selectedSchool];
 }
 
 const char* SchoolScreen::genSchoolDescription(School* sch) {
