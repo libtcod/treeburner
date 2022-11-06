@@ -106,13 +106,13 @@ void Light::add(map::LightMap* l, TCODImage* img) {
           float rad = 0.0f;
           if (randomRad) {
             float angle = atan2f(dy, dx);
-            float f = angle + noiseOffset;
+            float f = angle + noise_offset_;
             float squaredRangeRnd = squaredRange * (0.5f * (1.0f + noise1d.get(&f)));
             // fix radius continuity near -PI
             float rcoef = 0.0f;
             if (angle < -7 * M_PI / 8) rcoef = (-7 * M_PI / 8 - angle) / (M_PI / 8);
             if (rcoef > 1E-6f) {
-              float fpi = M_PI + noiseOffset;
+              float fpi = M_PI + noise_offset_;
               float squaredRangePi = squaredRange * (0.5f * (1.0f + noise1d.get(&fpi)));
               squaredRangeRnd = squaredRangeRnd + rcoef * (squaredRangePi - squaredRangeRnd);
             }
@@ -177,7 +177,7 @@ void ExtendedLight::update(float elapsed) {
 float ExtendedLight::getIntensity() {
   if (intensityPatternLen == 0) return 1.0f;
   if (noiseIntensity) {
-    float f = noiseOffset + intensityTimer * intensityPatternDelay;
+    float f = noise_offset_ + intensityTimer * intensityPatternDelay;
     return 0.5f * (1.0f + noise1d.get(&f));
   }
   int itchar = intensityPattern[(int)(intensityTimer * intensityPatternLen / intensityPatternDelay)];

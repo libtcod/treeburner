@@ -29,7 +29,6 @@ namespace base {
 // something that depends on noise and need a per instance offset
 class NoisyThing {
  public:
-  NoisyThing() { noiseOffset = TCODRandom::getInstance()->getFloat(0.0f, 15.0f); }
-  float noiseOffset;
+  float noise_offset_{TCODRandom::getInstance()->getFloat(0.0f, 15.0f)};
 };
 }  // namespace base

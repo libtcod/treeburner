@@ -350,7 +350,7 @@ bool FireBall::updateTorch(float elapsed) {
     incandescences.removeFast(this);
     return false;
   }
-  f = noiseOffset + fx_life_ * 250.0f;
+  f = noise_offset_ + fx_life_ * 250.0f;
   float var = 0.2 * (4.0f + noise1d.get(&f));
   current_range_ = incanRange * (2.0 - fx_life_) * var;
   light.range = 2 * current_range_;

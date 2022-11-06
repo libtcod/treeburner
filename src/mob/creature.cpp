@@ -367,7 +367,7 @@ void Creature::render(map::LightMap& lightMap) {
     ch = '%';
     c = corpseColor * lightColor;
   } else if (burn) {
-    float fireX = TCODSystem::getElapsedSeconds() * fireSpeed + noiseOffset;
+    float fireX = TCODSystem::getElapsedSeconds() * fireSpeed + noise_offset_;
     int fireIdx = (int)((0.5f + 0.5f * noise1d.get(&fireX)) * 64.0f);
     c = fire[fireIdx];
     int r = (int)(c.r * 1.5f * lightColor.r / 255);
