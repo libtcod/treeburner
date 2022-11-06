@@ -315,7 +315,7 @@ void SchoolScreen::render() {
 }
 
 void SchoolScreen::setContextSchool(School* sch) {
-  gameEngine->player.school = *sch;
+  gameEngine->player.school_ = *sch;
   util::TextGenerator::deleteGlobalValue("SCHOOL_NAME");
   util::TextGenerator::deleteGlobalValue("SCHOOL_TYPE");
   util::TextGenerator::deleteGlobalValue("PLAYER_CLASS");
@@ -376,7 +376,7 @@ void SchoolScreen::selectSchool(int num) {
   dy = school[num].y - MAP_HEIGHT / 2;
   dx = CLAMP(0, dw, dx);
   dy = CLAMP(0, dh, dy);
-  gameEngine->player.school = school[selectedSchool];
+  gameEngine->player.school_ = school[selectedSchool];
 }
 
 const char* SchoolScreen::genSchoolDescription(School* sch) {

@@ -689,7 +689,7 @@ void ForestScreen::onActivate() {
   TCODConsole::setFade(0, TCODColor::black);
   fade_ = FADE_UP;
   fade_level_ = 0.0f;
-  player.maxFovRange = player.fovRange = 8;
+  player.max_fov_range_ = player.fovRange = 8;
   time_fix_ = 1.0f;
   if (newGame)
     gui.log.critical("Welcome to the Cave v" VERSION " ! %c?%c for help.", TCOD_COLCTRL_2, TCOD_COLCTRL_STOP);

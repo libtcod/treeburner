@@ -34,92 +34,72 @@
 
 namespace mob {
 // maximum sprint : 2 times faster
-#define MIN_SPRINT_COEF 0.5f
+static constexpr auto MIN_SPRINT_COEF = 0.5f;
 
-static TCODColor healthColor(127, 127, 255);
+static constexpr TCODColor healthColor{127, 127, 255};
 
-Player::Player()
-    : healPoints(0),
-      lbuttonDelay(0.0f),
-      lWalkDelay(0.0f),
-      rbuttonDelay(0.0f),
-      lbutton(false),
-      rbutton(false),
-      curHeal(0),
-      initDungeon(true) {
-  static char playerChar = config.getCharProperty("config.creatures.player.ch");
-  static TCODColor playerColor = config.getColorProperty("config.creatures.player.col");
-  static float healthIntensityDelay = config.getFloatProperty("config.creatures.player.healIntensityDelay");
+Player::Player() {
+  static const char playerChar = config.getCharProperty("config.creatures.player.ch");
+  static const TCODColor playerColor = config.getColorProperty("config.creatures.player.col");
+  static const float healthIntensityDelay = config.getFloatProperty("config.creatures.player.healIntensityDelay");
   static const char* healthIntensityPattern =
       strdup(config.getStringProperty("config.creatures.player.healIntensityPattern"));
-  static float sprintLength = config.getFloatProperty("config.creatures.player.sprintLength");
+  static const float sprintLength = config.getFloatProperty("config.creatures.player.sprintLength");
 
   ch = playerChar;
   color_ = playerColor;
-  healLight.color = healthColor;
-  healLight.range = 7;
-  healLight.randomRad = false;
-  healLight.setup(healthColor, healthIntensityDelay, healthIntensityPattern, NULL);
+  heal_light_.color = healthColor;
+  heal_light_.range = 7;
+  heal_light_.randomRad = false;
+  heal_light_.setup(healthColor, healthIntensityDelay, healthIntensityPattern, nullptr);
 
-  light.range = 0;
-  fovRange = 0;
   maxLife = 100.0f;
-  sprintDelay = sprintLength;
-  stealth = 1.0f;
-  crouch = false;
-  isSprinting = false;
+  sprint_delay_ = sprintLength;
 }
 
-Player::~Player() {}
-
 void Player::init() {
-  static float sprintLength = config.getFloatProperty("config.creatures.player.sprintLength");
-  static float playerSpeed = gameEngine->getFloatParam("playerSpeed");
+  static const float sprintLength = config.getFloatProperty("config.creatures.player.sprintLength");
+  static const float playerSpeed = gameEngine->getFloatParam("playerSpeed");
   speed = playerSpeed;
   life = maxLife;
-  up = down = left = right = false;
-  averageSpeed = speedElapsed = speedDist = 0.0f;
-  sprintDelay = sprintLength;
+  sprint_delay_ = sprintLength;
   // cannot do this. screen::Game::lights not created yet...
   // gameEngine->addLight(&light);
 }
 
 float Player::getHealth() { return life / maxLife; }
 
-float Player::getHealing() {
-  float ret = (life + healPoints) / maxLife;
-  return MIN(ret, 1.0f);
-}
+float Player::getHealing() { return std::min((life + heal_points_) / maxLife, 1.0f); }
 
 void Player::termLevel() {
   if (path) delete path;
-  path = NULL;
+  path = nullptr;
   walkTimer = 0.0f;
-  initDungeon = true;
+  init_dungeon_ = true;
 }
 
 void Player::takeDamage(float amount) {
-  float oldLife = life;
+  const float oldLife = life;
   Creature::takeDamage(amount);
   if (life < oldLife) gameEngine->hitFlash();
 }
 
 void Player::heal(int healPoints) {
-  bool heal = this->healPoints > 0;
-  this->healPoints += healPoints;
-  if (!heal) gameEngine->dungeon->addLight(&healLight);
+  const bool heal = heal_points_ > 0;
+  heal_points_ += healPoints;
+  if (!heal) gameEngine->dungeon->addLight(&heal_light_);
 }
 
 bool Player::setPath(int xDest, int yDest, bool limitPath) {
-  static int maxPathFinding = config.getIntProperty("config.creatures.player.maxPathFinding");
+  static const int maxPathFinding = config.getIntProperty("config.creatures.player.maxPathFinding");
 
   map::Dungeon* dungeon = gameEngine->dungeon;
   if (!IN_RECTANGLE(xDest, yDest, dungeon->width, dungeon->height)) return false;
   // check if right clicked on a wall
   if (!dungeon->map->isWalkable(xDest, yDest)) {
     // walk toward the player and see if no other wall blocks the path
-    float dx = x - xDest;
-    float dy = y - yDest;
+    const float dx = x - xDest;
+    const float dy = y - yDest;
     if (xDest < dungeon->width - 1 && dx > 0 && dungeon->map->isWalkable(xDest + 1, yDest)) {
       xDest++;
     } else if (xDest > 0 && dx < 0 && dungeon->map->isWalkable(xDest - 1, yDest)) {
@@ -146,7 +126,7 @@ bool Player::setPath(int xDest, int yDest, bool limitPath) {
         return false;  // hit another wall. no path
     }
   }
-  if (!path) path = new TCODPath(dungeon->width, dungeon->height, this, NULL);
+  if (!path) path = new TCODPath(dungeon->width, dungeon->height, this, nullptr);
   ignoreCreatures = false;
   bool ok = path->compute((int)x, (int)y, xDest, yDest);
   if (!ok) {
@@ -157,46 +137,46 @@ bool Player::setPath(int xDest, int yDest, bool limitPath) {
   if (!ok) return false;
   if (limitPath && !dungeon->getMemory(xDest, yDest) && path->size() > maxPathFinding) {
     delete path;
-    path = NULL;
+    path = nullptr;
     return false;
   }
   return true;
 }
 
 void Player::render(map::LightMap& lightMap) {
-  static float longButtonDelay = config.getFloatProperty("config.creatures.player.longButtonDelay");
-  static float longSpellDelay = config.getFloatProperty("config.creatures.player.longSpellDelay");
-  static float sprintLength = config.getFloatProperty("config.creatures.player.sprintLength");
+  static const float longButtonDelay = config.getFloatProperty("config.creatures.player.longButtonDelay");
+  static const float longSpellDelay = config.getFloatProperty("config.creatures.player.longSpellDelay");
+  static const float sprintLength = config.getFloatProperty("config.creatures.player.sprintLength");
   static bool blink = false;
 
   Creature::render(lightMap);
-  if ((spell::FireBall::incandescence && lbuttonDelay > longButtonDelay) ||
-      (spell::FireBall::sparkle && rbuttonDelay > longButtonDelay)) {
+  if ((spell::FireBall::incandescence && left_button_delay_ > longButtonDelay) ||
+      (spell::FireBall::sparkle && right_button_delay_ > longButtonDelay)) {
     // spell charging progress bar
     int barLength = 0;
-    float delay = MAX(rbuttonDelay, lbuttonDelay);
+    const float delay = std::max(right_button_delay_, left_button_delay_);
     if (delay >= longSpellDelay) {
       barLength = 3;
     } else
       barLength = 1 + (int)((delay - longButtonDelay) * 1.99 / (longSpellDelay - longButtonDelay));
     blink = !blink;
     if (barLength == 3 && blink) barLength = 0;
-    int bary = CON_H / 2 - 1;
-    if (gameEngine->mousey <= CON_H / 2) bary = CON_H / 2 + 1;
+    int bar_y = CON_H / 2 - 1;
+    if (gameEngine->mousey <= CON_H / 2) bar_y = CON_H / 2 + 1;
     for (int i = CON_W / 2 - 1; i < CON_W / 2 + barLength - 1; i++) {
-      TCODConsole::root->setChar(i, bary, TCOD_CHAR_PROGRESSBAR);
-      TCODConsole::root->setCharForeground(i, bary, TCODColor::lightRed);
+      TCODConsole::root->setChar(i, bar_y, TCOD_CHAR_PROGRESSBAR);
+      TCODConsole::root->setCharForeground(i, bar_y, TCODColor::lightRed);
     }
   }
 
   // sprint bar
-  if (isSprinting && !hasCondition(CRIPPLED)) {
-    if (sprintDelay < sprintLength) {
-      float sprintCoef = sprintDelay / sprintLength;
+  if (is_sprinting_ && !hasCondition(CRIPPLED)) {
+    if (sprint_delay_ < sprintLength) {
+      const float sprintCoef = sprint_delay_ / sprintLength;
       static TCODImage sprintBar(10, 2);
       for (int x = 0; x < 10; x++) {
         float coef = (x * 0.1f - sprintCoef) * 5;
-        coef = CLAMP(0.0f, 1.0f, coef);
+        coef = std::clamp(coef, 0.0f, 1.0f);
         TCODColor col = TCODColor::lerp(TCODColor::blue, TCODColor::white, coef);
         sprintBar.putPixel(x, 0, col);
         sprintBar.putPixel(x, 1, col);
@@ -206,11 +186,10 @@ void Player::render(map::LightMap& lightMap) {
   }
 
   // stealth bar
-  if (crouch || stealth < 1.0f) {
+  if (crouched_ || stealth_ < 1.0f) {
     static TCODImage stealthBar(2, 10);
     for (int y = 0; y < 10; y++) {
-      float coef = (y * 0.1f - stealth) * 5;
-      coef = CLAMP(0.0f, 1.0f, coef);
+      const float coef = std::clamp((y * 0.1f - stealth_) * 5, 0.0f, 1.0f);
       TCODColor col = TCODColor::lerp(TCODColor::white, TCODColor::darkViolet, coef);
       stealthBar.putPixel(0, y, col);
       stealthBar.putPixel(1, y, col);
@@ -226,12 +205,12 @@ void Player::render(map::LightMap& lightMap) {
 // numpad 12346789
 // WSAD / ZSQD (fps keys)
 void Player::getMoveKey(TCOD_key_t key, bool* up, bool* down, bool* left, bool* right) {
-  static int moveUpKey = toupper(config.getCharProperty("config.creatures.player.moveUpKey"));
-  static int moveDownKey = toupper(config.getCharProperty("config.creatures.player.moveDownKey"));
-  static int moveLeftKey = toupper(config.getCharProperty("config.creatures.player.moveLeftKey"));
-  static int moveRightKey = toupper(config.getCharProperty("config.creatures.player.moveRightKey"));
+  static const int moveUpKey = toupper(config.getCharProperty("config.creatures.player.moveUpKey"));
+  static const int moveDownKey = toupper(config.getCharProperty("config.creatures.player.moveDownKey"));
+  static const int moveLeftKey = toupper(config.getCharProperty("config.creatures.player.moveLeftKey"));
+  static const int moveRightKey = toupper(config.getCharProperty("config.creatures.player.moveRightKey"));
 
-  int kc = toupper(key.c);
+  const int kc = toupper(key.c);
   if (kc == moveUpKey || key.vk == TCODK_UP || kc == 'Z' || kc == 'W' || kc == 'K' || key.vk == TCODK_KP8) {
     *up = key.pressed;
   } else if (kc == moveDownKey || key.vk == TCODK_DOWN || kc == 'S' || kc == 'J' || key.vk == TCODK_KP2) {
@@ -258,15 +237,15 @@ void Player::getMoveKey(TCOD_key_t key, bool* up, bool* down, bool* left, bool* 
 void Player::computeStealth(float elapsed) {
   map::Dungeon* dungeon = gameEngine->dungeon;
   float shadow = dungeon->getShadow(x * 2, y * 2);
-  float cloud = dungeon->getCloudCoef(x * 2, y * 2);
-  shadow = MIN(shadow, cloud);
+  const float cloud = dungeon->getCloudCoef(x * 2, y * 2);
+  shadow = std::min(shadow, cloud);
   // increase shadow. TODO should be in outdoor only!
-  float shadowcoef = crouch ? 4.0f : 2.0f;
+  const float shadowcoef = crouched_ ? 4.0f : 2.0f;
   shadow = 1.0f - shadowcoef * (1.0f - shadow);
-  stealth -= (stealth - shadow) * elapsed;
-  float speedcoef = crouch ? 0.6f : 1.0f;
-  stealth += speedcoef * averageSpeed * elapsed * 0.1f;
-  stealth = CLAMP(0.0f, 3.0f, stealth);
+  stealth_ -= (stealth_ - shadow) * elapsed;
+  const float speedcoef = crouched_ ? 0.6f : 1.0f;
+  stealth_ += speedcoef * average_speed_ * elapsed * 0.1f;
+  stealth_ = std::clamp(stealth_, 0.0f, 3.0f);
   // printf ("shadow %g stealth %g\n",shadow,stealth);
 }
 
@@ -314,44 +293,44 @@ bool Player::activateCell(int dungeonx, int dungeony, bool lbut_pressed, bool wa
 }
 
 bool Player::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
-  static float longSpellDelay = config.getFloatProperty("config.creatures.player.longSpellDelay");
+  static const float longSpellDelay = config.getFloatProperty("config.creatures.player.longSpellDelay");
   // static float playerSpeed=config.getFloatProperty("config.creatures.player.speed");
-  static float sprintLength = config.getFloatProperty("config.creatures.player.sprintLength");
-  static char quickslot1Key = config.getCharProperty("config.creatures.player.quickslot1");
-  static float playerSpeed = gameEngine->getFloatParam("playerSpeed");
-  static float playerSpeedDiag = playerSpeed / 1.2f;
+  static const float sprintLength = config.getFloatProperty("config.creatures.player.sprintLength");
+  static const char quickslot1Key = config.getCharProperty("config.creatures.player.quickslot1");
+  static const float playerSpeed = gameEngine->getFloatParam("playerSpeed");
+  static const float playerSpeedDiag = playerSpeed / 1.2f;
   /*
-  static char quickslot2Key=config.getCharProperty("config.creatures.player.quickslot2");
-  static char quickslot3Key=config.getCharProperty("config.creatures.player.quickslot3");
-  static char quickslot4Key=config.getCharProperty("config.creatures.player.quickslot4");
-  static char quickslot5Key=config.getCharProperty("config.creatures.player.quickslot5");
-  static char quickslot6Key=config.getCharProperty("config.creatures.player.quickslot6");
-  static char quickslot7Key=config.getCharProperty("config.creatures.player.quickslot7");
-  static char quickslot8Key=config.getCharProperty("config.creatures.player.quickslot8");
-  static char quickslot9Key=config.getCharProperty("config.creatures.player.quickslot9");
-  static char quickslot10Key=config.getCharProperty("config.creatures.player.quickslot10");
+  static const char quickslot2Key=config.getCharProperty("config.creatures.player.quickslot2");
+  static const char quickslot3Key=config.getCharProperty("config.creatures.player.quickslot3");
+  static const char quickslot4Key=config.getCharProperty("config.creatures.player.quickslot4");
+  static const char quickslot5Key=config.getCharProperty("config.creatures.player.quickslot5");
+  static const char quickslot6Key=config.getCharProperty("config.creatures.player.quickslot6");
+  static const char quickslot7Key=config.getCharProperty("config.creatures.player.quickslot7");
+  static const char quickslot8Key=config.getCharProperty("config.creatures.player.quickslot8");
+  static const char quickslot9Key=config.getCharProperty("config.creatures.player.quickslot9");
+  static const char quickslot10Key=config.getCharProperty("config.creatures.player.quickslot10");
   */
 
   map::Dungeon* dungeon = gameEngine->dungeon;
-  if (initDungeon) {
-    initDungeon = false;
-    dungeon->addLight(&light);
+  if (init_dungeon_) {
+    init_dungeon_ = false;
+    dungeon->addLight(&light_);
   }
 
   if (life <= 0) return false;
-  light.setPos(x * 2, y * 2);
+  light_.setPos(x * 2, y * 2);
   updateConditions(elapsed);
 
   walkTimer += elapsed;
 
   // special key status
-  bool ctrl = TCODConsole::isKeyPressed(TCODK_CONTROL);
+  const bool ctrl = TCODConsole::isKeyPressed(TCODK_CONTROL);
   // if ( key.vk == TCODK_SHIFT ) isSprinting=key.pressed;
-  isSprinting = TCODConsole::isKeyPressed(TCODK_SHIFT);
+  is_sprinting_ = TCODConsole::isKeyPressed(TCODK_SHIFT);
 
   // user input
   if (gameEngine->isGamePaused()) {
-    up = down = left = right = false;
+    up_ = down_ = left_ = right_ = false;
     return true;
   }
   // update items in inventory
@@ -360,10 +339,10 @@ bool Player::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
       inventory.end());
 
   // crouching
-  crouch = ctrl;
+  crouched_ = ctrl;
 
   // update breath recovery after sprint
-  updateSprintDelay(elapsed, isSprinting);
+  updateSprintDelay(elapsed, is_sprinting_);
   // compute average speed during last second
   computeAverageSpeed(elapsed);
   // update fov according to breath
@@ -371,23 +350,24 @@ bool Player::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
 
   {
     // Hack to fix movement.
-    auto [new_dx, new_dy] = base::get_current_movement_dir();
-    left = new_dx < 0;
-    right = new_dx > 0;
-    up = new_dy < 0;
-    down = new_dy > 0;
+    const auto [new_dx, new_dy] = base::get_current_movement_dir();
+    left_ = new_dx < 0;
+    right_ = new_dx > 0;
+    up_ = new_dy < 0;
+    down_ = new_dy > 0;
   }
 
   // mouse coordinates
-  int dungeonx = mouse->cx + gameEngine->xOffset;
-  int dungeony = mouse->cy + gameEngine->yOffset;
+  const int dungeon_x = mouse->cx + gameEngine->xOffset;
+  const int dungeon_y = mouse->cy + gameEngine->yOffset;
 
   bool useWeapon = true;
-  if (mouse->lbutton_pressed && ABS(dungeonx - x) <= 1 && ABS(dungeony - y) <= 1) {
+  if (mouse->lbutton_pressed && ABS(dungeon_x - x) <= 1 && ABS(dungeon_y - y) <= 1) {
     // click on the player or near him in water=ripples
-    if (mouse->lbutton_pressed && dungeon->hasRipples(dungeonx, dungeony)) gameEngine->startRipple(dungeonx, dungeony);
-    if (dungeonx != x || dungeony != y) {
-      useWeapon = activateCell(dungeonx, dungeony, mouse->lbutton_pressed, false);
+    if (mouse->lbutton_pressed && dungeon->hasRipples(dungeon_x, dungeon_y))
+      gameEngine->startRipple(dungeon_x, dungeon_y);
+    if (dungeon_x != x || dungeon_y != y) {
+      useWeapon = activateCell(dungeon_x, dungeon_y, mouse->lbutton_pressed, false);
     }
   }
   if (useWeapon) {
@@ -396,32 +376,32 @@ bool Player::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
   }
 
   if (mouse->lbutton) {
-    lbuttonDelay += elapsed;
-    lWalkDelay += elapsed;
+    left_button_delay_ += elapsed;
+    left_walk_delay_ += elapsed;
   }
-  if (mouse->rbutton) rbuttonDelay += elapsed;
+  if (mouse->rbutton) right_button_delay_ += elapsed;
 
   // right mouse button
   if (mouse->rbutton_pressed) {
-    if (!spell::FireBall::sparkle || rbuttonDelay < longSpellDelay) {
+    if (!spell::FireBall::sparkle || right_button_delay_ < longSpellDelay) {
       // quick click : standard fireball
-      if (dungeonx != x || dungeony != y) {
-        spell::FireBall* fb = new spell::FireBall(x, y, dungeonx, dungeony, spell::FB_STANDARD);
+      if (dungeon_x != x || dungeon_y != y) {
+        spell::FireBall* fb = new spell::FireBall(x, y, dungeon_x, dungeon_y, spell::FB_STANDARD);
         gameEngine->addFireball(fb);
         gameEngine->stats.nbSpellStandard++;
-        stealth = MIN(3.0f, stealth + 0.5f);
+        stealth_ = std::min(3.0f, stealth_ + 0.5f);
       }
     }
-    if (spell::FireBall::sparkle && rbuttonDelay >= longSpellDelay) {
+    if (spell::FireBall::sparkle && right_button_delay_ >= longSpellDelay) {
       // long right click : sparkle
-      if (dungeonx != x || dungeony != y) {
-        spell::FireBall* fb = new spell::FireBall(x, y, dungeonx, dungeony, spell::FB_BURST);
+      if (dungeon_x != x || dungeon_y != y) {
+        spell::FireBall* fb = new spell::FireBall(x, y, dungeon_x, dungeon_y, spell::FB_BURST);
         gameEngine->addFireball(fb);
         gameEngine->stats.nbSpellBurst++;
-        stealth = MIN(3.0f, stealth + 0.5f);
+        stealth_ = std::min(3.0f, stealth_ + 0.5f);
       }
     }
-    rbuttonDelay = 0.0f;
+    right_button_delay_ = 0.0f;
   }
 
   // left mouse button
@@ -429,25 +409,25 @@ bool Player::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
     spell::FireBallType type = spell::FB_STANDARD;
     bool cast = false;
     const char* subtype = "fireball";
-    if (lbuttonDelay < longSpellDelay) {
+    if (left_button_delay_ < longSpellDelay) {
       // quick left click : cast standard fireball
       cast = true;
       gameEngine->stats.nbSpellStandard++;
-      stealth = MIN(3.0f, stealth + 0.5f);
+      stealth_ = std::min(3.0f, stealth_ + 0.5f);
     } else {
       // long click : incandescence
       type = spell::FB_INCANDESCENCE;
       gameEngine->stats.nbSpellIncandescence++;
-      stealth = MIN(3.0f, stealth + 0.5f);
+      stealth_ = std::min(3.0f, stealth_ + 0.5f);
       subtype = "fireball2";
       cast = true;
     }
 
-    lWalkDelay = 0.0f;
-    lbuttonDelay = 0.0f;
+    left_walk_delay_ = 0.0f;
+    left_button_delay_ = 0.0f;
     if (cast) {
-      if (dungeonx != x || dungeony != y) {
-        spell::FireBall* fb = new spell::FireBall(x, y, dungeonx, dungeony, type, subtype);
+      if (dungeon_x != x || dungeon_y != y) {
+        spell::FireBall* fb = new spell::FireBall(x, y, dungeon_x, dungeon_y, type, subtype);
         gameEngine->addFireball(fb);
         gameEngine->stats.nbSpellStandard++;
       }
@@ -456,9 +436,9 @@ bool Player::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
 
   if (!key.pressed && key.c == quickslot1Key) {
     // cast fireball
-    if (dungeonx != x || dungeony != y) {
+    if (dungeon_x != x || dungeon_y != y) {
       spell::FireBallType type = spell::FB_SPARK;
-      spell::FireBall* fb = new spell::FireBall(x, y, dungeonx, dungeony, type);
+      spell::FireBall* fb = new spell::FireBall(x, y, dungeon_x, dungeon_y, type);
       gameEngine->addFireball(fb);
       gameEngine->stats.nbSpellStandard++;
     } else {
@@ -469,103 +449,102 @@ bool Player::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
 
   // walk
   float maxInvSpeed = 1.0f / speed;
-  if (isSprinting && sprintDelay > 0.0f && sprintDelay < sprintLength) {
-    float sprintCoef = 1.0f - 4 * (sprintLength - sprintDelay) / sprintLength;
-    sprintCoef = MAX(MIN_SPRINT_COEF, sprintCoef);
+  if (is_sprinting_ && sprint_delay_ > 0.0f && sprint_delay_ < sprintLength) {
+    float sprintCoef = 1.0f - 4 * (sprintLength - sprint_delay_) / sprintLength;
+    sprintCoef = std::max(MIN_SPRINT_COEF, sprintCoef);
     maxInvSpeed *= sprintCoef;
   }
   if (hasCondition(CRIPPLED)) {
-    float crippleCoef = getMinConditionAmount(CRIPPLED);
+    const float crippleCoef = getMinConditionAmount(CRIPPLED);
     maxInvSpeed /= crippleCoef;
   }
-  if (crouch) {
+  if (crouched_) {
     maxInvSpeed *= 2.0f;
   }
   // update stealth level
-  if (crouch || stealth < 1.0f) {
+  if (crouched_ || stealth_ < 1.0f) {
     computeStealth(elapsed);
   }
   map::TerrainId terrainId = dungeon->getTerrainType((int)x, (int)y);
-  float walkTime = map::terrainTypes[terrainId].walkCost * maxInvSpeed;
+  const float walkTime = map::terrainTypes[terrainId].walkCost * maxInvSpeed;
   if (walkTimer >= 0) {
     bool hasWalked = false;
-    int newx = (int)x, oldx = (int)x, newy = (int)y, oldy = (int)y;
-    if (up)
-      newy--;
-    else if (down)
-      newy++;
-    if (left)
-      newx--;
-    else if (right)
-      newx++;
-    int dx = newx - (int)x;
-    int dy = newy - (int)y;
+    const int old_x = (int)x;
+    const int old_y = (int)y;
+    int new_x = (int)x;
+    int new_y = (int)y;
+    if (up_) --new_y;
+    if (down_) ++new_y;
+    if (left_) --new_x;
+    if (right_) ++new_x;
+    int dx = new_x - (int)x;
+    int dy = new_y - (int)y;
     speed = playerSpeed;
     if (dx != 0 || dy != 0) {
-      int oldnewx = newx;
-      int oldnewy = newy;
+      int old_new_x = new_x;
+      int old_new_y = new_y;
       if (path) {
         delete path;
-        path = NULL;
+        path = nullptr;
       }
-      if (IN_RECTANGLE(newx, newy, dungeon->width, dungeon->height) && !dungeon->hasCreature(newx, newy) &&
-          dungeon->map->isWalkable(newx, newy)) {
-        x = newx;
-        y = newy;
+      if (IN_RECTANGLE(new_x, new_y, dungeon->width, dungeon->height) && !dungeon->hasCreature(new_x, new_y) &&
+          dungeon->map->isWalkable(new_x, new_y)) {
+        x = new_x;
+        y = new_y;
         if (dx != 0 && dy != 0) {
-          speedDist += 1.41f;
+          speed_dist_ += 1.41f;
           speed = playerSpeedDiag;
         } else {
-          speedDist += 1.0f;
+          speed_dist_ += 1.0f;
         }
         gameEngine->stats.nbSteps++;
         hasWalked = true;
       } else if (
-          IN_RECTANGLE(newx, newy, dungeon->width, dungeon->height) && !dungeon->hasCreature(newx, newy) &&
-          dungeon->hasActivableItem(newx, newy)) {
+          IN_RECTANGLE(new_x, new_y, dungeon->width, dungeon->height) && !dungeon->hasCreature(new_x, new_y) &&
+          dungeon->hasActivableItem(new_x, new_y)) {
         // activate some item by bumping on it (like a chest)
-        activateCell(newx, newy, false, true);
-        up = down = left = right = false;
+        activateCell(new_x, new_y, false, true);
+        up_ = down_ = left_ = right_ = false;
         hasWalked = true;
       } else {
         // try to slide against walls
         if (dx != 0 && dy != 0) {
-          newx = (int)x + dx;
-          newy = (int)y;
+          new_x = (int)x + dx;
+          new_y = (int)y;
           // horizontal slide
-          if (IN_RECTANGLE(newx, newy, dungeon->width, dungeon->height) && dungeon->map->isWalkable(newx, newy) &&
-              (!dungeon->hasCreature(newx, newy) || !dungeon->getCreature(newx, newy)->isBlockingPath())) {
-            x = newx;
-            y = newy;
+          if (IN_RECTANGLE(new_x, new_y, dungeon->width, dungeon->height) && dungeon->map->isWalkable(new_x, new_y) &&
+              (!dungeon->hasCreature(new_x, new_y) || !dungeon->getCreature(new_x, new_y)->isBlockingPath())) {
+            x = new_x;
+            y = new_y;
             gameEngine->stats.nbSteps++;
-            speedDist += 1.0f;
+            speed_dist_ += 1.0f;
             hasWalked = true;
           } else {
             // vertical slide
-            newx = (int)x;
-            newy = (int)y + dy;
-            if (IN_RECTANGLE(newx, newy, dungeon->width, dungeon->height) && dungeon->map->isWalkable(newx, newy) &&
-                (!dungeon->hasCreature(newx, newy) || !dungeon->getCreature(newx, newy)->isBlockingPath())) {
-              x = newx;
-              y = newy;
+            new_x = (int)x;
+            new_y = (int)y + dy;
+            if (IN_RECTANGLE(new_x, new_y, dungeon->width, dungeon->height) && dungeon->map->isWalkable(new_x, new_y) &&
+                (!dungeon->hasCreature(new_x, new_y) || !dungeon->getCreature(new_x, new_y)->isBlockingPath())) {
+              x = new_x;
+              y = new_y;
               gameEngine->stats.nbSteps++;
-              speedDist += 1.0f;
+              speed_dist_ += 1.0f;
               hasWalked = true;
             }
           }
         } else if (dx != 0) {
-          static int dy = 1;
+          static int a = 1;
           if (IN_RECTANGLE(x + dx, y + dy, dungeon->width, dungeon->height) &&
               dungeon->map->isWalkable((int)x + dx, (int)y + dy) &&
               (!dungeon->hasCreature((int)x + dx, (int)y + dy) ||
                !dungeon->getCreature((int)x + dx, (int)y + dy)->isBlockingPath())) {
-            newx = (int)x + dx;
-            newy = (int)y + dy;
-            x = newx;
-            y = newy;
+            new_x = (int)x + dx;
+            new_y = (int)y + dy;
+            x = new_x;
+            y = new_y;
             gameEngine->stats.nbSteps++;
             dy = -dy;
-            speedDist += 1.41f;
+            speed_dist_ += 1.41f;
             speed = playerSpeedDiag;
             hasWalked = true;
           } else if (
@@ -573,13 +552,13 @@ bool Player::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
               dungeon->map->isWalkable((int)x + dx, (int)y - dy) &&
               (!dungeon->hasCreature((int)x + dx, (int)y - dy) ||
                !dungeon->getCreature((int)x + dx, (int)y - dy)->isBlockingPath())) {
-            newx = (int)x + dx;
-            newy = (int)y - dy;
-            x = newx;
-            y = newy;
+            new_x = (int)x + dx;
+            new_y = (int)y - dy;
+            x = new_x;
+            y = new_y;
             gameEngine->stats.nbSteps++;
             dy = -dy;
-            speedDist += 1.41f;
+            speed_dist_ += 1.41f;
             speed = playerSpeedDiag;
             hasWalked = true;
           }
@@ -589,13 +568,13 @@ bool Player::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
               dungeon->map->isWalkable((int)x + dx, (int)y + dy) &&
               (!dungeon->hasCreature((int)x + dx, (int)y + dy) ||
                !dungeon->getCreature((int)x + dx, (int)y + dy)->isBlockingPath())) {
-            newx = (int)x + dx;
-            newy = (int)y + dy;
-            x = newx;
-            y = newy;
+            new_x = (int)x + dx;
+            new_y = (int)y + dy;
+            x = new_x;
+            y = new_y;
             gameEngine->stats.nbSteps++;
             dx = -dx;
-            speedDist += 1.41f;
+            speed_dist_ += 1.41f;
             speed = playerSpeedDiag;
             hasWalked = true;
           } else if (
@@ -603,42 +582,42 @@ bool Player::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
               dungeon->map->isWalkable((int)x - dx, (int)y + dy) &&
               (!dungeon->hasCreature((int)x - dx, (int)y + dy) ||
                !dungeon->getCreature((int)x - dx, (int)y + dy)->isBlockingPath())) {
-            newx = (int)x - dx;
-            newy = (int)y + dy;
-            x = newx;
-            y = newy;
+            new_x = (int)x - dx;
+            new_y = (int)y + dy;
+            x = new_x;
+            y = new_y;
             gameEngine->stats.nbSteps++;
             dx = -dx;
-            speedDist += 1.41f;
+            speed_dist_ += 1.41f;
             speed = playerSpeedDiag;
             hasWalked = true;
           }
         }
-        if (oldx == x && oldy == y && IN_RECTANGLE(oldnewx, oldnewy, dungeon->width, dungeon->height)) {
+        if (old_x == x && old_y == y && IN_RECTANGLE(old_new_x, old_new_y, dungeon->width, dungeon->height)) {
           // could not walk. activate item ?
           bool activated = false;
-          activateCell(oldnewx, oldnewy, false, false, &activated);
+          activateCell(old_new_x, old_new_y, false, false, &activated);
           if (activated) {
-            up = down = left = right = false;
+            up_ = down_ = left_ = right_ = false;
             hasWalked = true;
           }
         }
       }
     } else if (path && !path->isEmpty()) {
-      path->get(0, &newx, &newy);
-      if (!dungeon->hasCreature(newx, newy)) {
-        path->walk(&newx, &newy, false);
-        setPos(newx, newy);
+      path->get(0, &new_x, &new_y);
+      if (!dungeon->hasCreature(new_x, new_y)) {
+        path->walk(&new_x, &new_y, false);
+        setPos(new_x, new_y);
         gameEngine->stats.nbSteps++;
         hasWalked = true;
       } else {
         // the path is obstructed. cancel it
         delete path;
-        path = NULL;
+        path = nullptr;
       }
     }
     // auto pickup items
-    if (oldx != x || oldy != y) {
+    if (old_x != x || old_y != y) {
       auto* items = dungeon->getItems((int)x, (int)y);
       std::vector<item::Item*> toPick;
       for (item::Item* it : *items) {
@@ -657,20 +636,20 @@ bool Player::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
   }
   // healing effect
   updateHealing(elapsed);
-  healLight.setPos(x * 2, y * 2);
+  heal_light_.setPos(x * 2, y * 2);
   return true;
 }
 
 void Player::computeFovRange(float elapsed) {
-  static float rangeAccomodation = config.getFloatProperty("config.creatures.player.rangeAccomodation");
-  static float playerSpeed = gameEngine->getFloatParam("playerSpeed");
-  float fovRangeTarget = maxFovRange;
-  if (averageSpeed > playerSpeed / 2) {
-    float fovSpeed = averageSpeed - playerSpeed / 2;
-    float fovRefSpeed = playerSpeed / 2;
-    fovRangeTarget = maxFovRange - (fovSpeed * 0.5 / fovRefSpeed) * 0.8 * maxFovRange;
+  static const float rangeAccomodation = config.getFloatProperty("config.creatures.player.rangeAccomodation");
+  static const float playerSpeed = gameEngine->getFloatParam("playerSpeed");
+  float fovRangeTarget = max_fov_range_;
+  if (average_speed_ > playerSpeed / 2) {
+    const float fovSpeed = average_speed_ - playerSpeed / 2;
+    const float fovRefSpeed = playerSpeed / 2;
+    fovRangeTarget = max_fov_range_ - (fovSpeed * 0.5 / fovRefSpeed) * 0.8 * max_fov_range_;
   }
-  if (crouch) fovRangeTarget *= 1.15f;
+  if (crouched_) fovRangeTarget *= 1.15f;
   if (fovRange > fovRangeTarget)
     fovRange += (fovRangeTarget - fovRange) * elapsed;
   else
@@ -678,50 +657,50 @@ void Player::computeFovRange(float elapsed) {
 }
 
 void Player::computeAverageSpeed(float elapsed) {
-  speedElapsed += elapsed;
-  if (speedElapsed > 0.5f) {
-    averageSpeed = speedDist * 2;
-    speedElapsed = speedDist = 0.0f;
+  speed_elapsed_ += elapsed;
+  if (speed_elapsed_ > 0.5f) {
+    average_speed_ = speed_dist_ * 2;
+    speed_elapsed_ = speed_dist_ = 0.0f;
   }
 }
 
 // update breath recovery after sprint
-// sprintDelay < 0 : recovery. cannot sprint
+// sprint_delay_ < 0 : recovery. cannot sprint
 void Player::updateSprintDelay(float elapsed, bool isSprinting) {
-  static float sprintLength = config.getFloatProperty("config.creatures.player.sprintLength");
-  static float sprintRecovery = config.getFloatProperty("config.creatures.player.sprintRecovery");
-  if (sprintDelay > 0.0f && isSprinting && averageSpeed > 0.1f) {
-    sprintDelay -= elapsed;
-    if (sprintDelay < 0.0f) {
+  static const float sprintLength = config.getFloatProperty("config.creatures.player.sprintLength");
+  static const float sprintRecovery = config.getFloatProperty("config.creatures.player.sprintRecovery");
+  if (sprint_delay_ > 0.0f && isSprinting && average_speed_ > 0.1f) {
+    sprint_delay_ -= elapsed;
+    if (sprint_delay_ < 0.0f) {
       // exhausted
       Condition* cond = new Condition(CRIPPLED, sprintRecovery, 0.5f, "exhausted");
       addCondition(cond);
     }
-  } else if (sprintDelay < 0.0f) {
-    if (!hasCondition(CRIPPLED, "exhausted")) sprintDelay = sprintLength;
-  } else if (sprintDelay > 0.0f && sprintDelay < sprintLength) {
-    sprintDelay += elapsed;
-    if (sprintDelay > sprintLength) sprintDelay = sprintLength;
+  } else if (sprint_delay_ < 0.0f) {
+    if (!hasCondition(CRIPPLED, "exhausted")) sprint_delay_ = sprintLength;
+  } else if (sprint_delay_ > 0.0f && sprint_delay_ < sprintLength) {
+    sprint_delay_ += elapsed;
+    if (sprint_delay_ > sprintLength) sprint_delay_ = sprintLength;
   }
 }
 
 void Player::updateHealing(float elapsed) {
-  static float healRate = config.getFloatProperty("config.creatures.player.healRate");
+  static const float healRate = config.getFloatProperty("config.creatures.player.healRate");
   map::Dungeon* dungeon = gameEngine->dungeon;
-  if (healPoints > 0) {
+  if (heal_points_ > 0) {
     float amount = elapsed * healRate;
-    healPoints -= amount;
-    healLight.color = healthColor * (healPoints / (maxLife / 10));
-    if (healPoints < 0) {
-      amount += healPoints;
-      healPoints = 0;
-      dungeon->removeLight(&healLight);
+    heal_points_ -= amount;
+    heal_light_.color = healthColor * (heal_points_ / (maxLife / 10));
+    if (heal_points_ < 0) {
+      amount += heal_points_;
+      heal_points_ = 0;
+      dungeon->removeLight(&heal_light_);
     }
-    curHeal += amount;
-    int iHeal = (int)curHeal;
+    current_heal_ += amount;
+    const int iHeal = (int)current_heal_;
     life += iHeal;
-    curHeal -= iHeal;
-    life = MIN(maxLife, life);
+    current_heal_ -= iHeal;
+    life = std::min(maxLife, life);
   }
 }
 
@@ -730,7 +709,7 @@ void Player::saveData(uint32_t chunkId, TCODZip* zip) {
   saveGame.saveChunk(PLAY_CHUNK_ID, PLAY_CHUNK_VERSION);
 
   // save player specific data
-  zip->putFloat(stealth);
+  zip->putFloat(stealth_);
 
   Creature::saveData(CREA_CHUNK_ID, zip);
 }
@@ -739,10 +718,10 @@ bool Player::loadData(uint32_t chunkId, uint32_t chunkVersion, TCODZip* zip) {
   if (chunkVersion != PLAY_CHUNK_VERSION) return false;
 
   // load player specific data
-  stealth = zip->getFloat();
+  stealth_ = zip->getFloat();
 
   saveGame.loadChunk(&chunkId, &chunkVersion);
-  bool ret = Creature::loadData(chunkId, chunkVersion, zip);
+  const bool ret = Creature::loadData(chunkId, chunkVersion, zip);
   if (ret) {
     util::TextGenerator::addGlobalValue("PLAYER_NAME", name);
   }

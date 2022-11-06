@@ -657,7 +657,7 @@ void TreeBurner::onActivate() {
   TCODConsole::setFade(0, TCODColor::black);
   fade_ = FADE_UP;
   fade_level_ = 0.0f;
-  player.maxFovRange = player.fovRange = 8;
+  player.max_fov_range_ = player.fovRange = 8;
   time_fix_ = 1.0f;
   gui.log.critical(
       "Welcome to TreeBurner v%s ! %c?%c for help.", getStringParam("version"), TCOD_COLCTRL_2, TCOD_COLCTRL_STOP);

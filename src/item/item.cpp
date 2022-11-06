@@ -871,7 +871,7 @@ Item* Item::getRandomWeapon(const char* typeName, ItemClass itemClass) {
         break;
       case MOD_MODIFIER:
         modifier::ItemModifierId id = (modifier::ItemModifierId)0;
-        switch (gameEngine->player.school.type) {
+        switch (gameEngine->player.school_.type) {
           case screen::SCHOOL_FIRE:
             id = (modifier::ItemModifierId)rng->getInt(modifier::ITEM_MOD_FIRE_BEGIN, modifier::ITEM_MOD_FIRE_END);
             break;

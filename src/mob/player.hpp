@@ -38,7 +38,6 @@ namespace mob {
 class Player : public Creature {
  public:
   Player();
-  virtual ~Player();
   void init();
   bool setPath(int xDest, int yDest, bool limitPath = true);
   bool update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse);
@@ -46,38 +45,48 @@ class Player : public Creature {
   void termLevel();
   void heal(int healPoints);
   void render(map::LightMap& lightMap) override;
-  void setLightRange(float range) { light.range = range; }
-  void setLightColor(TCODColor col) { light.color = col; }
+  void setLightRange(float range) { light_.range = range; }
+  void setLightColor(TCODColor col) { light_.color = col; }
   float getHealing();
   float getHealth();
-  [[depreaced]] static void getMoveKey(TCOD_key_t key, bool* up, bool* down, bool* left, bool* right);
-  inline float getAverageSpeed() { return averageSpeed; }
+  [[deprecated]] static void getMoveKey(TCOD_key_t key, bool* up, bool* down, bool* left, bool* right);
+  float getAverageSpeed() { return average_speed_; }
   void computeStealth(float elapsed);
 
   // SaveListener
   bool loadData(uint32_t chunkId, uint32_t chunkVersion, TCODZip* zip) override;
   void saveData(uint32_t chunkId, TCODZip* zip) override;
 
-  float maxFovRange;
-  screen::School school;
-  float stealth;
-  bool crouch;
+  float max_fov_range_{};
+  screen::School school_{};
+  float stealth_{1.0f};
+  bool crouched_{};
 
  protected:
-  float healPoints, averageSpeed, speedElapsed, speedDist, sprintDelay;
-  float lbuttonDelay, lWalkDelay, rbuttonDelay;
-  bool lbutton, rbutton;
-  float curHeal;
-  map::Light light;
-  bool up, down, left, right;
-  map::ExtendedLight healLight;
-  bool initDungeon;
-  bool isSprinting;
+  float heal_points_{};
+  float average_speed_{};
+  float speed_elapsed_{};
+  float speed_dist_{};
+  float sprint_delay_{};
+  float left_button_delay_{};
+  float left_walk_delay_{};
+  float right_button_delay_{};
+  bool left_button_{};
+  bool right_button_{};
+  float current_heal_{};
+  map::Light light_{};
+  bool up_{};
+  bool down_{};
+  bool left_{};
+  bool right_{};
+  map::ExtendedLight heal_light_{};
+  bool init_dungeon_{true};
+  bool is_sprinting_{};
 
   void computeFovRange(float elapsed);
   void computeAverageSpeed(float elapsed);
   void updateSprintDelay(float elapsed, bool isSprinting);
   void updateHealing(float elapsed);
-  bool activateCell(int dungeonx, int dungeony, bool lbut_pressed, bool walk, bool* activated = NULL);
+  bool activateCell(int dungeon_x, int dungeon_y, bool left_button_pressed, bool walk, bool* activated = nullptr);
 };
 }  // namespace mob

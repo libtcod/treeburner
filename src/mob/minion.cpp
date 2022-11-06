@@ -119,7 +119,7 @@ bool Minion::update(float elapsed) {
   pathTimer += elapsed;
   if (!seen && game->dungeon->map->isInFov((int)x, (int)y) && game->dungeon->getMemory(x, y)) {
     float dist = squaredDistance(game->player);
-    if (dist < 1.0f || game->player.stealth >= 1.0f - 1.0f / dist) {
+    if (dist < 1.0f || game->player.stealth_ >= 1.0f - 1.0f / dist) {
       // creature is seen by player
       setSeen();
     }
