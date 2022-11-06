@@ -38,7 +38,7 @@ VillageHead::VillageHead() {
   ch_ = villageHeadChar;
   color_ = villageHeadColor;
   life_ = villageHeadLife;
-  strcpy(name_, "village head");
+  name_ = "village head";
   summonMinions = true;
   stayInLair = false;
 }

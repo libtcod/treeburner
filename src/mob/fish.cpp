@@ -32,7 +32,7 @@
 
 namespace mob {
 Fish::Fish(util::WaterZone* zone) : Creature(), zone(zone) {
-  strcpy(name_, "fish");
+  name_ = "fish";
   ch_ = 0;
   color_ = TCODColor::desaturatedSky;
   life_ = 10;

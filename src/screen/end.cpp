@@ -122,7 +122,7 @@ if ( gameEngine && ((Game *)gameEngine)->bossIsDead ) {
       if (gameEngine->stats.creatureDeath[id] > 0) {
         mob::Creature* cr = mob::Creature::getCreature(id);  // yeah this sucks...
         TCODConsole::root->printEx(
-            78, thy++, TCOD_BKGND_NONE, TCOD_RIGHT, "%s : %d", cr->name_, gameEngine->stats.creatureDeath[id]);
+            78, thy++, TCOD_BKGND_NONE, TCOD_RIGHT, "%s : %d", cr->name_.c_str(), gameEngine->stats.creatureDeath[id]);
       }
     }
   }

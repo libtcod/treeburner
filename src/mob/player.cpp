@@ -718,7 +718,7 @@ bool Player::loadData(uint32_t chunkId, uint32_t chunkVersion, TCODZip* zip) {
   saveGame.loadChunk(&chunkId, &chunkVersion);
   const bool ret = Creature::loadData(chunkId, chunkVersion, zip);
   if (ret) {
-    util::TextGenerator::addGlobalValue("PLAYER_NAME", name_);
+    util::TextGenerator::addGlobalValue("PLAYER_NAME", name_.c_str());
   }
   return ret;
 }

@@ -67,7 +67,6 @@ enum CreatureFlags {
   CREATURE_CATCHABLE = 16,  // can catch a creature by clicking on it when adjacent
 };
 
-#define CREATURE_NAME_SIZE 32
 #define VISIBLE_HEIGHT 0.05f
 #define MIN_VISIBLE_HEIGHT 0.02f
 
@@ -181,7 +180,7 @@ class Creature : public base::DynamicEntity,
   bool ignore_creatures_{};  // walk mode
   bool burn_{};
   int flags_{};
-  char name_[CREATURE_NAME_SIZE]{};
+  std::string name_{};
   item::Item* main_hand_{};
   item::Item* off_hand_{};
   item::Item* as_item_{};  // an item corresponding to this creature

@@ -219,7 +219,7 @@ Creature* Creature::getCreature(CreatureTypeId id) {
   switch (id) {
     case CREATURE_DEER:
       ret = new Creature();
-      strcpy(ret->name_, "deer");
+      ret->name_ = "deer";
       ret->ch_ = 'd';
       ret->color_ = TCODColor::darkerYellow;
       ret->max_life_ = ret->life_ = 10.0f;
@@ -580,7 +580,7 @@ void Creature::saveData(uint32_t chunkId, TCODZip* zip) {
   zip->putFloat(x_);
   zip->putFloat(y_);
   zip->putFloat(life_);
-  zip->putString(name_);
+  zip->putString(name_.c_str());
   // save inventory
   zip->putInt(inventory_.size());
   for (item::Item* it : inventory_) {
@@ -599,7 +599,7 @@ bool Creature::loadData(uint32_t chunkId, uint32_t chunkVersion, TCODZip* zip) {
   x_ = zip->getFloat();
   y_ = zip->getFloat();
   life_ = zip->getFloat();
-  strcpy(name_, zip->getString());
+  name_ = zip->getString();
   // load inventory
   int nbItems = zip->getInt();
   while (nbItems > 0) {
