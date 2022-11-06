@@ -67,8 +67,8 @@ enum CreatureFlags {
   CREATURE_CATCHABLE = 16,  // can catch a creature by clicking on it when adjacent
 };
 
-#define VISIBLE_HEIGHT 0.05f
-#define MIN_VISIBLE_HEIGHT 0.02f
+static constexpr auto VISIBLE_HEIGHT = 0.05f;
+static constexpr auto MIN_VISIBLE_HEIGHT = 0.02f;
 
 enum ConditionTypeId {
   STUNNED,
