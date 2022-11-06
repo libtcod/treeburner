@@ -58,6 +58,6 @@ class RippleManager {
   map::Dungeon* dungeon = nullptr;
   TCODList<WaterZone*> zones;
   void init();
-  float getData(const WaterZone& wz, int x2, int y2) const { return wz.data[x2 + y2 * wz.rect.w * 2]; }
+  float getData(const WaterZone& wz, int x2, int y2) const { return wz.data[x2 + y2 * wz.rect.w_ * 2]; }
 };
 }  // namespace util

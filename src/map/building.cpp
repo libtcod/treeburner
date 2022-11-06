@@ -84,72 +84,72 @@ Building* Building::generateWallsOnly(int width, int height, int nbRooms, TCODRa
 }
 
 void Building::placeRandomDoor(TCODRandom* rng) {
-  doorx = rng->getInt(0, w - 1);
-  doory = rng->getInt(0, h - 1);
-  while (map[doorx + doory * w] < BUILDING_WALL_N || map[doorx + doory * w] > BUILDING_WALL_W) {
+  doorx = rng->getInt(0, w_ - 1);
+  doory = rng->getInt(0, h_ - 1);
+  while (map[doorx + doory * w_] < BUILDING_WALL_N || map[doorx + doory * w_] > BUILDING_WALL_W) {
     // not a door-hosting wall
     doorx++;
-    if (doorx == w) {
+    if (doorx == w_) {
       doorx = 0;
       doory++;
-      if (doory == h) doory = 0;
+      if (doory == h_) doory = 0;
     }
   }
-  map[doorx + doory * w] = BUILDING_DOOR;
+  map[doorx + doory * w_] = BUILDING_DOOR;
 }
 
 #define IS_FLAT_WALL(x) ((x) >= BUILDING_WALL_N && (x) <= BUILDING_WALL_W)
 void Building::placeRandomWindow(TCODRandom* rng) {
-  int winx = rng->getInt(0, w - 1);
-  int winy = rng->getInt(0, h - 1);
+  int winx = rng->getInt(0, w_ - 1);
+  int winy = rng->getInt(0, h_ - 1);
   bool ok = false;
-  int count = w * h;
+  int count = w_ * h_;
   bool horiz = false;
   while (!ok && count > 0) {
-    int cell = map[winx + winy * w];
+    int cell = map[winx + winy * w_];
     while (count > 0 && !IS_FLAT_WALL(cell)) {
       // not a window-hosting wall
       count--;
       winx++;
-      if (winx == w) {
+      if (winx == w_) {
         winx = 0;
         winy++;
-        if (winy == h) winy = 0;
+        if (winy == h_) winy = 0;
       }
-      cell = map[winx + winy * w];
+      cell = map[winx + winy * w_];
     }
     // window should not be adjacent to door or corner
     horiz = ((cell & 1) == 0);
     int before = BUILDING_NONE;
     int after = BUILDING_NONE;
     if (horiz) {
-      if (winx > 0) before = map[winx - 1 + winy * w];
-      if (winx < w - 1) after = map[winx + 1 + winy * w];
+      if (winx > 0) before = map[winx - 1 + winy * w_];
+      if (winx < w_ - 1) after = map[winx + 1 + winy * w_];
     } else {
-      if (winy > 0) before = map[winx + (winy - 1) * w];
-      if (winy < h - 1) after = map[winx + (winy + 1) * w];
+      if (winy > 0) before = map[winx + (winy - 1) * w_];
+      if (winy < h_ - 1) after = map[winx + (winy + 1) * w_];
     }
     if (IS_FLAT_WALL(before) && IS_FLAT_WALL(after))
       ok = true;
     else {
       count--;
       winx++;
-      if (winx == w) {
+      if (winx == w_) {
         winx = 0;
         winy++;
-        if (winy == h) winy = 0;
+        if (winy == h_) winy = 0;
       }
     }
   }
   if (!ok) return;  // no place found
-  map[winx + winy * w] = horiz ? BUILDING_WINDOW_H : BUILDING_WINDOW_V;
+  map[winx + winy * w_] = horiz ? BUILDING_WINDOW_H : BUILDING_WINDOW_V;
 }
 
 // scan the map. put walls at floor/none borders
 void Building::buildExternalWalls() {
-  for (int y = 0; y < h; y++) {
-    for (int x = 0; x < w; x++) {
-      if (map[x + y * w] == BUILDING_FLOOR) {
+  for (int y = 0; y < h_; y++) {
+    for (int x = 0; x < w_; x++) {
+      if (map[x + y * w_] == BUILDING_FLOOR) {
         // check if there are adjacent outdoor cells
         enum BuildDir { BD_NW = 1, BD_N = 2, BD_NE = 4, BD_E = 8, BD_SE = 16, BD_S = 32, BD_SW = 64, BD_W = 128 };
         int bd = 0;
@@ -160,11 +160,11 @@ void Building::buildExternalWalls() {
           int dx = x + xdir[dir];
           int dy = y + ydir[dir];
           // flag outdoor directions
-          if (!IN_RECTANGLE(dx, dy, w, h) || map[dx + dy * w] == BUILDING_NONE) bd |= (1 << dir);
+          if (!IN_RECTANGLE(dx, dy, w_, h_) || map[dx + dy * w_] == BUILDING_NONE) bd |= (1 << dir);
         }
         if (bd != 0) {
           // oudoor cells found. create an external wall
-          int wall = map[x + y * w];
+          int wall = map[x + y * w_];
 #define HAS_FLAG(f, f2) (((f) & (f2)) == (f2))
 #define IS_NW(f) HAS_FLAG(f, BD_W | BD_NW | BD_N)
 #define IS_NE(f) HAS_FLAG(f, BD_N | BD_NE | BD_E)
@@ -198,7 +198,7 @@ void Building::buildExternalWalls() {
             wall = BUILDING_WALL_S;
           else if (IS_W(bd))
             wall = BUILDING_WALL_W;
-          map[x + y * w] = wall;
+          map[x + y * w_] = wall;
         }
       }
     }
@@ -206,16 +206,16 @@ void Building::buildExternalWalls() {
 }
 
 bool Building::getFreeFloor(int* fx, int* fy) {
-  int ffx = rng->getInt(0, w - 1);
-  int ffy = rng->getInt(0, h - 1);
-  int count = w * h;
-  while (count > 0 && map[ffx + ffy * w] != BUILDING_FLOOR) {
+  int ffx = rng->getInt(0, w_ - 1);
+  int ffy = rng->getInt(0, h_ - 1);
+  int count = w_ * h_;
+  while (count > 0 && map[ffx + ffy * w_] != BUILDING_FLOOR) {
     ffx++;
     count--;
-    if (ffx == w) {
+    if (ffx == w_) {
       ffx = 0;
       ffy++;
-      if (ffy == h) ffy = 0;
+      if (ffy == h_) ffy = 0;
     }
   }
   if (count == 0) return false;
@@ -234,9 +234,9 @@ void Building::setHuntingHide(map::Dungeon* dungeon) {
   }
   */
   if (getFreeFloor(&ix, &iy)) {
-    item::Item* chest = item::Item::getItem("chest", x + ix, y + iy);
+    item::Item* chest = item::Item::getItem("chest", x_ + ix, y_ + iy);
     dungeon->addItem(chest);
-    map[ix + iy * w] = BUILDING_ITEM;
+    map[ix + iy * w_] = BUILDING_ITEM;
     // fill the chest
 
     item::Item* item = item::Item::getItem("short bronze blade", 0, 0);
@@ -262,12 +262,12 @@ void Building::setHuntingHide(map::Dungeon* dungeon) {
 
 void Building::applyTo(map::Dungeon* dungeon, int dungeonDoorx, int dungeonDoory, bool cityWalls) {
   static TCODColor roofcol = TCODColor::darkOrange;
-  x = dungeonDoorx - doorx;
-  y = dungeonDoory - doory;
-  for (int cy = 0; cy < h; cy++) {
-    for (int cx = 0; cx < w; cx++) {
-      if (!IN_RECTANGLE(x + cx, y + cy, dungeon->width, dungeon->height)) continue;
-      int cellType = map[cx + cy * w];
+  x_ = dungeonDoorx - doorx;
+  y_ = dungeonDoory - doory;
+  for (int cy = 0; cy < h_; cy++) {
+    for (int cx = 0; cx < w_; cx++) {
+      if (!IN_RECTANGLE(x_ + cx, y_ + cy, dungeon->width, dungeon->height)) continue;
+      int cellType = map[cx + cy * w_];
       switch (cellType) {
         case BUILDING_NONE:
           break;
@@ -291,7 +291,7 @@ void Building::applyTo(map::Dungeon* dungeon, int dungeonDoorx, int dungeonDoory
               TCOD_CHAR_NE,
               TCOD_CHAR_SE,
               TCOD_CHAR_SW};
-          item::Item* wall = item::Item::getItem(cityWalls ? "city wall" : "wall", x + cx, y + cy);
+          item::Item* wall = item::Item::getItem(cityWalls ? "city wall" : "wall", x_ + cx, y_ + cy);
           wall->ch_ = wallToChar[cellType];
           dungeon->addItem(wall);
         }
@@ -302,13 +302,13 @@ void Building::applyTo(map::Dungeon* dungeon, int dungeonDoorx, int dungeonDoory
         case BUILDING_WINDOW_V:
         case BUILDING_DOOR:
           // floor
-          map::Cell* cell = dungeon->getCell(x + cx, y + cy);
+          map::Cell* cell = dungeon->getCell(x_ + cx, y_ + cy);
           cell->terrain = TERRAIN_WOODEN_FLOOR;
           cell->building = this;
           static int subcx[] = {0, 1, 0, 1};
           static int subcy[] = {0, 0, 1, 1};
-          int dungeon2x = (int)(x + cx) * 2;
-          int dungeon2y = (int)(y + cy) * 2;
+          int dungeon2x = (int)(x_ + cx) * 2;
+          int dungeon2y = (int)(y_ + cy) * 2;
           // subcell stuff
           for (int i = 0; i < 4; i++) {
             int d2x = dungeon2x + subcx[i];
@@ -316,16 +316,16 @@ void Building::applyTo(map::Dungeon* dungeon, int dungeonDoorx, int dungeonDoory
             dungeon->setGroundColor(d2x, d2y, TCODColor::darkerAmber);
             dungeon->setShadowHeight(d2x, d2y, 1.0f);
             // roof
-            dungeon->canopy->putPixel(d2x, d2y, cx * 2 + subcx[i] < w ? roofcol * 0.7f : roofcol);
+            dungeon->canopy->putPixel(d2x, d2y, cx * 2 + subcx[i] < w_ ? roofcol * 0.7f : roofcol);
           }
           if (cellType == BUILDING_DOOR) {
-            dungeon->addItem(item::Item::getItem("door", x + cx, y + cy));
+            dungeon->addItem(item::Item::getItem("door", x_ + cx, y_ + cy));
           } else if (cellType == BUILDING_WINDOW_H) {
-            item::Item* item = item::Item::getItem(cityWalls ? "arrow slit" : "window", x + cx, y + cy);
+            item::Item* item = item::Item::getItem(cityWalls ? "arrow slit" : "window", x_ + cx, y_ + cy);
             item->ch_ = TCOD_CHAR_HLINE;
             dungeon->addItem(item);
           } else if (cellType == BUILDING_WINDOW_V) {
-            item::Item* item = item::Item::getItem(cityWalls ? "arrow slit" : "window", x + cx, y + cy);
+            item::Item* item = item::Item::getItem(cityWalls ? "arrow slit" : "window", x_ + cx, y_ + cy);
             item->ch_ = TCOD_CHAR_VLINE;
             dungeon->addItem(item);
           }
@@ -339,22 +339,22 @@ void Building::applyTo(map::Dungeon* dungeon, int dungeonDoorx, int dungeonDoory
 void Building::collapseRoof() {
   item::ItemType* wall = item::Item::getType("wall");
   map::Dungeon* dungeon = gameEngine->dungeon;
-  for (int cy = 0; cy < h; cy++) {
-    for (int cx = 0; cx < w; cx++) {
-      if (!IN_RECTANGLE(x + cx, y + cy, dungeon->width, dungeon->height)) continue;
-      int cellType = map[cx + cy * w];
+  for (int cy = 0; cy < h_; cy++) {
+    for (int cx = 0; cx < w_; cx++) {
+      if (!IN_RECTANGLE(x_ + cx, y_ + cy, dungeon->width, dungeon->height)) continue;
+      int cellType = map[cx + cy * w_];
       if (cellType >= BUILDING_WALL_N && cellType <= BUILDING_WALL_SW) {
-        if (dungeon->getItem((int)(x + cx), (int)(y + cy), wall)) return;  // there is still a wall!
+        if (dungeon->getItem((int)(x_ + cx), (int)(y_ + cy), wall)) return;  // there is still a wall!
       }
     }
   }
-  for (int cy = 0; cy < h; cy++) {
-    for (int cx = 0; cx < w; cx++) {
-      if (!IN_RECTANGLE(x + cx, y + cy, dungeon->width, dungeon->height)) continue;
-      int cellType = map[cx + cy * w];
+  for (int cy = 0; cy < h_; cy++) {
+    for (int cx = 0; cx < w_; cx++) {
+      if (!IN_RECTANGLE(x_ + cx, y_ + cy, dungeon->width, dungeon->height)) continue;
+      int cellType = map[cx + cy * w_];
       if (cellType != BUILDING_NONE) {
-        int dx = (int)((x + cx) * 2);
-        int dy = (int)((y + cy) * 2);
+        int dx = (int)((x_ + cx) * 2);
+        int dy = (int)((y_ + cy) * 2);
         dungeon->canopy->putPixel(dx, dy, TCODColor::black);
         dungeon->canopy->putPixel(dx + 1, dy, TCODColor::black);
         dungeon->canopy->putPixel(dx, dy + 1, TCODColor::black);

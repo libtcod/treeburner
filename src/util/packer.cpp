@@ -56,32 +56,33 @@ void Packer::setPadding(int leftPadding, int rightPadding, int topPadding, int b
 void Packer::clear() {
   rects.clear();
   empty.clear();
-  base::Rect r((int)x, (int)y, w, h);
+  base::Rect r((int)x_, (int)y_, w_, h_);
   empty.push(r);
 }
 
 bool Packer::findEmptyPlace(base::Rect* rect) {
-  float bestdist = w * w * h * h;
+  float bestdist = w_ * w_ * h_ * h_;
   float bestdx = 0, bestdy = 0;
   bool found = false;
 
   for (base::Rect* r = empty.begin(); r != empty.end(); r++) {
-    if (rect->x >= r->x && rect->y >= r->y && rect->x + rect->w <= r->x + r->w && rect->y + rect->h <= r->y + r->h) {
+    if (rect->x_ >= r->x_ && rect->y_ >= r->y_ && rect->x_ + rect->w_ <= r->x_ + r->w_ &&
+        rect->y_ + rect->h_ <= r->y_ + r->h_) {
       return true;  // rect is inside an empty rect
     }
     // check if rect can fit inside r
-    if (rect->w > r->w) continue;
-    if (rect->h > r->h) continue;
+    if (rect->w_ > r->w_) continue;
+    if (rect->h_ > r->h_) continue;
     // get the minimum movement to put rect inside r
     float xmove = 0, ymove = 0;
-    if (rect->x < r->x)
-      xmove = r->x - rect->x;
-    else if (rect->x + rect->w > r->x + r->w)
-      xmove = r->x + r->w - rect->x - rect->w;
-    if (rect->y < r->y)
-      ymove = r->y - rect->y;
-    else if (rect->y + rect->h > r->y + r->h)
-      ymove = r->y + r->h - rect->y - rect->h;
+    if (rect->x_ < r->x_)
+      xmove = r->x_ - rect->x_;
+    else if (rect->x_ + rect->w_ > r->x_ + r->w_)
+      xmove = r->x_ + r->w_ - rect->x_ - rect->w_;
+    if (rect->y_ < r->y_)
+      ymove = r->y_ - rect->y_;
+    else if (rect->y_ + rect->h_ > r->y_ + r->h_)
+      ymove = r->y_ + r->h_ - rect->y_ - rect->h_;
     float dist = xmove * xmove + ymove * ymove;
     if (dist < bestdist) {
       bestdist = dist;
@@ -90,26 +91,26 @@ bool Packer::findEmptyPlace(base::Rect* rect) {
       found = true;
     }
   }
-  rect->x += bestdx;
-  rect->y += bestdy;
+  rect->x_ += bestdx;
+  rect->y_ += bestdy;
   return found;
 }
 
 bool Packer::addRect(base::Rect* prect, bool fill) {
   base::Rect rect = *prect;
-  rect.x -= leftPadding;
-  rect.y -= topPadding;
-  rect.w += leftPadding + rightPadding;
-  rect.h += topPadding + bottomPadding;
+  rect.x_ -= leftPadding;
+  rect.y_ -= topPadding;
+  rect.w_ += leftPadding + rightPadding;
+  rect.h_ += topPadding + bottomPadding;
   // move the rectangle if its not inside the packer
-  if (rect.x < x)
-    rect.x = x;
-  else if (rect.x + rect.w > x + w)
-    rect.x = x + w - rect.w;
-  if (rect.y < y)
-    rect.y = y;
-  else if (rect.y + rect.h > y + h)
-    rect.y = y + h - rect.h;
+  if (rect.x_ < x_)
+    rect.x_ = x_;
+  else if (rect.x_ + rect.w_ > x_ + w_)
+    rect.x_ = x_ + w_ - rect.w_;
+  if (rect.y_ < y_)
+    rect.y_ = y_;
+  else if (rect.y_ + rect.h_ > y_ + h_)
+    rect.y_ = y_ + h_ - rect.h_;
 
     // move rect inside an empty rectangle
 #ifdef PACKER_DBG
@@ -129,8 +130,8 @@ bool Packer::addRect(base::Rect* prect, bool fill) {
   else
     printf(" /\n");
 #endif
-  prect->x = rect.x + leftPadding;
-  prect->y = rect.y + topPadding;
+  prect->x_ = rect.x_ + leftPadding;
+  prect->y_ = rect.y_ + topPadding;
   if (fill) addRectInternal(prect, false);
   return true;
 }
@@ -138,29 +139,33 @@ bool Packer::addRect(base::Rect* prect, bool fill) {
 void Packer::merge(TCODList<base::Rect>& list) {
   for (base::Rect* r1 = list.begin(); r1 != list.end(); r1++) {
     for (base::Rect* r2 = r1 + 1; r2 != list.end(); r2++) {
-      if (r1->x == r2->x && r1->y == r2->y && r1->w == r2->w && r1->h == r2->h) {
+      if (r1->x_ == r2->x_ && r1->y_ == r2->y_ && r1->w_ == r2->w_ && r1->h_ == r2->h_) {
         // r1 and r2 identical
         r2 = list.removeFast(r2);
         continue;
-      } else if (r2->x >= r1->x && r2->y >= r1->y && r2->x + r2->w <= r1->x + r1->w && r2->y + r2->h <= r1->y + r1->h) {
+      } else if (
+          r2->x_ >= r1->x_ && r2->y_ >= r1->y_ && r2->x_ + r2->w_ <= r1->x_ + r1->w_ &&
+          r2->y_ + r2->h_ <= r1->y_ + r1->h_) {
         // r2 inside r1
         r2 = list.removeFast(r2);
         continue;
       } else if (
-          r2->x == r1->x && r2->x + r2->w == r1->x + r1->w && (r2->y == r1->y + r1->h || r2->y + r2->h == r1->y)) {
+          r2->x_ == r1->x_ && r2->x_ + r2->w_ == r1->x_ + r1->w_ &&
+          (r2->y_ == r1->y_ + r1->h_ || r2->y_ + r2->h_ == r1->y_)) {
         // vertical merge
-        r1->h += r2->h;
-        if (r2->y < r1->y) {
-          r1->y = r2->y;
+        r1->h_ += r2->h_;
+        if (r2->y_ < r1->y_) {
+          r1->y_ = r2->y_;
         }
         r2 = list.removeFast(r2);
         continue;
       } else if (
-          r2->y == r1->y && r2->y + r2->h == r1->y + r1->h && (r2->x == r1->x + r1->w || r2->x + r2->w == r1->x)) {
+          r2->y_ == r1->y_ && r2->y_ + r2->h_ == r1->y_ + r1->h_ &&
+          (r2->x_ == r1->x_ + r1->w_ || r2->x_ + r2->w_ == r1->x_)) {
         // horizontal merge
-        r1->w += r2->w;
-        if (r2->x < r1->x) {
-          r1->x = r2->x;
+        r1->w_ += r2->w_;
+        if (r2->x_ < r1->x_) {
+          r1->x_ = r2->x_;
         }
         r2 = list.removeFast(r2);
         continue;
@@ -179,27 +184,27 @@ void Packer::addRectInternal(base::Rect* prect, bool duplicate) {
   TCODList<base::Rect> toAdd;
   for (base::Rect* r = empty.begin(); r != empty.end(); r++) {
     if (r->isIntersecting(rect)) {
-      if (!(prect->x <= r->x && prect->y <= r->y && prect->x + prect->w >= r->x + r->w &&
-            prect->y + prect->h >= r->y + r->h)) {
+      if (!(prect->x_ <= r->x_ && prect->y_ <= r->y_ && prect->x_ + prect->w_ >= r->x_ + r->w_ &&
+            prect->y_ + prect->h_ >= r->y_ + r->h_)) {
         // empty rectangle not completely covered. split it
-        if (prect->x + prect->w < r->x + r->w) {
+        if (prect->x_ + prect->w_ < r->x_ + r->w_) {
           // right part
-          base::Rect newr(prect->x + prect->w, r->y, (int)(r->x + r->w - prect->x - prect->w), r->h);
+          base::Rect newr(prect->x_ + prect->w_, r->y_, (int)(r->x_ + r->w_ - prect->x_ - prect->w_), r->h_);
           toAdd.push(newr);
         }
-        if (prect->y + prect->h < r->y + r->h) {
+        if (prect->y_ + prect->h_ < r->y_ + r->h_) {
           // bottom part
-          base::Rect newr(r->x, prect->y + prect->h, r->w, (int)(r->y + r->h - prect->y - prect->h));
+          base::Rect newr(r->x_, prect->y_ + prect->h_, r->w_, (int)(r->y_ + r->h_ - prect->y_ - prect->h_));
           toAdd.push(newr);
         }
-        if (prect->x > r->x) {
+        if (prect->x_ > r->x_) {
           // left part
-          base::Rect newr(r->x, r->y, (int)(prect->x - r->x), r->h);
+          base::Rect newr(r->x_, r->y_, (int)(prect->x_ - r->x_), r->h_);
           toAdd.push(newr);
         }
-        if (prect->y > r->y) {
+        if (prect->y_ > r->y_) {
           // top part
-          base::Rect newr(r->x, r->y, r->w, (int)(prect->y - r->y));
+          base::Rect newr(r->x_, r->y_, r->w_, (int)(prect->y_ - r->y_));
           toAdd.push(newr);
         }
       }
@@ -208,19 +213,21 @@ void Packer::addRectInternal(base::Rect* prect, bool duplicate) {
   }
   for (base::Rect* r1 = toAdd.begin(); r1 != toAdd.end(); r1++) {
     // check size
-    if (r1->w < minWidth || r1->h < minHeight) {
+    if (r1->w_ < minWidth || r1->h_ < minHeight) {
       r1 = toAdd.remove(r1);  // too small
       continue;
     }
     for (base::Rect* r2 = toAdd.begin(); r2 != toAdd.end(); r2++) {
       if (r2 == r1) continue;
-      if (r1->x == r2->x && r1->y == r2->y && r1->w == r2->w && r1->h == r2->h) {
+      if (r1->x_ == r2->x_ && r1->y_ == r2->y_ && r1->w_ == r2->w_ && r1->h_ == r2->h_) {
         // r1 and r2 identical
         if (r1 < r2) {
           r1 = toAdd.remove(r1);
           break;  // keep only the last
         }
-      } else if (r1->x >= r2->x && r1->y >= r2->y && r1->x + r1->w <= r2->x + r2->w && r1->y + r1->h <= r2->y + r2->h) {
+      } else if (
+          r1->x_ >= r2->x_ && r1->y_ >= r2->y_ && r1->x_ + r1->w_ <= r2->x_ + r2->w_ &&
+          r1->y_ + r1->h_ <= r2->y_ + r2->h_) {
         // r1 inside r2
         r1 = toAdd.remove(r1);
         break;

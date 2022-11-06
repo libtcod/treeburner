@@ -40,8 +40,8 @@ Fish::Fish(util::WaterZone* zone) : Creature(), zone(zone) {
   type = CREATURE_FISH;
   flags = CREATURE_NOTBLOCK | CREATURE_CATCHABLE;
   height = 0.5f;
-  dx = TCODRandom::getInstance()->getFloat(-2.0f, 2.0f);
-  dy = TCODRandom::getInstance()->getFloat(-2.0f, 2.0f);
+  dx_ = TCODRandom::getInstance()->getFloat(-2.0f, 2.0f);
+  dy_ = TCODRandom::getInstance()->getFloat(-2.0f, 2.0f);
   oldx = oldy = -1.0f;
   updated = false;
 }
@@ -52,8 +52,8 @@ Fish::~Fish() {
 
 void Fish::render(map::LightMap& lightMap) {
   // position on console
-  int conx = (int)(x - gameEngine->xOffset);
-  int cony = (int)(y - gameEngine->yOffset);
+  int conx = (int)(x_ - gameEngine->xOffset);
+  int cony = (int)(y_ - gameEngine->yOffset);
   if (!IN_RECTANGLE(conx, cony, CON_W, CON_H)) return;  // out of console
 
   float playerDist = distance(gameEngine->player);
@@ -72,7 +72,7 @@ void Fish::render(map::LightMap& lightMap) {
 }
 
 void Fish::initItem() {
-  asItem = item::Item::getItem("living fish", x, y);
+  asItem = item::Item::getItem("living fish", x_, y_);
   asItem->as_creature_ = this;
 }
 
@@ -91,52 +91,53 @@ void Fish::slide() {
     // move the fish while keeping it in water
     map::Dungeon* dungeon = gameEngine->dungeon;
     if (!IN_RECTANGLE(newx2, newy2, dungeon->width * 2, dungeon->height * 2)) {
-      x = oldx;
-      y = oldy;
+      x_ = oldx;
+      y_ = oldy;
     } else if (!dungeon->hasWater(newx2, newy2)) {
       int dx = newx2 - oldx2;
       int dy = newy2 - oldy2;
       if (dx && dy) {
         // diagonal move
         if (dungeon->hasWater(newx2, oldy2)) {
-          y = oldy;
+          y_ = oldy;
           dy = -dy;
         } else if (dungeon->hasWater(oldx2, newy2)) {
-          x = oldx;
+          x_ = oldx;
           dx = -dx;
         } else {
-          x = oldx;
-          y = oldy;
+          x_ = oldx;
+          y_ = oldy;
           dx = -dx;
           dy = -dy;
         }
       } else if (dx) {
         // horizontal move
         if (dungeon->hasWater(newx2, newy2 + 1)) {
-          y = y + 0.5f;
+          y_ = y_ + 0.5f;
         } else if (dungeon->hasWater(newx2, newy2 - 1)) {
-          y = y - 0.5f;
+          y_ = y_ - 0.5f;
         } else {
-          x = oldx;
-          y = oldy;
+          x_ = oldx;
+          y_ = oldy;
           dx = -dx;
           dy = -dy;
         }
       } else if (dy) {
         // vertical move
         if (dungeon->hasWater(newx2 + 1, newy2)) {
-          x = x + 0.5f;
+          x_ = x_ + 0.5f;
         } else if (dungeon->hasWater(newx2 - 1, newy2)) {
-          x = x - 0.5f;
+          x_ = x_ - 0.5f;
         } else {
-          x = oldx;
-          y = oldy;
+          x_ = oldx;
+          y_ = oldy;
           dx = -dx;
           dy = -dy;
         }
       }
     }
-    if ((int)x != (int)oldx || (int)y != (int)oldy) dungeon->moveCreature(this, (int)oldx, (int)oldy, (int)x, (int)y);
+    if ((int)x_ != (int)oldx || (int)y_ != (int)oldy)
+      dungeon->moveCreature(this, (int)oldx, (int)oldy, (int)x_, (int)y_);
   }
   updated = false;
 }
@@ -145,17 +146,17 @@ bool Fish::update(float elapsed) {
   bool ret = Creature::update(elapsed);
   if (!ret) return false;
   if (gameEngine->isGamePaused()) return true;
-  oldx = x;
-  oldy = y;
+  oldx = x_;
+  oldy = y_;
   assert(gameEngine->dungeon->hasWater(getSubX(), getSubY()));
-  x += dx * elapsed;
-  y += dy * elapsed;
+  x_ += dx_ * elapsed;
+  y_ += dy_ * elapsed;
   // printf ("%x %d %d -> %d %d\n",this,(int)oldx,(int)oldy,(int)x,(int)y);
 
-  dx += elapsed * TCODRandom::getInstance()->getFloat(-20.0f, 20.0f);
-  dy += elapsed * TCODRandom::getInstance()->getFloat(-20.0f, 20.0f);
-  if (ABS(dx) > 2.0f) dx = dx * (1.0f - elapsed);
-  if (ABS(dy) > 2.0f) dy = dy * (1.0f - elapsed);
+  dx_ += elapsed * TCODRandom::getInstance()->getFloat(-20.0f, 20.0f);
+  dy_ += elapsed * TCODRandom::getInstance()->getFloat(-20.0f, 20.0f);
+  if (ABS(dx_) > 2.0f) dx_ = dx_ * (1.0f - elapsed);
+  if (ABS(dy_) > 2.0f) dy_ = dy_ * (1.0f - elapsed);
   updated = true;
   return true;
 }

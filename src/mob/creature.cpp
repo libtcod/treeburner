@@ -283,8 +283,8 @@ Creature* Creature::getCreature(CreatureTypeId id) {
 }
 
 bool Creature::isInRange(int px, int py) {
-  int dx = (int)(px - x);
-  int dy = (int)(py - y);
+  int dx = (int)(px - x_);
+  int dy = (int)(py - y_);
   return (ABS(dx) <= fovRange && ABS(dy) <= fovRange && dx * dx + dy * dy <= fovRange * fovRange);
 }
 
@@ -297,33 +297,33 @@ void Creature::talk(const char* text) {
   talkText.delay = MAX(0.5f, talkText.delay);
   // compute text size
   char* ptr = (char*)text;
-  talkText.h = 1;
-  talkText.w = 0;
+  talkText.h_ = 1;
+  talkText.w_ = 0;
   char* end = strchr(ptr, '\n');
   while (end) {
     int len = end - ptr;
-    if (talkText.w < len) talkText.w = len;
-    talkText.h++;
+    if (talkText.w_ < len) talkText.w_ = len;
+    talkText.h_++;
     ptr = end + 1;
     end = strchr(ptr, '\n');
   }
   if (end) {
     int len = end - ptr;
-    if (talkText.w < len) talkText.w = len;
+    if (talkText.w_ < len) talkText.w_ = len;
   }
 }
 
 void Creature::renderTalk() {
-  int conx = (int)(x - gameEngine->xOffset);
-  int cony = (int)(y - gameEngine->yOffset);
+  int conx = (int)(x_ - gameEngine->xOffset);
+  int cony = (int)(y_ - gameEngine->yOffset);
   if (!IN_RECTANGLE(conx, cony, CON_W, CON_H)) return;  // creature out of console
-  talkText.x = conx;
-  talkText.y = cony - talkText.h;
-  if (talkText.y < 0) talkText.y = cony + 1;
+  talkText.x_ = conx;
+  talkText.y_ = cony - talkText.h_;
+  if (talkText.y_ < 0) talkText.y_ = cony + 1;
   gameEngine->packer.addRect(&talkText);
   TCODConsole::root->setDefaultBackground(TCODColor::lighterYellow);
   TCODConsole::root->setDefaultForeground(TCODColor::darkGrey);
-  TCODConsole::root->printEx((int)talkText.x, (int)talkText.y, TCOD_BKGND_SET, TCOD_CENTER, talkText.text);
+  TCODConsole::root->printEx((int)talkText.x_, (int)talkText.y_, TCOD_BKGND_SET, TCOD_CENTER, talkText.text);
 }
 
 void Creature::render(map::LightMap& lightMap) {
@@ -347,8 +347,8 @@ void Creature::render(map::LightMap& lightMap) {
   }
 
   // position on console
-  int conx = (int)(x - gameEngine->xOffset);
-  int cony = (int)(y - gameEngine->yOffset);
+  int conx = (int)(x_ - gameEngine->xOffset);
+  int cony = (int)(y_ - gameEngine->yOffset);
   if (!IN_RECTANGLE(conx, cony, CON_W, CON_H)) return;  // out of console
 
   float playerDist = distance(gameEngine->player);
@@ -359,8 +359,8 @@ void Creature::render(map::LightMap& lightMap) {
   int displayChar = ch;
   TCODColor lightColor = lightMap.getColor(conx, cony) * 1.5f;
   map::Dungeon* dungeon = gameEngine->dungeon;
-  float shadow = dungeon->getShadow(x * 2, y * 2);
-  float clouds = dungeon->getCloudCoef(x * 2, y * 2);
+  float shadow = dungeon->getShadow(x_ * 2, y_ * 2);
+  float clouds = dungeon->getCloudCoef(x_ * 2, y_ * 2);
   shadow = MIN(shadow, clouds);
   lightColor = lightColor * shadow;
   if (life <= 0) {
@@ -391,7 +391,7 @@ void Creature::stun(float delay) { walkTimer = MIN(-delay, walkTimer); }
 
 bool Creature::walk(float elapsed) {
   walkTimer += elapsed;
-  map::TerrainId terrainId = gameEngine->dungeon->getTerrainType((int)x, (int)y);
+  map::TerrainId terrainId = gameEngine->dungeon->getTerrainType((int)x_, (int)y_);
   float walkTime = map::terrainTypes[terrainId].walkCost / speed;
   if (walkTimer >= 0) {
     walkTimer = -walkTime;
@@ -399,8 +399,8 @@ bool Creature::walk(float elapsed) {
       int newx, newy;
       base::GameEngine* game = gameEngine;
       path->get(0, &newx, &newy);
-      if ((game->player.x != newx || game->player.y != newy) && !game->dungeon->hasCreature(newx, newy)) {
-        int oldx = (int)x, oldy = (int)y;
+      if ((game->player.x_ != newx || game->player.y_ != newy) && !game->dungeon->hasCreature(newx, newy)) {
+        int oldx = (int)x_, oldy = (int)y_;
         int newx = oldx, newy = oldy;
         if (path->walk(&newx, &newy, false)) {
           setPos(newx, newy);
@@ -426,13 +426,13 @@ void Creature::randomWalk(float elapsed) {
     int count = 8;
     base::GameEngine* game = gameEngine;
     do {
-      int newx = (int)(x + dirx[d]), newy = (int)(y + diry[d]);
+      int newx = (int)(x_ + dirx[d]), newy = (int)(y_ + diry[d]);
       if (IN_RECTANGLE(newx, newy, game->dungeon->width, game->dungeon->height) &&
-          game->dungeon->map->isWalkable(newx, newy) && (game->player.x != newx || game->player.y != newy) &&
+          game->dungeon->map->isWalkable(newx, newy) && (game->player.x_ != newx || game->player.y_ != newy) &&
           !game->dungeon->hasCreature(newx, newy)) {
-        game->dungeon->moveCreature(this, (int)x, (int)y, newx, newy);
-        x = newx;
-        y = newy;
+        game->dungeon->moveCreature(this, (int)x_, (int)y_, newx, newy);
+        x_ = newx;
+        y_ = newy;
         return;
       }
       d = (d + 1) % 8;
@@ -446,7 +446,7 @@ float Creature::getWalkCost(int xFrom, int yFrom, int xTo, int yTo, void* userDa
   if (!game->dungeon->map->isWalkable(xTo, yTo)) return 0.0f;
   if (ignoreCreatures) return 1.0f;
   if (game->dungeon->hasCreature(xTo, yTo)) return 50.0f;
-  if (game->player.x == xTo || game->player.y == yTo) return 50.0f;
+  if (game->player.x_ == xTo || game->player.y_ == yTo) return 50.0f;
   return 1.0f;
 }
 
@@ -466,8 +466,8 @@ void Creature::takeDamage(float amount) {
 item::Item* Creature::addToInventory(item::Item* item) {
   item = item->addToList(inventory);
   item->owner_ = this;
-  item->x = x;
-  item->y = y;
+  item->x_ = x_;
+  item->y_ = y_;
   return item;
 }
 
@@ -601,8 +601,8 @@ void Creature::unwield(item::Item* it) {
 #define CREA_CHUNK_VERSION 6
 void Creature::saveData(uint32_t chunkId, TCODZip* zip) {
   saveGame.saveChunk(CREA_CHUNK_ID, CREA_CHUNK_VERSION);
-  zip->putFloat(x);
-  zip->putFloat(y);
+  zip->putFloat(x_);
+  zip->putFloat(y_);
   zip->putFloat(life);
   zip->putString(name);
   // save inventory
@@ -620,8 +620,8 @@ void Creature::saveData(uint32_t chunkId, TCODZip* zip) {
 
 bool Creature::loadData(uint32_t chunkId, uint32_t chunkVersion, TCODZip* zip) {
   if (chunkVersion != CREA_CHUNK_VERSION) return false;
-  x = zip->getFloat();
-  y = zip->getFloat();
+  x_ = zip->getFloat();
+  y_ = zip->getFloat();
   life = zip->getFloat();
   strcpy(name, zip->getString());
   // load inventory

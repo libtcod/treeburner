@@ -122,7 +122,7 @@ void Inventory::checkDefaultAction(item::Item* item) {
   for (item::ItemActionId* id = item->typeData->actions.begin(); id != item->typeData->actions.end(); id++) {
     item::ItemAction* action = item::ItemAction::getFromId(*id);
     if (action->onWater()) {
-      if (!gameEngine->dungeon->hasRipples((int)gameEngine->player.x, (int)gameEngine->player.y)) {
+      if (!gameEngine->dungeon->hasRipples((int)gameEngine->player.x_, (int)gameEngine->player.y_)) {
         continue;
       }
     }
@@ -230,7 +230,7 @@ void Inventory::render() {
       for (item::ItemActionId* id = item->typeData->actions.begin(); id != item->typeData->actions.end(); id++) {
         item::ItemAction* action = item::ItemAction::getFromId(*id);
         if (action->onWater()) {
-          if (!gameEngine->dungeon->hasRipples((int)gameEngine->player.x, (int)gameEngine->player.y)) {
+          if (!gameEngine->dungeon->hasRipples((int)gameEngine->player.x_, (int)gameEngine->player.y_)) {
             continue;
           }
         }
@@ -259,7 +259,7 @@ void Inventory::render() {
       for (item::ItemActionId* id = item->typeData->actions.begin(); id != item->typeData->actions.end(); id++) {
         item::ItemAction* action = item::ItemAction::getFromId(*id);
         if (action->onWater()) {
-          if (!gameEngine->dungeon->hasRipples((int)gameEngine->player.x, (int)gameEngine->player.y)) {
+          if (!gameEngine->dungeon->hasRipples((int)gameEngine->player.x_, (int)gameEngine->player.y_)) {
             continue;
           }
         }
@@ -594,9 +594,9 @@ bool Inventory::update(float elapsed, TCOD_key_t& k, TCOD_mouse_t& mouse) {
       if (!IN_RECTANGLE(dungeonx, dungeony, dungeon->width, dungeon->height) || mouse.rbutton) {
         // out of map or right click : cancel
       } else {
-        dragItem->x = owner ? owner->x : container->x;
-        dragItem->y = owner ? owner->y : container->y;
-        if (dungeonx == gameEngine->player.x && dungeony == gameEngine->player.y) {
+        dragItem->x_ = owner ? owner->x_ : container->x_;
+        dragItem->y_ = owner ? owner->y_ : container->y_;
+        if (dungeonx == gameEngine->player.x_ && dungeony == gameEngine->player.y_) {
           if (owner) {
             // drag from inventory and drop on player cell = drop
             dragItem->drop();
@@ -608,8 +608,8 @@ bool Inventory::update(float elapsed, TCOD_key_t& k, TCOD_mouse_t& mouse) {
           }
         } else {
           // drag and drop on another cell = throw
-          float dx = dungeonx - (owner ? owner->x : container->x);
-          float dy = dungeony - (owner ? owner->y : container->y);
+          float dx = dungeonx - (owner ? owner->x_ : container->x_);
+          float dy = dungeony - (owner ? owner->y_ : container->y_);
           float invLength = base::Entity::fastInvSqrt(dx * dx + dy * dy);
           dx *= invLength;
           dy *= invLength;
@@ -618,11 +618,11 @@ bool Inventory::update(float elapsed, TCOD_key_t& k, TCOD_mouse_t& mouse) {
             newItem = owner->removeFromInventory(dragItem);
           else
             newItem = dragItem->removeFromList(container->stack_);
-          newItem->dx = dx;
-          newItem->dy = dy;
-          newItem->speed = 1.0f / (invLength * 1.5f);
-          newItem->speed = MIN(12.0f, newItem->speed);
-          newItem->duration = 1.5f;
+          newItem->dx_ = dx;
+          newItem->dy_ = dy;
+          newItem->speed_ = 1.0f / (invLength * 1.5f);
+          newItem->speed_ = MIN(12.0f, newItem->speed_);
+          newItem->duration_ = 1.5f;
           dungeon->addItem(newItem);
           if (owner)
             initialize(owner);

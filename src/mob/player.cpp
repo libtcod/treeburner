@@ -98,8 +98,8 @@ bool Player::setPath(int xDest, int yDest, bool limitPath) {
   // check if right clicked on a wall
   if (!dungeon->map->isWalkable(xDest, yDest)) {
     // walk toward the player and see if no other wall blocks the path
-    const float dx = x - xDest;
-    const float dy = y - yDest;
+    const float dx = x_ - xDest;
+    const float dy = y_ - yDest;
     if (xDest < dungeon->width - 1 && dx > 0 && dungeon->map->isWalkable(xDest + 1, yDest)) {
       xDest++;
     } else if (xDest > 0 && dx < 0 && dungeon->map->isWalkable(xDest - 1, yDest)) {
@@ -110,7 +110,7 @@ bool Player::setPath(int xDest, int yDest, bool limitPath) {
       yDest--;
     }
     // to a known cell
-    TCODLine::init(xDest, yDest, (int)x, (int)y);
+    TCODLine::init(xDest, yDest, (int)x_, (int)y_);
     bool wall = true;
     int wx, wy;
     while (!TCODLine::step(&wx, &wy)) {
@@ -128,10 +128,10 @@ bool Player::setPath(int xDest, int yDest, bool limitPath) {
   }
   if (!path) path = new TCODPath(dungeon->width, dungeon->height, this, nullptr);
   ignoreCreatures = false;
-  bool ok = path->compute((int)x, (int)y, xDest, yDest);
+  bool ok = path->compute((int)x_, (int)y_, xDest, yDest);
   if (!ok) {
     ignoreCreatures = true;
-    ok = path->compute((int)x, (int)y, xDest, yDest);
+    ok = path->compute((int)x_, (int)y_, xDest, yDest);
   }
   ignoreCreatures = true;
   if (!ok) return false;
@@ -236,8 +236,8 @@ void Player::getMoveKey(TCOD_key_t key, bool* up, bool* down, bool* left, bool* 
 
 void Player::computeStealth(float elapsed) {
   map::Dungeon* dungeon = gameEngine->dungeon;
-  float shadow = dungeon->getShadow(x * 2, y * 2);
-  const float cloud = dungeon->getCloudCoef(x * 2, y * 2);
+  float shadow = dungeon->getShadow(x_ * 2, y_ * 2);
+  const float cloud = dungeon->getCloudCoef(x_ * 2, y_ * 2);
   shadow = std::min(shadow, cloud);
   // increase shadow. TODO should be in outdoor only!
   const float shadowcoef = crouched_ ? 4.0f : 2.0f;
@@ -264,7 +264,7 @@ bool Player::activateCell(int dungeonx, int dungeony, bool lbut_pressed, bool wa
     for (item::Item* it : *items) {
       if (!it->isPickable())
         toUse.push_back(it);
-      else if (it->speed == 0.0f)
+      else if (it->speed_ == 0.0f)
         toPick.push_back(it);
     }
     for (item::Item* it : toPick) {
@@ -318,7 +318,7 @@ bool Player::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
   }
 
   if (life <= 0) return false;
-  light_.setPos(x * 2, y * 2);
+  light_.setPos(x_ * 2, y_ * 2);
   updateConditions(elapsed);
 
   walkTimer += elapsed;
@@ -362,11 +362,11 @@ bool Player::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
   const int dungeon_y = mouse->cy + gameEngine->yOffset;
 
   bool useWeapon = true;
-  if (mouse->lbutton_pressed && ABS(dungeon_x - x) <= 1 && ABS(dungeon_y - y) <= 1) {
+  if (mouse->lbutton_pressed && ABS(dungeon_x - x_) <= 1 && ABS(dungeon_y - y_) <= 1) {
     // click on the player or near him in water=ripples
     if (mouse->lbutton_pressed && dungeon->hasRipples(dungeon_x, dungeon_y))
       gameEngine->startRipple(dungeon_x, dungeon_y);
-    if (dungeon_x != x || dungeon_y != y) {
+    if (dungeon_x != x_ || dungeon_y != y_) {
       useWeapon = activateCell(dungeon_x, dungeon_y, mouse->lbutton_pressed, false);
     }
   }
@@ -385,8 +385,8 @@ bool Player::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
   if (mouse->rbutton_pressed) {
     if (!spell::FireBall::sparkle || right_button_delay_ < longSpellDelay) {
       // quick click : standard fireball
-      if (dungeon_x != x || dungeon_y != y) {
-        spell::FireBall* fb = new spell::FireBall(x, y, dungeon_x, dungeon_y, spell::FB_STANDARD);
+      if (dungeon_x != x_ || dungeon_y != y_) {
+        spell::FireBall* fb = new spell::FireBall(x_, y_, dungeon_x, dungeon_y, spell::FB_STANDARD);
         gameEngine->addFireball(fb);
         gameEngine->stats.nbSpellStandard++;
         stealth_ = std::min(3.0f, stealth_ + 0.5f);
@@ -394,8 +394,8 @@ bool Player::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
     }
     if (spell::FireBall::sparkle && right_button_delay_ >= longSpellDelay) {
       // long right click : sparkle
-      if (dungeon_x != x || dungeon_y != y) {
-        spell::FireBall* fb = new spell::FireBall(x, y, dungeon_x, dungeon_y, spell::FB_BURST);
+      if (dungeon_x != x_ || dungeon_y != y_) {
+        spell::FireBall* fb = new spell::FireBall(x_, y_, dungeon_x, dungeon_y, spell::FB_BURST);
         gameEngine->addFireball(fb);
         gameEngine->stats.nbSpellBurst++;
         stealth_ = std::min(3.0f, stealth_ + 0.5f);
@@ -426,8 +426,8 @@ bool Player::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
     left_walk_delay_ = 0.0f;
     left_button_delay_ = 0.0f;
     if (cast) {
-      if (dungeon_x != x || dungeon_y != y) {
-        spell::FireBall* fb = new spell::FireBall(x, y, dungeon_x, dungeon_y, type, subtype);
+      if (dungeon_x != x_ || dungeon_y != y_) {
+        spell::FireBall* fb = new spell::FireBall(x_, y_, dungeon_x, dungeon_y, type, subtype);
         gameEngine->addFireball(fb);
         gameEngine->stats.nbSpellStandard++;
       }
@@ -436,9 +436,9 @@ bool Player::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
 
   if (!key.pressed && key.c == quickslot1Key) {
     // cast fireball
-    if (dungeon_x != x || dungeon_y != y) {
+    if (dungeon_x != x_ || dungeon_y != y_) {
       spell::FireBallType type = spell::FB_SPARK;
-      spell::FireBall* fb = new spell::FireBall(x, y, dungeon_x, dungeon_y, type);
+      spell::FireBall* fb = new spell::FireBall(x_, y_, dungeon_x, dungeon_y, type);
       gameEngine->addFireball(fb);
       gameEngine->stats.nbSpellStandard++;
     } else {
@@ -465,20 +465,20 @@ bool Player::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
   if (crouched_ || stealth_ < 1.0f) {
     computeStealth(elapsed);
   }
-  map::TerrainId terrainId = dungeon->getTerrainType((int)x, (int)y);
+  map::TerrainId terrainId = dungeon->getTerrainType((int)x_, (int)y_);
   const float walkTime = map::terrainTypes[terrainId].walkCost * maxInvSpeed;
   if (walkTimer >= 0) {
     bool hasWalked = false;
-    const int old_x = (int)x;
-    const int old_y = (int)y;
-    int new_x = (int)x;
-    int new_y = (int)y;
+    const int old_x = (int)x_;
+    const int old_y = (int)y_;
+    int new_x = (int)x_;
+    int new_y = (int)y_;
     if (up_) --new_y;
     if (down_) ++new_y;
     if (left_) --new_x;
     if (right_) ++new_x;
-    int dx = new_x - (int)x;
-    int dy = new_y - (int)y;
+    int dx = new_x - (int)x_;
+    int dy = new_y - (int)y_;
     speed = playerSpeed;
     if (dx != 0 || dy != 0) {
       int old_new_x = new_x;
@@ -489,8 +489,8 @@ bool Player::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
       }
       if (IN_RECTANGLE(new_x, new_y, dungeon->width, dungeon->height) && !dungeon->hasCreature(new_x, new_y) &&
           dungeon->map->isWalkable(new_x, new_y)) {
-        x = new_x;
-        y = new_y;
+        x_ = new_x;
+        y_ = new_y;
         if (dx != 0 && dy != 0) {
           speed_dist_ += 1.41f;
           speed = playerSpeedDiag;
@@ -509,24 +509,24 @@ bool Player::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
       } else {
         // try to slide against walls
         if (dx != 0 && dy != 0) {
-          new_x = (int)x + dx;
-          new_y = (int)y;
+          new_x = (int)x_ + dx;
+          new_y = (int)y_;
           // horizontal slide
           if (IN_RECTANGLE(new_x, new_y, dungeon->width, dungeon->height) && dungeon->map->isWalkable(new_x, new_y) &&
               (!dungeon->hasCreature(new_x, new_y) || !dungeon->getCreature(new_x, new_y)->isBlockingPath())) {
-            x = new_x;
-            y = new_y;
+            x_ = new_x;
+            y_ = new_y;
             gameEngine->stats.nbSteps++;
             speed_dist_ += 1.0f;
             hasWalked = true;
           } else {
             // vertical slide
-            new_x = (int)x;
-            new_y = (int)y + dy;
+            new_x = (int)x_;
+            new_y = (int)y_ + dy;
             if (IN_RECTANGLE(new_x, new_y, dungeon->width, dungeon->height) && dungeon->map->isWalkable(new_x, new_y) &&
                 (!dungeon->hasCreature(new_x, new_y) || !dungeon->getCreature(new_x, new_y)->isBlockingPath())) {
-              x = new_x;
-              y = new_y;
+              x_ = new_x;
+              y_ = new_y;
               gameEngine->stats.nbSteps++;
               speed_dist_ += 1.0f;
               hasWalked = true;
@@ -534,28 +534,28 @@ bool Player::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
           }
         } else if (dx != 0) {
           static int a = 1;
-          if (IN_RECTANGLE(x + dx, y + dy, dungeon->width, dungeon->height) &&
-              dungeon->map->isWalkable((int)x + dx, (int)y + dy) &&
-              (!dungeon->hasCreature((int)x + dx, (int)y + dy) ||
-               !dungeon->getCreature((int)x + dx, (int)y + dy)->isBlockingPath())) {
-            new_x = (int)x + dx;
-            new_y = (int)y + dy;
-            x = new_x;
-            y = new_y;
+          if (IN_RECTANGLE(x_ + dx, y_ + dy, dungeon->width, dungeon->height) &&
+              dungeon->map->isWalkable((int)x_ + dx, (int)y_ + dy) &&
+              (!dungeon->hasCreature((int)x_ + dx, (int)y_ + dy) ||
+               !dungeon->getCreature((int)x_ + dx, (int)y_ + dy)->isBlockingPath())) {
+            new_x = (int)x_ + dx;
+            new_y = (int)y_ + dy;
+            x_ = new_x;
+            y_ = new_y;
             gameEngine->stats.nbSteps++;
             dy = -dy;
             speed_dist_ += 1.41f;
             speed = playerSpeedDiag;
             hasWalked = true;
           } else if (
-              IN_RECTANGLE(x + dx, y - dy, dungeon->width, dungeon->height) &&
-              dungeon->map->isWalkable((int)x + dx, (int)y - dy) &&
-              (!dungeon->hasCreature((int)x + dx, (int)y - dy) ||
-               !dungeon->getCreature((int)x + dx, (int)y - dy)->isBlockingPath())) {
-            new_x = (int)x + dx;
-            new_y = (int)y - dy;
-            x = new_x;
-            y = new_y;
+              IN_RECTANGLE(x_ + dx, y_ - dy, dungeon->width, dungeon->height) &&
+              dungeon->map->isWalkable((int)x_ + dx, (int)y_ - dy) &&
+              (!dungeon->hasCreature((int)x_ + dx, (int)y_ - dy) ||
+               !dungeon->getCreature((int)x_ + dx, (int)y_ - dy)->isBlockingPath())) {
+            new_x = (int)x_ + dx;
+            new_y = (int)y_ - dy;
+            x_ = new_x;
+            y_ = new_y;
             gameEngine->stats.nbSteps++;
             dy = -dy;
             speed_dist_ += 1.41f;
@@ -564,28 +564,28 @@ bool Player::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
           }
         } else if (dy != 0) {
           static int dx = 1;
-          if (IN_RECTANGLE(x + dx, y + dy, dungeon->width, dungeon->height) &&
-              dungeon->map->isWalkable((int)x + dx, (int)y + dy) &&
-              (!dungeon->hasCreature((int)x + dx, (int)y + dy) ||
-               !dungeon->getCreature((int)x + dx, (int)y + dy)->isBlockingPath())) {
-            new_x = (int)x + dx;
-            new_y = (int)y + dy;
-            x = new_x;
-            y = new_y;
+          if (IN_RECTANGLE(x_ + dx, y_ + dy, dungeon->width, dungeon->height) &&
+              dungeon->map->isWalkable((int)x_ + dx, (int)y_ + dy) &&
+              (!dungeon->hasCreature((int)x_ + dx, (int)y_ + dy) ||
+               !dungeon->getCreature((int)x_ + dx, (int)y_ + dy)->isBlockingPath())) {
+            new_x = (int)x_ + dx;
+            new_y = (int)y_ + dy;
+            x_ = new_x;
+            y_ = new_y;
             gameEngine->stats.nbSteps++;
             dx = -dx;
             speed_dist_ += 1.41f;
             speed = playerSpeedDiag;
             hasWalked = true;
           } else if (
-              IN_RECTANGLE(x - dx, y + dy, dungeon->width, dungeon->height) &&
-              dungeon->map->isWalkable((int)x - dx, (int)y + dy) &&
-              (!dungeon->hasCreature((int)x - dx, (int)y + dy) ||
-               !dungeon->getCreature((int)x - dx, (int)y + dy)->isBlockingPath())) {
-            new_x = (int)x - dx;
-            new_y = (int)y + dy;
-            x = new_x;
-            y = new_y;
+              IN_RECTANGLE(x_ - dx, y_ + dy, dungeon->width, dungeon->height) &&
+              dungeon->map->isWalkable((int)x_ - dx, (int)y_ + dy) &&
+              (!dungeon->hasCreature((int)x_ - dx, (int)y_ + dy) ||
+               !dungeon->getCreature((int)x_ - dx, (int)y_ + dy)->isBlockingPath())) {
+            new_x = (int)x_ - dx;
+            new_y = (int)y_ + dy;
+            x_ = new_x;
+            y_ = new_y;
             gameEngine->stats.nbSteps++;
             dx = -dx;
             speed_dist_ += 1.41f;
@@ -593,7 +593,7 @@ bool Player::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
             hasWalked = true;
           }
         }
-        if (old_x == x && old_y == y && IN_RECTANGLE(old_new_x, old_new_y, dungeon->width, dungeon->height)) {
+        if (old_x == x_ && old_y == y_ && IN_RECTANGLE(old_new_x, old_new_y, dungeon->width, dungeon->height)) {
           // could not walk. activate item ?
           bool activated = false;
           activateCell(old_new_x, old_new_y, false, false, &activated);
@@ -617,26 +617,26 @@ bool Player::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
       }
     }
     // auto pickup items
-    if (old_x != x || old_y != y) {
-      auto* items = dungeon->getItems((int)x, (int)y);
+    if (old_x != x_ || old_y != y_) {
+      auto* items = dungeon->getItems((int)x_, (int)y_);
       std::vector<item::Item*> toPick;
       for (item::Item* it : *items) {
-        if (!it->speed > 0 && it->isPickable()) {
+        if (!it->speed_ > 0 && it->isPickable()) {
           toPick.push_back(it);
         }
       }
       for (item::Item* it : toPick) {
         it->putInInventory(this);
       }
-      if (dungeon->hasRipples(x, y)) {
-        gameEngine->startRipple(x, y);
+      if (dungeon->hasRipples(x_, y_)) {
+        gameEngine->startRipple(x_, y_);
       }
     }
     if (hasWalked) walkTimer = -walkTime;
   }
   // healing effect
   updateHealing(elapsed);
-  heal_light_.setPos(x * 2, y * 2);
+  heal_light_.setPos(x_ * 2, y_ * 2);
   return true;
 }
 

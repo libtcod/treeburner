@@ -90,8 +90,8 @@ void Boss::takeDamage(float amount) {
     // the boss dies
     gameEngine->bossIsDead = true;
     base::AiDirector::instance->bossDead();
-    gameEngine->dungeon->stairx = (int)x;
-    gameEngine->dungeon->stairy = (int)y;
+    gameEngine->dungeon->stairx = (int)x_;
+    gameEngine->dungeon->stairy = (int)y_;
   }
 }
 
@@ -101,7 +101,7 @@ bool Boss::update(float elapsed) {
   static int minionCount = config.getIntProperty("config.creatures.boss.minionCount");
   static float burnDamage = config.getFloatProperty("config.creatures.burnDamage");
 
-  treasureLight->setPos(x * 2, y * 2);
+  treasureLight->setPos(x_ * 2, y_ * 2);
   if (life <= 0) {
     gameEngine->dungeon->removeLight(treasureLight);
     return false;
@@ -111,7 +111,7 @@ bool Boss::update(float elapsed) {
   }
   pathTimer += elapsed;
   if (!seen) {
-    if (gameEngine->dungeon->isCellInFov(x, y) && gameEngine->dungeon->getMemory(x, y)) {
+    if (gameEngine->dungeon->isCellInFov(x_, y_) && gameEngine->dungeon->getMemory(x_, y_)) {
       // creature is seen by player
       setSeen();
     }
@@ -122,7 +122,7 @@ bool Boss::update(float elapsed) {
     // summon some minions to protect the boss
     summonTimer = 0.0f;
     for (int i = 0; i < minionCount; i++) {
-      base::AiDirector::instance->spawnMinion(true, (int)x, (int)y);
+      base::AiDirector::instance->spawnMinion(true, (int)x_, (int)y_);
     }
   }
   if (pathTimer > pathDelay) {
@@ -134,8 +134,8 @@ bool Boss::update(float elapsed) {
         destx = gameEngine->dungeon->stairx + TCODRandom::getInstance()->getInt(-15, 15);
         desty = gameEngine->dungeon->stairy + TCODRandom::getInstance()->getInt(-15, 15);
       } else {
-        destx = (int)(x + TCODRandom::getInstance()->getInt(-15, 15));
-        desty = (int)(y + TCODRandom::getInstance()->getInt(-15, 15));
+        destx = (int)(x_ + TCODRandom::getInstance()->getInt(-15, 15));
+        desty = (int)(y_ + TCODRandom::getInstance()->getInt(-15, 15));
       }
       destx = CLAMP(0, gameEngine->dungeon->width - 1, destx);
       desty = CLAMP(0, gameEngine->dungeon->height - 1, desty);
@@ -143,7 +143,7 @@ bool Boss::update(float elapsed) {
       if (!path) {
         path = new TCODPath(gameEngine->dungeon->width, gameEngine->dungeon->height, this, gameEngine);
       }
-      path->compute((int)x, (int)y, destx, desty);
+      path->compute((int)x_, (int)y_, destx, desty);
       pathTimer = 0.0f;
     } else
       walk(elapsed);
@@ -160,7 +160,7 @@ float Boss::getWalkCost(int xFrom, int yFrom, int xTo, int yTo, void* userData) 
   // the boss don't like to be near player
   if (!gameEngine->dungeon->map->isWalkable(xTo, yTo)) return 0.0f;
   if (ignoreCreatures) return 1.0f;
-  float pdist = SQRDIST(gameEngine->player.x - xTo, gameEngine->player.y - yTo);
+  float pdist = SQRDIST(gameEngine->player.x_ - xTo, gameEngine->player.y_ - yTo);
   if (pdist < secureDist) return 1.0f + secureCoef * (secureDist - pdist);
   return 1.0f;
 }

@@ -172,7 +172,7 @@ void FireManager::addZone(int x, int y, int w, int h) {
 void FireManager::removeZone(int x, int y, int w, int h) {
   static float zoneDecay = config.getFloatProperty("config.fireManager.zoneDecay");
   for (FireZone* z = zones.begin(); z != zones.end(); z++) {
-    if (z->r.x == x && z->r.y == y && z->r.w == w && z->r.h == h) {
+    if (z->r.x_ == x && z->r.y_ == y && z->r.w_ == w && z->r.h_ == h) {
       z->life = zoneDecay;
       break;
     }
@@ -188,14 +188,14 @@ void FireManager::update(float elapsed) {
   if (el < UPDATE_DELAY) return;
   el = 0.0f;
   base::Rect screenZone;
-  screenZone.x = gameEngine->xOffset * 2;
-  screenZone.w = CON_W * 2;
-  screenZone.y = gameEngine->yOffset * 2;
-  screenZone.h = CON_H * 2;
-  screenFireZone.x = screenZone.x + screenZone.w;
-  screenFireZone.y = screenZone.y + screenZone.h;
-  screenFireZone.w = (int)screenZone.x - 1;
-  screenFireZone.h = (int)screenZone.y - 1;
+  screenZone.x_ = gameEngine->xOffset * 2;
+  screenZone.w_ = CON_W * 2;
+  screenZone.y_ = gameEngine->yOffset * 2;
+  screenZone.h_ = CON_H * 2;
+  screenFireZone.x_ = screenZone.x_ + screenZone.w_;
+  screenFireZone.y_ = screenZone.y_ + screenZone.h_;
+  screenFireZone.w_ = (int)screenZone.x_ - 1;
+  screenFireZone.h_ = (int)screenZone.y_ - 1;
   for (FireZone* z = zones.begin(); z != zones.end(); z++) {
     if (z->life > 0.0f) {
       z->life -= elapsed;
@@ -205,25 +205,25 @@ void FireManager::update(float elapsed) {
       }
     }
     if (z->r.isIntersecting(screenZone)) {
-      if (z->r.x < screenFireZone.x) {
-        screenFireZone.x = z->r.x;
+      if (z->r.x_ < screenFireZone.x_) {
+        screenFireZone.x_ = z->r.x_;
       }
-      if (z->r.x + z->r.w > screenFireZone.w) {
-        screenFireZone.w = (int)(z->r.x + z->r.w);
+      if (z->r.x_ + z->r.w_ > screenFireZone.w_) {
+        screenFireZone.w_ = (int)(z->r.x_ + z->r.w_);
       }
-      if (z->r.y < screenFireZone.y) {
-        screenFireZone.y = z->r.y;
+      if (z->r.y_ < screenFireZone.y_) {
+        screenFireZone.y_ = z->r.y_;
       }
-      if (z->r.y + z->r.h > screenFireZone.h) {
-        screenFireZone.h = (int)(z->r.y + z->r.h);
+      if (z->r.y_ + z->r.h_ > screenFireZone.h_) {
+        screenFireZone.h_ = (int)(z->r.y_ + z->r.h_);
       }
       int prob = 48;
       if (z->life > 0.0f) {
         prob += (int)(32 * (zoneDecay - z->life) / zoneDecay);
       }
       // trigger new sparks
-      for (int x = (int)(z->r.x + 1); x < (int)(z->r.x + z->r.w - 1); x++) {
-        for (int y = (int)(z->r.y + z->r.h - 3); y < (int)(z->r.y + z->r.h - 1); y++) {
+      for (int x = (int)(z->r.x_ + 1); x < (int)(z->r.x_ + z->r.w_ - 1); x++) {
+        for (int y = (int)(z->r.y_ + z->r.h_ - 3); y < (int)(z->r.y_ + z->r.h_ - 1); y++) {
           int v = TCODRandom::getInstance()->getInt(24, 64);
           // v += buf[x+y*dungeon->width*2];
           // v = MIN(255,v);
@@ -233,13 +233,13 @@ void FireManager::update(float elapsed) {
     }
   }
   // update fire
-  if (screenFireZone.w > screenFireZone.x) {
-    screenFireZone.x = MAX(1, screenFireZone.x);
-    screenFireZone.y = MAX(1, screenFireZone.y);
-    screenFireZone.w = MIN(dungeon->width * 2 - 2, screenFireZone.w);
-    screenFireZone.h = MIN(dungeon->height * 2 - 2, screenFireZone.h);
-    for (int x = (int)screenFireZone.x; x < screenFireZone.w; x++) {
-      for (int y = (int)screenFireZone.y; y < screenFireZone.h; y++) {
+  if (screenFireZone.w_ > screenFireZone.x_) {
+    screenFireZone.x_ = MAX(1, screenFireZone.x_);
+    screenFireZone.y_ = MAX(1, screenFireZone.y_);
+    screenFireZone.w_ = MIN(dungeon->width * 2 - 2, screenFireZone.w_);
+    screenFireZone.h_ = MIN(dungeon->height * 2 - 2, screenFireZone.h_);
+    for (int x = (int)screenFireZone.x_; x < screenFireZone.w_; x++) {
+      for (int y = (int)screenFireZone.y_; y < screenFireZone.h_; y++) {
         int x2 = x + TCODRandom::getInstance()->getInt(-1, 1);
         int v = (int)(get(x, y)) * 4 + (int)(get(x, y + 1)) * 4 + (int)(get(x + 1, y + 1)) + (int)(get(x - 1, y + 1));
         v /= 10;
@@ -270,12 +270,12 @@ void FireManager::update(float elapsed) {
 void FireManager::renderFire(TCODImage& ground) {
   int dx = gameEngine->xOffset * 2;
   int dy = gameEngine->yOffset * 2;
-  screenFireZone.x = MAX(dx, screenFireZone.x);
-  screenFireZone.y = MAX(dy, screenFireZone.y);
-  screenFireZone.w = MIN(dungeon->width * 2 + dx, screenFireZone.w);
-  screenFireZone.h = MIN(dungeon->height * 2 + dy, screenFireZone.h);
-  for (int x = (int)screenFireZone.x; x < screenFireZone.w; x++) {
-    for (int y = (int)screenFireZone.y; y < screenFireZone.h; y++) {
+  screenFireZone.x_ = MAX(dx, screenFireZone.x_);
+  screenFireZone.y_ = MAX(dy, screenFireZone.y_);
+  screenFireZone.w_ = MIN(dungeon->width * 2 + dx, screenFireZone.w_);
+  screenFireZone.h_ = MIN(dungeon->height * 2 + dy, screenFireZone.h_);
+  for (int x = (int)screenFireZone.x_; x < screenFireZone.w_; x++) {
+    for (int y = (int)screenFireZone.y_; y < screenFireZone.h_; y++) {
       uint8_t v = get(x, y);
       if (v > 0) {
         map::HDRColor col = fireColor[v];

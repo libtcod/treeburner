@@ -910,7 +910,7 @@ void Item::generateComponents() {
       if (combination->ingredients[i].optional) maxOptionals--;
       ItemType* componentType = combination->ingredients[i].type;
       if (componentType) {
-        Item* component = Item::getItem(componentType, x, y);
+        Item* component = Item::getItem(componentType, x_, y_);
         addComponent(component);
       }
     }
@@ -920,8 +920,8 @@ void Item::generateComponents() {
 
 void Item::initLight() {
   light_ = new map::ExtendedLight();
-  light_->x = x * 2;
-  light_->y = y * 2;
+  light_->x_ = x_ * 2;
+  light_->y_ = y_ * 2;
   light_->randomRad = false;
 }
 
@@ -956,8 +956,8 @@ Item* Item::putInContainer(Item* it) {
   if (it->stack_.size() >= cont->container.size) return nullptr;  // no more room
   Item* item = addToList(it->stack_);
   item->container_ = it;
-  item->x = it->x;
-  item->y = it->y;
+  item->x_ = it->x_;
+  item->y_ = it->y_;
   return item;
 }
 
@@ -996,7 +996,7 @@ Item* Item::addToList(std::vector<Item*>& list) {
 // remove one item, possibly unstacking
 Item* Item::removeFromList(std::vector<Item*>& list, int removeCount) {
   if (isStackable() && count_ > removeCount) {
-    Item* newItem = Item::getItem(typeData, x, y);
+    Item* newItem = Item::getItem(typeData, x_, y_);
     newItem->count_ = removeCount;
     count_ -= removeCount;
     return newItem;
@@ -1064,13 +1064,13 @@ void Item::computeBottleName() {
 }
 
 void Item::render(map::LightMap& lightMap, TCODImage* ground) {
-  int conx = (int)(x - gameEngine->xOffset);
-  int cony = (int)(y - gameEngine->yOffset);
+  int conx = (int)(x_ - gameEngine->xOffset);
+  int cony = (int)(y_ - gameEngine->yOffset);
   if (!IN_RECTANGLE(conx, cony, CON_W, CON_H)) return;
   map::Dungeon* dungeon = gameEngine->dungeon;
   TCODColor lightColor = lightMap.getColor(conx, cony);
-  float shadow = dungeon->getShadow(x * 2, y * 2);
-  float clouds = dungeon->getCloudCoef(x * 2, y * 2);
+  float shadow = dungeon->getShadow(x_ * 2, y_ * 2);
+  float clouds = dungeon->getCloudCoef(x_ * 2, y_ * 2);
   shadow = MIN(shadow, clouds);
   lightColor = lightColor * shadow;
   TCODConsole::root->setChar(conx, cony, ch_);
@@ -1199,10 +1199,10 @@ void Item::renderGenericDescription(int x, int y, bool below, bool frame) {
 
 void Item::convertTo(ItemType* newType) {
   // create the new item
-  Item* newItem = Item::getItem(newType, x, y);
-  newItem->speed = speed;
-  newItem->dx = dx;
-  newItem->dy = dy;
+  Item* newItem = Item::getItem(newType, x_, y_);
+  newItem->speed_ = speed_;
+  newItem->dx_ = dx_;
+  newItem->dy_ = dy_;
   if (isA("wall")) newItem->ch_ = ch_;
   if (owner_) {
     if (owner_->isPlayer()) {
@@ -1250,31 +1250,31 @@ bool Item::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
     elapsed = cumulated_elapsed_;
     cumulated_elapsed_ = 0.0f;
   }
-  if (speed > 0.0f) {
-    float oldx = x;
-    float oldy = y;
-    x += speed * dx * elapsed;
-    y += speed * dy * elapsed;
-    if (!IN_RECTANGLE(x, y, dungeon->width, dungeon->height)) {
-      x = oldx;
-      y = oldy;
+  if (speed_ > 0.0f) {
+    float oldx = x_;
+    float oldy = y_;
+    x_ += speed_ * dx_ * elapsed;
+    y_ += speed_ * dy_ * elapsed;
+    if (!IN_RECTANGLE(x_, y_, dungeon->width, dungeon->height)) {
+      x_ = oldx;
+      y_ = oldy;
       return false;
     }
-    if (!dungeon->isCellTransparent(x, y)) {
+    if (!dungeon->isCellTransparent(x_, y_)) {
       // bounce against a wall
-      float newx = x;
-      float newy = y;
-      int cdx = (int)(x - oldx);
-      int cdy = (int)(y - oldy);
-      x = oldx;
-      y = oldy;
-      speed *= 0.5f;
+      float newx = x_;
+      float newy = y_;
+      int cdx = (int)(x_ - oldx);
+      int cdy = (int)(y_ - oldy);
+      x_ = oldx;
+      y_ = oldy;
+      speed_ *= 0.5f;
       if (cdx == 0) {
         // hit horizontal wall
-        dy = -dy;
+        dy_ = -dy_;
       } else if (cdy == 0) {
         // hit vertical wall
-        dx = -dx;
+        dx_ = -dx_;
       } else {
         bool xwalk = dungeon->isCellWalkable(newx, oldy);
         bool ywalk = dungeon->isCellWalkable(oldx, newy);
@@ -1283,48 +1283,48 @@ bool Item::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
           //  ##
           //  ##
           // .
-          float fdx = ABS(dx);
-          float fdy = ABS(dy);
-          if (fdx >= fdy) dy = -dy;
-          if (fdy >= fdx) dx = -dx;
+          float fdx = ABS(dx_);
+          float fdy = ABS(dy_);
+          if (fdx >= fdy) dy_ = -dy_;
+          if (fdy >= fdx) dx_ = -dx_;
         } else if (!xwalk) {
           if (ywalk) {
             // vertical wall bounce
-            dx = -dx;
+            dx_ = -dx_;
           } else {
             // inner corner bounce
             // ##
             // .#
-            dx = -dx;
-            dy = -dy;
+            dx_ = -dx_;
+            dy_ = -dy_;
           }
         } else {
           // horizontal wall bounce
-          dy = -dy;
+          dy_ = -dy_;
         }
       }
     } else {
-      if ((int)x == (int)gameEngine->player.x && (int)y == (int)gameEngine->player.y) {
+      if ((int)x_ == (int)gameEngine->player.x_ && (int)y_ == (int)gameEngine->player.y_) {
         ItemFeature* feat = getFeature(ITEM_FEAT_ATTACK);
         if (feat) {
           gameEngine->player.takeDamage(
               TCODRandom::getInstance()->getFloat(feat->attack.minDamagesCoef, feat->attack.maxDamagesCoef));
-          x = oldx;
-          y = oldy;
-          speed = 0;
+          x_ = oldx;
+          y_ = oldy;
+          speed_ = 0;
           return false;
         }
       }
     }
-    if ((int)x != (int)oldx || (int)y != (int)oldy) {
+    if ((int)x_ != (int)oldx || (int)y_ != (int)oldy) {
       helpers::remove<item::Item*>(dungeon->getCell(oldx, oldy)->items, this);
-      dungeon->getCell(x, y)->items.push_back(this);
+      dungeon->getCell(x_, y_)->items.push_back(this);
     }
-    duration -= elapsed;
-    if (duration < 0.0f) {
-      speed = 0.0f;
-      if (dungeon->hasRipples(x, y)) {
-        gameEngine->startRipple(x, y);
+    duration_ -= elapsed;
+    if (duration_ < 0.0f) {
+      speed_ = 0.0f;
+      if (dungeon->hasRipples(x_, y_)) {
+        gameEngine->startRipple(x_, y_);
       }
       if (isA("arrow")) {
         return false;
@@ -1346,7 +1346,7 @@ bool Item::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
             else
               phase_ = IDLE;
             spell::FireBall* fb = new spell::FireBall(
-                owner_->x, owner_->y, target_x_, target_y_, spell::FB_STANDARD, feat->attack.spellCasted);
+                owner_->x_, owner_->y_, target_x_, target_y_, spell::FB_STANDARD, feat->attack.spellCasted);
             ((screen::Game*)gameEngine)->addFireball(fb);
             gameEngine->stats.nbSpellStandard++;
           } else {
@@ -1363,19 +1363,19 @@ bool Item::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
                 speed = MIN(speed, 1.0f);
                 phase_ = RELOAD;
                 phase_timer_ = reload_delay_;
-                if ((int)target_x_ == (int)owner_->x && (int)target_y_ == (int)owner_->y) return true;
-                x = owner_->x;
-                y = owner_->y;
+                if ((int)target_x_ == (int)owner_->x_ && (int)target_y_ == (int)owner_->y_) return true;
+                x_ = owner_->x_;
+                y_ = owner_->y_;
                 Item* it = owner_->removeFromInventory(this);
-                it->dx = target_x_ - x;
-                it->dy = target_y_ - y;
-                float l = fastInvSqrt(it->dx * it->dx + it->dy * it->dy);
-                it->dx *= l;
-                it->dy *= l;
-                it->x = x;
-                it->y = y;
-                it->speed = speed * 12;
-                it->duration = 1.5f;
+                it->dx_ = target_x_ - x_;
+                it->dy_ = target_y_ - y_;
+                float l = fastInvSqrt(it->dx_ * it->dx_ + it->dy_ * it->dy_);
+                it->dx_ *= l;
+                it->dy_ *= l;
+                it->x_ = x_;
+                it->y_ = y_;
+                it->speed_ = speed * 12;
+                it->duration_ = 1.5f;
                 gameEngine->dungeon->addItem(it);
               }
             }
@@ -1405,11 +1405,11 @@ bool Item::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
         heat_timer_ = 0.0f;
         float radius = feat->heat.radius;
         for (int tx = -(int)floor(radius); tx <= (int)ceil(radius); tx++) {
-          if ((int)(x) + tx >= 0 && (int)(x) + tx < dungeon->width) {
+          if ((int)(x_) + tx >= 0 && (int)(x_) + tx < dungeon->width) {
             int dy = (int)(sqrtf(radius * radius - tx * tx));
             for (int ty = -dy; ty <= dy; ty++) {
-              if ((int)(y) + ty >= 0 && (int)(y) + ty < dungeon->height) {
-                auto* items = dungeon->getItems((int)(x) + tx, (int)(y) + ty);
+              if ((int)(y_) + ty >= 0 && (int)(y_) + ty < dungeon->height) {
+                auto* items = dungeon->getItems((int)(x_) + tx, (int)(y_) + ty);
                 for (Item* it : *items) {
                   // found an adjacent item
                   ItemFeature* fireFeat = it->getFeature(ITEM_FEAT_FIRE_EFFECT);
@@ -1418,12 +1418,12 @@ bool Item::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
                     it->fire_resistance_ -= feat->heat.intensity;
                   }
                 }
-                mob::Creature* cr = dungeon->getCreature((int)(x) + tx, (int)(y) + ty);
+                mob::Creature* cr = dungeon->getCreature((int)(x_) + tx, (int)(y_) + ty);
                 if (cr) {
                   cr->takeDamage(feat->heat.intensity);
                   cr->burn = true;
                 }
-                if (gameEngine->player.x == x + tx && gameEngine->player.y == y + ty) {
+                if (gameEngine->player.x_ == x_ + tx && gameEngine->player.y_ == y_ + ty) {
                   gameEngine->player.takeDamage(feat->heat.intensity);
                 }
               }
@@ -1438,7 +1438,7 @@ bool Item::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
         ItemFeature* ignite = feat->fireEffect.type->getFeature(ITEM_FEAT_HEAT);
         if (ignite) {
           float rad = ignite->heat.radius;
-          gameEngine->startFireZone((int)(x - rad), (int)(y - 2 * rad), (int)(2 * rad + 1), (int)(3 * rad));
+          gameEngine->startFireZone((int)(x_ - rad), (int)(y_ - 2 * rad), (int)(2 * rad + 1), (int)(3 * rad));
         }
       }
       // destroy this item
@@ -1451,9 +1451,9 @@ bool Item::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
       if (ignite) {
         // this item stops burning
         float rad = ignite->heat.radius;
-        gameEngine->removeFireZone((int)(x - rad), (int)(y - 2 * rad), (int)(2 * rad + 1), (int)(3 * rad));
+        gameEngine->removeFireZone((int)(x_ - rad), (int)(y_ - 2 * rad), (int)(2 * rad + 1), (int)(3 * rad));
       }
-      map::Cell* cell = dungeon->getCell(x, y);
+      map::Cell* cell = dungeon->getCell(x_, y_);
       if (cell->building) {
         cell->building->collapseRoof();
       }
@@ -1530,7 +1530,7 @@ void Item::use() {
     toggle_ = !toggle_;
     gameEngine->gui.log.info("You %s %s", toggle_ ? "open" : "close", theName());
     ch_ = toggle_ ? '/' : '+';
-    gameEngine->dungeon->setProperties((int)x, (int)y, toggle_, toggle_);
+    gameEngine->dungeon->setProperties((int)x_, (int)y_, toggle_, toggle_);
   }
   if (isDeletedOnUse()) {
     if (count_ > 1)
@@ -1578,8 +1578,8 @@ Item* Item::drop(int dropCount) {
   if (dropCount == 0) dropCount = count_;
   mob::Creature* ownerBackup = owner_;  // keep the owner for once the item is removed from inventory
   Item* newItem = owner_->removeFromInventory(this, dropCount);
-  newItem->x = ownerBackup->x;
-  newItem->y = ownerBackup->y;
+  newItem->x_ = ownerBackup->x_;
+  newItem->y_ = ownerBackup->y_;
   if (as_creature_) {
     // convert item back to creature
     gameEngine->dungeon->addCreature(as_creature_);
@@ -1589,7 +1589,7 @@ Item* Item::drop(int dropCount) {
   gameEngine->gui.log.info(
       "You drop %s %s.",
       newItem->theName(),
-      gameEngine->dungeon->hasRipples(newItem->x, newItem->y) ? "in the water" : "on the ground");
+      gameEngine->dungeon->hasRipples(newItem->x_, newItem->y_) ? "in the water" : "on the ground");
   return newItem;
 }
 
@@ -1723,8 +1723,8 @@ std::string Item::theName() const {
 
 bool Item::loadData(uint32_t chunkId, uint32_t chunkVersion, TCODZip* zip) {
   if (chunkVersion != ITEM_CHUNK_VERSION) return false;
-  x = zip->getFloat();
-  y = zip->getFloat();
+  x_ = zip->getFloat();
+  y_ = zip->getFloat();
   item_class_ = (ItemClass)zip->getInt();
   if (item_class_ < 0 || item_class_ >= NB_ITEM_CLASSES) return false;
   color_ = zip->getColor();
@@ -1773,8 +1773,8 @@ bool Item::loadData(uint32_t chunkId, uint32_t chunkVersion, TCODZip* zip) {
 
 void Item::saveData(uint32_t chunkId, TCODZip* zip) {
   saveGame.saveChunk(ITEM_CHUNK_ID, ITEM_CHUNK_VERSION);
-  zip->putFloat(x);
-  zip->putFloat(y);
+  zip->putFloat(x_);
+  zip->putFloat(y_);
   zip->putInt(item_class_);
   zip->putColor(&color_);
   zip->putString(typeName_.c_str());

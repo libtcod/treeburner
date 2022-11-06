@@ -42,5 +42,7 @@ float Entity::fastInvSqrt(float x) {
 
 float Entity::distance(const Entity& p) const { return sqrtf(squaredDistance(p)); }
 
-bool Entity::isOnScreen() const { return IN_RECTANGLE(x - gameEngine->xOffset, y - gameEngine->yOffset, CON_W, CON_H); }
+bool Entity::isOnScreen() const {
+  return IN_RECTANGLE(x_ - gameEngine->xOffset, y_ - gameEngine->yOffset, CON_W, CON_H);
+}
 }  // namespace base

@@ -37,10 +37,10 @@ void Light::addToImage(TCODImage& img) { add(nullptr, &img); }
 void Light::add(map::LightMap* l, TCODImage* img) {
   if (this->range == 0.0f) return;
   // get light range in dungeon coordinates
-  int minx = (int)(this->x - this->range);
-  int maxx = (int)(this->x + this->range);
-  int miny = (int)(this->y - this->range);
-  int maxy = (int)(this->y + this->range);
+  int minx = (int)(this->x_ - this->range);
+  int maxx = (int)(this->x_ + this->range);
+  int miny = (int)(this->y_ - this->range);
+  int maxy = (int)(this->y_ + this->range);
   int xOffset = gameEngine->xOffset * 2;
   int yOffset = gameEngine->yOffset * 2;
   // clamp it to the dungeon
@@ -88,7 +88,7 @@ void Light::add(map::LightMap* l, TCODImage* img) {
   }
   // calculate light fov
   // the fov algo must support viewer out of the map !
-  fovmap.computeFov((int)(this->x - xOffset - minx), (int)(this->y - yOffset - miny), (int)(range), true, FOV_BASIC);
+  fovmap.computeFov((int)(this->x_ - xOffset - minx), (int)(this->y_ - yOffset - miny), (int)(range), true, FOV_BASIC);
 
   float squaredRange = range * range;
   TCODMap* map2x = gameEngine->dungeon->map2x;
@@ -99,8 +99,8 @@ void Light::add(map::LightMap* l, TCODImage* img) {
         int dungeon2x = cx + minx + xOffset;
         int dungeon2y = cy + miny + yOffset;
         if (map2x->isInFov(dungeon2x, dungeon2y)) {
-          int dx = (int)(dungeon2x - this->x);
-          int dy = (int)(dungeon2y - this->y);
+          int dx = (int)(dungeon2x - this->x_);
+          int dy = (int)(dungeon2y - this->y_);
           float crange = dx * dx + dy * dy;
           float coef;
           float rad = 0.0f;
@@ -147,10 +147,10 @@ void Light::add(map::LightMap* l, TCODImage* img) {
 
 // part of the dungeon that this light can hit (2x coords)
 void Light::getDungeonPart(int* minx, int* miny, int* maxx, int* maxy) {
-  *minx = (int)(x - range);
-  *maxx = (int)(x + range);
-  *miny = (int)(y - range);
-  *maxy = (int)(y + range);
+  *minx = (int)(x_ - range);
+  *maxx = (int)(x_ + range);
+  *miny = (int)(y_ - range);
+  *maxy = (int)(y_ + range);
 }
 
 void ExtendedLight::setup(

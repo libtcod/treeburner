@@ -47,18 +47,18 @@ bool Archer::update(float elapsed) {
   static float arrowSpeed = config.getFloatProperty("config.gameplay.arrowSpeed");
   pathTimer += elapsed;
   if (!Creature::update(elapsed)) return false;
-  if (gameEngine->dungeon->map->isInFov((int)x, (int)y)) {
+  if (gameEngine->dungeon->map->isInFov((int)x_, (int)y_)) {
     // see player
     if (pathTimer > 1.0f) {
       pathTimer = 0.0f;
-      item::Item* arrow = item::Item::getItem("arrow", x + 0.5f, y + 0.5f, false);
-      arrow->dx = gameEngine->player.x - x;
-      arrow->dy = gameEngine->player.y - y;
-      arrow->speed = arrowSpeed;
-      float l = sqrt(arrow->dx * arrow->dx + arrow->dy * arrow->dy);
-      arrow->dx /= l;
-      arrow->dy /= l;
-      arrow->duration = l / arrow->speed;
+      item::Item* arrow = item::Item::getItem("arrow", x_ + 0.5f, y_ + 0.5f, false);
+      arrow->dx_ = gameEngine->player.x_ - x_;
+      arrow->dy_ = gameEngine->player.y_ - y_;
+      arrow->speed_ = arrowSpeed;
+      float l = sqrt(arrow->dx_ * arrow->dx_ + arrow->dy_ * arrow->dy_);
+      arrow->dx_ /= l;
+      arrow->dy_ /= l;
+      arrow->duration_ = l / arrow->speed_;
       gameEngine->dungeon->addItem(arrow);
     }
   }
@@ -117,7 +117,7 @@ bool Minion::update(float elapsed) {
   base::GameEngine* game = gameEngine;
   if (!Creature::update(elapsed)) return false;
   pathTimer += elapsed;
-  if (!seen && game->dungeon->map->isInFov((int)x, (int)y) && game->dungeon->getMemory(x, y)) {
+  if (!seen && game->dungeon->map->isInFov((int)x_, (int)y_) && game->dungeon->getMemory(x_, y_)) {
     float dist = squaredDistance(game->player);
     if (dist < 1.0f || game->player.stealth_ >= 1.0f - 1.0f / dist) {
       // creature is seen by player
@@ -134,16 +134,16 @@ bool Minion::update(float elapsed) {
     if (pathTimer > pathDelay) {
       int dx, dy;
       path->getDestination(&dx, &dy);
-      if (dx != game->player.x || dy != game->player.y) {
+      if (dx != game->player.x_ || dy != game->player.y_) {
         // path is no longer valid (the player moved)
-        path->compute((int)x, (int)y, (int)game->player.x, (int)game->player.y);
+        path->compute((int)x_, (int)y_, (int)game->player.x_, (int)game->player.y_);
         pathTimer = 0.0f;
       }
     }
     walk(elapsed);
   }
-  float dx = ABS(game->player.x - x);
-  float dy = ABS(game->player.y - y);
+  float dx = ABS(game->player.x_ - x_);
+  float dy = ABS(game->player.y_ - y_);
   if (dx <= 1.0f && dy <= 1.0f) {
     // at melee range. attack
     game->player.takeDamage(minionDamage * elapsed);

@@ -63,13 +63,13 @@ void GameEngine::recomputeCanopy(item::Item* it) {
   if (dungeon->canopy) {
     if (it) {
       // reset only for one tree
-      Rect r(it->x * 2 - treeRadius - 1, it->y * 2 - treeRadius - 1, treeRadius * 2 + 2, treeRadius * 2 + 2);
-      r.x = MAX(0, r.x);
-      r.y = MAX(0, r.y);
-      r.w = (int)MIN(dungeon->width * 2 - 1 - r.x, r.w);
-      r.h = (int)MIN(dungeon->height * 2 - 1 - r.y, r.h);
-      for (int x = (int)r.x; x < (int)(r.x + r.w); x++) {
-        for (int y = (int)r.y; y < (int)(r.y + r.h); y++) {
+      Rect r(it->x_ * 2 - treeRadius - 1, it->y_ * 2 - treeRadius - 1, treeRadius * 2 + 2, treeRadius * 2 + 2);
+      r.x_ = MAX(0, r.x_);
+      r.y_ = MAX(0, r.y_);
+      r.w_ = (int)MIN(dungeon->width * 2 - 1 - r.x_, r.w_);
+      r.h_ = (int)MIN(dungeon->height * 2 - 1 - r.y_, r.h_);
+      for (int x = (int)r.x_; x < (int)(r.x_ + r.w_); x++) {
+        for (int y = (int)r.y_; y < (int)(r.y_ + r.h_); y++) {
           if (IN_RECTANGLE(x, y, dungeon->width * 2, dungeon->height * 2)) {
             dungeon->canopy->putPixel(x, y, TCODColor::black);
             map::SubCell* sub = dungeon->getSubCell(x, y);
@@ -78,8 +78,8 @@ void GameEngine::recomputeCanopy(item::Item* it) {
           }
         }
       }
-      for (int x = (int)(it->x + treeRadius); x >= (int)(it->x - treeRadius); x--) {
-        for (int y = (int)(it->y - treeRadius); y < (int)(it->y + treeRadius); y++) {
+      for (int x = (int)(it->x_ + treeRadius); x >= (int)(it->x_ - treeRadius); x--) {
+        for (int y = (int)(it->y_ - treeRadius); y < (int)(it->y_ + treeRadius); y++) {
           if (IN_RECTANGLE(x, y, dungeon->width, dungeon->height)) {
             item::Item* tree = dungeon->getItem(x, y, "tree");
             if (tree) {
@@ -111,11 +111,11 @@ void GameEngine::setCanopy(int x, int y, const item::ItemType* treeType, const R
   Rect r(0, 0, dungeon->width * 2, dungeon->height * 2);
   if (pr) r = *pr;
   for (int tx = -treeRadiusW; tx <= treeRadiusW; tx++) {
-    if (x + tx >= r.x && x + tx < r.x + r.w) {
+    if (x + tx >= r.x_ && x + tx < r.x_ + r.w_) {
       // we want round trees even with non square fonts
       int dy = (int)(sqrtf(treeRadiusW * treeRadiusW - tx * tx) * aspectRatio);
       for (int ty = -dy; ty <= dy; ty++) {
-        if (y + ty >= r.y && y + ty < r.y + r.h) {
+        if (y + ty >= r.y_ && y + ty < r.y_ + r.h_) {
           if (dungeon->getShadowHeight(x + tx, y + ty) < 2.0f) {
             TCODColor treecol = TCODColor::lerp(green1, green2, TCODRandom::getInstance()->getFloat(0.0f, 1.0f));
             if (treeType->name == "pine tree") treecol = treecol * 0.75f;

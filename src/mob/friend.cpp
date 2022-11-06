@@ -68,7 +68,7 @@ bool Friend::update(float elapsed) {
       timer = 0.0f;
   } else if (
       foodTuto && timer > 4.0f && talkText.delay == 0.0f && !startPhrase &&
-      gameEngine->player.isInRange((int)x, (int)y)) {
+      gameEngine->player.isInRange((int)x_, (int)y_)) {
     talk(talkGenerator->generate("friend", "${HUNGRY}"));
     startPhrase = true;
     timer = 0.0f;

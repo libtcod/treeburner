@@ -127,7 +127,7 @@ void AiDirector::update(float elapsed) {
 void AiDirector::spawnMinion(bool chase) {
   const GameEngine& game = *gameEngine;
   auto [x, y] =
-      game.dungeon->getClosestSpawnSource(gsl::narrow_cast<int>(game.player.x), gsl::narrow_cast<int>(game.player.y));
+      game.dungeon->getClosestSpawnSource(gsl::narrow_cast<int>(game.player.x_), gsl::narrow_cast<int>(game.player.y_));
   spawnMinion(chase, x, y);
 }
 
@@ -146,12 +146,12 @@ void AiDirector::spawnMinion(bool chase, int x, int y) {
 
 // remove a creature that is too far from player
 void AiDirector::replace(mob::Creature* cr) {
-  const int old_x = (int)cr->x;
-  const int old_y = (int)cr->y;
+  const int old_x = (int)cr->x_;
+  const int old_y = (int)cr->y_;
   cr->burn = false;
   int newx{};
   int newy{};
-  gameEngine->dungeon->getClosestSpawnSource(gameEngine->player.x, gameEngine->player.y, &newx, &newy);
+  gameEngine->dungeon->getClosestSpawnSource(gameEngine->player.x_, gameEngine->player.y_, &newx, &newy);
   cr->setPos(newx, newy);
   gameEngine->dungeon->moveCreature(cr, old_x, old_y, newx, newy);
   cr->onReplace();
@@ -172,7 +172,7 @@ void AiDirector::killCreature(mob::Creature* cr) {
     if (list.size() - nbScrolls <= 0 ||
         TCODRandom::getInstance()->getFloat(0.0f, 1.0f) > gameEngine->player.getHealth()) {
       item::Item* it = item::Item::getItem("health", 0, 0);
-      item::Item* bottle = item::Item::getItem("bottle", cr->x, cr->y);
+      item::Item* bottle = item::Item::getItem("bottle", cr->x_, cr->y_);
       it->putInContainer(bottle);
       gameEngine->dungeon->addItem(bottle);
     } else {

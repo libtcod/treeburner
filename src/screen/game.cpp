@@ -286,8 +286,8 @@ bool Game::update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse) {
   player.update(elapsed, k, &mouse);
   if (isGamePaused()) return true;
 
-  xOffset = (int)(player.x - CON_W / 2);
-  yOffset = (int)(player.y - CON_H / 2);
+  xOffset = (int)(player.x_ - CON_W / 2);
+  yOffset = (int)(player.y_ - CON_H / 2);
 
   if (player.life <= 0 && fade_ != FADE_DOWN) {
     setFadeOut(fade_out_length_ms_, TCODColor::darkRed);
@@ -321,7 +321,7 @@ bool Game::update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse) {
   }
 
   // level ending condition
-  if (player.x == dungeon->stairx && player.y == dungeon->stairy && fade_ == FADE_OFF) {
+  if (player.x_ == dungeon->stairx && player.y_ == dungeon->stairy && fade_ == FADE_OFF) {
     if (level == nbLevels - 1) {
       if (bossIsDead) {
         if (finalExplosion == 2.0f) {
@@ -336,7 +336,7 @@ bool Game::update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse) {
   }
 
   // calculate player fov
-  dungeon->computeFov((int)player.x, (int)player.y);
+  dungeon->computeFov((int)player.x_, (int)player.y_);
 
   // update monsters
   if (fade_ != FADE_DOWN) {
@@ -364,7 +364,7 @@ bool Game::update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse) {
     }
     if (k.c == 'i' && k.lalt && !k.pressed) {
       // debug mode : Alt-i = item
-      dungeon->addItem(item::Item::getItem("knife", player.x, player.y - 1));
+      dungeon->addItem(item::Item::getItem("knife", player.x_, player.y_ - 1));
     }
     if (k.c == 'm' && k.lalt && !k.pressed) {
       // debug mode : Alt-m : max spells
@@ -385,7 +385,7 @@ bool Game::update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse) {
       // debug mode : Alt-w : weapon
       static int i = 0;
       item::Item* w = item::Item::getRandomWeapon("staff", (item::ItemClass)i++);
-      w->setPos(player.x, player.y - 1);
+      w->setPos(player.x_, player.y_ - 1);
       w->name_ = strdup("Pyromancer's staff");
       if (i > item::ITEM_CLASS_GOLD) i = 0;
       dungeon->addItem(w);
