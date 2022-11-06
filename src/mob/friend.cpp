@@ -35,8 +35,8 @@ namespace mob {
 #define NB_CAUGHT 25
 
 Friend::Friend() : Creature(), timer(0.0f), startPhrase(false), lostDelay(-5.0f) {
-  strcpy(name_, "Aidan");
-  util::TextGenerator::addGlobalValue("FRIEND_NAME", name_);
+  name_ = "Aidan";
+  util::TextGenerator::addGlobalValue("FRIEND_NAME", name_.c_str());
   ch_ = '@';
   color_ = TCODColor(210, 210, 255);
   life_ = 100;

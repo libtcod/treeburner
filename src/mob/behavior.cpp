@@ -62,7 +62,7 @@ bool FollowBehavior::update(Creature* crea, float elapsed) {
     desty = CLAMP(0, dungeon->height - 1, desty);
     dungeon->getClosestWalkable(&destx, &desty, true, true, false);
     if (!crea->path_) {
-      crea->path_ = new TCODPath(dungeon->width, dungeon->height, walkPattern, NULL);
+      crea->path_ = std::make_unique<TCODPath>(dungeon->width, dungeon->height, walkPattern, nullptr);
     }
     crea->path_->compute((int)crea->x_, (int)crea->y_, destx, desty);
     crea->path_timer_ = 0.0f;

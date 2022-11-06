@@ -38,7 +38,7 @@ VillageHead::VillageHead() {
   ch_ = villageHeadChar;
   color_ = villageHeadColor;
   life_ = villageHeadLife;
-  strcpy(name_, "village head");
+  name_ = "village head";
   summonMinions = true;
   stayInLair = false;
 }
@@ -141,7 +141,7 @@ bool Boss::update(float elapsed) {
       desty = CLAMP(0, gameEngine->dungeon->height - 1, desty);
       gameEngine->dungeon->getClosestWalkable(&destx, &desty, true, true);
       if (!path_) {
-        path_ = new TCODPath(gameEngine->dungeon->width, gameEngine->dungeon->height, this, gameEngine);
+        path_ = std::make_unique<TCODPath>(gameEngine->dungeon->width, gameEngine->dungeon->height, this, gameEngine);
       }
       path_->compute((int)x_, (int)y_, destx, desty);
       pathTimer = 0.0f;

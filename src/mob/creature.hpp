@@ -25,6 +25,9 @@
  */
 #pragma once
 #include <libtcod.hpp>
+#include <memory>
+#include <string>
+#include <string_view>
 
 #include "base/entity.hpp"
 #include "base/noisything.hpp"
@@ -64,10 +67,8 @@ enum CreatureFlags {
   CREATURE_CATCHABLE = 16,  // can catch a creature by clicking on it when adjacent
 };
 
-#define CREATURE_NAME_SIZE 32
-#define CREATURE_TALK_SIZE 64
-#define VISIBLE_HEIGHT 0.05f
-#define MIN_VISIBLE_HEIGHT 0.02f
+static constexpr auto VISIBLE_HEIGHT = 0.05f;
+static constexpr auto MIN_VISIBLE_HEIGHT = 0.02f;
 
 enum ConditionTypeId {
   STUNNED,
@@ -118,9 +119,6 @@ class Creature : public base::DynamicEntity,
                  public base::SaveListener {
  public:
   Creature() = default;
-  virtual ~Creature() noexcept {
-    if (path_) delete path_;
-  }
 
   virtual void onReplace() {}
 
@@ -143,7 +141,7 @@ class Creature : public base::DynamicEntity,
   virtual void takeDamage(float amount);
   virtual void stun(float delay);
   virtual float getWalkCost(int xFrom, int yFrom, int xTo, int yTo, void* userData) const override;
-  void talk(const char* text);
+  void talk(std::string_view text);
   bool isTalking() const noexcept { return talk_text_.delay > 0.0f; }
   bool isInRange(int x, int y);
   bool isPlayer();
@@ -178,11 +176,11 @@ class Creature : public base::DynamicEntity,
   float max_life_{};
   float speed_{};
   float height_{1.0f};  // in meters
-  TCODPath* path_{};
+  std::unique_ptr<TCODPath> path_{};
   bool ignore_creatures_{};  // walk mode
   bool burn_{};
   int flags_{};
-  char name_[CREATURE_NAME_SIZE]{};
+  std::string name_{};
   item::Item* main_hand_{};
   item::Item* off_hand_{};
   item::Item* as_item_{};  // an item corresponding to this creature
@@ -197,7 +195,7 @@ class Creature : public base::DynamicEntity,
   friend class HerdBehavior;
   friend class ForestScreen;
   struct TalkText : public base::Rect {
-    char text[CREATURE_TALK_SIZE]{};
+    std::string text{};
     float delay{};
   };
   bool walk(float elapsed);

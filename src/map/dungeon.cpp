@@ -496,11 +496,11 @@ mob::Creature* Dungeon::getCreature(mob::CreatureTypeId id) const {
 }
 
 mob::Creature* Dungeon::getCreature(const char* name) const {
-  if (strcmp(name, "player") == 0) return &gameEngine->player;
+  if (name == "player") return &gameEngine->player;
   for (mob::Creature** it = creatures.begin(); it != creatures.end(); it++) {
-    if (strcmp((*it)->name_, name) == 0) return *it;
+    if ((*it)->name_ == name) return *it;
   }
-  return NULL;
+  return nullptr;
 }
 
 void Dungeon::moveCreature(mob::Creature* cr, int xFrom, int yFrom, int xTo, int yTo) {

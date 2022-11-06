@@ -164,12 +164,12 @@ void Condition::applyTo(Creature* cr) {
     } break;
     case WOUNDED: {
       // wounded decrease the max hp
-      float quantity = amount * cr->max_life_;
+      const float quantity = amount * cr->max_life_;
       cr->max_life_ -= quantity;
       if (cr->max_life_ < 0) {
         cr->max_life_ = 0;
       }
-      cr->life_ = MIN(cr->max_life_, cr->life_);
+      cr->life_ = std::min(cr->max_life_, cr->life_);
     } break;
     default:
       break;
@@ -219,7 +219,7 @@ Creature* Creature::getCreature(CreatureTypeId id) {
   switch (id) {
     case CREATURE_DEER:
       ret = new Creature();
-      strcpy(ret->name_, "deer");
+      ret->name_ = "deer";
       ret->ch_ = 'd';
       ret->color_ = TCODColor::darkerYellow;
       ret->max_life_ = ret->life_ = 10.0f;
@@ -259,108 +259,107 @@ Creature* Creature::getCreature(CreatureTypeId id) {
 }
 
 bool Creature::isInRange(int px, int py) {
-  int dx = (int)(px - x_);
-  int dy = (int)(py - y_);
-  return (ABS(dx) <= fov_range_ && ABS(dy) <= fov_range_ && dx * dx + dy * dy <= fov_range_ * fov_range_);
+  const int dx = (int)(px - x_);
+  const int dy = (int)(py - y_);
+  return (abs(dx) <= fov_range_ && abs(dy) <= fov_range_ && dx * dx + dy * dy <= fov_range_ * fov_range_);
 }
 
 bool Creature::isPlayer() { return this == &gameEngine->player; }
 
-void Creature::talk(const char* text) {
-  strncpy(talk_text_.text, (char*)text, CREATURE_TALK_SIZE - 1);
-  talk_text_.text[CREATURE_TALK_SIZE - 1] = 0;
-  talk_text_.delay = strlen(text) * 0.1f;
-  talk_text_.delay = MAX(0.5f, talk_text_.delay);
+void Creature::talk(std::string_view text) {
+  talk_text_.text = text;
+  talk_text_.delay = gsl::narrow_cast<float>(talk_text_.text.size()) * 0.1f;
+  talk_text_.delay = std::max(0.5f, talk_text_.delay);
   // compute text size
-  char* ptr = (char*)text;
+  const char* ptr = talk_text_.text.c_str();
   talk_text_.h_ = 1;
   talk_text_.w_ = 0;
-  char* end = strchr(ptr, '\n');
+  const char* end = strchr(ptr, '\n');
   while (end) {
-    int len = end - ptr;
+    const auto len = gsl::narrow<int>(end - ptr);
     if (talk_text_.w_ < len) talk_text_.w_ = len;
-    talk_text_.h_++;
+    ++talk_text_.h_;
     ptr = end + 1;
     end = strchr(ptr, '\n');
   }
   if (end) {
-    int len = end - ptr;
+    const auto len = gsl::narrow<int>(end - ptr);
     if (talk_text_.w_ < len) talk_text_.w_ = len;
   }
 }
 
 void Creature::renderTalk() {
-  int conx = (int)(x_ - gameEngine->xOffset);
-  int cony = (int)(y_ - gameEngine->yOffset);
-  if (!IN_RECTANGLE(conx, cony, CON_W, CON_H)) return;  // creature out of console
-  talk_text_.x_ = conx;
-  talk_text_.y_ = cony - talk_text_.h_;
-  if (talk_text_.y_ < 0) talk_text_.y_ = cony + 1;
+  const int console_x = (int)(x_ - gameEngine->xOffset);
+  const int console_y = (int)(y_ - gameEngine->yOffset);
+  if (!IN_RECTANGLE(console_x, console_y, CON_W, CON_H)) return;  // creature out of console
+  talk_text_.x_ = gsl::narrow_cast<float>(console_x);
+  talk_text_.y_ = gsl::narrow_cast<float>(console_y - talk_text_.h_);
+  if (talk_text_.y_ < 0) talk_text_.y_ = gsl::narrow_cast<float>(console_y + 1);
   gameEngine->packer.addRect(&talk_text_);
   TCODConsole::root->setDefaultBackground(TCODColor::lighterYellow);
   TCODConsole::root->setDefaultForeground(TCODColor::darkGrey);
-  TCODConsole::root->printEx((int)talk_text_.x_, (int)talk_text_.y_, TCOD_BKGND_SET, TCOD_CENTER, talk_text_.text);
+  TCODConsole::root->printEx(
+      (int)talk_text_.x_, (int)talk_text_.y_, TCOD_BKGND_SET, TCOD_CENTER, talk_text_.text.c_str());
 }
 
 void Creature::render(map::LightMap& lightMap) {
-  static int penumbraLevel = config.getIntProperty("config.gameplay.penumbraLevel");
-  static int darknessLevel = config.getIntProperty("config.gameplay.darknessLevel");
-  static float fireSpeed = config.getFloatProperty("config.display.fireSpeed");
-  static TCODColor corpseColor = config.getColorProperty("config.display.corpseColor");
-  static TCODColor lowFire(255, 0, 0);
-  static TCODColor midFire(255, 204, 0);
-  static TCODColor highFire(255, 255, 200);
-  static TCODColor fire[64];
-  static bool fireInit = false;
-  if (!fireInit) {
-    for (int i = 0; i < 32; i++) {
-      fire[i] = TCODColor::lerp(lowFire, midFire, i / 32.0f);
+  static const int penumbraLevel = config.getIntProperty("config.gameplay.penumbraLevel");
+  static const int darknessLevel = config.getIntProperty("config.gameplay.darknessLevel");
+  static const float fireSpeed = config.getFloatProperty("config.display.fireSpeed");
+  static const TCODColor corpseColor = config.getColorProperty("config.display.corpseColor");
+  static const std::array<TCODColor, 64> fire_color = []() {
+    static constexpr TCODColor lowFire(255, 0, 0);
+    static constexpr TCODColor midFire(255, 204, 0);
+    static constexpr TCODColor highFire(255, 255, 200);
+    std::array<TCODColor, 64> new_array{};
+    for (int i = 0; i < 32; ++i) {
+      new_array.at(i) = TCODColor::lerp(lowFire, midFire, i / 32.0f);
     }
-    for (int i = 32; i < 64; i++) {
-      fire[i] = TCODColor::lerp(midFire, highFire, (i - 32) / 32.0f);
+    for (int i = 32; i < 64; ++i) {
+      new_array.at(i) = TCODColor::lerp(midFire, highFire, (i - 32) / 32.0f);
     }
-    fireInit = true;
-  }
+    return new_array;
+  }();
 
   // position on console
-  int conx = (int)(x_ - gameEngine->xOffset);
-  int cony = (int)(y_ - gameEngine->yOffset);
-  if (!IN_RECTANGLE(conx, cony, CON_W, CON_H)) return;  // out of console
+  const int console_x = (int)(x_ - gameEngine->xOffset);
+  const int console_y = (int)(y_ - gameEngine->yOffset);
+  if (!IN_RECTANGLE(console_x, console_y, CON_W, CON_H)) return;  // out of console
 
-  float playerDist = distance(gameEngine->player);
-  float apparentHeight = height_ / playerDist;
+  const float playerDist = distance(gameEngine->player);
+  const float apparentHeight = height_ / playerDist;
   if (apparentHeight < MIN_VISIBLE_HEIGHT) return;  // too small to see at that distance
 
-  TCODColor c;
+  TCODColor color{};
   int displayChar = ch_;
-  TCODColor lightColor = lightMap.getColor(conx, cony) * 1.5f;
-  map::Dungeon* dungeon = gameEngine->dungeon;
+  TCODColor lightColor = lightMap.getColor(console_x, console_y) * 1.5f;
+  const map::Dungeon* dungeon = gameEngine->dungeon;
   float shadow = dungeon->getShadow(x_ * 2, y_ * 2);
-  float clouds = dungeon->getCloudCoef(x_ * 2, y_ * 2);
-  shadow = MIN(shadow, clouds);
+  const float clouds = dungeon->getCloudCoef(x_ * 2, y_ * 2);
+  shadow = std::min(shadow, clouds);
   lightColor = lightColor * shadow;
   if (life_ <= 0) {
     ch_ = '%';
-    c = corpseColor * lightColor;
+    color = corpseColor * lightColor;
   } else if (burn_) {
-    float fireX = TCODSystem::getElapsedSeconds() * fireSpeed + noise_offset_;
-    int fireIdx = (int)((0.5f + 0.5f * noise1d.get(&fireX)) * 64.0f);
-    c = fire[fireIdx];
-    int r = (int)(c.r * 1.5f * lightColor.r / 255);
-    int g = (int)(c.g * 1.5f * lightColor.g / 255);
-    int b = (int)(c.b * 1.5f * lightColor.b / 255);
-    c.r = CLAMP(0, 255, r);
-    c.g = CLAMP(0, 255, g);
-    c.b = CLAMP(0, 255, b);
+    const float fire_x = TCODSystem::getElapsedSeconds() * fireSpeed + noise_offset_;
+    const int fire_index = (int)((0.5f + 0.5f * noise1d.get(&fire_x)) * 64.0f);
+    color = fire_color.at(fire_index);
+    const int r = (int)(color.r * 1.5f * lightColor.r / 255);
+    const int g = (int)(color.g * 1.5f * lightColor.g / 255);
+    const int b = (int)(color.b * 1.5f * lightColor.b / 255);
+    color.r = gsl::narrow<uint8_t>(std::clamp(r, 0, 255));
+    color.g = gsl::narrow<uint8_t>(std::clamp(g, 0, 255));
+    color.b = gsl::narrow<uint8_t>(std::clamp(b, 0, 255));
   } else {
-    c = color_ * lightColor;
+    color = color_ * lightColor;
   }
-  int intensity = c.r + c.g + c.b;
+  int intensity = color.r + color.g + color.b;
   if (intensity < darknessLevel) return;  // creature not seen
   if (intensity < penumbraLevel) displayChar = '?';
   if (apparentHeight < VISIBLE_HEIGHT) displayChar = '?';  // too small to distinguish
-  TCODConsole::root->setChar(conx, cony, displayChar);
-  TCODConsole::root->setCharForeground(conx, cony, c);
+  TCODConsole::root->setChar(console_x, console_y, displayChar);
+  TCODConsole::root->setCharForeground(console_x, console_y, color);
 }
 
 void Creature::stun(float delay) { walk_timer_ = MIN(-delay, walk_timer_); }
@@ -368,21 +367,24 @@ void Creature::stun(float delay) { walk_timer_ = MIN(-delay, walk_timer_); }
 bool Creature::walk(float elapsed) {
   walk_timer_ += elapsed;
   map::TerrainId terrainId = gameEngine->dungeon->getTerrainType((int)x_, (int)y_);
-  float walkTime = map::terrainTypes[terrainId].walkCost / speed_;
+  const float walkTime = map::terrainTypes[terrainId].walkCost / speed_;
   if (walk_timer_ >= 0) {
     walk_timer_ = -walkTime;
     if (path_ && !path_->isEmpty()) {
-      int newx, newy;
+      int next_x{};
+      int next_y{};
       base::GameEngine* game = gameEngine;
-      path_->get(0, &newx, &newy);
-      if ((game->player.x_ != newx || game->player.y_ != newy) && !game->dungeon->hasCreature(newx, newy)) {
-        int oldx = (int)x_, oldy = (int)y_;
-        int newx = oldx, newy = oldy;
-        if (path_->walk(&newx, &newy, false)) {
-          setPos(newx, newy);
-          game->dungeon->moveCreature(this, oldx, oldy, newx, newy);
-          if (game->dungeon->hasRipples(newx, newy)) {
-            gameEngine->startRipple(newx, newy);
+      path_->get(0, &next_x, &next_y);
+      if ((game->player.x_ != next_x || game->player.y_ != next_y) && !game->dungeon->hasCreature(next_x, next_y)) {
+        const int old_x = (int)x_;
+        const int old_y = (int)y_;
+        int new_x = old_x;
+        int new_y = old_y;
+        if (path_->walk(&new_x, &new_y, false)) {
+          setPos(new_x, new_y);
+          game->dungeon->moveCreature(this, old_x, old_y, new_x, new_y);
+          if (game->dungeon->hasRipples(new_x, new_y)) {
+            gameEngine->startRipple(new_x, new_y);
           }
           return true;
         }
@@ -396,19 +398,19 @@ void Creature::randomWalk(float elapsed) {
   walk_timer_ += elapsed;
   if (walk_timer_ >= 0) {
     walk_timer_ = -1.0f / speed_;
-    static int dirx[] = {-1, 0, 1, -1, 1, -1, 0, 1};
-    static int diry[] = {-1, -1, -1, 0, 0, 1, 1, 1};
+    static constexpr int dir_x[] = {-1, 0, 1, -1, 1, -1, 0, 1};
+    static constexpr int dir_y[] = {-1, -1, -1, 0, 0, 1, 1, 1};
     int d = TCODRandom::getInstance()->getInt(0, 7);
     int count = 8;
     base::GameEngine* game = gameEngine;
     do {
-      int newx = (int)(x_ + dirx[d]), newy = (int)(y_ + diry[d]);
-      if (IN_RECTANGLE(newx, newy, game->dungeon->width, game->dungeon->height) &&
-          game->dungeon->map->isWalkable(newx, newy) && (game->player.x_ != newx || game->player.y_ != newy) &&
-          !game->dungeon->hasCreature(newx, newy)) {
-        game->dungeon->moveCreature(this, (int)x_, (int)y_, newx, newy);
-        x_ = newx;
-        y_ = newy;
+      int new_x = (int)(x_ + dir_x[d]), new_y = (int)(y_ + dir_y[d]);
+      if (IN_RECTANGLE(new_x, new_y, game->dungeon->width, game->dungeon->height) &&
+          game->dungeon->map->isWalkable(new_x, new_y) && (game->player.x_ != new_x || game->player.y_ != new_y) &&
+          !game->dungeon->hasCreature(new_x, new_y)) {
+        game->dungeon->moveCreature(this, (int)x_, (int)y_, new_x, new_y);
+        x_ = gsl::narrow_cast<decltype(x_)>(new_x);
+        y_ = gsl::narrow_cast<decltype(y_)>(new_y);
         return;
       }
       d = (d + 1) % 8;
@@ -417,7 +419,7 @@ void Creature::randomWalk(float elapsed) {
   }
 }
 
-float Creature::getWalkCost(int xFrom, int yFrom, int xTo, int yTo, void* userData) const {
+float Creature::getWalkCost(int, int, int xTo, int yTo, void*) const {
   base::GameEngine* game = gameEngine;
   if (!game->dungeon->map->isWalkable(xTo, yTo)) return 0.0f;
   if (ignore_creatures_) return 1.0f;
@@ -575,14 +577,14 @@ void Creature::unwield(item::Item* it) {
 }
 
 #define CREA_CHUNK_VERSION 6
-void Creature::saveData(uint32_t chunkId, TCODZip* zip) {
+void Creature::saveData([[maybe_unused]] uint32_t chunkId, TCODZip* zip) {
   saveGame.saveChunk(CREA_CHUNK_ID, CREA_CHUNK_VERSION);
   zip->putFloat(x_);
   zip->putFloat(y_);
   zip->putFloat(life_);
-  zip->putString(name_);
+  zip->putString(name_.c_str());
   // save inventory
-  zip->putInt(inventory_.size());
+  zip->putInt(gsl::narrow<int>(inventory_.size()));
   for (item::Item* it : inventory_) {
     zip->putString(it->typeData->name.c_str());
     it->saveData(ITEM_CHUNK_ID, zip);
@@ -594,12 +596,12 @@ void Creature::saveData(uint32_t chunkId, TCODZip* zip) {
   }
 }
 
-bool Creature::loadData(uint32_t chunkId, uint32_t chunkVersion, TCODZip* zip) {
+bool Creature::loadData([[maybe_unused]] uint32_t chunkId, uint32_t chunkVersion, TCODZip* zip) {
   if (chunkVersion != CREA_CHUNK_VERSION) return false;
   x_ = zip->getFloat();
   y_ = zip->getFloat();
   life_ = zip->getFloat();
-  strcpy(name_, zip->getString());
+  name_ = zip->getString();
   // load inventory
   int nbItems = zip->getInt();
   while (nbItems > 0) {

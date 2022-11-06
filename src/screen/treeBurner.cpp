@@ -258,7 +258,7 @@ void TreeBurner::render() {
 
   gui.descriptor.render();
   if (bossSeen && !bossIsDead) {
-    TCODConsole::root->printEx(40, 1, TCOD_BKGND_NONE, TCOD_CENTER, boss->name_);
+    TCODConsole::root->printEx(40, 1, TCOD_BKGND_NONE, TCOD_CENTER, boss->name_.c_str());
   }
 
   if (isGamePaused()) {
@@ -638,7 +638,7 @@ void TreeBurner::onActivate() {
   dungeon->getClosestWalkable(&px, &py, true, false);
   player.x_ = px;
   player.y_ = py;
-  strcpy(player.name_, "You");
+  player.name_ = "You";
   // make player uber powerful
   util::Powerup::init();
   TCODList<util::Powerup*> list;

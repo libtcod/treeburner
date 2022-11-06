@@ -280,7 +280,7 @@ class Item : public base::DynamicEntity {
       int count = 0,
       const char* verb = "pick up");  // move the item from ground to owner's inventory
   virtual void use();  // use the item (depends on the type)
-  virtual void use([[maybe_unused]] int dx_, [[maybe_unused]] int dy_) {}  // use the item in place (static items)
+  virtual void use([[maybe_unused]] int dx, [[maybe_unused]] int dy) {}  // use the item in place (static items)
   virtual Item* drop(int count = 0);  // move the item from it's owner inventory to the ground
   bool isEquiped();
 

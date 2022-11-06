@@ -39,7 +39,7 @@ Archer::Archer() {
   ch_ = archerChar;
   color_ = archerColor;
   life_ = archerLife;
-  strcpy(name_, "archer");
+  name_ = "archer";
   pathTimer = 0.0f;
 }
 
@@ -72,7 +72,7 @@ Villager::Villager() {
   ch_ = villagerChar;
   color_ = villagerColor;
   life_ = villagerLife;
-  strcpy(name_, "villager");
+  name_ = "villager";
 }
 
 bool Villager::update(float elapsed) {
@@ -129,7 +129,7 @@ bool Minion::update(float elapsed) {
   } else {
     // track player
     if (!path_) {
-      path_ = new TCODPath(game->dungeon->width, game->dungeon->height, this, game);
+      path_ = std::make_unique<TCODPath>(game->dungeon->width, game->dungeon->height, this, game);
     }
     if (pathTimer > pathDelay) {
       int dx, dy;
