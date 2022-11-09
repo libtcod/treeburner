@@ -24,6 +24,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 #pragma once
+#include <algorithm>
+#include <gsl/gsl>
 #include <libtcod.hpp>
 
 namespace map {
@@ -33,7 +35,13 @@ struct HDRColor {
   HDRColor() : r(0.0f), g(0.0f), b(0.0f) {}
   HDRColor(const TCODColor& col) : r(col.r), g(col.g), b(col.b) {}
   HDRColor(float r, float g, float b) : r(r), g(g), b(b) {}
-  operator TCODColor() { return TCODColor(CLAMP(0, 255, (int)r), CLAMP(0, 255, (int)g), CLAMP(0, 255, (int)b)); }
+  operator TCODColor() {
+    return {
+        std::clamp(gsl::narrow_cast<int>(r), 0, 255),
+        std::clamp(gsl::narrow_cast<int>(g), 0, 255),
+        std::clamp(gsl::narrow_cast<int>(b), 0, 255),
+    };
+  }
   bool operator==(const HDRColor& c) const { return (c.r == r && c.g == g && c.b == b); }
   bool operator!=(const HDRColor& c) const { return (c.r != r || c.g != g || c.b != b); }
   HDRColor operator*(const HDRColor& a) const {

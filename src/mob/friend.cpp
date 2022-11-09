@@ -120,8 +120,8 @@ bool Friend::updateHideAndSeek(float elapsed) {
                                 // go near the player
                                 int destx = (int)(player->x +
 TCODRandom::getInstance()->getInt(-SECURE_DIST*2,SECURE_DIST*2)); int desty = (int)(player->y +
-TCODRandom::getInstance()->getInt(-SECURE_DIST*2,SECURE_DIST*2)); destx=CLAMP(0,dungeon->size-1,destx);
-                                desty=CLAMP(0,dungeon->size-1,desty);
+TCODRandom::getInstance()->getInt(-SECURE_DIST*2,SECURE_DIST*2)); destx=std::clamp(destx,0,dungeon->size-1);
+                                desty=std::clamp(desty,0,dungeon->size-1);
                                 dungeon->getClosestWalkable(&destx,&desty,true,true);
                                 if (! path) {
                                         path=new TCODPath(dungeon->size,dungeon->size,this,NULL);
@@ -224,8 +224,8 @@ bool Friend::updateCatchMe(float elapsed) {
                                 destx=TCODRandom::getInstance()->getInt((int)x-20,(int)x+20);
                                 desty=TCODRandom::getInstance()->getInt((int)y-20,(int)y+20);
                         }
-                        destx=CLAMP(0,dungeon->size-1,destx);
-                        desty=CLAMP(0,dungeon->size-1,desty);
+                        destx=std::clamp(destx,0,dungeon->size-1);
+                        desty=std::clamp(desty,0,dungeon->size-1);
                         dungeon->getClosestWalkable(&destx,&desty,true,true);
                         if (! path) {
                                 path=new TCODPath(dungeon->size,dungeon->size,this,NULL);

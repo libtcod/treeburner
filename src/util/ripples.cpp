@@ -254,8 +254,8 @@ bool RippleManager::updateRipples(float elapsed) {
             }
           }
         }
-        fish1->dx_ = CLAMP(-MAX_FISH_SPEED, MAX_FISH_SPEED, fish1->dx_);
-        fish1->dy_ = CLAMP(-MAX_FISH_SPEED, MAX_FISH_SPEED, fish1->dy_);
+        fish1->dx_ = std::clamp(fish1->dx_, -MAX_FISH_SPEED, MAX_FISH_SPEED);
+        fish1->dy_ = std::clamp(fish1->dy_, -MAX_FISH_SPEED, MAX_FISH_SPEED);
         // fish-scare interaction
         // TODO can be optimized with fastInvSqrt
         for (mob::ScarePoint** spit = shoal->scare.begin(); spit != shoal->scare.end(); spit++) {
@@ -268,8 +268,8 @@ bool RippleManager::updateRipples(float elapsed) {
             fish1->dy_ -= elapsed * MAX_FISH_SPEED * 10 * coef * dy / dist;
           }
         }
-        fish1->dx_ = CLAMP(-MAX_FISH_SPEED * 2, MAX_FISH_SPEED * 2, fish1->dx_);
-        fish1->dy_ = CLAMP(-MAX_FISH_SPEED * 2, MAX_FISH_SPEED * 2, fish1->dy_);
+        fish1->dx_ = std::clamp(fish1->dx_, -MAX_FISH_SPEED * 2, MAX_FISH_SPEED * 2);
+        fish1->dy_ = std::clamp(fish1->dy_, -MAX_FISH_SPEED * 2, MAX_FISH_SPEED * 2);
 
         fish1->slide();
         assert(gameEngine->dungeon->hasWater(fish1->getSubX(), fish1->getSubY()));

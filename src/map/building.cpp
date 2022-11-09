@@ -65,8 +65,8 @@ Building* Building::generateWallsOnly(int width, int height, int nbRooms, TCODRa
       // rooms should not be disjoint
       rx = rng->getInt(oldrx - rw, oldrx + oldrw);
       ry = rng->getInt(oldry - rh, oldry + oldrh);
-      rx = CLAMP(0, width - rw, rx);
-      ry = CLAMP(0, height - rh, ry);
+      rx = std::clamp(rx, 0, width - rw);
+      ry = std::clamp(ry, 0, height - rh);
     }
     // fill room with floor
     for (int rry = ry; rry < ry + rh; rry++) {

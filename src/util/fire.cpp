@@ -79,7 +79,7 @@ void Fire::antispark(int x, int y) { softspark(x, y, -48); }
 
 void Fire::softspark(int x, int y, int delta) {
   int v = (int)(FIRE_GET(x, y)) + delta;
-  v = CLAMP(0, 255, v);
+  v = std::clamp(v, 0, 255);
   FIRE_SET(x, y, (uint8_t)v);
 }
 
@@ -151,7 +151,7 @@ void FireManager::antispark(int x, int y) { softspark(x, y, -48); }
 
 void FireManager::softspark(int x, int y, int delta) {
   int v = (int)(get(x, y)) + delta;
-  v = CLAMP(0, 255, v);
+  v = std::clamp(v, 0, 255);
   set(x, y, (uint8_t)v);
 }
 

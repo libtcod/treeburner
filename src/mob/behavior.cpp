@@ -27,6 +27,8 @@
 
 #include <math.h>
 
+#include <algorithm>
+
 #include "main.hpp"
 #include "map/dungeon.hpp"
 
@@ -58,8 +60,8 @@ bool FollowBehavior::update(Creature* crea, float elapsed) {
     // go near the leader
     int destx = (int)(leader_->x_ + TCODRandom::getInstance()->getInt(-FOLLOW_DIST, FOLLOW_DIST));
     int desty = (int)(leader_->y_ + TCODRandom::getInstance()->getInt(-FOLLOW_DIST, FOLLOW_DIST));
-    destx = CLAMP(0, dungeon->width - 1, destx);
-    desty = CLAMP(0, dungeon->height - 1, desty);
+    destx = std::clamp(destx, 0, dungeon->width - 1);
+    desty = std::clamp(desty, 0, dungeon->height - 1);
     dungeon->getClosestWalkable(&destx, &desty, true, true, false);
     if (!crea->path_) {
       crea->path_ = std::make_unique<TCODPath>(dungeon->width, dungeon->height, walkPattern, nullptr);
@@ -117,8 +119,8 @@ bool HerdBehavior::update(Creature* crea1, float elapsed) {
     }
   }
 
-  crea1->dx_ = CLAMP(-crea1->speed_, crea1->speed_, crea1->dx_);
-  crea1->dy_ = CLAMP(-crea1->speed_, crea1->speed_, crea1->dy_);
+  crea1->dx_ = std::clamp(crea1->dx_, -crea1->speed_, crea1->speed_);
+  crea1->dy_ = std::clamp(crea1->dy_, -crea1->speed_, crea1->speed_);
   // interaction with scare points
   for (ScarePoint** spit = scare.begin(); spit != scare.end(); spit++) {
     float dx = (*spit)->x_ - crea1->x_;
@@ -130,14 +132,14 @@ bool HerdBehavior::update(Creature* crea1, float elapsed) {
       crea1->dy_ -= elapsed * crea1->speed_ * 10 * coef * dy * dist;
     }
   }
-  crea1->dx_ = CLAMP(-crea1->speed_ * 2, crea1->speed_ * 2, crea1->dx_);
-  crea1->dy_ = CLAMP(-crea1->speed_ * 2, crea1->speed_ * 2, crea1->dy_);
+  crea1->dx_ = std::clamp(crea1->dx_, -crea1->speed_ * 2, crea1->speed_ * 2);
+  crea1->dy_ = std::clamp(crea1->dy_, -crea1->speed_ * 2, crea1->speed_ * 2);
 
   float newx = crea1->x_ + crea1->dx_;
   float newy = crea1->y_ + crea1->dy_;
   map::Dungeon* dungeon = gameEngine->dungeon;
-  newx = CLAMP(0.0, dungeon->width - 1, newx);
-  newy = CLAMP(0.0, dungeon->height - 1, newy);
+  newx = std::clamp(newx, 0.0f, dungeon->width - 1.0f);
+  newy = std::clamp(newy, 0.0f, dungeon->height - 1.0f);
   crea1->walk_timer_ += elapsed;
   if ((int)crea1->x_ != (int)newx || (int)crea1->y_ != (int)newy) {
     if (dungeon->isCellWalkable(newx, newy)) {

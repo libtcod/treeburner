@@ -137,8 +137,8 @@ bool Boss::update(float elapsed) {
         destx = (int)(x_ + TCODRandom::getInstance()->getInt(-15, 15));
         desty = (int)(y_ + TCODRandom::getInstance()->getInt(-15, 15));
       }
-      destx = CLAMP(0, gameEngine->dungeon->width - 1, destx);
-      desty = CLAMP(0, gameEngine->dungeon->height - 1, desty);
+      destx = std::clamp(destx, 0, gameEngine->dungeon->width - 1);
+      desty = std::clamp(desty, 0, gameEngine->dungeon->height - 1);
       gameEngine->dungeon->getClosestWalkable(&destx, &desty, true, true);
       if (!path_) {
         path_ = std::make_unique<TCODPath>(gameEngine->dungeon->width, gameEngine->dungeon->height, this, gameEngine);
