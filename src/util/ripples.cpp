@@ -218,7 +218,7 @@ bool RippleManager::updateRipples(float elapsed) {
               zone->data[off] = sum - zone->data[off];
               // damping
               zone->data[off] *= 1.0f - DAMPING_COEF / RIPPLE_FPS;
-              if (ABS(zone->data[off]) > ACTIVE_THRESHOLD) {
+              if (fabsf(zone->data[off]) > ACTIVE_THRESHOLD) {
                 zone->isActive = true;
                 updated = true;
               }
@@ -325,7 +325,7 @@ void RippleManager::renderRipples(TCODImage& ground) {
             float yOffset = (getData(**it, zx2, zy2 - 1) - getData(**it, zx2, zy2 + 1));
             float f[3] = {static_cast<float>(zx2), static_cast<float>(zy2), elCoef};
             xOffset += noise3d.get(f) * 0.3f;
-            if (ABS(xOffset) < 250 && ABS(yOffset) < 250) {
+            if (fabsf(xOffset) < 250 && fabsf(yOffset) < 250) {
               TCODColor col = ground.getPixel(groundx + (int)(xOffset * 2), groundy + (int)(yOffset * 2));
               col = col + TCODColor::white * xOffset * 0.1f;
               ground.putPixel(groundx, groundy, col);

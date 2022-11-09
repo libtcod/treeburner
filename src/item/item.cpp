@@ -1283,8 +1283,8 @@ bool Item::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
           //  ##
           //  ##
           // .
-          float fdx = ABS(dx_);
-          float fdy = ABS(dy_);
+          float fdx = fabsf(dx_);
+          float fdy = fabsf(dy_);
           if (fdx >= fdy) dy_ = -dy_;
           if (fdy >= fdx) dx_ = -dx_;
         } else if (!xwalk) {

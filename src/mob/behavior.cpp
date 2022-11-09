@@ -101,9 +101,9 @@ bool HerdBehavior::update(Creature* crea1, float elapsed) {
     Creature* crea2 = *f2;
     if (crea1 != crea2) {
       float dx = crea2->x_ - crea1->x_;
-      if (fabs(dx) >= FAR_RANGE) continue;
+      if (fabsf(dx) >= FAR_RANGE) continue;
       float dy = crea2->y_ - crea1->y_;
-      if (fabs(dy) >= FAR_RANGE) continue;  // too far to interact
+      if (fabsf(dy) >= FAR_RANGE) continue;  // too far to interact
       float invDist = crea1->fastInvDistance(*crea2);
       //	printf ("==> %d\n",crea2);
       if (invDist > 1E4f) {

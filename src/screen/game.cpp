@@ -144,7 +144,7 @@ void Game::render() {
           float r = dx2 + dy * dy;
           if (r <= radius && r > minRadius) {
             float midr = (r - medRadius) * radiusdiv;
-            float rcoef = 1.0f - ABS(midr);
+            float rcoef = 1.0f - fabsf(midr);
             float f[2] = {(float)(3 * x) / CON_W, (float)(3 * y) / CON_H};
             float ncoef = 0.5f * (1.0f + noise2d.getFbm(f, 3.0f));
             //						ground.putPixel(x,y,TCODColor::lerp(TCODColor::yellow,TCODColor::red,coef));

@@ -86,11 +86,11 @@ void SchoolScreen::generateWorld(uint32_t seed) {
         int deltax = px - MAP_WIDTH / 2;
         int deltay = py - MAP_HEIGHT / 2;
         // distance from map center
-        float rad = std::max(ABS(deltax) / 53.0, ABS(deltay) / 46.0);
+        float rad = std::max(abs(deltax) / 53.0f, abs(deltay) / 46.0f);
         rad = std::clamp(rad, 0.0f, 1.0f);  //  map sphere radius = 22 console cell = 44 map subcells
         float cs = cosf(rad * 3.14159f * 0.5f);
         float dist;
-        if (ABS(cs) < 0.0001f)
+        if (fabsf(cs) < 0.0001f)
           dist = 1000;
         else
           dist = (1.0f / cs);

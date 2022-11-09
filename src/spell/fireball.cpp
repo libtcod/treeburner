@@ -215,7 +215,7 @@ bool FireBall::updateMove(float elapsed) {
       if (type == FB_STANDARD) {
         for (FireBall** fb = gameEngine->fireballs.begin(); fb != gameEngine->fireballs.end(); fb++) {
           if ((*fb)->effect == FIREBALL_MOVE && (*fb)->type == FB_INCANDESCENCE &&
-              ABS((*fb)->x_ - x_) < (*fb)->light.range / 2 && ABS((*fb)->y_ - y_) < (*fb)->light.range / 2) {
+              fabsf((*fb)->x_ - x_) < (*fb)->light.range / 2 && fabsf((*fb)->y_ - y_) < (*fb)->light.range / 2) {
             float newdx = (*fb)->dx_;
             float newdy = (*fb)->dy_;
             float angle = atan2f(newdy, newdx);
@@ -356,7 +356,7 @@ bool FireBall::updateTorch(float elapsed) {
   light.range = 2 * current_range_;
   /*
   for (mob::Creature **cr=dungeon->creatures.begin(); cr != dungeon->creatures.end(); cr++) {
-          if ( ABS((*cr)->x-x)<curRange && ABS((*cr)->y-y)< curRange ) {
+          if ( fabsf((*cr)->x-x)<curRange && fabsf((*cr)->y-y)< curRange ) {
                   // do not set fire through walls
                   if ( dungeon->hasLos((int)((*cr)->x),(int)((*cr)->y),(int)x,(int)y,true) ) (*cr)->burn_=true;
           }
@@ -424,8 +424,8 @@ bool FireBall::updateSparkle(float elapsed) {
     mob::Creature* cr = NULL;
     bool del = false;
     for (FireBall** fb = incandescences.begin(); fb != incandescences.end(); fb++) {
-      if (ABS((*fb)->x_ - sparkle->x / 2) < (*fb)->current_range_ &&
-          ABS((*fb)->y_ - sparkle->y / 2) < (*fb)->current_range_) {
+      if (fabsf((*fb)->x_ - sparkle->x / 2) < (*fb)->current_range_ &&
+          fabsf((*fb)->y_ - sparkle->y / 2) < (*fb)->current_range_) {
         FireBall* fb = new FireBall(
             sparkle->x / 2,
             sparkle->y / 2,
@@ -471,8 +471,8 @@ bool FireBall::updateSparkle(float elapsed) {
           // TODO : this does not work
           float fdx = newx + 0.5f - (sparkle->x - sparkle->dx * speed);
           float fdy = newy + 0.5f - (sparkle->y - sparkle->dy * speed);
-          fdx = ABS(fdx);
-          fdy = ABS(fdy);
+          fdx = fabsf(fdx);
+          fdy = fabsf(fdy);
           if (fdx >= fdy) sparkle->dx = -sparkle->dx;
           if (fdy >= fdx) sparkle->dy = -sparkle->dy;
         } else if (!xwalk) {

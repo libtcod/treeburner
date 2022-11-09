@@ -155,8 +155,8 @@ bool Fish::update(float elapsed) {
 
   dx_ += elapsed * TCODRandom::getInstance()->getFloat(-20.0f, 20.0f);
   dy_ += elapsed * TCODRandom::getInstance()->getFloat(-20.0f, 20.0f);
-  if (ABS(dx_) > 2.0f) dx_ = dx_ * (1.0f - elapsed);
-  if (ABS(dy_) > 2.0f) dy_ = dy_ * (1.0f - elapsed);
+  if (fabsf(dx_) > 2.0f) dx_ = dx_ * (1.0f - elapsed);
+  if (fabsf(dy_) > 2.0f) dy_ = dy_ * (1.0f - elapsed);
   updated = true;
   return true;
 }

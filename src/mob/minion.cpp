@@ -142,8 +142,8 @@ bool Minion::update(float elapsed) {
     }
     walk(elapsed);
   }
-  float dx = ABS(game->player.x_ - x_);
-  float dy = ABS(game->player.y_ - y_);
+  float dx = fabsf(game->player.x_ - x_);
+  float dy = fabsf(game->player.y_ - y_);
   if (dx <= 1.0f && dy <= 1.0f) {
     // at melee range. attack
     game->player.takeDamage(minionDamage * elapsed);
