@@ -362,7 +362,7 @@ void Creature::render(map::LightMap& lightMap) {
   TCODConsole::root->setCharForeground(console_x, console_y, color);
 }
 
-void Creature::stun(float delay) { walk_timer_ = MIN(-delay, walk_timer_); }
+void Creature::stun(float delay) { walk_timer_ = std::min(-delay, walk_timer_); }
 
 bool Creature::walk(float elapsed) {
   walk_timer_ += elapsed;

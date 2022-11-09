@@ -34,7 +34,7 @@ void TextInput::init(const char* title, const char* text, int maxSize) {
   this->text = text;
   this->maxSize = maxSize;
   width = strlen(title) + 8;
-  width = MAX(30, width);
+  width = std::max(30, width);
   height = TCODConsole::root->getHeightRect(CON_W / 2 - width / 2 + 2, 0, width - 4, 0, text) + 6;
   if (con) delete con;
   if (txt) delete txt;
@@ -56,7 +56,7 @@ TextInput::~TextInput() {
 }
 
 void TextInput::render(int x, int y) {
-  if (!txt) txt = new TCODText(x - width / 2 + 2, y + height - 3, MIN(maxSize, width - 4), 1, maxSize);
+  if (!txt) txt = new TCODText(x - width / 2 + 2, y + height - 3, std::min(maxSize, width - 4), 1, maxSize);
   util::blitTransparent(con, 0, 0, 0, 0, TCODConsole::root, x - width / 2, y);
   txt->render(TCODConsole::root);
 }

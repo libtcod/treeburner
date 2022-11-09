@@ -73,7 +73,7 @@ float LightMap::getPlayerFog(int x, int y) {
   float playerdy = gameEngine->player.y_ * 2 - y;
   float fogDist = playerdx * playerdx + playerdy * playerdy;  // distance from player
   float fogCoef = fogDist * maxDistDiv;
-  fogCoef = MIN(1.0f, fogCoef);  // increase fog with distance
+  fogCoef = std::min(1.0f, fogCoef);  // increase fog with distance
   fogLevel = fogLevel * fogCoef;
   return fogLevel;
 }

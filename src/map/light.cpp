@@ -44,26 +44,26 @@ void Light::add(map::LightMap* l, TCODImage* img) {
   int xOffset = gameEngine->xOffset * 2;
   int yOffset = gameEngine->yOffset * 2;
   // clamp it to the dungeon
-  minx = MAX(0, minx);
-  miny = MAX(0, miny);
-  maxx = MIN(gameEngine->dungeon->width * 2 - 1, maxx);
-  maxy = MIN(gameEngine->dungeon->height * 2 - 1, maxy);
+  minx = std::max(0, minx);
+  miny = std::max(0, miny);
+  maxx = std::min(gameEngine->dungeon->width * 2 - 1, maxx);
+  maxy = std::min(gameEngine->dungeon->height * 2 - 1, maxy);
   // convert it to lightmap (console x2) coordinates
   minx -= xOffset;
   maxx -= xOffset;
   miny -= yOffset;
   maxy -= yOffset;
   // clamp it to the lightmap
-  minx = MAX(0, minx);
-  miny = MAX(0, miny);
+  minx = std::max(0, minx);
+  miny = std::max(0, miny);
   if (l) {
-    maxx = MIN(l->width - 1, maxx);
-    maxy = MIN(l->height - 1, maxy);
+    maxx = std::min(l->width - 1, maxx);
+    maxy = std::min(l->height - 1, maxy);
   } else {
     int iw, ih;
     img->getSize(&iw, &ih);
-    maxx = MIN(iw - 1, maxx);
-    maxy = MIN(ih - 1, maxy);
+    maxx = std::min(iw - 1, maxx);
+    maxy = std::min(ih - 1, maxy);
   }
 
   int fovmap_width = maxx - minx;
@@ -117,11 +117,11 @@ void Light::add(map::LightMap* l, TCODImage* img) {
               squaredRangeRnd = squaredRangeRnd + rcoef * (squaredRangePi - squaredRangeRnd);
             }
             rad = crange / squaredRangeRnd;
-            rad = MIN(1.0f, rad);
+            rad = std::min(1.0f, rad);
             coef = 1.0f - rad;
           } else {
             rad = crange / squaredRange;
-            rad = MIN(1.0f, rad);
+            rad = std::min(1.0f, rad);
             coef = 1.0f - rad;
           }
           if (coef > 0.0f) {

@@ -137,7 +137,7 @@ TCODRandom::getInstance()->getInt(-SECURE_DIST*2,SECURE_DIST*2)); destx=std::cla
                                 float sightTest=TCODRandom::getInstance()->getFloat(0.5f,0.9f);
                                 if ( sightTest < player->stealth ) {
                                         player->stealth += 2 * (player->stealth - sightTest) * elapsed;
-                                        player->stealth=MIN(1.0f,player->stealth);
+                                        player->stealth=std::min(1.0f,player->stealth);
                                         if ( !see && player->stealth >= 1.0f ) {
                                                 talk(talkGenerator->generate("friend","${HS_SPOTTED}"));
                                                 see=true;

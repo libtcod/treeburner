@@ -64,10 +64,10 @@ void GameEngine::recomputeCanopy(item::Item* it) {
     if (it) {
       // reset only for one tree
       Rect r(it->x_ * 2 - treeRadius - 1, it->y_ * 2 - treeRadius - 1, treeRadius * 2 + 2, treeRadius * 2 + 2);
-      r.x_ = MAX(0, r.x_);
-      r.y_ = MAX(0, r.y_);
-      r.w_ = (int)MIN(dungeon->width * 2 - 1 - r.x_, r.w_);
-      r.h_ = (int)MIN(dungeon->height * 2 - 1 - r.y_, r.h_);
+      r.x_ = std::max(0.0f, r.x_);
+      r.y_ = std::max(0.0f, r.y_);
+      r.w_ = std::min(gsl::narrow_cast<int>(dungeon->width * 2 - 1 - r.x_), r.w_);
+      r.h_ = std::min(gsl::narrow_cast<int>(dungeon->height * 2 - 1 - r.y_), r.h_);
       for (int x = (int)r.x_; x < (int)(r.x_ + r.w_); x++) {
         for (int y = (int)r.y_; y < (int)(r.y_ + r.h_); y++) {
           if (IN_RECTANGLE(x, y, dungeon->width * 2, dungeon->height * 2)) {

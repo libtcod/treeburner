@@ -145,7 +145,7 @@ void TreeBurner::render() {
       ground.putPixel(x, y, col);
       float intensity = dungeon->getShadow(dungeon2x, dungeon2y);
       float cloudIntensity = dungeon->getInterpolatedCloudCoef(dungeon2x, dungeon2y);
-      intensity = MIN(intensity, cloudIntensity);
+      intensity = std::min(intensity, cloudIntensity);
       TCODColor lightCol = dungeon->getAmbient();
       if (intensity < 1.0f) {
         lightCol = lightCol * intensity;
@@ -490,7 +490,7 @@ void TreeBurner::generateMap(uint32_t seed) {
       f[1] = 2.5f * y / FOREST_H;
       float height = terrainNoise.getFbm(f, 5.0f);
       float forestTypeId = (dungeon->hmap->getValue(x, y) * NB_FORESTS);
-      forestTypeId = MIN(NB_FORESTS - 1, forestTypeId);
+      forestTypeId = std::min(gsl::narrow<float>(NB_FORESTS - 1), forestTypeId);
       LayeredTerrain* forestType1 = &forestTypes[(int)forestTypeId];
       LayeredTerrain* forestType2 = forestType1;
       if ((int)forestTypeId < forestTypeId) forestType2++;
@@ -567,7 +567,7 @@ else if ( swimmable2 ) waterCoef2=layer2Height;
         // waterCoef=waterCoef2*coef + waterCoef1*(1.0f-coef);
         info = (terrainTypeCoef <= 0.5f ? info1 : info2);
       }
-      if (map::terrainTypes[info->terrain].ripples) waterCoef = MAX(0.01f, waterCoef);
+      if (map::terrainTypes[info->terrain].ripples) waterCoef = std::max(0.01f, waterCoef);
       dungeon->getSubCell(x, y)->waterCoef = waterCoef;
       if ((x & 1) == 0 && (y & 1) == 0 && dungeon->getTerrainType(x / 2, y / 2) != map::TERRAIN_WOODEN_FLOOR) {
         dungeon->setTerrainType(x / 2, y / 2, info->terrain);

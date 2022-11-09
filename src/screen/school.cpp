@@ -86,7 +86,7 @@ void SchoolScreen::generateWorld(uint32_t seed) {
         int deltax = px - MAP_WIDTH / 2;
         int deltay = py - MAP_HEIGHT / 2;
         // distance from map center
-        float rad = MAX(ABS(deltax) / 53.0, ABS(deltay) / 46.0);
+        float rad = std::max(ABS(deltax) / 53.0, ABS(deltay) / 46.0);
         rad = std::clamp(rad, 0.0f, 1.0f);  //  map sphere radius = 22 console cell = 44 map subcells
         float cs = cosf(rad * 3.14159f * 0.5f);
         float dist;
@@ -219,7 +219,7 @@ TCODColor SchoolScreen::getMapShadedColor(float worldX, float worldY, bool cloud
 
   // apply sun light
   float intensity = worldGen.getInterpolatedIntensity(wx, wy);
-  intensity = MIN(intensity, 1.5f - cloudAmount);
+  intensity = std::min(intensity, 1.5f - cloudAmount);
   int cr = (int)(intensity * (int)(col.r) * sunCol.r / 255);
   int cg = (int)(intensity * (int)(col.g) * sunCol.g / 255);
   int cb = (int)(intensity * (int)(col.b) * sunCol.b / 255);
@@ -227,9 +227,9 @@ TCODColor SchoolScreen::getMapShadedColor(float worldX, float worldY, bool cloud
   col2.r = std::clamp(cr, 0, 255);
   col2.g = std::clamp(cg, 0, 255);
   col2.b = std::clamp(cb, 0, 255);
-  col2.r = MAX(col2.r, col.r / 2);
-  col2.g = MAX(col2.g, col.g / 2);
-  col2.b = MAX(col2.b, col.b / 2);
+  col2.r = std::max<uint8_t>(col2.r, col.r / 2);
+  col2.g = std::max<uint8_t>(col2.g, col.g / 2);
+  col2.b = std::max<uint8_t>(col2.b, col.b / 2);
   return col2;
 }
 
@@ -358,7 +358,7 @@ bool SchoolScreen::update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse) {
     dy = std::clamp(dy, 0.0f, util::HM_HEIGHT - MAP_HEIGHT - 1.0f);
   }
   // update current offset
-  elapsed = MIN(0.1f, elapsed);
+  elapsed = std::min(0.1f, elapsed);
   offx += (dx - offx) * elapsed * 1.5f;
   offy += (dy - offy) * elapsed * 1.5f;
   // update cloud layer

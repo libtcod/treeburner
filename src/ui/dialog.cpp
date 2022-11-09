@@ -144,8 +144,8 @@ Scroller::Scroller(Scrollable* scrollable, int width, int height, bool inverted)
 
 void Scroller::render(TCODConsole* con, int x, int y) {
   int nbMessages = scrollable->getScrollTotalSize();
-  int ypos = inverted ? MAX(0, height - nbMessages - scrollOffset) : 0;
-  int count = inverted ? height - ypos : MIN(height, nbMessages - scrollOffset);
+  int ypos = inverted ? std::max(0, height - nbMessages - scrollOffset) : 0;
+  int count = inverted ? height - ypos : std::min(height, nbMessages - scrollOffset);
   int idx = nbMessages - count - scrollOffset;
   for (; count > 0; idx++, ypos++, count--) {
     TCODColor fore, back;
@@ -157,13 +157,13 @@ void Scroller::render(TCODConsole* con, int x, int y) {
 }
 void Scroller::renderScrollbar(TCODConsole* con, int x, int y) {
   int nbMessages = scrollable->getScrollTotalSize();
-  int nbDisplayed = MIN(height, nbMessages - scrollOffset);
+  int nbDisplayed = std::min(height, nbMessages - scrollOffset);
   if (nbMessages > 0 && nbDisplayed < nbMessages) {
     // scrollbar
     int firstDisplayed = nbMessages - scrollOffset - nbDisplayed;
     int start = ((height - 1) * firstDisplayed) / nbMessages;
     int end = ((height - 1) * (firstDisplayed + nbDisplayed)) / nbMessages;
-    end = MIN(height - 1, end);
+    end = std::min(height - 1, end);
     con->setDefaultBackground(scrollFocus || scrollDrag ? ui::guiText : ui::guiText * 0.8f);
     con->rect(x + width - 2, y + start, 2, end - start + 1, true, TCOD_BKGND_SET);
   }
@@ -171,7 +171,7 @@ void Scroller::renderScrollbar(TCODConsole* con, int x, int y) {
 
 void Scroller::update(float elapsed, TCOD_key_t& k, TCOD_mouse_t& mouse, int rectx, int recty) {
   int nbMessages = scrollable->getScrollTotalSize();
-  int nbDisplayed = MIN(height, nbMessages - scrollOffset);
+  int nbDisplayed = std::min(height, nbMessages - scrollOffset);
   int firstDisplayed = nbMessages - scrollOffset - nbDisplayed;
   // scrollbar focus
   if (nbDisplayed < nbMessages) {
@@ -179,9 +179,9 @@ void Scroller::update(float elapsed, TCOD_key_t& k, TCOD_mouse_t& mouse, int rec
     mob::Player::getMoveKey(k, &up, &down, &left, &right);
     if ((up || left) && scrollOffset < nbMessages - height) {
       scrollOffset += 5;
-      scrollOffset = MIN(nbMessages - height, scrollOffset);
+      scrollOffset = std::min(nbMessages - height, scrollOffset);
     } else if ((down || right) && scrollOffset > 0) {
-      scrollOffset -= MIN(5, scrollOffset);
+      scrollOffset -= std::min(5, scrollOffset);
     }
     int start = ((height - 1) * firstDisplayed) / nbMessages;
     int end = ((height - 1) * (firstDisplayed + nbDisplayed)) / nbMessages;
@@ -196,8 +196,8 @@ void Scroller::update(float elapsed, TCOD_key_t& k, TCOD_mouse_t& mouse, int rec
       int delta = mouse.cy - scrollStartDrag;
       int newStart = scrollStartOffset + delta;
       int newFirst = newStart * nbMessages / height;
-      newFirst = MAX(0, newFirst);
-      newFirst = MIN(nbMessages - height, newFirst);
+      newFirst = std::max(0, newFirst);
+      newFirst = std::min(nbMessages - height, newFirst);
       scrollOffset = nbMessages - nbDisplayed - newFirst;
     } else if (scrollDrag && !mouse.lbutton) {
       scrollDrag = false;
