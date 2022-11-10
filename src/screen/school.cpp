@@ -32,6 +32,9 @@
 #include <math.h>
 #include <stdio.h>
 
+#include <algorithm>
+#include <gsl/gsl>
+
 #include "main.hpp"
 #include "screen/mainmenu.hpp"
 #include "util/subcell.hpp"
@@ -83,11 +86,11 @@ void SchoolScreen::generateWorld(uint32_t seed) {
         int deltax = px - MAP_WIDTH / 2;
         int deltay = py - MAP_HEIGHT / 2;
         // distance from map center
-        float rad = MAX(ABS(deltax) / 53.0, ABS(deltay) / 46.0);
-        rad = CLAMP(0.0f, 1.0f, rad);  //  map sphere radius = 22 console cell = 44 map subcells
+        float rad = std::max(abs(deltax) / 53.0f, abs(deltay) / 46.0f);
+        rad = std::clamp(rad, 0.0f, 1.0f);  //  map sphere radius = 22 console cell = 44 map subcells
         float cs = cosf(rad * 3.14159f * 0.5f);
         float dist;
-        if (ABS(cs) < 0.0001f)
+        if (fabsf(cs) < 0.0001f)
           dist = 1000;
         else
           dist = (1.0f / cs);
@@ -201,32 +204,32 @@ int SchoolScreen::getTerrainType(int x, int y, int range) const {
     }
   }
   int typeidx = (int)(h * 16 / num);
-  typeidx = CLAMP(0, 16, typeidx);
+  typeidx = std::clamp(typeidx, 0, 16);
   return typeidx;
 }
 
 TCODColor SchoolScreen::getMapShadedColor(float worldX, float worldY, bool clouds) {
   // sun color & direction
   static TCODColor sunCol(255, 255, 200);
-  float wx = CLAMP(0.0f, worldGen.getWidth() - 1, worldX);
-  float wy = CLAMP(0.0f, worldGen.getHeight() - 1, worldY);
+  float wx = std::clamp(worldX, 0.0f, worldGen.getWidth() - 1.0f);
+  float wy = std::clamp(worldY, 0.0f, worldGen.getHeight() - 1.0f);
   // apply cloud shadow
   float cloudAmount = clouds ? worldGen.getCloudThickness(wx, wy) : 0.0f;
   TCODColor col = worldGen.getInterpolatedColor(worldX, worldY);
 
   // apply sun light
   float intensity = worldGen.getInterpolatedIntensity(wx, wy);
-  intensity = MIN(intensity, 1.5f - cloudAmount);
+  intensity = std::min(intensity, 1.5f - cloudAmount);
   int cr = (int)(intensity * (int)(col.r) * sunCol.r / 255);
   int cg = (int)(intensity * (int)(col.g) * sunCol.g / 255);
   int cb = (int)(intensity * (int)(col.b) * sunCol.b / 255);
   TCODColor col2;
-  col2.r = CLAMP(0, 255, cr);
-  col2.g = CLAMP(0, 255, cg);
-  col2.b = CLAMP(0, 255, cb);
-  col2.r = MAX(col2.r, col.r / 2);
-  col2.g = MAX(col2.g, col.g / 2);
-  col2.b = MAX(col2.b, col.b / 2);
+  col2.r = std::clamp(cr, 0, 255);
+  col2.g = std::clamp(cg, 0, 255);
+  col2.b = std::clamp(cb, 0, 255);
+  col2.r = std::max<uint8_t>(col2.r, col.r / 2);
+  col2.g = std::max<uint8_t>(col2.g, col.g / 2);
+  col2.b = std::max<uint8_t>(col2.b, col.b / 2);
   return col2;
 }
 
@@ -273,7 +276,7 @@ void SchoolScreen::render() {
 
     int l = strlen(school[i].name);
     int labelx = screenx - l / 2;
-    labelx = CLAMP(0, CON_W - l, labelx);
+    labelx = std::clamp(labelx, 0, CON_W - l);
     if (school[i].terrain == School::SNOW) {
       con->setDefaultForeground(TCODColor::darkerGrey);
     } else {
@@ -351,11 +354,11 @@ bool SchoolScreen::update(float elapsed, TCOD_key_t k, TCOD_mouse_t mouse) {
       mouse.cx < (CON_H * 2 - MAP_HEIGHT) / 4 + MAP_HEIGHT) {
     dx = 2 * (mouse.cx - (CON_W - 1 - MAP_WIDTH / 2)) + offx - MAP_WIDTH / 2;
     dy = 2 * (mouse.cy - (CON_H * 2 - MAP_HEIGHT) / 4) + offy - MAP_HEIGHT / 2;
-    dx = CLAMP(0, util::HM_WIDTH - MAP_WIDTH - 1, dx);
-    dy = CLAMP(0, util::HM_HEIGHT - MAP_HEIGHT - 1, dy);
+    dx = std::clamp(dx, 0.0f, util::HM_WIDTH - MAP_WIDTH - 1.0f);
+    dy = std::clamp(dy, 0.0f, util::HM_HEIGHT - MAP_HEIGHT - 1.0f);
   }
   // update current offset
-  elapsed = MIN(0.1f, elapsed);
+  elapsed = std::min(0.1f, elapsed);
   offx += (dx - offx) * elapsed * 1.5f;
   offy += (dy - offy) * elapsed * 1.5f;
   // update cloud layer
@@ -374,8 +377,8 @@ void SchoolScreen::selectSchool(int num) {
   int dh = worldGen.getHeight() - MAP_HEIGHT;
   dx = school[num].x - MAP_WIDTH / 2;
   dy = school[num].y - MAP_HEIGHT / 2;
-  dx = CLAMP(0, dw, dx);
-  dy = CLAMP(0, dh, dy);
+  dx = std::clamp(dx, 0.0f, gsl::narrow_cast<float>(dw));
+  dy = std::clamp(dy, 0.0f, gsl::narrow_cast<float>(dh));
   gameEngine->player.school_ = school[selectedSchool];
 }
 

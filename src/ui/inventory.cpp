@@ -236,17 +236,17 @@ void Inventory::render() {
         }
         if ((owner && action->onInventory()) || (container && action->onLoot())) {
           cmenuheight++;
-          cmenuwidth = MAX(cmenuwidth, (int)strlen(action->name) + 2);
+          cmenuwidth = std::max(cmenuwidth, (int)strlen(action->name) + 2);
           if (*id == item::ITEM_ACTION_TAKE && item->count_ > 1) {
             // add one entry for 'Take all'
             cmenuheight++;
             item::ItemAction* takeAll = item::ItemAction::getFromId(item::ITEM_ACTION_TAKE_ALL);
-            cmenuwidth = MAX(cmenuwidth, (int)strlen(takeAll->name) + 2);
+            cmenuwidth = std::max(cmenuwidth, (int)strlen(takeAll->name) + 2);
           } else if (*id == item::ITEM_ACTION_DROP && item->count_ > 1) {
             // add one entry for 'Drop all'
             cmenuheight++;
             item::ItemAction* dropAll = item::ItemAction::getFromId(item::ITEM_ACTION_DROP_ALL);
-            cmenuwidth = MAX(cmenuwidth, (int)strlen(dropAll->name) + 2);
+            cmenuwidth = std::max(cmenuwidth, (int)strlen(dropAll->name) + 2);
           }
         }
       }
@@ -621,7 +621,7 @@ bool Inventory::update(float elapsed, TCOD_key_t& k, TCOD_mouse_t& mouse) {
           newItem->dx_ = dx;
           newItem->dy_ = dy;
           newItem->speed_ = 1.0f / (invLength * 1.5f);
-          newItem->speed_ = MIN(12.0f, newItem->speed_);
+          newItem->speed_ = std::min(12.0f, newItem->speed_);
           newItem->duration_ = 1.5f;
           dungeon->addItem(newItem);
           if (owner)

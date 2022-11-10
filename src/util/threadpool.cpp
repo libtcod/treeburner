@@ -70,7 +70,7 @@ ThreadPool::ThreadPool() {
   static bool multithread = config.getBoolProperty("config.multithread");
   static int threadPoolSize = config.getIntProperty("config.threadPoolSize");
   nbCores = TCODSystem::getNumCores();
-  int nbThreads = MAX(1, nbCores - 1);
+  int nbThreads = std::max(1, nbCores - 1);
   printf("Cores detected : %d\n", nbCores);
   if (!multithread) {
     // printf ("Background threads disabled in config.txt\n");

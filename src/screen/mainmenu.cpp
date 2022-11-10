@@ -258,13 +258,13 @@ void MainMenu::render() {
     static TCODRandom chaprnd(TCOD_RNG_CMWC, 0xdeadbeef);
     static bool first = true;
     float chapcoef = (elapsed - 18.0f) / 10.0f;
-    chapcoef = MIN(1.0f, chapcoef);
+    chapcoef = std::min(1.0f, chapcoef);
     unsigned char* curc = cdata;
     int x = CON_W / 2 - sizeof(cdata) / 2;
     if (first) {
       int count = userPref.nbLaunches - 5;
-      // float gcoef=MIN(1.0f,count/180.0f + 0.06f);
-      float gcoef = MIN(0.05f, count / 20.0f + 0.06f);
+      // float gcoef=std::min(1.0f,count/180.0f + 0.06f);
+      float gcoef = std::min(0.05f, count / 20.0f + 0.06f);
       int nbcoef = 0;
       while (*curc) {
         if (*curc != 223) nbcoef++;

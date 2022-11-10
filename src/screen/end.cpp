@@ -272,8 +272,8 @@ void PaperScreen::onFontChange() {
   overlaph = offseth = 0;
   int texth = TCODConsole::root->getHeightRect(0, 0, 50, 0, txt) * 2;
   overlaph = texth + (15 + pixh / charh) - CON_H;
-  overlaph = MAX(0, overlaph);
-  overlaph = MAX(overlaph, paperHeight / 2 - CON_H);
+  overlaph = std::max(0, overlaph);
+  overlaph = std::max(overlaph, paperHeight / 2 - CON_H);
 }
 
 void PaperScreen::render() {

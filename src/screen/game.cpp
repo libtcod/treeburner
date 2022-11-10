@@ -105,7 +105,7 @@ void Game::render() {
   // final explosion
   if (bossIsDead && finalExplosion > 0.0f && finalExplosion <= 1.0f) {
     float radius = 2 * CON_W * (1.0f - finalExplosion);
-    float minRadius = MAX(0, MIN(radius - 3, 0.6f * radius));
+    float minRadius = std::max(0.0f, std::min(radius - 3.0f, 0.6f * radius));
     float medRadius, radiusdiv = 1.0f;
     int minx = dungeon->stairx * 2 - (int)radius;
     int miny = dungeon->stairy * 2 - (int)radius;
@@ -115,10 +115,10 @@ void Game::render() {
     int yOffset2 = yOffset * 2;
     int conExploX = dungeon->stairx * 2 - xOffset2;
     int conExploY = dungeon->stairy * 2 - yOffset2;
-    minx = MAX(0, minx);
-    miny = MAX(0, miny);
-    maxx = MIN(dungeon->width * 2 - 1, maxx);
-    maxy = MIN(dungeon->height * 2 - 1, maxy);
+    minx = std::max(0, minx);
+    miny = std::max(0, miny);
+    maxx = std::min(dungeon->width * 2 - 1, maxx);
+    maxy = std::min(dungeon->height * 2 - 1, maxy);
     radius = radius * radius;
     minRadius = minRadius * minRadius;
     medRadius = (radius + minRadius) * 0.5f;
@@ -127,14 +127,14 @@ void Game::render() {
     miny -= yOffset2;
     maxx -= xOffset2;
     maxy -= yOffset2;
-    minx = MAX(0, minx);
-    miny = MAX(0, miny);
-    maxx = MIN(CON_W * 2 - 1, maxx);
-    maxy = MIN(CON_H * 2 - 1, maxy);
-    minx2x = MIN(minx, minx2x);
-    miny2x = MIN(miny, miny2x);
-    maxx2x = MAX(maxx, maxx2x);
-    maxy2x = MAX(maxy, maxy2x);
+    minx = std::max(0, minx);
+    miny = std::max(0, miny);
+    maxx = std::min(CON_W * 2 - 1, maxx);
+    maxy = std::min(CON_H * 2 - 1, maxy);
+    minx2x = std::min(minx, minx2x);
+    miny2x = std::min(miny, miny2x);
+    maxx2x = std::max(maxx, maxx2x);
+    maxy2x = std::max(maxy, maxy2x);
     for (int x = minx; x <= maxx; x++) {
       int dx2 = (conExploX - x) * (conExploX - x);
       for (int y = miny; y <= maxy; y++) {
@@ -144,7 +144,7 @@ void Game::render() {
           float r = dx2 + dy * dy;
           if (r <= radius && r > minRadius) {
             float midr = (r - medRadius) * radiusdiv;
-            float rcoef = 1.0f - ABS(midr);
+            float rcoef = 1.0f - fabsf(midr);
             float f[2] = {(float)(3 * x) / CON_W, (float)(3 * y) / CON_H};
             float ncoef = 0.5f * (1.0f + noise2d.getFbm(f, 3.0f));
             //						ground.putPixel(x,y,TCODColor::lerp(TCODColor::yellow,TCODColor::red,coef));
@@ -162,10 +162,10 @@ void Game::render() {
   maxx2x -= 2 * xOffset;
   miny2x -= 2 * yOffset;
   maxy2x -= 2 * yOffset;
-  minx2x = MAX(0, minx2x);
-  maxx2x = MIN(CON_W * 2 - 1, maxx2x);
-  miny2x = MAX(0, miny2x);
-  maxy2x = MIN(CON_H * 2 - 1, maxy2x);
+  minx2x = std::max(0, minx2x);
+  maxx2x = std::min(CON_W * 2 - 1, maxx2x);
+  miny2x = std::max(0, miny2x);
+  maxy2x = std::min(CON_H * 2 - 1, maxy2x);
 
   // shade the 2xground
   lightMap.applyToImage(ground, minx2x, miny2x, maxx2x, maxy2x);

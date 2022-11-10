@@ -56,8 +56,8 @@ Building* Building::generateWallsOnly(int width, int height, int nbRooms, TCODRa
   // draw random rectangular rooms
   for (int room = 0; room < nbRooms; room++) {
     int rx, ry, rw, rh;
-    rw = rng->getInt(averageRoomWidth, MIN(width, averageRoomWidth * 2));
-    rh = rng->getInt(averageRoomHeight, MIN(height, averageRoomHeight * 2));
+    rw = rng->getInt(averageRoomWidth, std::min(width, averageRoomWidth * 2));
+    rh = rng->getInt(averageRoomHeight, std::min(height, averageRoomHeight * 2));
     if (room == 0) {
       rx = rng->getInt(0, width - rw);
       ry = rng->getInt(0, height - rh);
@@ -65,8 +65,8 @@ Building* Building::generateWallsOnly(int width, int height, int nbRooms, TCODRa
       // rooms should not be disjoint
       rx = rng->getInt(oldrx - rw, oldrx + oldrw);
       ry = rng->getInt(oldry - rh, oldry + oldrh);
-      rx = CLAMP(0, width - rw, rx);
-      ry = CLAMP(0, height - rh, ry);
+      rx = std::clamp(rx, 0, width - rw);
+      ry = std::clamp(ry, 0, height - rh);
     }
     // fill room with floor
     for (int rry = ry; rry < ry + rh; rry++) {

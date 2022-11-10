@@ -140,10 +140,10 @@ bool StatusPanel::update(float elapsed, TCOD_key_t& k, TCOD_mouse_t& mouse) {
   if (k.vk == TCODK_ALT || k.lalt) lookOn = k.pressed;
   if (!gameEngine->isGamePaused() && rect.mouseHover && !lookOn) {
     titleBarAlpha += elapsed;
-    titleBarAlpha = MIN(1.0f, titleBarAlpha);
+    titleBarAlpha = std::min(1.0f, titleBarAlpha);
   } else if (!isDragging) {
     titleBarAlpha -= elapsed;
-    titleBarAlpha = MAX(0.0f, titleBarAlpha);
+    titleBarAlpha = std::max(0.0f, titleBarAlpha);
   }
   return true;
 }

@@ -159,10 +159,10 @@ bool CaveGenerator::visitNode(TCODBsp* node, void* userData) {
       maxy = rng->getInt(miny + minRoomSize - 1, maxy);
     }
     // always walls on map borders
-    minx = MAX(1, minx);
-    miny = MAX(1, miny);
-    maxx = MIN(size - 2, maxx);
-    maxy = MIN(size - 2, maxy);
+    minx = std::max(1, minx);
+    miny = std::max(1, miny);
+    maxx = std::min(size - 2, maxx);
+    maxy = std::min(size - 2, maxy);
     // resize the node to fit the room
     node->x = minx;
     node->y = miny;
@@ -174,10 +174,10 @@ bool CaveGenerator::visitNode(TCODBsp* node, void* userData) {
     // resize the node to fit its sons
     TCODBsp* left = node->getLeft();
     TCODBsp* right = node->getRight();
-    node->x = MIN(left->x, right->x);
-    node->y = MIN(left->y, right->y);
-    node->w = MAX(left->x + left->w, right->x + right->w) - node->x;
-    node->h = MAX(left->y + left->h, right->y + right->h) - node->y;
+    node->x = std::min(left->x, right->x);
+    node->y = std::min(left->y, right->y);
+    node->w = std::max(left->x + left->w, right->x + right->w) - node->x;
+    node->h = std::max(left->y + left->h, right->y + right->h) - node->y;
     // create a corridor between the two lower nodes
     if (node->horizontal) {
       // vertical corridor
@@ -191,8 +191,8 @@ bool CaveGenerator::visitNode(TCODBsp* node, void* userData) {
         MapCarver::vlineDown(map, x2, y + 1);
       } else {
         // straight vertical corridor
-        int minx = MAX(left->x, right->x);
-        int maxx = MIN(left->x + left->w - 1, right->x + right->w - 1);
+        int minx = std::max(left->x, right->x);
+        int maxx = std::min(left->x + left->w - 1, right->x + right->w - 1);
         int x = rng->getInt(minx, maxx);
         MapCarver::vlineDown(map, x, right->y);
         MapCarver::vlineUp(map, x, right->y - 1);
@@ -209,8 +209,8 @@ bool CaveGenerator::visitNode(TCODBsp* node, void* userData) {
         MapCarver::hlineRight(map, x + 1, y2);
       } else {
         // straight horizontal corridor
-        int miny = MAX(left->y, right->y);
-        int maxy = MIN(left->y + left->h - 1, right->y + right->h - 1);
+        int miny = std::max(left->y, right->y);
+        int maxy = std::min(left->y + left->h - 1, right->y + right->h - 1);
         int y = rng->getInt(miny, maxy);
         MapCarver::hlineLeft(map, right->x - 1, y);
         MapCarver::hlineRight(map, right->x, y);

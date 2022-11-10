@@ -75,9 +75,9 @@ bool Weapon::update(float elapsed, TCOD_key_t key, TCOD_mouse_t *mouse) {
                                         targety=dy;
                                         if ( !mouse->lbutton ) {
                                                 // fire when mouse button released
-                                                timer=MAX(timer,0.0f);
+                                                timer=std::max(timer,0.0f);
                                                 float speed=(castDelay-timer)/castDelay;
-                                                speed=MIN(speed,1.0f);
+                                                speed=std::min(speed,1.0f);
                                                 phase=RELOAD;
                                                 timer=reloadDelay;
                                                 fire(speed);
@@ -210,11 +210,11 @@ Weapon *Weapon::getRandom(ItemTypeId2 id,ItemClass itemClass) {
         switch(modType) {
             case MOD_RELOAD :
                 weapon->reloadDelay -= rng->getFloat(0.05f, 0.2f);
-                weapon->reloadDelay = MAX(0.1f,weapon->reloadDelay);
+                weapon->reloadDelay = std::max(0.1f,weapon->reloadDelay);
             break;
             case MOD_CAST :
                 weapon->castDelay -= rng->getFloat(0.05f, 0.2f);
-                weapon->castDelay = MAX(0.1f,weapon->reloadDelay);
+                weapon->castDelay = std::max(0.1f,weapon->reloadDelay);
             break;
             case MOD_MODIFIER :
                 ItemModifierId id=(ItemModifierId)0;
@@ -233,7 +233,7 @@ Weapon *Weapon::getRandom(ItemTypeId2 id,ItemClass itemClass) {
         }
         weapon->damages = 15 * (weapon->reloadDelay + weapon->castDelay ) *
 rng->getFloat(feat->attack.minDamagesCoef,feat->attack.maxDamagesCoef); weapon->damages += weapon->damages *
-(int)(itemClass)*0.2f; // 20% increase per color level weapon->damages = MIN(1.0f,weapon->damages); return weapon;
+(int)(itemClass)*0.2f; // 20% increase per color level weapon->damages = std::min(1.0f,weapon->damages); return weapon;
 }
 
 #define WEAP_CHUNK_VERSION 1

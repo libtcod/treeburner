@@ -360,7 +360,7 @@ bool Player::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
   const int dungeon_y = mouse->cy + gameEngine->yOffset;
 
   bool useWeapon = true;
-  if (mouse->lbutton_pressed && ABS(dungeon_x - x_) <= 1 && ABS(dungeon_y - y_) <= 1) {
+  if (mouse->lbutton_pressed && fabsf(dungeon_x - x_) <= 1 && fabsf(dungeon_y - y_) <= 1) {
     // click on the player or near him in water=ripples
     if (mouse->lbutton_pressed && dungeon->hasRipples(dungeon_x, dungeon_y))
       gameEngine->startRipple(dungeon_x, dungeon_y);

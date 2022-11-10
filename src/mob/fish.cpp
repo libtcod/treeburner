@@ -61,7 +61,7 @@ void Fish::render(map::LightMap& lightMap) {
   if (apparentHeight < MIN_VISIBLE_HEIGHT) return;  // too small to see at that distance
   apparentHeight -= MIN_VISIBLE_HEIGHT;
   float coef = 0.5f * apparentHeight / VISIBLE_HEIGHT;
-  coef = MIN(0.5f, coef);
+  coef = std::min(0.5f, coef);
 
   int conx2 = getSubX() - gameEngine->xOffset * 2;
   int cony2 = getSubY() - gameEngine->yOffset * 2;
@@ -155,8 +155,8 @@ bool Fish::update(float elapsed) {
 
   dx_ += elapsed * TCODRandom::getInstance()->getFloat(-20.0f, 20.0f);
   dy_ += elapsed * TCODRandom::getInstance()->getFloat(-20.0f, 20.0f);
-  if (ABS(dx_) > 2.0f) dx_ = dx_ * (1.0f - elapsed);
-  if (ABS(dy_) > 2.0f) dy_ = dy_ * (1.0f - elapsed);
+  if (fabsf(dx_) > 2.0f) dx_ = dx_ * (1.0f - elapsed);
+  if (fabsf(dy_) > 2.0f) dy_ = dy_ * (1.0f - elapsed);
   updated = true;
   return true;
 }

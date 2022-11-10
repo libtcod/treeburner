@@ -863,11 +863,11 @@ Item* Item::getRandomWeapon(const char* typeName, ItemClass itemClass) {
     switch (modType) {
       case MOD_RELOAD:
         weapon->reload_delay_ -= rng->getFloat(0.05f, MAX_RELOAD_BONUS);
-        weapon->reload_delay_ = MAX(0.1f, weapon->reload_delay_);
+        weapon->reload_delay_ = std::max(0.1f, weapon->reload_delay_);
         break;
       case MOD_CAST:
         weapon->cast_delay_ -= rng->getFloat(0.05f, MAX_CAST_BONUS);
-        weapon->cast_delay_ = MAX(0.1f, weapon->reload_delay_);
+        weapon->cast_delay_ = std::max(0.1f, weapon->reload_delay_);
         break;
       case MOD_MODIFIER:
         modifier::ItemModifierId id = (modifier::ItemModifierId)0;
@@ -886,7 +886,7 @@ Item* Item::getRandomWeapon(const char* typeName, ItemClass itemClass) {
     }
   }
   weapon->damages_ += weapon->damages_ * (int)(itemClass)*0.2f;  // 20% increase per color level
-  weapon->damages_ = MIN(1.0f, weapon->damages_);
+  weapon->damages_ = std::min(1.0f, weapon->damages_);
   // build components
   weapon->generateComponents();
   return weapon;
@@ -1071,7 +1071,7 @@ void Item::render(map::LightMap& lightMap, TCODImage* ground) {
   TCODColor lightColor = lightMap.getColor(conx, cony);
   float shadow = dungeon->getShadow(x_ * 2, y_ * 2);
   float clouds = dungeon->getCloudCoef(x_ * 2, y_ * 2);
-  shadow = MIN(shadow, clouds);
+  shadow = std::min(shadow, clouds);
   lightColor = lightColor * shadow;
   TCODConsole::root->setChar(conx, cony, ch_);
   TCODConsole::root->setCharForeground(conx, cony, color_ * lightColor);
@@ -1172,8 +1172,8 @@ void Item::renderGenericDescription(int x, int y, bool below, bool frame) {
     float maxDamages = 15 * (feat->attack.maxCastDelay + feat->attack.maxReloadDelay) * feat->attack.maxDamagesCoef;
     minDamages += minDamages * (int)(item_class_)*0.2f;
     maxDamages += maxDamages * (int)(item_class_)*0.2f;
-    minDamages = (int)MIN(1.0f, minDamages);
-    maxDamages = (int)MIN(1.0f, maxDamages);
+    minDamages = (int)std::min(1.0f, minDamages);
+    maxDamages = (int)std::min(1.0f, maxDamages);
 
     if (minDamages != maxDamages) {
       descCon->print(CON_W / 4, cy++, "%d-%d damages/hit", (int)minDamages, (int)maxDamages);
@@ -1283,8 +1283,8 @@ bool Item::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
           //  ##
           //  ##
           // .
-          float fdx = ABS(dx_);
-          float fdy = ABS(dy_);
+          float fdx = fabsf(dx_);
+          float fdy = fabsf(dy_);
           if (fdx >= fdy) dy_ = -dy_;
           if (fdy >= fdx) dx_ = -dx_;
         } else if (!xwalk) {
@@ -1358,9 +1358,9 @@ bool Item::update(float elapsed, TCOD_key_t key, TCOD_mouse_t* mouse) {
               target_y_ = dy;
               if (!mouse->lbutton) {
                 // fire when mouse button released
-                phase_timer_ = MAX(phase_timer_, 0.0f);
+                phase_timer_ = std::max(phase_timer_, 0.0f);
                 float speed = (cast_delay_ - phase_timer_) / cast_delay_;
-                speed = MIN(speed, 1.0f);
+                speed = std::min(speed, 1.0f);
                 phase_ = RELOAD;
                 phase_timer_ = reload_delay_;
                 if ((int)target_x_ == (int)owner_->x_ && (int)target_y_ == (int)owner_->y_) return true;
